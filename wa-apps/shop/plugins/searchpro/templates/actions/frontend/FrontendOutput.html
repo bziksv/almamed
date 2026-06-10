@@ -1,0 +1,29 @@
+{capture assign="inline_assets"}
+{if !empty($assets_links.init)}
+    <script type="text/javascript" src="{$assets_links.init.url}?{rand()}"></script>
+{/if}
+{if !empty($assets.js) || !empty($assets_links.css)}
+    <script type="text/javascript">
+		(function() {
+            {if !empty($assets_links.js)}
+                {foreach $assets_links.js as $js}
+                    window.shop_searchpro.loader.loadJs('{$js.url}', '{$js.asset}', {$wrapper.callback|default:'null'|strip});
+                {/foreach}
+            {/if}
+            {if !empty($assets_links.css)}
+                {foreach $assets_links.css as $css}
+                    window.shop_searchpro.loader.loadCss('{$css.url}');
+                {/foreach}
+            {/if}
+		})();
+    </script>
+{/if}
+{/capture}
+{if $wrapper}
+<div class="{$wrapper.class|default:''}" id="{$wrapper.id|default:''}" {foreach $data as $field => $value} data-{$field}="{$value|escape|strip}" {/foreach}>
+	{/if}
+	{$content}
+	{if $wrapper}
+</div>
+{/if}
+{$inline_assets|strip}

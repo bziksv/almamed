@@ -1,0 +1,132 @@
+<div class="dialog" id="nb-post-image-upload-dialog">
+    <div class="dialog-background"> </div>
+    <div class="dialog-window" style="width: 900px">
+        <div class="dialog-content">
+            <div class="dialog-content-indent">
+
+                <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}plugins/nbimagepost/css/jquery.Jcrop.min.css">
+                <script src="{$wa_app_static_url}plugins/nbimagepost/js/jquery.Jcrop.js?v{$wa->version()}"></script>
+
+                <div class="align-center" id="p-upload-step">
+                    <a href="javascript:void(0);" class="button blue fileinput-button">
+                        [`nb SelectPhoto`]
+                        <input type="file" name="sortpic" id="sortpicture">
+                    </a>
+                    <br><br><br>
+                    <span class="hint">[`nb Desc`]</span>
+                </div>
+
+                <!-- This is the image we're attaching Jcrop to -->
+                <div class="image-box">
+                    <img src="{$wa_app_static_url}plugins/nbimagepost/image/drag-photos-here.png" id="cropbox" />
+                </div>
+
+                <input type="hidden" id="x">
+                <input type="hidden" id="y">
+                <input type="hidden" id="w">
+                <input type="hidden" id="h">
+                <input type="hidden" id="id_post" value="{$id_post}">
+
+            </div>
+
+        </div>
+
+        <div class="dialog-buttons">
+            <div class="dialog-buttons-gradient">
+                <button class="button green" id="nb-post-image-crop-upload">[`nb Save`]</button>
+                [`nb Or`] <a href="#" class="cancel">[`nb Cancel`]</a>
+                <span class="view-coordinat"></span>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function(){
+
+        var jcrop_api;
+
+        $('#sortpicture').on('change', function(){
+
+           if($(this).val()){
+
+               var file_data = $(this).prop('files')[0];
+               var form_data = new FormData();
+               form_data.append('file', file_data);
+
+               $.ajax({
+                   url: '?module=ajax&action=upload',
+                   dataType: 'json',
+                   cache: false,
+                   contentType: false,
+                   processData: false,
+                   data: form_data,
+                   type: 'post',
+                   success: function(php_script_response){
+                       $('#cropbox').attr('src',php_script_response.data);
+                       var newimage = new Image();
+                       newimage.src = php_script_response.data;
+                       newimage.onload = function()
+                       {
+                           if(jcrop_api){
+                               jcrop_api.destroy();
+                           };
+                           jcrop_api = $.Jcrop('#cropbox', {
+                               onChange: updateCoords,
+                               naturalWidth: newimage.width,
+                               naturalHeight: newimage.height,
+                               boxWidth: 800,
+                               boxHeight: 600,
+                               bgColor: 'white',
+                           });
+                       };
+                   }
+               });
+
+           }
+        });
+
+
+        $('#nb-post-image-crop-upload').click(function(){
+            var crop = {
+                x: $('#x').val(),
+                y: $('#y').val(),
+                w: $('#w').val(),
+                h: $('#h').val(),
+                id: $('#id_post').val(),
+                href: $('#cropbox').attr('src')
+            };
+            if(crop.w || crop.h){
+                $.post( "?module=ajax&action=cropimage", crop, function( data ) {
+                    if(data.data){
+                        var newimage = new Image();
+                        newimage.src = data.data;
+                        newimage.onload = function() {
+                            $('#nb-image-upload-now').html('<img src="' + newimage.src + '" style="width:100%">');
+                            $('#nb-post-image-upload-dialog').trigger('close');
+                        }
+                    }
+                }, "json");
+            }else{
+                alert('[`nb SelectObject`]')
+            }
+         return false;
+        });
+    });
+
+    function updateCoords(c)
+    {
+        $('#x').val(c.x);
+        $('#y').val(c.y);
+        $('#w').val(c.w);
+        $('#h').val(c.h);
+        $('.view-coordinat').text('[`nb Size`]: '+ Math.round(c.w) +' x '+ Math.round(c.h) +' px.');
+    };
+
+
+
+
+</script>

@@ -1,0 +1,52 @@
+{strip}
+
+{* MOBILE *}
+{if !empty($at['shop']['categories'])}
+    <nav class="tree-wrapper hide-on-large-only">
+        <div class="container">
+            <div class="tree-title">
+                [`Categories`]
+                <button class="toggle-menu"><i class="material-icons mi-2x">&#xE5D2;</i></button>
+            </div>
+            <div class="sidebar-box">
+                <ul class="base-menu">
+                    {foreach $at['shop']['categories'] as $branch}
+                        {renderMenuItem menu=$branch icon=$at['shop']['plugins']['wmimageincat']|default:[] selected=$at['shop']['selected_category']|default:null}
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{/if}
+
+{* DESKTOP *}
+{if $theme_settings.content_nav == 'shop_category'}
+    {$menu = $at['shop']['categories']|default:[]}
+    {$selected = $at['shop']['selected_category']|default:null}
+    {$icon = $at['shop']['plugins']['wmimageincat']|default:[]}
+{elseif $theme_settings.content_nav == 'site_pages'}
+    {$menu = $at['site']['pages']|default:[]}
+    {$selected = $at['site']['selected_page']|default:null}
+    {$icon = []}
+{elseif $theme_settings.content_nav == 'shop_pages'}
+    {$menu = $at['shop']['pages']|default:[]}
+    {$selected = $at['shop']['selected_page']|default:null}
+    {$icon = []}
+{/if}
+
+{if !empty($menu)}
+    {$type = $theme_settings.category_tree_type|default:'type1'}
+    <nav class="tree-wrapper hide-on-med-and-down">
+        <div class="container">
+            <div class="sidebar-box">
+                <ul class="base-menu {$type} tree" style="display: none;">
+                    {foreach $menu as $branch}
+                        {renderMenuItem menu=$branch icon=$icon selected=$selected exclude='not_top'}
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{/if}
+
+{/strip}

@@ -1,0 +1,129 @@
+<style type="text/css">
+    #wa .CodeMirror{
+        border: 1px solid #eee;
+    }
+    .CodeMirror-scroll {
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+    #carts-plugin-settings .name {
+        width: 110px;
+        text-align: left;
+    }
+    #carts-plugin-settings .value {
+        margin-left: 130px;
+        padding-top: 13px;
+    }
+
+    #carts-plugin-settings .name span {
+        position: relative;
+        cursor: help;
+        border-bottom: 1px dotted;
+    }
+    #carts-plugin-settings .name span span {
+        display: none;
+        position: absolute;
+        bottom: -1px;
+        left: -1px;
+        z-index: 1000;
+        width: 190px;
+        padding: 8px 12px;
+        text-align: left;
+        font-size: 12px;
+        line-height: 16px;
+        color: #000;
+        box-shadow: 0 1px 3px #C4C4C4;
+        border: 1px solid #DBB779;
+        background: #FFF6BD;
+        border-radius: 2px;
+    }
+</style>
+
+<script type="text/javascript" src="{$wa_url}wa-apps/shop/plugins/carts/js/carts.js"></script>
+
+<h1>[`Abandoned carts`]</h1>
+
+<div class="sidebar left200px bordered-top">
+    <ul class="menu-v stack with-icons" id="carts-menu">
+    <li class="top-padded"></li>
+        <li class="top-padded">
+            <a href="#/carts/" class="small">
+                <i class="icon10 add"></i>[`New message`]
+            </a>
+        </li>
+    </ul>
+
+<div class="block double-padded hr align-center">{include file="plugins/carts/templates/actions/settings/SettingsCron.html" inline}</div>
+<div class="block double-padded hr align-center hidden" id="carts-not-send"><div class="bold small"><i class="icon10 no"></i> <span class="red"> [`Messages will not be sent, because no message has been created. Just click "Create" button below.`]</span></div></div>
+<div class="block double-padded hr align-center"><a href="?plugin=carts&module=report#/carts/"><i class="icon16 agreement"></i>[`Abandoned carts report`]</a></div>
+<div class="block top-padded hr align-center">
+    <form action="?plugin=carts&module=settings&action=save" method="post" id="carts-plugin-settings" class="fields form">
+        <h2><i class="icon16 settings"></i> [`Settings`]</h2>
+        {foreach $settings as $s}
+        <div class="field">{$s}</div>
+        {/foreach}
+    </form>
+    <div class="clear-left"></div>
+</div>
+
+</div>
+
+<div class="content left200px s-settings-form blank bordered-left bordered-top">
+    <div class="block double-padded" id="carts-content">[`Loading`]... <i class="icon16 loading"></i></div>
+    <div class="clear-both"></div>
+</div>
+
+
+{literal}
+<script id="menuTmpl" type="text/x-jquery-tmpl">
+<li class="top-padded"></li>
+{{tmpl(data, { id: $item.id }) 'menuItemTmpl'}}
+<li class="top-padded{{if !$item.id}} selected{{/if}}">
+    <a href="#/carts/" class="small">
+        <i class="icon10 add"></i>[`Create message`]
+    </a>
+</li>
+</script>
+<script id="menuItemTmpl" type="text/x-jquery-tmpl">
+    <li{{if id == $item.id}} class="selected"{{/if}}>
+    <a href="#/carts/${id}">
+        <i class="icon16 {{if type==0}}
+            email
+        {{else}}
+            {{if type == 1}}
+                mobile
+            {{else}}
+                im
+            {{/if}}
+        {{/if}}
+        "></i> <span>${name}</span> <span class="hint">(${delay} [`hr`])</span>
+    </a>
+    </li>
+</script>
+{/literal}
+<script id="cartsContentTmpl" type="text/x-jquery-tmpl">
+{include file="plugins/carts/templates/actions/settings/SettingsMessage.html" inline}
+</script>
+<script type="text/javascript">
+    $(function(){
+        $.shop.carts.init();
+    });
+</script>
+{if $whatsnew}
+<script>
+$(function(){
+    $.get('?plugin=carts&action=whatsnew', function (r) {
+        if(r) $(r).waDialog({
+            'buttons': '<input type="submit" value="[`I know`]" class="button green" /> <input type="button" class="button cancel" value="[`Close`]">',
+            onSubmit: function (d) {
+                $.post('?plugin=carts&action=whatsnew', { 'know' : 1 }, function () {
+                    d.trigger('close');
+                });
+                return false;
+            }
+        })
+    })
+})
+</script>
+{/if}

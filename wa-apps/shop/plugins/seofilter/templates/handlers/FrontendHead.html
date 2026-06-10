@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="{$seofilter_frontend_head_state.plugin_url}css/filter-link.css?v={shopSeofilterViewHelper::getAssetVersion()}">
+<script defer src="{$seofilter_frontend_head_state.plugin_url}js/filter_frontend.js?v={shopSeofilterViewHelper::getAssetVersion()}"></script>
+
+<script>
+	(function () {
+		var onReady = function (callback) {
+			if (document.readyState!='loading') {
+				callback();
+			}
+			else if (document.addEventListener) {
+				document.addEventListener('DOMContentLoaded', callback);
+			}
+			else {
+				document.attachEvent('onreadystatechange', function () {
+					if (document.readyState=='complete') {
+						callback();
+					}
+				});
+			}
+		};
+
+		window.seofilter_init_data = {
+			category_url: {json_encode($seofilter_frontend_head_state.category_url)},
+			filter_url: {json_encode($seofilter_frontend_head_state.filter_url|default:'')},
+			current_filter_params: {json_encode($seofilter_frontend_head_state.current_filter_params|default:[])},
+			keep_page_number_param: {json_encode($seofilter_frontend_head_state.keep_page_number_param)},
+			block_empty_feature_values: {json_encode($seofilter_frontend_head_state.block_empty_feature_values)},
+
+			price_min: {json_encode(floor($filters.price.min|default:0))},
+			price_max: {json_encode(ceil($filters.price.max|default:0))},
+
+			excluded_get_params: {json_encode($seofilter_frontend_head_state.excluded_get_params)},
+
+			yandex_counter_code: {json_encode($seofilter_frontend_head_state.yandex_counter_code)},
+
+			feature_value_ids: {json_encode($seofilter_frontend_head_state.feature_value_ids)},
+			stop_propagation_in_frontend_script: {json_encode($seofilter_frontend_head_state.stop_propagation_in_frontend_script)}
+		};
+
+		onReady(function() {
+			window.seofilterInit($, window.seofilter_init_data);
+		});
+	})();
+</script>

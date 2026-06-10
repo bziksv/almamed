@@ -1,0 +1,50 @@
+<h1>Аккордеон. Запишите заголовок и текст.</h1>
+<p>Для вывода используйте метод shopAccordionPlugin::getAcordionListPage() в фигурных скобках {}</p>
+
+<link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/redactor/redactor.css">
+
+
+
+<div class="fields form">
+
+    <form action="?module=plugins&id=accordion&action=save" method="post" id="plugins-settings-form">
+        {$wa->csrf()}
+        <div class="field add-field">
+            {foreach from=$settings.title key=k item=v}
+            <div class="values">
+                <input type="text" placeholder="Заголовок" name="shop_accordion[title][]" value="{$v}">
+                <textarea class="content-text" name="shop_accordion[desc][]">{$settings.desc[$k]}</textarea>
+            </div>
+            {/foreach}
+        </div>
+
+        <div class="field">
+            <div class="submit">
+                <a href="#/accordion" id="add">Добавить</a> | <a href="#/accordion" id="remove">Удалить</a>
+                <input type="submit" class="button green" value="[s`Save`]">
+                <span id="plugins-settings-form-status" style="display:none"></span>
+            </div>
+        </div>
+    </form>
+</div>
+<br>
+
+
+
+<script src="{$wa_url}wa-content/js/redactor/redactor.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $('.content-text').redactor();
+
+        $('#add').click(function() {
+            $('<div class="values"><input type="text" placeholder="Заголовок" name="shop_accordion[title][]" value="" /> <textarea class="content-text-new" name="shop_accordion[desc][]">Текст</textarea></div>').fadeIn('slow').appendTo('.add-field');
+            $('.content-text-new').redactor();
+        });
+        $('#remove').click(function() {
+            if($('.values').length > 1) {
+                $('.values:last').remove();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,14 @@
+<ul class="phones-wrapper">
+    {if !empty($theme_settings.phone_1)}
+    <li>
+        <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}">{$theme_settings.phone_1}</a>
+        {if !empty($theme_settings.phone_hint_1)}<span class="hint">{$theme_settings.phone_hint_1}</span>{/if}
+    </li>
+    {/if}
+    {if !empty($theme_settings.phone_2)}
+    <li>
+        <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_2)}">{$theme_settings.phone_2}</a>
+        {if !empty($theme_settings.phone_hint_2)}<span class="hint">{$theme_settings.phone_hint_2}</span>{/if}
+    </li>
+    {/if}
+</ul>

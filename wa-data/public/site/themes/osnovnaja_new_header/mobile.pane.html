@@ -1,0 +1,162 @@
+{strip}
+
+<div class="mobile-nav-wrapper nav-all">
+    <div class="mobile-nav-block-wrapper">
+
+        {include file="`$wa_active_theme_path`/searchform.html" mobile_search=true inline}
+
+        <nav class="mobile-nav-box-wrapper">
+        
+            <!-- APPS -->
+            {if !empty($at['apps'])}
+                {$selected = $at['selected_app']|default:null}
+                <div class="mobile-nav-group">
+                    <div class="mobile-nav-header">[`Apps`]</div>
+                    <ul class="mobile-nav-list">
+                        {foreach $at['apps'] as $app}
+                            <li{if $app.url == $selected && !$wa->globals('isMyAccount')} class="selected"{/if}>
+                                <a href="{$app.url}">{$app.name}</a>
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            {/if}
+            
+            <!-- PAGES -->
+            {if !empty($at['site']['pages'])}
+                {$selected = $at['site']['selected_page']|default:null}
+                <div class="mobile-nav-group">
+                    <div class="mobile-nav-header">[`Information`]</div>
+                    <ul class="mobile-nav-list">
+                        {foreach $at['site']['pages'] as $page}
+                            {if $page.url != $wa_url}
+                                <li{if $page.id == $selected} class="selected"{/if}>
+                                    <a href="{$page.url}">{$page.name}</a>
+                                </li>
+                            {/if}
+                        {/foreach}
+                    </ul>
+                </div>
+            {/if}
+
+            {if !empty($at['shop']['pages'])}
+                {$selected = $at['shop']['selected_page']|default:null}
+                <div class="mobile-nav-group">
+                    <div class="mobile-nav-header">[s`Shop`]</div>
+                    <ul class="mobile-nav-list">
+                        {foreach $at['shop']['pages'] as $page}
+                            <li{if $page.id == $selected} class="selected"{/if}>
+                                <a href="{$page.url}">{$page.name}</a>
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            {/if}
+
+            {if !empty($at['blog']['pages'])}
+                {$selected = $at['blog']['selected_page']|default:null}
+                <div class="mobile-nav-group">
+                    <div class="mobile-nav-header">[s`Blog`]</div>
+                    <ul class="mobile-nav-list">
+                        {foreach $at['blog']['pages'] as $page}
+                            <li{if $page.id == $selected} class="selected"{/if}>
+                                <a href="{$page.url}">{$page.name}</a>
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            {/if}
+
+            {if $wa->photos}<!-- PHOTOS CORE NAVIGATION -->
+                {$albums = $wa->photos->childAlbums()}
+                {$photo_url = $wa->getUrl('photos/frontend')}
+                
+                {if (!empty($photos) && !empty($albums)) || !empty($at['photos']['pages'])}
+                    <div class="mobile-nav-group">
+                        <div class="mobile-nav-header">[s`Photos`]</div>
+                        <ul class="mobile-nav-list">
+                            {if !empty($photos) && !empty($albums)}
+                                <li{if $wa_app == 'photos' && $wa->currentUrl() == $wa_app_url} class="selected"{/if}>
+                                    <a href="{$photo_url}">[`All photos`]</a>
+                                </li>
+                                <li{if $wa->param('action') neq 'page' && $wa->param('action') neq 'album' && $wa->param('hash') == 'favorites'} class="selected"{/if}>
+                                    <a href="{$photo_url}favorites/">[`Editors’ choice`]</a>
+                                </li>
+                            {/if}
+                            {if !empty($at['photos']['pages'])}
+                                {$selected = $at['photos']['selected_page']|default:null}
+                                {foreach $at['photos']['pages'] as $page}
+                                    <li{if $page.id == $selected} class="selected"{/if}>
+                                        <a href="{$page.url}">{$page.name}</a>
+                                    </li>
+                                {/foreach}
+                            {/if}
+                        </ul>
+                    </div>
+                {/if}
+            {/if}
+            
+            {if $wa->isAuthEnabled()}<!-- USER ACCOUNT -->
+                <div class="mobile-nav-group">
+                    <div class="mobile-nav-header">[s`My account`]</div>
+                    <ul class="mobile-nav-list">
+                        {if $wa->user()->isAuth()}
+                            <li{if $wa->globals('isMyAccount')} class="selected"{/if}>
+                                {if $wa->myUrl()}
+                                    <a href="{$wa->myUrl()}">
+                                        {*<img src="{$wa->user()->getPhoto2x(20)}" alt="" />*}
+                                        <i class="icon16 userpic20" style="background-image: url('{$wa->user()->getPhoto2x(20)}');"></i>
+                                        {$wa->user('firstname')}
+                                    </a>
+                                {else}
+                                    <a href="javascript:void(0);">{$wa->user('firstname')}</a>
+                                {/if}
+                            </li>
+                            {$wa->myNav()|replace:'<ul>':''|replace:'</ul>':''|strip}
+                            <li>
+                                <a href="?logout">[s`Log out`]</a>
+                            </li>
+                        {else}
+                            <li>
+                                <a href="{$wa->loginUrl()}">[s`Log in`]</a>
+                            </li>
+                            <li>
+                                <a href="{$wa->signupUrl()}">[s`Sign up`]</a>
+                            </li>
+                        {/if}
+                    </ul>
+                </div>
+            {/if}
+
+        </nav>
+    </div>
+</div>
+
+<div class="mobile-nav-wrapper nav-contacts">
+    <div class="mobile-nav-block-wrapper">
+        
+        <div class="mobile-nav-group">
+            <div class="mobile-nav-header">[`Contacts`]</div>
+        </div>
+        
+        <div class="mobile-nav-group hide-on-large-only">
+            {*
+            <div class="mobile-nav-header">[`Phones`]</div>
+            *}
+            {include file="phones.top.html" inline}
+        </div>
+        
+        <div class="mobile-nav-group">
+            <div class="mobile-nav-header hide-on-large-only"></div>
+            {include file="e.address.html" inline}
+        </div>
+        
+        <div class="mobile-nav-group">
+            <div class="mobile-nav-header"></div>
+            {include file="offline.html" inline}
+        </div>
+        
+    </div>
+</div>
+
+{/strip}

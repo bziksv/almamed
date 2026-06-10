@@ -1,0 +1,40 @@
+{strip}
+
+<div id="page" role="main" class="wa-signup-form fill-background">
+
+    {if !empty($confirmed_email)}
+    
+        <h1>[s`Thank you!`]</h1>
+        <p>[s`You have successfully confirmed your email.`]</p>
+        
+    {else if !empty($contact)}
+    
+        <h1>[s`Thank you!`]</h1>
+        <p>[s`You have successfully signed up.`]</p>
+
+        {if !empty($email_confirmation_hash)}
+            <p><em>[s`A confirmation link has been sent to you by email. Please click this link to confirm your signup and to sign in.`]</em></p>
+        {/if}
+        
+    {else}
+    
+        <h1>[s`Sign up`]</h1>
+        {*$wa->authAdapters()*}
+        {*$wa->signupForm($errors)*}
+        {$wa->signupForm($errors, [
+            "show_title"          => false,
+            "show_oauth_adapters" => true
+        ])}
+        <script>
+        $(function() {
+            $('.wa-signup-form-wrapper').on('wa_auth_form_loaded wa_auth_form_change_view', function(e) {
+                $(this).find('.wa-done-signup-button').addClass('button');
+            });
+        });
+        </script>
+        
+    {/if}
+    
+</div>
+
+{/strip}

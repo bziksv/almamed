@@ -1,0 +1,14 @@
+{if $is_initial}
+	{$content}
+{else}
+	{$content}
+	<script type="text/javascript">
+		(function($) {
+			jQuery(function($) {
+				if (window.shop_searchpro_page) {
+					new window.shop_searchpro_page('{$id}');
+				}
+			});
+		})(jQuery);
+	</script>
+{/if}

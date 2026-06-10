@@ -1,0 +1,18 @@
+<div class="block">
+
+    <div id="nb-image-upload-now">
+        {if $image}
+        <img src="{$image}" style="width: 100%">
+        {/if}
+    </div>
+
+    {if $id_post}
+    <ul class="menu-v with-icons compact">
+        <li><a href="#" class="nowrap" id="post-image-upload"><i class="icon16 upload"></i>[`nb Upload`]</a></li>
+    </ul>
+    {/if}
+</div>
+
+{include file="./dialogs/postImageUpload.html" inline}
+
+

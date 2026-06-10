@@ -1,0 +1,51 @@
+<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?{time()}" rel="stylesheet" type="text/css">
+
+<style>
+    .header-slider{
+        /*box-shadow: 0 0 20px rgba(0, 0, 0, .1) inset;*/
+        text-align: center;
+    }
+</style>
+
+<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}"></script>
+
+<div class="header-slider">
+    <ul id="slider-head" style="list-style: none">
+        {foreach $slides as $s}
+            <li><a href="{$s.link}"><img src="{$s.img}" alt="{$s.alt}"></a></li>
+        {/foreach}
+    </ul>
+</div>
+
+<script>
+    $('#slider-head').lightSlider({
+        item: 1,
+        slideMove: 1,
+        pause: 5000,
+        controls: false,
+        loop: true,
+        auto: true,
+        enableDrag: false,
+        easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
+        speed: 600,
+        adaptiveHeight: true,
+        slideMargin: 0,
+        responsive : [
+            {
+                breakpoint:800,
+                settings: {
+                    item:1,
+                    slideMove:1,
+                    slideMargin:6,
+                }
+            },
+            {
+                breakpoint:480,
+                settings: {
+                    item:1,
+                    slideMove:1
+                }
+            }
+        ],
+    });
+</script>

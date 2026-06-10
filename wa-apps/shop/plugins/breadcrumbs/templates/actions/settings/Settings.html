@@ -1,0 +1,28 @@
+<div id="breadcrumbs-plugin-mount"></div>
+<script>
+	window.breadcrumbs_plugin = {
+		resource_base_url: '{$wa_app_static_url}plugins/seobrand/assets',
+
+		storefront_settings: {$storefront_settings|json_encode},
+		blog_settings: {$blog_settings|json_encode},
+		theme_templates: {$theme_templates|json_encode},
+		blog_theme_templates: {$blog_theme_templates|json_encode},
+		old_templates: {$old_templates|json_encode},
+
+		storefronts: {$storefronts|json_encode},
+		blog_is_installed: {$blog_is_installed|json_encode},
+		themes: {$themes|json_encode},
+		blog_themes: {$blog_themes|json_encode},
+		features: {$features|json_encode},
+		default_style: {$default_style|json_encode},
+		default_template: {$default_template|json_encode},
+		is_seofilter_plugin_enabled: {$is_seofilter_plugin_enabled|json_encode},
+		is_seo_plugin_enabled: {$is_seo_plugin_enabled|json_encode},
+	};
+</script>
+
+<script src="{shopBreadcrumbsPlugin::getStaticUrl('js/vendor/codemirror/mode/smarty.js')}"></script>
+<script src="{shopBreadcrumbsPlugin::getStaticUrl('js/vendor/codemirror/mode/smartymixed.js')}"></script>
+
+<script src="{shopBreadcrumbsPlugin::getStaticUrl('assets/settings_page.js')}?v={$asset_version}"></script>
+<link rel="stylesheet" href="{shopBreadcrumbsPlugin::getStaticUrl('assets/settings_page.css')}?v={$asset_version}" />

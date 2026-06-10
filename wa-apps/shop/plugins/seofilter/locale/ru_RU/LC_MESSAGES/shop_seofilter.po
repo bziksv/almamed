@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ShopSeo\n"
+"POT-Creation-Date: 2015-08-10 11:27+0500\n"
+"PO-Revision-Date: 2016-06-14 12:33+0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: ru_RU\n"
+
+msgid "Optimization results of the filter"
+msgstr "Оптимизация результатов фильтра"
+
+msgid "Status"
+msgstr "Статус плагина"
+
+msgid "Off"
+msgstr "Выключен"
+
+msgid "On"
+msgstr "Включен"
+
+msgid "Storefronts"
+msgstr "Витрина"
+
+msgid "General"
+msgstr "Все витрины"
+
+msgid "Alternative name for feature values"
+msgstr "Альтернативные названия для значений характеристик"
+
+msgid "Common template for meta tags and descriptions"
+msgstr "Общий шаблон формирования мета-тегов и описаний"
+
+msgid "Storefront name"
+msgstr "Название витрины"
+
+msgid "Title H1"
+msgstr "Заголовок H1"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Variables"
+msgstr "Переменные"
+
+msgid "Modifiers"
+msgstr "Модификаторы"
+
+msgid "feature name"
+msgstr "название характеристики"
+
+msgid "feature value name"
+msgstr "название значения характеристики"
+
+msgid "feature value seo name"
+msgstr "seo название значения характеристики"
+
+msgid "products count"
+msgstr "количество товаров"
+
+msgid "store name"
+msgstr "название магазина"
+
+msgid "store phone"
+msgstr "телефон магазина"
+
+msgid "storefront name"
+msgstr "название витрины"
+
+msgid "category name"
+msgstr "название категории"
+
+msgid "category seo name"
+msgstr "seo название категории"
+
+msgid "parent category name"
+msgstr "название родительской категории"
+
+msgid "lower case"
+msgstr "преобразует в нижний регистр"
+
+msgid "empty if first page"
+msgstr "преобразует в пустую строку, если страница первая"
+
+msgid "empty if page not first"
+msgstr "преобразует в пустую строку, если страница не первая"
+
+msgid "Personal meta tags and descriptions"
+msgstr "Персональные значения мета-тегов и описаний"
+
+msgid "Set personal meta tags and descriptions"
+msgstr "Указать персональные значения мета-тегов и описаний"
+
+msgid "Alternate names of feature's values, that can be used in the formation of meta tags and descriptions for the template"
+msgstr "Альтернативные названия значений характеристик, могут быть использованы при формировании мета-тегов и описаний по шаблону"
+
+msgid "Features"
+msgstr "Характеристики"
+
+msgid "Values"
+msgstr "Значения характеристик"
+
+msgid "Categories"
+msgstr "Категории"
+
+msgid "SEO name"
+msgstr "SEO наименование значений характеристик"
+
+msgid "SEO name variable"
+msgstr "Переменная {seo_name}"
+
+msgid "SEO description"
+msgstr "SEO описание"
+
+msgid "Semantic URL"
+msgstr "ЧПУ"
+
+msgid "All pages"
+msgstr "Все страницы"
+
+msgid "Only pages with semantic URL"
+msgstr "Только страницы с ЧПУ"
+
+msgid "Index"
+msgstr "Индексировать"
+
+msgid "edit"
+msgstr "редактировать"
+
+msgid "reset-js"
+msgstr "восстановить"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Saved"
+msgstr "Сохранено"
+
+msgid "Additional fields for storefronts"
+msgstr "Дополнительные поля для витрин"
+
+msgid "Field"
+msgstr "Поле"
+
+msgid "New field"
+msgstr "Новое поле"
+
+msgid "Add field"
+msgstr "Добавить поле"
+
+msgid "delete"
+msgstr "удалить"
+
+msgid "page number"
+msgstr "номер страницы"
+
+msgid "SEO-filter"
+msgstr "SEO-фильтр"

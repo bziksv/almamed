@@ -1,0 +1,20 @@
+<div id="seofilter-filter-tree-page-react-mount"></div>
+
+<script>
+	window.seofilter = {
+		seofilter_tree_settings: {$seofilter_tree_settings|json_encode},
+		categories_tree: {$categories_tree|json_encode},
+
+		left_sidebar: {json_encode($left_sidebar)},
+
+		storefronts: {$storefronts|json_encode},
+		template_helper: {$template_helper|json_encode}
+	};
+
+	window.assetsPath = {shopSeofilterProductfiltersHelper::getStaticUrl('assets/')|json_encode};
+</script>
+
+<script type="text/javascript" src="{$wa_url}wa-content/js/ace/ace.js?{$wa->version(true)}"></script>
+
+<link rel="stylesheet" href="{shopSeofilterHelper::getStaticUrl('assets/filter_tree.css')}?v={$wa_plugin_version}"/>
+<script type="text/javascript" src="{shopSeofilterHelper::getStaticUrl('assets/filter_tree.js')}?v={$wa_plugin_version}"></script>

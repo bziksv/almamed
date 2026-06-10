@@ -1,0 +1,2 @@
+.yoss-result.loading { background: url("{$wa_url}wa-apps/shop/plugins/yoss/img/loading-blue.gif") no-repeat scroll center 15px #fff; }
+.yoss-result .loading { background: url("{$wa_url}wa-apps/shop/plugins/yoss/img/loading-blue.gif") no-repeat scroll center 15px #fff; height: 35px; width: 100%; }

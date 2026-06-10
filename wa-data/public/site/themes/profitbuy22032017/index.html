@@ -1,0 +1,252 @@
+{strip}
+
+<!DOCTYPE html>
+<html lang="{if $wa->locale()}{$locale = explode('_', $wa->locale())}{$locale[0]}{else}en{/if}">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1{if $wa->isMobile()}, maximum-scale=1, user-scalable=0{/if}" />
+
+    <title>{$wa->title()|escape}</title>
+    
+    <meta name="Keywords" content="{$wa->meta('keywords')|escape}" />
+    <meta name="Description" content="{$wa->meta('description')|escape}" />
+    
+    {if !empty($canonical)}<link rel="canonical" href="{$canonical}"/>{/if}
+    
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    
+    {include file="at.html" inline}
+    
+    {if $wa->blog}
+        <!-- rss -->
+        {$rss=$wa->blog->rssUrl()}
+        {if $rss}<link rel="alternate" type="application/rss+xml" title="{$wa->accountName()}" href="{$rss}">{/if}
+    {/if}
+    
+    {if !$at.ie || $at.ie >= 9}
+        {if $at.speedup}{include file="profitbuy.critical.css.html"}{/if}
+        {include file="head.layout.html" assign="html" inline}
+        {if $at.speedup}
+            {if preg_match_all($at.regex.l, $html, $matches) !== false && count($matches[0])}
+                {$html = str_replace($matches[0], "", $html)}
+                {$at.links = array_merge($at.links, $matches[0])}
+            {/if}
+            {if preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+                {foreach $matches[0] as $script}
+                    {if strpos($script, "data-script-exception") === false}
+                        {$html = str_replace($script, "", $html)}
+                        {$at.scripts[] = $script}
+                    {/if}
+                {/foreach}
+            {/if}
+        {/if}{$html}
+        
+        {*
+        <!--[if lt IE 9]>
+            <script type="text/javascript">
+                var e = ("article,aside,footer,figure,header,hgroup,menu,main,nav,section").split(',');
+                e.forEach(function(e) {
+                    document.createElement(e);
+                });
+            </script>
+        <![endif]-->
+        *}
+        
+    {/if}
+    
+</head>
+<body class="{if !empty($theme_settings.show_background)}is-background{/if}{if !empty($theme_settings.volumetric)} is-volumetric{/if}">
+{if !$at.ie || $at.ie >= 9}
+    <header class="globalheader">
+        
+        <nav class="nav-wrapper">
+            <div class="container">
+
+                {include file="search.form.mob.html" assign="search_mob" inline}
+                <!-- MOBILE NAV -->
+                <div class="row-grid hide-on-large-only">
+                    <div class="col-grid s12">
+                    <div class="mobile-nav-button-wrapper float-left">
+                        <a href="#" data-nav="all" class="mobile-nav-button action"><i class="material-icons mi-3x">&#xE5D2;</i></a>
+                    </div>
+                    {if !empty($theme_settings.phone_1) || !empty($theme_settings.phone_2)}
+                        <div class="mobile-nav-button-wrapper float-left">
+                            <a href="#" data-nav="contacts" class="mobile-nav-button action"><i class="material-icons mi-3x">&#xE0CD;</i></a>
+                        </div>
+                    {/if}
+                    {if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
+                        <div class="mobile-nav-button-wrapper float-right">
+                            {$cart_count = $wa->shop->cart->count()}
+                            <a href="{$wa->getUrl('shop/frontend/cart')}" class="mobile-nav-button{if !$cart_count} empty{/if}">
+                            	<i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>
+           	     			</a>
+                        </div>
+                    {/if}
+                        <div class="mobile-nav-button-wrapper float-right">{$search_mob}</div>
+                </div>
+                </div>
+            
+                <!-- DESKTOP NAV -->
+                {include file="search.form.html" assign="header2" inline}
+                {include file="logo.no.text.html" assign="header0" inline}
+                {include file="links.pages.top.fix.html" assign="header4" inline}
+                {include file="links.pages.top.html" assign="header1" inline}
+
+                {include file="links.auth.html" assign="header3" inline}
+
+
+                <div class="row-grid hide-on-med-and-down header-fix-top-menu-hidden" >
+                    <div class="table-grid">
+                        {if !empty($header0)}<div class="col-grid logo-menu-top-fix" style="display: none">{$header0}</div>{/if}
+                        {if !empty($header1)}<div class="col-grid  max-width link-top-not-fix">{$header1}</div>{/if}
+                        {if !empty($header4)}<div class="col-grid  max-width link-top-fix" style="display: none">{$header4}</div>{/if}
+                        {if !empty($header2)}<div class="col-grid">{$header2}</div>{/if}
+                        <div class="col-grid">{include file="cart.top.menu.fix.html" inline}</div>
+                        {if !empty($header3)}<div class="col-grid">{$header3}</div>{/if}
+                    </div>
+                </div>
+                
+            </div>
+        </nav>
+        
+        {include file="logo.html" assign="header4" inline}
+        {include file="phones.top.html" assign="header5" inline}
+        {include file="offline.html" assign="header6" inline}
+        
+        <div class="header-line alfa-background">
+            <div class="container"><div class="row-grid"><div class="table-grid">
+                {if !empty($header4)}<div class="col-grid s12 m6 align-center-on-small-and-down">{$header4}</div>{/if}
+                {if !empty($header5)}<div class="col-grid m6 hide-on-small-and-down align-{if !empty($header6)}center{else}right{/if} align-right-on-med-and-down">{$header5}</div>{/if}
+                {if !empty($header6)}<div class="col-grid hide-on-med-and-down align-right">{$header6}</div>{/if}
+            </div></div></div>
+        </div>
+        
+        {include file="tree.html" inline}
+        
+        {* PLUGIN ALPHACAT: replace 0 to 1, to enable *}
+        {if 0 && !$wa->isMobile()}
+            {include file="alphacat.plugin.html" assign="html"}
+            {if $at.speedup && preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+                {$html = str_replace($matches[0], "", $html)}
+                {$at.scripts = array_merge($at.scripts, $matches[0])}
+            {/if}{$html}
+        {/if}
+        
+    </header>
+    
+    <!-- APP CONTENT -->
+    <main class="maincontent">
+    
+        <div class="container">
+            {include file="`$wa_active_theme_path`/main.html" assign="html" inline}
+            {if $at.speedup}
+                {if preg_match_all($at.regex.l, $html, $matches) !== false && count($matches[0])}
+                    {$html = str_replace($matches[0], "", $html)}
+                    {$at.links = array_merge($at.links, $matches[0])}
+                {/if}
+                {if preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+                    {foreach $matches[0] as $script}
+                        {if strpos($script, "data-script-exception") === false}
+                            {$html = str_replace($script, "", $html)}
+                            {$at.scripts[] = $script}
+                        {/if}
+                    {/foreach}
+                {/if}
+            {/if}{$html}
+        </div>
+    </main>
+    
+    <!-- FOOTER -->
+    {include file="links.pages.bottom.html" assign="footer1" inline}
+    {include file="links.apps.html" assign="footer2" inline}
+    {include file="payment.logo.html" assign="footer3" inline}
+    {include file="links.social.html" assign="footer4" inline}
+    {include file="copyright.html" assign="footer5" inline}
+    {include file="e.address.html" assign="footer6" inline}
+    {include file="phones.bottom.html" assign="footer7" inline}
+    {$footer8 = $wa->block("`$at.theme_id`.counters")}
+    
+    <footer class="globalfooter">
+    
+        {include file="`$wa_active_theme_path`/footer.html" inline}
+        
+        <div class="footer-line">
+            <div class="container"><div class="row-grid"><div class="table-grid">
+                {if !empty($footer1)}<div class="col-grid hide-on-med-and-down">{$footer1}</div>{/if}
+                {if !empty($footer2)}<div class="col-grid hide-on-med-and-down{if !empty($footer1)} align-center{/if}">{$footer2}</div>{/if}
+                {if !empty($footer3)}<div class="col-grid hide-on-med-and-down align-center">{$footer3}</div>{/if}
+                {if !empty($footer4)}<div class="col-grid s12 align-right align-left-on-med-and-down">{$footer4}</div>{/if}
+            </div></div></div>
+        </div>
+        <div class="footer-line alfa-background">
+            <div class="container"><div class="row-grid"><div class="table-grid">
+                {if !empty($footer5)}<div class="col-grid s12" style="padding-top: 1.6rem;padding-bottom: 1.6rem;">{$footer5}</div>{/if}
+                {if !empty($footer6)}<div class="col-grid hide-on-med-and-down align-{if !empty($footer7)}center{else}right{/if}">{$footer6}</div>{/if}
+                {if !empty($footer7)}<div class="col-grid hide-on-med-and-down align-{if $footer8}center{else}right{/if}">{$footer7}</div>{/if}
+                {if !empty($footer8)}<div class="col-grid hide-on-med-and-down align-right">{$footer8}</div>{/if}
+            </div></div></div>
+        </div>
+    </footer>
+    
+    {* PLUGIN RECALLBACK: replace 0 to 1, to enable *}
+    {if 0}
+        {include file="recallback.plugin.html" assign="html"}
+        {if $at.speedup && preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+            {$html = str_replace($matches[0], "", $html)}
+            {$at.scripts = array_merge($at.scripts, $matches[0])}
+        {/if}{$html}
+    {/if}
+    
+    {if !empty($theme_settings.desktop_pane)}{include file="desktop.pane.html" inline}{/if}
+    
+    {include file="mobile.pane.html" inline}
+    
+    {if !$wa->isMobile()}<div id="back-top-wrapper"><div class="container"><a id="back-top" href="#" rel="nofollow">[`Up`]</a></div></div>{/if}
+    
+    <div id="dialog" class="dialog">
+        <div class="dialog-background"></div>
+        <div class="dialog-window">
+            <div class="cart"></div>
+        </div>
+    </div>
+    
+    {if $at.speedup}
+        <script type="text/javascript">
+            ;(function(d){
+                
+                var t = {json_encode($at.links)},
+                    df = d.createDocumentFragment();
+                    
+                t.forEach(function(e) {
+                    var t = d.createElement('div');
+                    t.innerHTML = e;
+                    e = t.firstChild;
+                    df.appendChild(e);
+                });
+                
+                d.getElementsByTagName('head')[0].appendChild(df);
+                
+            })(document);
+        </script>
+        {foreach $at.scripts as $script}{$script}{/foreach}
+    {/if}{*$html = null}{$at.links = null}{$at.scripts = null*}
+{else}
+    {include file="lt.ie9.html"}
+{/if}
+
+{* PRIME подключаем наш footer *}
+   {* {include file="footer_prime.html" inline}*}
+{* --------------------------- *}
+{include file="`$wa_active_theme_path`/footer_prime.html" inline}
+<script>
+    $(function(){
+       $('input[value="В корзину"]').click(function(){
+           yaCounter34079080.reachGoal('dobavili_v_korzinu');
+       });
+    });
+</script>
+</body>
+</html>
+
+{/strip}

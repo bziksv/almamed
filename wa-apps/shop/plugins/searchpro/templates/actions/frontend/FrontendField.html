@@ -1,0 +1,20 @@
+<div class="js-searchpro__field" style="display: none;">
+	{include file="shop_searchpro:{$current_theme_id}/field" inline}
+</div>
+
+<script type="text/javascript">
+	(function($) {
+		var create_field = function(field) {
+			new field('{$uniqid}', {$params|@json_encode nofilter});
+		};
+
+		if(window.shop_searchpro_field) {
+			create_field(window.shop_searchpro_field);
+			return;
+		}
+
+		$(document).on('shop-searchpro-field-loaded', function(e, field) {
+			create_field(field);
+		});
+	})(jQuery);
+</script>

@@ -1,0 +1,67 @@
+{* post stream (list): minimalistic view mode; used for post filtering by tags, author, search, etc. *}
+
+{foreach $posts as $post}
+<div class="fill-background hoverable">
+
+    <section class="post search-match" id="post-{$post.id}" {if $wa->param('blog_url')}itemprop="blogPosts"{/if} itemscope itemtype="http://schema.org/BlogPosting">
+        
+        <div class="row-grid">
+            
+            <div class="col-grid s7 l9">
+            
+                <h3><a href="{$post.link}" itemprop="url">{$post.title}</a></h3>        
+                
+            </div>
+            <div class="col-grid s5 l3">
+            
+                <div class="credentials align-right">
+                    {if isset($post.user.photo_url_20)}
+                        {if $post.user.posts_link}
+                            <a href="{$post.user.posts_link}">
+                                <img src="{$post.user.photo_url_20}" class="userpic" alt="">
+                            </a>
+                        {else}
+                            <img src="{$post.user.photo_url_20}" class="userpic" alt="">
+                        {/if}
+                    {/if}
+                    
+                    {if $post.user.posts_link}
+                        <a href="{$post.user.posts_link}" class="username">{$post.user.name}</a>
+                    {else}
+                        <span class="username">{$post.user.name}</span>
+                    {/if}    
+                </div>
+                
+            </div>
+            <div class="col-grid s12">
+                
+                <div class="credentials">
+                    <i class="mdi-access_time mdi-lg"></i><span class="small date">{$post.datetime|wa_datetime:"humandate"}</span>
+                    {if $show_comments && $post.comments_allowed}
+                        <i class="mdi-chat_bubble_outline mdi-lg"></i>
+                        {if !empty($post.comment_count)}
+                            <a href="{$post.link}#comments" class="small">
+                                {_w('%d comment','%d comments',$post.comment_count)}
+                            </a>
+                        {else}
+                            <a href="{$post.link}#comments" class="small">
+                                [`no comments`]
+                            </a>
+                        {/if}
+                    {/if}
+                </div>
+                
+            </div>
+        
+        </div>
+        <p>
+            {$post.text|strip_tags|truncate:400}
+        </p>
+    </section>
+    
+</div>
+{foreachelse}
+    {if !isset($page) || $page lt 2}
+        <div class="pageless-card">{_w('%d post','%d posts',0)}</div>
+    {/if}
+{/foreach}

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{$wa->appName()} - {$wa->accountName()}</title>
+    {$wa->css()}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="wa">
+    {$wa->header()}
+
+    <div class="sidebar left200px">
+        <div class="block double-padded">
+
+        </div>
+        <div class="block">
+            <ul class="menu-v with-icons">
+                <li class="small">
+                    <a href="#" class="bold"><i class="icon16 add"></i>Upload photos</a>
+                </li>
+                <li class="selected small">
+                    <span class="count">273</span>
+                    <a href="#"><i class="icon16 picture"></i>All photos</a>
+                </li>
+                <li class="small">
+                    <span class="count">13</span>
+                    <a href="#"><i class="icon16 star"></i>Selected for publication</a>
+                </li>
+                <li class="small">
+                    <span class="count">10</span>
+                    <a href="#"><i class="icon16 trash"></i>Trash</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="content left200px">
+        <div class="block double-padded">
+            <h1>{$wa->appName()}</h1>
+            {$wa->accountName()}.
+        </div>
+        <div class="block">
+            <table class="zebra">
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Селектор</th>
+                    <th>Ссылка</th>
+                    <th>Цена</th>
+                    <th></th>
+                </tr>
+                {foreach from = $products item=p}
+                <tr data-id="{$p.id}">
+                    <td>{$p.id}</td>
+                    <td><a href="/webasyst/shop/?action=products#/product/{$p.id}/" target="_blank">{$p.name}</a></td>
+                    <td><input type="text" name="selector" value="{$p.selector}"></td>
+                    <td><input type="text" size="50" name="link" value="{$p.link}"></td>
+                    <td>{$p.price}</td>
+                    <td><a href="#" class="delete"><i class="icon16 delete"></i></a></td>
+                </tr>
+                {/foreach}
+            </table>
+        </div>
+        <div class="block">
+            <div class="paging">
+                <a class="prevnext" href="#"><i class="icon10 larr"></i> пред</a>
+                <a class="prevnext" href="#">след <i class="icon10 rarr"></i></a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="{$wa_app_static_url}js/main.js"></script>
+</body>
+</html>

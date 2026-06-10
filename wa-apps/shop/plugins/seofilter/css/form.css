@@ -1,0 +1,244 @@
+.field-group {
+	position: relative;
+}
+
+#seofilter_rule_edit .field-group_enable-helper {
+	padding-bottom: 50px;
+	position: relative;
+}
+
+#seofilter_rule_edit .redactor-box {
+	border: 1px solid #a9a9a9;
+}
+
+#seofilter_filter_edit h5 {
+	margin-top: 20px;
+}
+
+.multiselect_wrap {
+	display: inline-block;
+	min-width: 330px;
+	max-width: 330px;
+}
+
+.multiselect_wrap .invalid_option {
+	color: red;
+}
+
+.feature_value_block {
+	margin-bottom: 20px;
+}
+
+.add_feature_value {
+	text-decoration: underline;
+	cursor: pointer;
+	margin-top: 10px;
+	display: inline-block;
+	padding: 5px;
+}
+
+.add_feature_value:hover {
+	text-decoration: none;
+}
+
+.add_feature_value.my_error {
+	color: #ff0000;
+	box-shadow: 0 0 3px 2px rgba(255, 0, 0, 0.79);
+}
+
+.link-box {
+	cursor: pointer;
+}
+
+.feature_value_edit_wrap, .personal_rule_edit_wrap {
+}
+
+.feature_value_edit_wrap .Select {
+	display: inline-block;
+}
+
+input.my_error, select.my_error, .my_error .Select-control {
+	box-shadow: 0 0 3px 2px rgba(255, 0, 0, 0.79);
+}
+label.my_error, .field-box__label.my_error {
+	/*color: red;*/
+}
+.feature_value_block td.my_error {
+	color: #ff0000;
+	border: 1px solid #ff0000;
+}
+.error_message {
+	margin-left: 33%;
+	color: red;
+	font-size: 0.9em;
+	display: block;
+	margin-top: 8px;
+}
+.range_value_wrap {
+	display: inline-block;
+	margin-right: 10px;
+	width: 23%;
+	vertical-align: top;
+}
+.range_value_wrap .error_message {
+	margin-left: 0;
+	display: table;
+}
+
+.feature_value_block .button_col {
+	width:1%;
+	white-space:nowrap;
+}
+.feature_value_block tr .link-box {
+	display: inline-block;
+	opacity: 0;
+}
+.feature_value_block tr:hover .link-box {
+	opacity: 1;
+}
+
+.Select, .Select div, .Select input, .Select span {
+	moz-box-sizing: inherit;
+	box-sizing: inherit;
+}
+
+.range_value_wrap input {
+	margin-left: 10px;
+	width: 69%;
+}
+
+.seo_block {
+	position: relative;
+	margin-right: 35%;
+	margin-top: 30px;
+}
+
+.enabled_icon {
+	cursor: pointer;
+}
+
+.seo_block input, .seo_block textarea {
+	margin-left: 33%;
+	display: block;
+	width: 66%;
+}
+.seo_block .field-box__label {
+	width: 33%;
+}
+.seo_block .field-box {
+	margin-bottom: 5px;
+}
+
+.variable__name__wrap {
+	display: inline-block;
+}
+
+.features_list, ul {
+	list-style-type: none !important;
+}
+.features_list .drag_handle, .sortable_helper_element .drag_handle {
+	margin-right: 5px;
+	cursor: move;
+}
+.features_list .element, .sortable_helper_element {
+	list-style-type: none;
+	padding: 5px;
+}
+.features_list .element .wrap, .sortable_helper_element .wrap {
+	display: inline-block;
+}
+.features_list .element .wrap span, .sortable_helper_element .wrap span {
+	margin-right: 10px;
+}
+
+
+#seofilter_rule_edit .field-group__header, #seofilter_rule_edit .field-group__fields {
+	margin-right: 35%;
+}
+
+.wysiwyg_wrapper .redactor-toolbar {
+	z-index: auto;
+}
+
+@media all and (min-width: 1130px) {
+	.feature_value_block {
+		margin-right: 20%;
+	}
+}
+
+@media all and (min-width: 1400px) {
+	.feature_value_block {
+		margin-right: 35%;
+	}
+}
+
+#seofilter_filter_edit {
+	max-width: 1200px;
+	overflow: hidden;
+	min-height: 700px;
+	padding-bottom: 50px;
+}
+
+.feature-value-edit {
+	width: 800px;
+	margin-left: -400px;
+	border: 0;
+	overflow: visible;
+}
+
+.feature-value-edit .mm-popup__box__body {
+	padding-top: 20px;
+}
+
+.features_list {
+	padding: 0;
+	margin: 5px 0;
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+
+.features_list .element {
+	display: table-row;
+}
+
+.sortable_helper_element.features-list-element {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.features-list-element__drag,
+.features-list-element__name,
+.features-list-element__value,
+.features-list-element__button_col {
+	display: table-cell;
+	padding: 3px;
+	vertical-align: middle;
+}
+
+.features-list-element__name {
+	width: 33%;
+	padding-left: 24px;
+}
+
+.features-list-element__drag {
+	width: 18px;
+	position: absolute;
+}
+
+.features-list-element__button_col {
+	text-align: right;
+	width: 50px;
+}
+
+.features-list-element__wrap {
+	display: table;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.modal-close-btn {
+	float: right;
+	cursor: pointer;
+}

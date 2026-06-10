@@ -1,0 +1,80 @@
+<style>
+    #metrika-{$info['id']} { position: relative;  width:100%; height:100%; background-color: {$color}; }
+    #metrika-{$info['id']} h2 { color: green; }
+    #metrika-{$info['id']} .heading { color: #686868; }
+    #metrika-{$info['id']} .heading sup { color:red; }
+    #metrika-{$info['id']} .cover-block { background: #ccc; opacity: 0.6; }
+    .tv #metrika-{$info['id']} h1 { color:#ffa !important; }
+    .tv #metrika-{$info['id']} h2 { color:#7BE !important; }
+    .tv #metrika-{$info['id']} .heading { color:#999 !important; }
+    .tv #metrika-{$info['id']} .heading sup { color:#F96464 !important; }
+	.tv #metrika-{$info['id']} { background: #181818; }
+
+</style>
+<div id="metrika-{$info['id']}">
+    <div class="block top-padded align-center">
+        {if empty($message)}
+        <h6 class="heading">{$site} <sup>{$period}</sup></h6>
+        <h1 title="Визитов">{$visits|escape}</h1>
+        <h2 title="Просмотров">{$views}</h2>
+        {else}
+            {$message}
+        {/if}
+    </div>
+    <div class="hidden cover-block">
+        <i class="icon16 loading"></i>
+    </div>
+</div>
+
+{if !$wa->get('ignore_js')}
+<script>$(function() {
+    var  widget_id = "{$info['id']}",
+            uniqid = '' + (new Date).getTime() + Math.random();
+    var $container = $('#metrika-' + widget_id);
+
+
+    setTimeout(function() {
+        try {
+            DashboardWidgets[widget_id].uniqid = uniqid;
+            setTimeout(function() {
+                try {
+                    if (uniqid == DashboardWidgets[widget_id].uniqid) {
+                        DashboardWidgets[widget_id].renderWidget();
+                    }
+                } catch (e) {}
+            }, 10*60*1000);
+        } catch (e) {}
+    }, 0);
+
+    $container.click(function(e) {
+        e.preventDefault();
+        var $cover = $('.cover-block', $container);
+        console.log($cover);
+        $cover.css({
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            left: 0,
+            top: 0
+        }).show();
+        var loading = $cover.find('.loading');
+        var w = loading.width();
+        var h = loading.height();
+        var W = $cover.width();
+        var H = $cover.height();
+        loading.css({
+            marginTop: (H - h) / 2,
+            marginLeft: (W - w) / 2
+        });
+
+        try {
+            DashboardWidgets[widget_id].renderWidget();
+        } catch (e) {
+            setTimeout(function() {
+                $cover.hide();
+            }, 500);
+        }
+    });
+
+});</script>
+{/if}

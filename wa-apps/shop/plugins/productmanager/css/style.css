@@ -1,0 +1,98 @@
+
+
+.manager-block{
+    width: 100%;
+    height: 135px;
+    background: #F5F5F5;
+    border-radius: 15px;
+    position: relative;
+    margin: 30px auto;
+}
+
+.manager-img-block{
+    position: absolute;
+    top: -13px;
+    left: 30px;
+}
+
+.manager-block-one{
+    width: 20%;
+    height: 100%;
+    float: left;
+    display: block;
+}
+
+.manager-text-block{
+    float: left;
+    width: 80%;
+    height: 100%;
+    text-align: left;
+}
+
+.manager-text{
+    margin: 20px 0;
+}
+
+.manager-callback{
+    margin-right: 30px;
+    white-space: nowrap;
+}
+
+.manager-callback i{
+    color: #19a5cc;
+    font-size: 18px;
+    vertical-align: sub;
+}
+
+.manager-h1{
+    font-size: 1.75em;
+    margin-right: 20px;
+}
+
+.manager-img-block:before{
+    content: "";
+    display: block;
+    width: 120px;
+    position: absolute;
+    left: -10px;
+    z-index: -1;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 15px solid #d1d1d1;
+}
+
+.manager-img-block:after{
+    content: "";
+    display: block;
+    width: 120px;
+    position: absolute;
+    left: -10px;
+    z-index: -1;
+    bottom: 6px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 15px solid #d1d1d1;
+}
+
+@media only screen and (max-width:601px){
+    .manager-block {
+        box-sizing: border-box;
+        padding-top: 0;
+        font-size: 12px;
+    }
+    .manager-img-block{
+        left: 20px;
+    }
+    .manager-block-one{
+        width: 43%;
+    }
+    .manager-text-block{
+        width: 57%;
+    }
+    .manager-text{
+        margin: 10px 0;
+    }
+    .manager-h1{
+        font-size: 1.3em;
+    }
+}

@@ -1,0 +1,17 @@
+<div class="brand">
+    {if $brand.image}
+        <img src="{$wa_url}wa-data/public/shop/brands/{$brand.id}/{$brand.id}{$brand.image}" align="left">
+    {/if}
+    {$brand.description}
+</div>
+<!-- categories -->
+{if $categories}
+<br clear="left">
+<div class="sub-categories">
+    {foreach $categories as $sc}
+    <a href="{$sc.url}">{$sc.name|escape}</a><br />
+    {/foreach}
+</div>
+{/if}
+
+<br clear="left">

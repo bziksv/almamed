@@ -1,0 +1,16 @@
+<h1>Поиск по запросу "{$wa->get('query')|escape}"</h1>
+
+<form action="{$wa_app_url}search/">
+    <input type="text" name="query" value="{$wa->get('query')|escape}">
+    <input type="submit" value="Поиск">
+</form>
+
+{foreach $pages as $page}
+    <h2><a href="{$page.frontend_url}">{$page.name}</a></h2>
+    <p>
+        {$page.content|regex_replace:'/\{[^}]+}?/':''|strip_tags|truncate:300}<br/>
+        <a href="{$page.frontend_url}">подробнее</a>
+    </p>
+{/foreach}
+
+{wa_pagination total=$paging.total page=$paging.page attrs=[class=>'menu-h']}

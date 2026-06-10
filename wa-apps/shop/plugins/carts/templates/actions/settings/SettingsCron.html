@@ -1,0 +1,40 @@
+
+<div class="bold small">
+    {if ($smarty.now - $cron.cron) > 7200}
+    <i class="icon10 no"></i> <span class="gray"> [`Messages have not been sent more than 2 hours.`] </span>
+    {elseif $cron.cron}
+    <i class="icon10 yes"></i> <span class="gray"> [`Messages are sending successfully`] </span>
+    {else}
+    <i class="icon10 no"></i> <span class="red"> [`Messages will not be sent, because cron is not properly configured.`]</span>
+    {/if}
+    <br><span><a id="cron-message-link" href="#" class="inline-link"><b>[`How to setup cron?`]</b></a></span>
+</div>
+<div class="hidden block s-cheatsheet" id="cron-message-content">
+    <div class="fields">
+        <div class="field">
+            <div class="name bold"><i class="icon16 status-{if $cron.cron}green{else}red{/if}-tiny"></i> [`Cron settings`]</div>
+            <div class="value no-shift"><p>{if $cron.cron}[`Cron is working properly. Latest execution time:`] <strong{if ($smarty.now - $cron.cron) > 7200} class="red"{/if}>{date('Y-m-d H:i:s', $cron.cron)}</strong>
+                {else}[`Messages will not be sent, because cron is not properly configured.`]{/if}<br>
+                {sprintf(
+                '[`Setup cron with the following command (<a href="%s" target="_blank">cron setup instructions</a>):`]',
+                '[`http://www.webasyst.com/framework/docs/server/cron/`]'
+                )}</p>
+                <p><strong class="highlighted">{$cron.command}</strong></p>
+                <p>[`Recommended script execution period - 1 hour`] ([`for example`], <strong class="highlighted">0 * * * *</strong>).</p>
+            </div>
+        </div>
+    </div>
+    <div class="clear-both"></div>
+</div>
+<script type="text/javascript">
+    $("#cron-message-link").click(function () {
+        $("#cron-message-content").waDialog({
+            'buttons': '<input type="submit" value="Close" class="button" />',
+            onSubmit: function (d) {
+                d.trigger('close');
+                return false;
+            }
+        });
+        return false;
+    });
+</script>

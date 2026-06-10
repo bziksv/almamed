@@ -1,0 +1,113 @@
+{strip}
+
+{$bookmark_p = waRequest::cookie('shop_bookmark', array(), waRequest::TYPE_ARRAY_INT)}
+{$compare_p = waRequest::cookie('shop_compare', array(), waRequest::TYPE_ARRAY_INT)}
+{$viewed_p = waRequest::cookie('shop_viewed', array(), waRequest::TYPE_ARRAY_INT)}
+{*
+<style type="text/css">
+@media only screen and (min-width: 993px) {
+    body { padding-bottom: 56px; }
+}
+</style>
+*}
+<aside id="footer-pane" class="hide-on-med-and-down">
+    <div class="container">
+        <div class="row-grid"><div class="table-grid">
+            <div class="col-grid">
+                <a id="bookmark-link" href="{$wa->getUrl('shop/frontend')}search/?addition=bookmark" rel="nofollow" class="addition-link {if !count($bookmark_p)}gray{else}added{/if}" data-hint="[`Bookmarked`]"><i class="material-icons mi-2x">&#xE838;</i><span class="text">[`Goods bookmarks`]</span> (<span class="count">{count($bookmark_p)}</span>)</a>
+            </div>
+            <div class="col-grid">
+                <a id="compare-link" data-href="{$wa->getUrl('shop/frontend')}compare/" href="{if count($compare_p)}{$wa->getUrl('shop/frontend/compare/', ['id' => implode(',',$compare_p)])}{else}{$wa->getUrl('shop/frontend')}compare/{/if}" rel="nofollow" class="addition-link {if count($compare_p)<2}gray{else}added{/if}" data-hint="[`In comparison`]"><i class="material-icons mi-2x">&#xE01D;</i><span class="text">[`Compare products`]</span> (<span class="count">{count($compare_p)}</span>)</a>
+            </div>
+            <div class="col-grid">
+                <a id="viewed-link" href="{$wa->getUrl('shop/frontend')}search/?addition=viewed" rel="nofollow" class="addition-link {if !count($viewed_p)}gray{else}added{/if}"><i class="material-icons mi-2x">&#xE8F4;</i><span class="text">[`Viewed products`]</span> (<span class="count">{count($viewed_p)}</span>)</a>
+            </div>
+            {if !empty($theme_settings.show_currency) && isset($currencies) && count($currencies) > 1}
+            <div class="col-grid currency">
+                <aside class="currency-toggle">
+                    <span id="currency-name">[`Currency`]:</span>
+                    <select id="currency">
+                        {$currency = $wa->shop->currency()}
+                        {foreach $currencies as $c_code => $c}
+                            <option value="{$c_code}" {if $c_code == $currency} selected{/if}>{$c.title}</option>
+                        {/foreach}
+                    </select>
+                </aside>
+            </div>
+            {/if}
+            {if $wa->shop && strpos($wa->currentUrl(), '/cart/') === false && strpos($wa->currentUrl(), '/checkout/') === false && !$wa->globals("hideCart")}
+                {if method_exists($wa->shop, 'checkout')}
+                    {$_cart_url = $wa->shop->checkout()->cartUrl()}
+                {else}
+                    {$_cart_url = $wa->getUrl('shop/frontend/cart')}
+                {/if}
+                {$cart_total = $wa->shop->cart->total()}
+                {$cart_count = $wa->shop->cart->count()}
+                <div class="col-grid">
+                
+                    <div id="cart"{if !$cart_total && !$cart_count} class="empty"{/if}>
+                        <a href="{$_cart_url}" class="link-to-cart">
+                            {*<i class="mdi-shopping_cart mdi-3x cart-count" data-count="{$cart_count}"></i>*}
+                            <i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>
+                            <span class="cart-text">
+                                <strong>[`Cart`]</strong>
+                                <span class="cart-total">{wa_currency_html($cart_total, $wa->shop->currency())}</span>
+                            </span>
+                        </a>
+                        {if !empty($theme_settings.flying_cart_item)}
+                            {*$soaring_cart_items = $wa->shop->cart->items()*}{*krsort($soaring_cart_items)*}
+                            <div class="flying-cart-wrapper">
+                                <div id="flying-cart">
+                                    <ul>
+                                        {foreach $wa->shop->cart->items() as $item}{*$item|@debug_print_var*}
+                                            <li data-id="{$item.id}">
+                                                <div class="flying-cart-img">
+                                                    <a href="{$wa->shop->productUrl($item.product)}" title="{$item.product.name|escape}">
+                                                        {*fix image sku*}
+                                                        {$ip = $wa->shop->product($item.product_id)}
+                                                        {if $ip.skus[$item.sku_id].image_id}{$item.product.image_id = $ip.skus[$item.sku_id].image_id}{/if}
+                                                        {if $ip.skus[$item.sku_id].frontend_price}{$item.price = $ip.skus[$item.sku_id].frontend_price * $item.quantity}{/if}
+                                                        {if $ip.skus[$item.sku_id].frontend_compare_price}{$item.compare_price = $ip.skus[$item.sku_id].frontend_compare_price}{/if}
+                                                        {*/fix image sku*}
+                                                        {$wa->shop->productImgHtml($item.product, '96x96', ['default' => "`$wa_theme_url`img/dummy96.png"])}
+                                                    </a>
+                                                </div>
+                                                <div class="flying-cart-offer align-left">
+                                                    <a href="{$wa->shop->productUrl($item.product)}">{$item.product.name|escape}</a>
+                                                    {if $item.sku_name && $item.sku_name != $item.product.name}<span class="gray">{$item.sku_name|escape}</span>{/if}
+                                                    <span class="flying-cart-price nowrap">
+                                                        {if !empty($item.compare_price) && $item.compare_price > 0}<span class="hint">{wa_currency_html($item.compare_price, $wa->shop->currency())}</span>{/if}
+                                                        <span class="price nowrap">{wa_currency_html($item.price, $wa->shop->currency())}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="flying-cart-quantity">
+                                                  	<input type="text" value="{$item.quantity}" class="flying-cart-qty"> [`pcs.`]
+                                                </div>
+                                                <div class="flying-cart-delete">
+                                                    <a href="#" class="flying-cart-del" title="[`Remove from cart`]" rel="nofollow"><i class="material-icons mi-2x">&#xE5CD;</i></a>
+                                                </div>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                                <div class="flying-cart-block align-left clear-both">
+                                    [`Total amount (with discount)`]<span class="bold cart-total">{wa_currency_html($cart_total, $wa->shop->currency())}</span>
+                                </div>
+                                <div class="flying-cart-block align-center">
+                                    {* PLUGIN QUICKORDER: replace 0 to 1 to enable *}
+                                    {if 0 && $wa_app == 'shop' && class_exists('shopQuickorderPlugin')}{shopQuickorderPlugin::submitCart()|replace:'quickorder-button-cart':'button'|replace:'quickorder-button':'button'}{/if}
+                                    <a class="button second-type" href="{$_cart_url}">[`Go to cart`]</a>
+                                </div>
+                                <div class="flying-cart-block-empty align-center">
+                                    <span class="bold">[`Your cart is empty.`]</span>
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            {/if}
+        </div></div>
+    </div>
+</aside>
+
+{/strip}

@@ -1,0 +1,114 @@
+<div class="block">
+    <h1>Поиск по сайту</h1>
+    <p>Плагин позволяет искать по текстовым страницам сайта на текущем домене. Поиск осуществляется по индексу.<br />
+        Для корректной работы поиска не забывайте регулярно обновлять индекс. Или настройте крон для автоматической индексации по расписанию. (<a class="inline-link" href="#/search/" id="cron-help"><b><i>Как это сделать?</i></b></a> )</p>
+</div>
+<div class="block">
+    <a href="#" class="button green" id="start_search">Индексировать</a>
+</div>
+<div class="block">
+    <div>
+        <div class="progressbar green small">
+            <div class="progressbar-outer">
+                <div class="progressbar-inner" id="my-custom-progressbar-id" style="width: 0%;"></div>
+            </div>
+        </div>
+        <i class="icon16 loading"></i>
+    </div>
+</div>
+<div class="block" id="percent">
+</div>
+<div class="block">
+    <h2>Настройка шаблонов</h2>
+    <p>После установки плагина результаты поиска будут выводиться на странице с алиасом "search/" всех поселений приложения "Сайт".</p>
+    <p>Чтобы настроить шаблон вывода результатов, создайте файл <b>search.plugin.html</b> в активной теме и перенесите в него код ниже:</p>
+    <textarea style="width:500px;height:250px;" readonly>
+&lt;h1&gt;Поиск по запросу "{ldelim}$wa-&gt;get('query')|escape}"&lt;/h1&gt;
+
+&lt;form action="{ldelim}$wa_app_url}search/"&gt;
+&lt;input type="text" name="query" value="{ldelim}$wa-&gt;get('query')|escape}"&gt;
+&lt;input type="submit" value="Поиск"&gt;
+&lt;/form&gt;
+
+{ldelim}foreach $pages as $page}
+&lt;h2&gt;&lt;a href="{ldelim}$page.frontend_url}"&gt;{ldelim}$page.name}&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;
+    {ldelim}$page.content|regex_replace:'/\{ldelim}[^}]+}?/':''|strip_tags|truncate:300}&lt;br/&gt;
+    &lt;a href="{ldelim}$page.frontend_url}"&gt;подробнее&lt;/a&gt;
+&lt;/p&gt;
+{ldelim}/foreach}
+
+{ldelim}wa_pagination total=$paging.total page=$paging.page attrs=[class=&gt;'menu-h']}</textarea>
+    <p>&nbsp;</p>
+    <p>Форму поиска вы можете разместить в любом удобном месте темы.</p>
+    <textarea style="width:500px;height:60px;" readonly>
+&lt;form action="{ldelim}$wa_app_url}search/"&gt;
+&lt;input type="text" name="query"&gt;
+&lt;input type="submit" value="Поиск"&gt;
+&lt;/form&gt;</textarea>
+</div>
+</div>
+<div class="hidden block s-cheatsheet" id="cron-message-content">
+<div class="fields">
+    <div class="field">
+        <div class="name bold"><i class="icon16 status-green-tiny"></i> Настройка CRON</div>
+        <div class="value no-shift"><p>Для автоматической индексации по расписанию настройте CRON с указанной ниже командой в контрольной панели вашего хостинга (<a href="http://www.webasyst.ru/developers/docs/tips/cron/" target="_blank">документация по настройке</a>):</p>
+            <p><strong class="highlighted">{$cron_command}</strong></p>
+            <p>Рекомендуемое время выполнения скрипта - раз в сутки (например, <strong class="highlighted">0 3 * * *</strong>).</p>
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+<style>
+.progressbar {
+	display: none;
+	margin-bottom: 0;
+}
+.icon16.loading {
+	display: none;
+}
+</style>
+<script>
+$(function(){
+    $('#cron-help').click(function(e){
+        e.preventDefault();
+        $('#cron-message-content').waDialog({
+            'buttons': '<button class="button cancel">Понятно</button>'
+        });
+    });
+	function send(processId) {
+		setTimeout(function() {
+			$.ajax({
+				url: "?plugin=search&action=index&processId=" + processId,
+				dataType: "json",
+				success: function(data){
+					var progress = parseInt(data.progress) + '%';
+					$('#my-custom-progressbar-id').css('width', progress);
+					if(!data.ready) {
+                        $('#percent').html(progress);
+						send(processId)
+					} else {
+						$('#percent').html('Обновлён индекс '+data.offset+' страниц. Затрачено времени ' + data.time);
+						$('.icon16.loading').css('display', 'none');
+					};
+				}
+			});
+		}, 1000)	
+	}
+    $('#start_search').click( function(e){
+		e.preventDefault();
+		$('#percent').html('0%');
+		$('.progressbar').css('display', 'inline-block');
+		$('.icon16.loading').css('display', 'inline-block');
+		$.ajax({
+			url: "?plugin=search&action=index",
+			dataType: "json",
+			success: function(data){
+				send(data.processId)
+			}
+		})
+	});
+    $('#s-save-panel').hide();
+});
+
+</script>

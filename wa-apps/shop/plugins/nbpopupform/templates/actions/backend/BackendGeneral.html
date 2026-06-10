@@ -1,0 +1,52 @@
+
+<table id="main-field-list" class="field-list zebra">
+    <tbody class="ui-sortable" style="">
+
+    {foreach $forms as $form}
+        <tr class="field-row editor-off field-enabled" data-field-id="firstname" data-field-type="NameSubfield" style="">
+            <td class="min-width"><i class="icon16 sort sort-outer"></i></td>
+            <td class="">
+                <span class="name-hint hint">id формы</span>
+                {$form.id}
+            </td>
+            <td>
+                <span class="name-hint hint">Название формы</span>
+                <label class="name-label">{$form.name}</label>
+            </td>
+            <td>
+                <div class="float-right">
+                    <a href="?plugin=nbpopupform&action=layout#/edit/{$form.id}/" class="inline"><i class="icon16 edit"></i></a>
+                    <a href="#" data-id="{$form.id}" class="inline delete_btn"><i class="icon16 delete delete-outer"></i></a>
+                </div>
+
+                <div class="hide-when-field-disabled">
+                    <em class="small"><label>{$form.description}</label></em>
+                </div>
+            </td>
+        </tr>
+    {/foreach}
+
+    </tbody>
+</table>
+
+
+<script>
+
+    $(function(){
+        $(".delete_btn").click(function(){
+            var id = $(this).attr('data-id');
+            var self = $(this).closest('.field-row');
+            var name = $(this).closest('.field-row').find('.name-label').text();
+            var del = confirm("Удалить " +name+ "?");
+            if(del){
+                $.get("?plugin=nbpopupform&action=delete&id_form=" + id,function(data){
+                    console.log(data);
+                    self.remove();
+                });
+            }
+            return false;
+        });
+    })
+
+</script>
+

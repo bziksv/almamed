@@ -1,0 +1,52 @@
+{strip}
+
+{if !empty($video.url)}
+    <div id="video-container" class="video-container" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+        <div itemprop="embedHTML">
+            <iframe src="{$video.url}" width="{$video.width}" height="{$video.height}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+        <meta itemprop="width" content="{$video.width}">
+        <meta itemprop="height" content="{$video.height}">
+    </div>
+{/if}
+
+{if $product.images || !empty($video.url)}
+    <figure class="product-gallery">
+    
+        {if $product.images}
+            <!-- main image -->
+            <div class="image" id="product-core-image"{if !empty($video.url)} style="display:none"{/if}>
+                <div class="corner top left">
+                    {$wa->shop->badgeHtml($product.badge)}
+                </div>
+                <a href="{$wa->shop->productImgUrl($product, '970')}">
+                    {$wa->shop->productImgHtml($product, '750', [ 'itemprop' => 'image', 'id' => 'product-image', 'alt' => $product.name|escape ])}
+                </a>
+                <div id="switching-image" style="display: none;"></div>
+            </div>
+        {/if}
+        
+        <!-- thumbs -->
+        {if count($product.images) > 1 || (count($product.images) === 1 && !empty($video.url))}
+            <div class="more-images" id="product-gallery">
+                {if !empty($video.url)}
+                    <div class="image video selected">
+                        <a id="product-image-video" href="{$video.url}">
+                            <img src="{$video.images[0]}" alt="">
+                        </a>
+                    </div>
+                {/if}
+                {foreach $product.images as $image}
+                    <div class="image{if $image.id == $product.image_id && empty($product.video_url)} selected{/if}">
+                        <a id="product-image-{$image.id}" href="{$wa->shop->imgUrl($image, '970')}">
+                            {$wa->shop->imgHtml($image, '96x96', ['alt' => $image.description])}
+                        </a>
+                    </div>
+                {/foreach}
+            </div>
+        {/if}
+        
+    </figure>
+{/if}
+
+{/strip}

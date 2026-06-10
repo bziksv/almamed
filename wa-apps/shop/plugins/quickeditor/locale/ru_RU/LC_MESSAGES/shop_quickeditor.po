@@ -1,0 +1,236 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/quickeditor\n"
+"POT-Creation-Date: 2015-02-26 13:16+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Alexander <alexander@web-developer.name>\n"
+"Language-Team: shop/plugins/quickeditor\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+msgid "Instructions for using the plugin"
+msgstr "Инструкция по использованию плагина"
+
+msgid "Paste the plugin code into the template. Embed code is presented below (only works in «Store» application templates)"
+msgstr "Вставьте этот код плагина в шаблоне. Код для вставки представлен ниже (работает только в шаблонах приложения «Магазин»)"
+
+msgid "Enable plugin"
+msgstr "Включить плагин"
+
+msgid "Embed code for template (only for app «Shop»)"
+msgstr "Код для вставки в шаблон приложения «Магазин» "
+
+msgid "By default the plugin is disabled."
+msgstr "По умолчанию плагин отключен."
+
+msgid "First of all, set mark «Enable plugin»."
+msgstr "Прежде всего, установите галочку «Включить плагин»."
+
+msgid "where ID is product ID."
+msgstr "где ID это уникальный идентификатор товара."
+
+msgid "You can put the code other else application template, in a place where you want."
+msgstr "Код плагина, можно помещать в любые другие файлы шаблона."
+
+msgid "But only in «Shop» app."
+msgstr "Но только в шаблонах приложения «Магазин»."
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Saved"
+msgstr "Сохранено"
+
+msgid "Quick products editor"
+msgstr "Быстрый редактор товаров"
+
+msgid "Save and update"
+msgstr "Сохранить и обновить"
+
+msgid "Show product descriptions on «Basics» tab"
+msgstr "Показывать описание товара во вкладке «Общие сведения»"
+
+msgid "In main description area"
+msgstr "В основной части описания товара"
+
+msgid "Usually in a sidebar"
+msgstr "В боковой части страницы"
+
+msgid "Next to links to custom product pages"
+msgstr "Рядом с ссылками на дополнительные страницы товара"
+
+msgid "Next to the «Add to cart» button"
+msgstr "Рядом с кнопкой «В корзину»"
+
+msgid "Location of «Edit» button on a product page"
+msgstr "Положение кнопки «Редактировать» на странице товара"
+
+msgid "Show «Edit» button on a category page"
+msgstr "Показать кнопку «Редактировать» на странице категории"
+
+msgid "Automatic plugin output works only on the product page."
+msgstr "Автоматический вывод плагина работает только на странице товара."
+
+msgid "On the left side of the page"
+msgstr "На левой стороне страницы"
+
+msgid "On the right side of the page"
+msgstr "На правой стороне страницы"
+
+msgid "Hidden"
+msgstr "Скрыть"
+
+msgid "Edit product"
+msgstr "Редактировать товар"
+
+msgid "Edit category"
+msgstr "Редактировать категорию"
+
+msgid "A fixed button for edit category"
+msgstr "Фиксированная кнопка редактирования категории"
+
+msgid "Opening editor in the tab"
+msgstr "Открывать редактор во вкладке "
+
+msgid ".com"
+msgstr ".ru"
+
+msgid "Ansvers"
+msgstr "Решение вопросов"
+
+msgid "Also you can paste the code in the application template, in a place where you want the plugin will displayed"
+msgstr "Код плагина, можно помещать в любые другие файлы шаблона. В шаблоне приложения, в месте где вы хотите чтобы отображался плагин, поместите код"
+
+msgid "On"
+msgstr "Вкл."
+
+msgid "Off"
+msgstr "Выкл."
+
+msgid "Save and close"
+msgstr "Сохранить и закрыть"
+
+msgid "Enable «Save and close» button"
+msgstr "Включить кнопку «Сохранить и закрыть»"
+
+msgid "Paste code here"
+msgstr "Вставьте код здесь"
+
+msgid "A fixed button for edit information pages"
+msgstr "Фиксированная кнопка редактирования информационных страниц"
+
+msgid "Edit page"
+msgstr "Редактировать страницу"
+
+msgid "Enable «frontend_head» hook"
+msgstr "Включить «frontend_head» хук"
+
+msgid "Always opening the product editing page"
+msgstr "Всегда открывать страницу редактирования товара"
+
+msgid "Please enter a valid plugin parameters"
+msgstr "Пожалуйста, введите допустимые параметры плагина"
+
+msgid "Show the text «Edit» at the edit button"
+msgstr "Показывать текст «Редактировать» на кнопке редактирования"
+
+msgid "Answers to questions"
+msgstr "Ответы на вопросы"
+
+msgid "A fixed button<br>“Quick access”"
+msgstr "Фиксированная кнопка<br>«Быстрый доступ»"
+
+msgid "Quick access"
+msgstr "«Быстрый доступ»"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Plugins"
+msgstr "Плагины"
+
+msgid "Qrders"
+msgstr "Заказы"
+
+msgid "Products"
+msgstr "Товары"
+
+msgid "Customers"
+msgstr "Покупатели"
+
+msgid "Reports"
+msgstr "Отчеты"
+
+msgid "Storefronts"
+msgstr "Витрина"
+
+msgid "Quick editor"
+msgstr "Быстрый редактор"
+
+msgid "Location of the edit button on a product page"
+msgstr "Расположение кнопки редактирования на странице товара"
+
+msgid "Opens the edit window from the frontend"
+msgstr "Открывает окно редактирования из фронтенда"
+
+msgid "The plugin automatically adding fixed edit button on: information pages, product pages, categories pages"
+msgstr "Плагин автоматически добавляет фиксированную кнопку редактирования на: информационные страницы, страницы товаров, страницы категорий"
+
+msgid "To display additional edit button for each product in category, insert a plugin code in list-thumbs.html as shown below"
+msgstr "Чтобы использовать дополнительную кнопку редактирования для каждого продукта в категории, вставьте код плагина в list-thumbs.html, как показано ниже"
+
+msgid "Use multi-storefront settings"
+msgstr "Использовать мульти-витринные настройки"
+
+msgid "Enable separate plugin settings for each storefront"
+msgstr "Включить отдельные настройки плагина для каждой витрины"
+
+msgid "Storefront"
+msgstr "Витрина"
+
+msgid "Select storefront for saving current settings"
+msgstr "Выберите витрину для сохранения текущих настроек"
+
+msgid "Reset settings"
+msgstr "Сброс настроек"
+
+msgid "Reset settings to default"
+msgstr "Сброс к настройкам по умолчанию"
+
+msgid "Storefront not found"
+msgstr "Витрина не найдена"
+
+msgid "Open setting tab"
+msgstr "Открыть вкладку настроек"
+
+msgid "For opening specific setting tab press \"Shift\" button, then click \"Edit\""
+msgstr "Для открытия указанной вкладки настроек, нажмите кнопку «Shift», затем нажмите «Изменить»"
+
+msgid "Description & SEO"
+msgstr "Описание и SEO"
+
+msgid "Images & Video"
+msgstr "Фото и видео"
+
+msgid "Features"
+msgstr "Характеристики"
+
+msgid "Services"
+msgstr "Услуги"
+
+msgid "Related products"
+msgstr "Рекомендуемые товары"
+
+msgid "Edit category settings"
+msgstr "Редактировать настройки категории"

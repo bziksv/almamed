@@ -1,0 +1,61 @@
+<link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/redactor/redactor.css" />
+<script type="text/javascript" src="{$wa_url}wa-content/js/redactor/redactor.min.js"></script>
+<script type="text/javascript" src="{$wa_url}wa-content/js/redactor/ru.js"></script>
+<link rel="stylesheet" href="{$wa_static_url}wa-content/js/codemirror/lib/codemirror.css?v={$wa_plugin_version}"/>
+<script src="{$wa_static_url}wa-content/js/codemirror/lib/codemirror.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/xml/xml.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/css/css.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/javascript/javascript.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/htmlmixed/htmlmixed.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/smarty/smarty.js?v={$wa_plugin_version}"></script>
+<script type="text/javascript" src="{$plugin_url}js/smartymixed.js"></script>
+
+<script>
+	document.seofilter = { };
+
+	document.seofilter.left_sidebar = {json_encode($left_sidebar)};
+
+	document.seofilter.seo_filter = {json_encode($filter)};
+
+	document.seofilter.all_categories = {json_encode($all_categories)};
+	document.seofilter.category_names = {json_encode($category_names)};
+	document.seofilter.all_storefronts = {json_encode($all_storefronts)};
+	document.seofilter.storefront_categories = {json_encode($storefront_categories)};
+
+	document.seofilter.feature_values = {json_encode($filter_feature_values)};
+	document.seofilter.units = {json_encode($units)};
+	document.seofilter.features_with_values = {json_encode($features_with_values)};
+
+	document.seofilter.save_action = {json_encode($save_action)};
+	document.seofilter.storefront_fields = {json_encode($storefront_fields)};
+
+	document.seofilter.personal_rules = {json_encode($filter_personal_rules)};
+	document.seofilter.use_mode_options = {json_encode($use_mode_options)};
+	document.seofilter.additional_description_is_enabled = {json_encode($additional_description_is_enabled)};
+
+	document.seofilter.custom_template_meta = {json_encode($custom_template_meta)};
+
+	document.seofilter.filter_fields = {json_encode($filter_fields)};
+	document.seofilter.filter_fields_values = {json_encode($filter_fields_values)};
+
+	document.seofilter.linkcanonical_is_enabled = {json_encode($linkcanonical_is_enabled)};
+	document.seofilter.filter_personal_canonicals = {json_encode($filter_personal_canonicals)};
+
+	document.seofilter.csrf = {json_encode($wa->cookie('_csrf'))};
+
+	window.assetsPath = {shopSeofilterProductfiltersHelper::getStaticUrl('assets/')|json_encode};
+</script>
+<link rel="stylesheet" href="{shopSeofilterHelper::getStaticUrl('assets/filter_form.css')}?v={$wa_plugin_version}"/>
+<script type="text/javascript" src="{shopSeofilterHelper::getStaticUrl('assets/filter_form.js')}?v={$wa_plugin_version}"></script>
+
+<div id="seofilter_left_sidebar" class="sidebar left200px"></div>
+
+<div id="s-content" class="content left200px block double-padded">
+	<div id="mass_actions_sidebar" class="float-right"></div>
+
+	<div class="content">
+		<h1>{block name='header'}{/block}</h1>
+
+		<div id="seofilter_filter_edit"></div>
+	</div>
+</div>

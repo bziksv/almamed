@@ -1,0 +1,12 @@
+<div class="block" style="padding: 0 10px">
+    <ul class="menu-v with-icons compact p-no-photo-selected123 thumbs-view-menu">
+        <li><a id="productfeatures-plugin" href="#"><i class="icon16 edit"></i>[`Edit features`]</a></li>
+    </ul>
+</div>
+<script src="{$plugin_url}js/productfeatures.js?v{$plugin_version}"></script>
+<script>
+    if (!$('#productfeatures-plugin-dialog').length) {
+        $('body').append('<div id="productfeatures-plugin-dialog"></div>');
+    }
+    $.wa.locale['Features'] = "{_w('Features')}";
+</script>

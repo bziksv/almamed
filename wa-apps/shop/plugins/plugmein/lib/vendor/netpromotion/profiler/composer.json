@@ -1,0 +1,49 @@
+{
+  "name": "netpromotion/profiler",
+  "description": "Profiler with adapter for Tracy",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Petr Knap",
+      "email": "knap@netpromotion.cz"
+    }
+  ],
+  "config": {
+    "platform": {
+      "php": "5.4.45",
+      "ext-dom": true,
+      "ext-mbstring": true
+    }
+  },
+  "require": {
+    "php": ">=5.4",
+    "petrknap/php-profiler": "^1.1",
+    "petrknap/php-singleton": "^1.0"
+  },
+  "conflict-note": "We are using 'conflict' combined with 'require-dev' to '*' as soft require.",
+  "conflict": {
+    "tracy/tracy": "<2.2 || >=3",
+    "nette/di": "<2.2 || >=3"
+  },
+  "require-dev": {
+    "tracy/tracy": "*",
+    "nette/di": "*",
+    "nette/bootstrap": "^2.3",
+    "nette/application": "^2.3",
+    "latte/latte": "^2.3",
+    "phpunit/phpunit": "^4.8",
+    "netpromotion/tracy-wrapper": "^1.0",
+    "laravel/lumen-framework": "^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Netpromotion\\Profiler\\": "src/Profiler"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Netpromotion\\Profiler\\Test\\": "tests",
+      "Netpromotion\\Profiler\\Demo\\Nette\\": "demo/nette/src"
+    }
+  }
+}

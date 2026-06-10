@@ -1,0 +1,48 @@
+{strip}
+
+
+
+    <div class="copyright" role="complementary">
+<div class="copyright-wrapper">
+        &copy;2015-{time()|wa_datetime:"Y"} <a href="{$wa_url}">Интернет-магазин медицинского оборудования и медтехники от компании {$wa->accountName()}</a> 
+        {*
+        {time()|wa_datetime:"Y"}
+        *}
+        <br>
+        Поставки по всей России.<br>
+<style>
+  .small-notice {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+</style>
+
+<div class="small-notice">
+<noindex>
+Мы используем файлы <a target="_blank" href="/rules/cookies-almamed.png">cookies</a> для персонализации рекламы и анализа трафика. 
+Продолжая использовать сайт, вы даёте согласие на обработку персональных данных и подтверждаете, 
+что ознакомлены с <a target="_blank" href="/rules/politics-almamed.png">cполитикой конфиденциальности</a> 
+и правилами использования <a target="_blank" href="/rules/rules-recommendation-almamed.png">рекомендательных технологий</a>. 
+Вы можете отключить cookies в настройках браузера.
+
+</noindex>
+</div>
+    </div>
+    {if !empty($theme_settings.powered_by)}
+        <div class="copyright">
+            {if $wa_app == 'shop'}
+                <a href="{if $wa->locale() == 'ru_RU'}//www.shop-script.ru/{else}//www.shop-script.com/{/if}" title="[`We are using`] Shop-Script 6">
+                    <img src="{$wa_theme_url}img/all-dots-default-order.png" alt="Shop-Script 6">
+                </a>
+                <span class="hint"> — Shop-Script 6</span>
+            {else}
+                <a href="{if $wa->locale() == 'ru_RU'}//www.webasyst.ru/{else}//www.webasyst.com/{/if}" title="[`We are using`] Webasyst">
+                    <img src="{$wa_theme_url}img/all-dots-default-order.png" alt="Webasyst">
+                </a>
+                <span class="hint"> — Webasyst</span>
+            {/if}
+        </div>
+    {/if}
+</div>
+
+{/strip}

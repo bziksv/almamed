@@ -1,0 +1,11 @@
+{if empty($links)}
+<div class="value vendorlink_input_edit no-shift">
+    <input class="" type="text" value="" data-edit_product_id="{$product_id}"/>
+</div>
+{else}
+{foreach $links as $link}
+<div class="value vendorlink_input_edit no-shift">
+    <input class="" type="text" value="{$link.link|escape}" name="vendorlink_input_edit" data-edit_link_id="{$link.id}" data-edit_product_id="{$product_id}" />
+</div>
+{/foreach}
+{/if}

@@ -1,0 +1,947 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
+<theme id="new_header1" system="0" vendor="873332" author="wm-site" app="site" version="1.2.0" edition="14" source_theme_id="osnovnaja">
+  <name locale="en_US">Profitbuy</name>
+  <name locale="ru_RU">Основная тема с новой шапкой</name>
+  <description locale="en_US">Adaptive design theme for all base Webasyst apps</description>
+  <description locale="ru_RU">Семейство адаптивных тем дизайна для всех базовых приложений Webasyst</description>
+  <files>
+    <file path="index.html" custom="0" modified="1">
+      <description locale="en_US">Core layout of Profitbuy theme family</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.css" custom="0">
+      <description locale="en_US">Core CSS of the Profitbuy theme family</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.js" custom="0">
+      <description locale="en_US">Basic script file js website template, shop, blog, photo</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="head.html" custom="0">
+      <description locale="en_US">Site app's &lt;head&gt; instructions</description>
+      <description locale="ru_RU">Блок &lt;head&gt; приложения «Сайт»</description>
+    </file>
+    <file path="main.html" custom="0">
+      <description locale="en_US">Main layout for Site app content</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="footer.html" custom="0" modified="1">
+      <description locale="en_US">App specific footer content</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="page.html" custom="0">
+      <description locale="en_US">Static page content and navigation</description>
+      <description locale="ru_RU">Шаблон вывода страниц приложения "сайт"</description>
+    </file>
+    <file path="login.html" custom="0">
+      <description locale="en_US">Login page</description>
+      <description locale="ru_RU">Страница авторизации</description>
+    </file>
+    <file path="signup.html" custom="0">
+      <description locale="en_US">Sign up page</description>
+      <description locale="ru_RU">Страница регистрации</description>
+    </file>
+    <file path="forgotpassword.html" custom="0">
+      <description locale="en_US">Forgot password page</description>
+      <description locale="ru_RU">Страница "забыли пароль?"</description>
+    </file>
+    <file path="my.profile.html" custom="0">
+      <description locale="en_US">My profile: contact info editing form</description>
+      <description locale="ru_RU">Страница редактирования контактов личного кабинета</description>
+    </file>
+    <file path="my.nav.html">
+      <description locale="en_US">My profile navigation</description>
+      <description locale="ru_RU">Навигационное меню внутри личного кабинета</description>
+    </file>
+    <file path="error.html" custom="0">
+      <description locale="en_US">404 and other errors</description>
+      <description locale="ru_RU">404 и другие ошибки</description>
+    </file>
+    <file path="mdi.css" custom="0">
+      <description locale="en_US">Material Design Icons</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="offline.html" custom="0">
+      <description locale="en_US">Location, time, map reference</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="desktop.pane.html" custom="0">
+      <description locale="en_US">The bottom panel (product lists, choice of currencies basket)</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="tree.html" custom="0">
+      <description locale="en_US">Horizontal navigation bar</description>
+      <description locale="ru_RU">Горизонтальная панель навигации</description>
+    </file>
+    <file path="sidebar.html" custom="0">
+      <description locale="en_US">Sidebar application "site"</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="searchform.html" custom="0">
+      <description locale="en_US">Search Form Application "site"</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="mobile.pane.html" custom="0">
+      <description locale="en_US">The navigation bar mobile version</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="theme.css.html" custom="0">
+      <description locale="en_US">Setting the color scheme and background site</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="theme.script.html" custom="0">
+      <description locale="en_US">Scripts JS themes</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="mdi.min.css" custom="0">
+      <description locale="en_US">Short style file icons "Material Design Icons"</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="e.address.html" custom="0">
+      <description locale="en_US">Contact: email and skype</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.critical.css.html" custom="0">
+      <description locale="en_US">Critical themes css styles</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="speedup.script.html" custom="0">
+      <description locale="en_US">Accelerate download site</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="payment.logo.html" custom="0">
+      <description locale="en_US">Display icons of payment and delivery</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="lt.ie9.html" custom="0">
+      <description locale="en_US">Plug for older browsers</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.min.css" custom="0">
+      <description locale="en_US">Short stylesheet profitbuy.css</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.min.js" custom="0">
+      <description locale="en_US">Abridged script file js profitbuy.js</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="alphacat.plugin.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="recallback.plugin.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="search.plugin.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="cart.second.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="logo.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="phones.bottom.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="phones.top.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="subscribe.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="search.form.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.social.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.apps.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.pages.top.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.pages.bottom.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.auth.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="copyright.html" custom="0" modified="1">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.pages.sidebar.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="links.categories.sidebar.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="head.layout.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="at.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="at.js" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="at.min.js" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="slider.photos.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="slider.products.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="slider.promos.html" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+  </files>
+  <about locale="en_US">
+&lt;p&gt;&lt;b&gt;Profitbuy&lt;/b&gt; is a universal adaptive design theme family for all basic Webasyst apps: Site, Blog, Photos, Shop-Script, and others. The parent (main) theme of the family, which includes the basic set of CSS rules and the common layout template index.html, is the Profitbuy theme for the Site application. All Profitbuy design themes used in other applications (e.g., Blog or Photos) link common CSS and index.html layout file from the main theme.&lt;/p&gt;
+&lt;p&gt;Supported devices and platforms: iOS or Android based mobile devices, tablet computers such as iPad, common desktop computers and laptops.&lt;/p&gt;
+</about>
+  <about locale="ru_RU">
+&lt;p&gt;&lt;b&gt;«Выгодная Покупка»&lt;/b&gt; — это универсальное семейство адаптивных тем дизайна для всех базовых приложений фреймворка Вебасист: Сайт, Блог, Фото, Shop-Script и других. Родительской (основной) темой семейства, включающей в себя базовый набор CSS-стилей и общий макет дизайна index.html, является тема «Выгодная Покупка» для приложения «Сайт» (данная тема). Все темы дизайна «Выгодная Покупка» для других приложений (Блог, Фото и других) используют базовый CSS и index.html из родительской (основной) темы.&lt;/p&gt;
+&lt;p&gt;Темы дизайна семейства «Выгодная Покупка» оптимизированы для всех современных браузеров, планшетных компьютеров и мобильных устройств на основе iOS и Android (для устаревших браузеров IE 8 и ниже версий, включается заглушка).&lt;/p&gt;
+</about>
+  <settings>
+    <setting var="divider_logo" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Logo</name>
+      <name locale="ru_RU">Логотип</name>
+    </setting>
+    <setting var="logo_image_only" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Only image</name>
+      <name locale="ru_RU">Только изображение</name>
+    </setting>
+    <setting var="logo" control_type="image">
+      <value>img/logo.png</value>
+      <filename>img/logo.*</filename>
+      <name locale="en_US">Image</name>
+      <name locale="ru_RU">Изображение</name>
+    </setting>
+    <setting var="logo_title" control_type="text">
+      <value>Медицинская техника</value>
+      <name locale="en_US">Title logo</name>
+      <name locale="ru_RU">Заголовок логотипа</name>
+    </setting>
+    <setting var="logo_tagline" control_type="text">
+      <value>Прямые поставки от производителей</value>
+      <name locale="en_US">Subtitled logo</name>
+      <name locale="ru_RU">Слоган логотипа</name>
+    </setting>
+    <setting var="divider_color_scheme" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Color scheme</name>
+      <name locale="ru_RU">Цветовая схема</name>
+    </setting>
+    <setting var="color_scheme" control_type="image_select">
+      <value>img/backgrounds/themesettings/scheme16.png</value>
+      <name locale="en_US">Color scheme</name>
+      <name locale="ru_RU">Цветовая схема</name>
+      <options>
+        <option value="img/backgrounds/themesettings/scheme1.png"/>
+        <option value="img/backgrounds/themesettings/scheme2.png"/>
+        <option value="img/backgrounds/themesettings/scheme3.png"/>
+        <option value="img/backgrounds/themesettings/scheme4.png"/>
+        <option value="img/backgrounds/themesettings/scheme5.png"/>
+        <option value="img/backgrounds/themesettings/scheme6.png"/>
+        <option value="img/backgrounds/themesettings/scheme7.png"/>
+        <option value="img/backgrounds/themesettings/scheme8.png"/>
+        <option value="img/backgrounds/themesettings/scheme9.png"/>
+        <option value="img/backgrounds/themesettings/scheme10.png"/>
+        <option value="img/backgrounds/themesettings/scheme11.png"/>
+        <option value="img/backgrounds/themesettings/scheme12.png"/>
+        <option value="img/backgrounds/themesettings/scheme13.png"/>
+        <option value="img/backgrounds/themesettings/scheme14.png"/>
+        <option value="img/backgrounds/themesettings/scheme15.png"/>
+        <option value="img/backgrounds/themesettings/scheme16.png"/>
+        <option value="img/backgrounds/themesettings/scheme17.png"/>
+        <option value="img/backgrounds/themesettings/scheme18.png"/>
+        <option value="img/backgrounds/themesettings/scheme19.png"/>
+        <option value="img/backgrounds/themesettings/scheme20.png"/>
+        <option value="img/backgrounds/themesettings/scheme21.png"/>
+        <option value="img/backgrounds/themesettings/scheme22.png"/>
+        <option value="img/backgrounds/themesettings/scheme23.png"/>
+        <option value="img/backgrounds/themesettings/scheme24.png"/>
+        <option value="img/backgrounds/themesettings/scheme25.png"/>
+      </options>
+    </setting>
+    <setting var="divider_custom_color_scheme" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Custom color scheme</name>
+      <name locale="ru_RU">Пользовательская цветовая схема</name>
+    </setting>
+    <setting var="custom_a" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет ссылок</name>
+      <name locale="en_US">Custom links color</name>
+    </setting>
+    <setting var="custom_a_hover" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет ссылок при наведении</name>
+      <name locale="en_US">Custom hover links color</name>
+    </setting>
+    <setting var="custom_color_button" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 1 цвет текста</name>
+      <name locale="en_US">Button 1 text color</name>
+    </setting>
+    <setting var="custom_color_button_hover" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 1 цвет текста при наведении</name>
+      <name locale="en_US">1 button text color when you hover</name>
+    </setting>
+    <setting var="custom_background_button" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 1 фон</name>
+      <name locale="en_US">Button 1 Background</name>
+    </setting>
+    <setting var="custom_background_button_hover" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 1 фон при наведении</name>
+      <name locale="en_US">Button 1 hover background</name>
+    </setting>
+    <setting var="custom_color_button2" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 2 цвет текста</name>
+      <name locale="en_US">Button 2 text color</name>
+    </setting>
+    <setting var="custom_color_button2_hover" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 2 цвет текста при наведении</name>
+      <name locale="en_US">Button 2 text color when you hover</name>
+    </setting>
+    <setting var="custom_background_button2" control_type="color">
+      <value/>
+      <name locale="ru_RU">Кнопка 2 фон</name>
+      <name locale="en_US">Button 2 Background</name>
+    </setting>
+    <setting var="custom_background_button2_hover" control_type="color">
+      <value>#d93d3d</value>
+      <name locale="ru_RU">Кнопка 2 фон при наведении</name>
+      <name locale="en_US">Button 2 hover background</name>
+    </setting>
+    <setting var="volumetric" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">объемный вид элементов</name>
+      <name locale="ru_RU">Объемный вид</name>
+    </setting>
+    <setting var="alfa_pane" control_type="text">
+      <value/>
+      <name locale="en_US">Opacity of the upper and lower panel</name>
+      <name locale="ru_RU">Непрозрачность заливки верхней и нижней панели</name>
+      <description locale="ru_RU">Укажите целое число в диапазоне от 1 до 100.</description>
+      <description locale="en_US">Enter an integer from 1 to 100.</description>
+    </setting>
+    <setting var="alfa_main" control_type="text">
+      <value/>
+      <name locale="en_US">Opacity main content</name>
+      <name locale="ru_RU">Непрозрачность заливки основного содержимого</name>
+      <description locale="ru_RU">Укажите целое число в диапазоне от 1 до 100.</description>
+      <description locale="en_US">Enter an integer from 1 to 100.</description>
+    </setting>
+    <setting var="divider_background" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Background</name>
+      <name locale="ru_RU">Фон сайта</name>
+    </setting>
+    <setting var="show_background" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show background</name>
+      <name locale="ru_RU">Отображать фон</name>
+    </setting>
+    <setting var="background" control_type="image_select">
+      <value>img/backgrounds/themesettings/abstract5.jpg</value>
+      <name locale="en_US">Background</name>
+      <name locale="ru_RU">Фон</name>
+      <options>
+        <option value="img/backgrounds/themesettings/abstract1.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract2.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract3.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract4.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract5.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract6.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract7.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract8.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract9.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract11.jpg"/>
+        <option value="img/backgrounds/themesettings/abstract12.jpg"/>
+        <option value="img/backgrounds/themesettings/18plus.jpg"/>
+        <option value="img/backgrounds/themesettings/accessories.jpg"/>
+        <option value="img/backgrounds/themesettings/auto.jpg"/>
+        <option value="img/backgrounds/themesettings/children.jpg"/>
+        <option value="img/backgrounds/themesettings/children2.jpg"/>
+        <option value="img/backgrounds/themesettings/children3.jpg"/>
+        <option value="img/backgrounds/themesettings/circle.jpg"/>
+        <option value="img/backgrounds/themesettings/clothes.jpg"/>
+        <option value="img/backgrounds/themesettings/fashion.jpg"/>
+        <option value="img/backgrounds/themesettings/flowers.jpg"/>
+        <option value="img/backgrounds/themesettings/table.jpg"/>
+        <option value="img/backgrounds/themesettings/white_goods.jpg"/>
+        <option value="img/backgrounds/themesettings/winter.jpg"/>
+        <option value="img/backgrounds/themesettings/women.jpg"/>
+        <option value="img/backgrounds/themesettings/special_winter.jpg"/>
+      </options>
+    </setting>
+    <setting var="custom_background" control_type="image">
+      <value/>
+      <filename>img/custom_background.*</filename>
+      <name locale="en_US">Custom background</name>
+      <name locale="ru_RU">Свой фон</name>
+    </setting>
+    <setting var="background_fixed" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Fixed</name>
+      <name locale="ru_RU">Зафиксировать</name>
+    </setting>
+    <setting var="background_repeat" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Repeat</name>
+      <name locale="ru_RU">Тиражировать</name>
+    </setting>
+    <setting var="background_stretch" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Stretch</name>
+      <name locale="ru_RU">Растянуть</name>
+    </setting>
+    <setting var="background_center" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Center</name>
+      <name locale="ru_RU">Отцентрировать</name>
+    </setting>
+    <setting var="divider_phone" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Contact details</name>
+      <name locale="ru_RU">Контактные данные</name>
+    </setting>
+    <setting var="phone_1" control_type="text">
+      <value>8-800-100-37-97</value>
+      <name locale="en_US">Phone first</name>
+      <name locale="ru_RU">Телефон первый</name>
+    </setting>
+    <setting var="phone_hint_1" control_type="text">
+      <value locale="en_US">Free calls in USA</value>
+      <value locale="ru_RU">Бесплатные звонки по РФ</value>
+      <name locale="en_US">Text first phone</name>
+      <name locale="ru_RU">Подпись под первым телефоном</name>
+    </setting>
+    <setting var="phone_2" control_type="text">
+      <value/>
+      <name locale="en_US">Second Phone</name>
+      <name locale="ru_RU">Телефон второй</name>
+    </setting>
+    <setting var="phone_hint_2" control_type="text">
+      <value locale="en_US">&lt;a href="#"&gt;Request call back&lt;/a&gt;</value>
+      <value locale="ru_RU">&lt;a href="#"&gt;Заказать обратный звонок&lt;/a&gt;</value>
+      <name locale="en_US">Text second phone</name>
+      <name locale="ru_RU">Подпись под вторым телефоном</name>
+    </setting>
+    <setting var="address_email" control_type="text">
+      <value>info@almamed.su</value>
+      <name locale="en_US">Email</name>
+      <name locale="ru_RU">Email</name>
+      <description locale="ru_RU">Если это поле пустое будет отображен email из настроек приложения Магазин.</description>
+      <description locale="en_US">If this field is empty will be displayed from the email setup application store.</description>
+    </setting>
+    <setting var="address_skype" control_type="text">
+      <value/>
+      <name locale="en_US">Skype</name>
+      <name locale="ru_RU">Skype</name>
+    </setting>
+    <setting var="address" control_type="text">
+      <value>Отправляем товары по всей РФ</value>
+      <name locale="en_US">Address</name>
+      <name locale="ru_RU">Адрес</name>
+    </setting>
+    <setting var="address_map_url" control_type="text">
+      <value/>
+      <name locale="en_US">Link to map (address)</name>
+      <name locale="ru_RU">Ссылка на карту(адрес)</name>
+    </setting>
+    <setting var="divider_top_pane" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Top pane</name>
+      <name locale="ru_RU">Верхняя панель</name>
+    </setting>
+    <setting var="authpopup" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Auth in popup window</name>
+      <name locale="ru_RU">Авторизация во всплывающем окне</name>
+    </setting>
+    <setting var="pages_top" control_type="select">
+      <value>shop</value>
+      <name locale="en_US">Navigation through the pages of the top panel</name>
+      <name locale="ru_RU">Навигация по страницам в верхней панели</name>
+      <options>
+        <option value="">
+          <name locale="en_US">Do not display </name>
+          <name locale="ru_RU">Не отображать</name>
+        </option>
+        <option value="site">
+          <name locale="en_US">Site</name>
+          <name locale="ru_RU">Сайт</name>
+        </option>
+        <option value="shop">
+          <name locale="en_US">Shop</name>
+          <name locale="ru_RU">Магазин</name>
+        </option>
+        <option value="blog">
+          <name locale="en_US">Blog</name>
+          <name locale="ru_RU">Блог</name>
+        </option>
+        <option value="photos">
+          <name locale="en_US">Gallery</name>
+          <name locale="ru_RU">Фотогалерея</name>
+        </option>
+        <option value="apps">
+          <name locale="en_US">Links to applications</name>
+          <name locale="ru_RU">Ссылки на приложения</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="divider_horizontal_panel_nav" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Horizontal pane navigation</name>
+      <name locale="ru_RU">Горизонтальная панель навигации</name>
+    </setting>
+    <setting var="content_nav" control_type="select">
+      <value>site_pages</value>
+      <name locale="en_US">Display as a navigation</name>
+      <name locale="ru_RU">Отобразить в качестве навигации</name>
+      <options>
+        <option value="shop_category">
+          <name locale="en_US">Categories Application Shop</name>
+          <name locale="ru_RU">Категории приложения Магазин</name>
+        </option>
+        <option value="site_pages">
+          <name locale="en_US">Pages Application Site</name>
+          <name locale="ru_RU">Страницы приложения Сайт</name>
+        </option>
+        <option value="shop_pages">
+          <name locale="en_US">Pages Application Shop</name>
+          <name locale="ru_RU">Страницы приложения Магазин</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="category_tree_type" control_type="radio">
+      <value>type1</value>
+      <name locale="ru_RU">Тип отображения навигации</name>
+      <name locale="en_US">Type of display navigation</name>
+      <options>
+        <option value="type1">
+          <name locale="ru_RU">Список</name>
+          <name locale="en_US">List</name>
+          <description locale="ru_RU">Последовательно выпадающий список пунктов.</description>
+          <description locale="en_US">Consistently drop-down list of items.</description>
+        </option>
+        <option value="type2">
+          <name locale="ru_RU">Блок</name>
+          <name locale="en_US">Block</name>
+          <description locale="ru_RU">Блок содержит структурированный список пунктов 2 и 3-го уровней.</description>
+          <description locale="en_US">The block contains a structured list of items 2 and Layer 3.</description>
+        </option>
+      </options>
+    </setting>
+    <setting var="category_tree_submenu_count" control_type="text">
+      <value>5</value>
+      <name locale="en_US">The number of visible sub-menu, type "Block".</name>
+      <name locale="ru_RU">Количество видимых подпунктов для типа меню "Блок".</name>
+      <description locale="ru_RU">Определяет количиство видимых подпунктов 3 уровня дерева. Данная настройка действительна и для меню категорий в боковой панели.</description>
+      <description locale="en_US">Defines kolichistvo visible subparagraphs 3 levels of the tree. This setting is valid for the category menu in the sidebar.</description>
+    </setting>
+    <setting var="divider_sidebar" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Sidebar</name>
+      <name locale="ru_RU">Боковая панель</name>
+    </setting>
+    <setting var="sidebar" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show sidebar</name>
+      <name locale="ru_RU">Показывать боковую панель</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="sidebar_pos" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Sidebar Right</name>
+      <name locale="ru_RU">Боковая панель справа</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="category_tree_sidebar_show" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show category tree in the sidebar.</name>
+      <name locale="ru_RU">Показывать дерево категорий в боковой панели.</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="category_tree_sidebar_type" control_type="radio">
+      <value>type3</value>
+      <name locale="ru_RU">Тип отображения дерева категорий в боковой панели</name>
+      <name locale="en_US">Type of Display category tree in the sidebar</name>
+      <options>
+        <option value="type1">
+          <name locale="ru_RU">Список</name>
+          <name locale="en_US">List</name>
+          <description locale="ru_RU">Последовательно выпадающий список дочерних категорий.</description>
+          <description locale="en_US">Consistently drop-down list of child categories.</description>
+        </option>
+        <option value="type2">
+          <name locale="ru_RU">Блок</name>
+          <name locale="en_US">Block</name>
+          <description locale="ru_RU">Блок содержит структурированный список категорий 2 и 3-го уровней.</description>
+          <description locale="en_US">The block contains a structured list of categories 2 and Layer 3.</description>
+        </option>
+        <option value="type3">
+          <name locale="ru_RU">Аккордеон</name>
+          <name locale="en_US">Accordion</name>
+          <description locale="ru_RU">Меню раздвигается отображая дочерние категории.</description>
+          <description locale="en_US">Menu is expanded displaying child categories.</description>
+        </option>
+      </options>
+    </setting>
+    <setting var="pages_sidebar" control_type="select">
+      <value/>
+      <name locale="en_US">Links to the pages in the sidebar</name>
+      <name locale="ru_RU">Ссылки на страницы в боковой панели</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+      <options>
+        <option value="">
+          <name locale="en_US">Do not show</name>
+          <name locale="ru_RU">Не отображать</name>
+        </option>
+        <option value="site">
+          <name locale="en_US">Site</name>
+          <name locale="ru_RU">Сайт</name>
+        </option>
+        <option value="shop">
+          <name locale="en_US">Shop</name>
+          <name locale="ru_RU">Магазин</name>
+        </option>
+        <option value="blog">
+          <name locale="en_US">Blog</name>
+          <name locale="ru_RU">Блог</name>
+        </option>
+        <option value="photos">
+          <name locale="en_US">Gallery</name>
+          <name locale="ru_RU">Фотогалерея</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="tags" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">show tags</name>
+      <name locale="ru_RU">Показывать теги</name>
+    </setting>
+    <setting var="divider_desktop_pane" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Bottom panel</name>
+      <name locale="ru_RU">Нижняя панель</name>
+    </setting>
+    <setting var="desktop_pane" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show bottom panel</name>
+      <name locale="ru_RU">Показывать нижнюю панель</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="show_apps_links" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show links to applications</name>
+      <name locale="ru_RU">Показывать ссылки на приложения</name>
+    </setting>
+    <setting var="flying_cart_item" control_type="text">
+      <value>5</value>
+      <name locale="en_US">The amount initially visible items in the cart (lower panel)</name>
+      <name locale="ru_RU">Количество изначально видимых товаров в корзине(нижняя панель)</name>
+    </setting>
+    <setting var="pages_bottom" control_type="select">
+      <value>site</value>
+      <name locale="en_US">Links to the pages in the bottom panel</name>
+      <name locale="ru_RU">Ссылки на страницы в нижней панели</name>
+      <options>
+        <option value="">
+          <name locale="en_US">Do not show</name>
+          <name locale="ru_RU">Не отображать</name>
+        </option>
+        <option value="site">
+          <name locale="en_US">Site</name>
+          <name locale="ru_RU">Сайт</name>
+        </option>
+        <option value="shop">
+          <name locale="en_US">Shop</name>
+          <name locale="ru_RU">Магазин</name>
+        </option>
+        <option value="blog">
+          <name locale="en_US">Blog</name>
+          <name locale="ru_RU">Блог</name>
+        </option>
+        <option value="photos">
+          <name locale="en_US">Gallery</name>
+          <name locale="ru_RU">Фотогалерея</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="divider_social" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Social</name>
+      <name locale="ru_RU">Соцсети</name>
+    </setting>
+    <setting var="size_social_icon" control_type="select">
+      <value>icon32</value>
+      <name locale="en_US">The size of social icons (bottom)</name>
+      <name locale="ru_RU">Размер социальных иконок(подвал)</name>
+      <options>
+        <option value="icon16">
+          <name locale="en_US">16x16 px</name>
+          <name locale="ru_RU">16x16 px</name>
+        </option>
+        <option value="icon24">
+          <name locale="en_US">24x24 px</name>
+          <name locale="ru_RU">24x24 px</name>
+        </option>
+        <option value="icon32">
+          <name locale="en_US">32x32 px</name>
+          <name locale="ru_RU">32x32 px</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="facebook" control_type="text">
+      <value/>
+      <name locale="en_US">Facebook page URL</name>
+      <name locale="ru_RU">Адрес страницы в Фейсбуке</name>
+    </setting>
+    <setting var="twitter" control_type="text">
+      <value/>
+      <name locale="en_US">Twitter URL</name>
+      <name locale="ru_RU">Адрес в Твиттере</name>
+    </setting>
+    <setting var="vk" control_type="text">
+      <value>#</value>
+      <name locale="en_US">VK.com page URL</name>
+      <name locale="ru_RU">Адрес страницы или группы во Вконтакте</name>
+    </setting>
+    <setting var="instagram" control_type="text">
+      <value/>
+      <name locale="en_US">Instagram feed URL</name>
+      <name locale="ru_RU">Адрес в Инстаграме</name>
+    </setting>
+    <setting var="youtube" control_type="text">
+      <value/>
+      <name locale="en_US">Youtube channel URL</name>
+      <name locale="ru_RU">Адрес канала YouTube</name>
+    </setting>
+    <setting var="pinterest" control_type="text">
+      <value/>
+      <name locale="en_US">Pinterest page URL</name>
+      <name locale="ru_RU">Адрес страницы в Pinterest</name>
+    </setting>
+    <setting var="gplus" control_type="text">
+      <value/>
+      <name locale="en_US">Google+ page URL</name>
+      <name locale="ru_RU">Адрес страницы в Google+</name>
+    </setting>
+    <setting var="facebook_likebox_code" control_type="text">
+      <value/>
+      <name locale="en_US">Facebook Page Plugin code</name>
+      <name locale="ru_RU">Виджет Фейсбука</name>
+      <description locale="en_US">Embed your Facebook page badge code here. Code can be obtained on Facebook website: https://developers.facebook.com/docs/plugins/page-plugin</description>
+      <description locale="ru_RU">Поместите в это поле код виджета вашей страницы на Фейсбуке. Код можно получить в Фейсбуке на странице https://developers.facebook.com/docs/plugins/page-plugin</description>
+    </setting>
+    <setting var="twitter_timeline_code" control_type="text">
+      <value/>
+      <name locale="en_US">Twitter Timeline code</name>
+      <name locale="ru_RU">Виджет Твиттера</name>
+      <description locale="en_US">Embed your Twitter Timeline code here. Code can be obtained on Twitter website: https://twitter.com/settings/widgets</description>
+      <description locale="ru_RU">Поместите в это поле код ленты Твиттера. Код можно получить на сайте Твиттера: https://twitter.com/settings/widgets</description>
+    </setting>
+    <setting var="vk_widget_code" control_type="text">
+      <value/>
+      <name locale="en_US">VK Page Widget code</name>
+      <name locale="ru_RU">Виджет Вконтакте</name>
+      <description locale="en_US">Embed your VK community widget code here. Code can be obtained on VK website: http://vk.com/dev/Community</description>
+      <description locale="ru_RU">Поместите в это поле код виджета вашего сообщества во Вконтакте. Код можно получить на сайте соцсети http://vk.com/dev/Community</description>
+    </setting>
+    <setting var="ok_widget_code" control_type="text">
+      <value/>
+      <name locale="en_US">OK Page Widget code</name>
+      <name locale="ru_RU">Виджет Одноклассники</name>
+      <description locale="en_US">Embed your OK community widget code here. Code can be obtained on OK website: https://apiok.ru/wiki/pages/viewpage.action?pageId=42476655</description>
+      <description locale="ru_RU">Поместите в это поле код виджета вашего сообщества в Одноклассниках. Код можно получить на сайте соцсети https://apiok.ru/wiki/pages/viewpage.action?pageId=42476655</description>
+    </setting>
+    <setting var="instagramm_widget_code" control_type="text">
+      <value/>
+      <name locale="en_US">Instagramm Page Widget code</name>
+      <name locale="ru_RU">Виджет Инстаграмм</name>
+      <description locale="en_US">Embed your Instagramm community widget code here. Code can be obtained on Instagramm website: http://instagramm.ru/instagram-widget-na-sait/</description>
+      <description locale="ru_RU">Поместите в это поле код виджета вашего сообщества в Инстаграмм. Код можно получить на сайте соцсети http://instagramm.ru/instagram-widget-na-sait/</description>
+    </setting>
+    <setting var="divider_site" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Commong settings</name>
+      <name locale="ru_RU">Общие настройки</name>
+    </setting>
+    <setting var="powered_by" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Powered by Webasyst!</name>
+      <name locale="ru_RU">Работает на основе Webasyst!</name>
+      <description locale="ru_RU">Позволяет отобразить подпись: Работает на основе Webasyst!</description>
+      <description locale="en_US">Displays caption: Powered by Webasyst!</description>
+    </setting>
+    <setting var="speedup" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Accelerate download site</name>
+      <name locale="ru_RU">Ускорить загрузку сайта</name>
+      <description locale="ru_RU">Позволяет ускорить загрузку сайта на основе рекомендаций PageSpeed Insights(пример: https://developers.google.com/speed/pagespeed/insights/?url=http%3A%2F%2Fprofitbuy.wm-site.ru%2F). В случае конфликта с некоторыми плагинами рекомендуется не включать данную настройку.</description>
+      <description locale="en_US">It allows you to speed up the loading site on the basis of recommendations PageSpeed Insights (example: https://developers.google.com/speed/pagespeed/insights/?url=http%3A%2F%2Fprofitbuy.wm-site.ru%2F). In the event of a conflict with some plugins it is recommended not to include this setting.</description>
+    </setting>
+  </settings>
+  <locales>
+    <locale>
+      <msgid>Up</msgid>
+      <msgstr locale="ru_RU">Наверх</msgstr>
+    </locale>
+    <locale>
+      <msgid>Follow us</msgid>
+      <msgstr locale="ru_RU">Подписаться на новости</msgstr>
+    </locale>
+    <locale>
+      <msgid>Subscribe to our email newsletter</msgid>
+      <msgstr locale="ru_RU">Подписаться на рассылку</msgstr>
+    </locale>
+    <locale>
+      <msgid>Or follow us on Facebook and Twitter</msgid>
+      <msgstr locale="ru_RU">Или подписывайтесь в соцсетях</msgstr>
+    </locale>
+    <locale>
+      <msgid>Your cart is empty.</msgid>
+      <msgstr locale="ru_RU">Ваша корзина пуста.</msgstr>
+    </locale>
+    <locale>
+      <msgid>Goods bookmarks</msgid>
+      <msgstr locale="ru_RU">Товары в закладках</msgstr>
+    </locale>
+    <locale>
+      <msgid>Compare products</msgid>
+      <msgstr locale="ru_RU">Товары для сравнения</msgstr>
+    </locale>
+    <locale>
+      <msgid>Viewed products</msgid>
+      <msgstr locale="ru_RU">Просмотренные товары</msgstr>
+    </locale>
+    <locale>
+      <msgid>Bookmarked</msgid>
+      <msgstr locale="ru_RU">В закладках</msgstr>
+    </locale>
+    <locale>
+      <msgid>In comparison</msgid>
+      <msgstr locale="ru_RU">В сравнении</msgstr>
+    </locale>
+    <locale>
+      <msgid>Total amount (with discount)</msgid>
+      <msgstr locale="ru_RU">Общая сумма (с учетом скидки)</msgstr>
+    </locale>
+    <locale>
+      <msgid>pcs.</msgid>
+      <msgstr locale="ru_RU">шт.</msgstr>
+    </locale>
+    <locale>
+      <msgid>Go to cart</msgid>
+      <msgstr locale="ru_RU">Перейти в корзину</msgstr>
+    </locale>
+    <locale>
+      <msgid>Remove from cart</msgid>
+      <msgstr locale="ru_RU">Удалить из корзины</msgstr>
+    </locale>
+    <locale>
+      <msgid>Editors’ choice</msgid>
+      <msgstr locale="ru_RU">Избранное</msgstr>
+    </locale>
+    <locale>
+      <msgid>All photos</msgid>
+      <msgstr locale="ru_RU">Все фотографии</msgstr>
+    </locale>
+    <locale>
+      <msgid>Information</msgid>
+      <msgstr locale="ru_RU">Информация</msgstr>
+    </locale>
+    <locale>
+      <msgid>Categories</msgid>
+      <msgstr locale="ru_RU">Категории</msgstr>
+    </locale>
+    <locale>
+      <msgid>Phones</msgid>
+      <msgstr locale="ru_RU">Телефоны</msgstr>
+    </locale>
+    <locale>
+      <msgid>Cart</msgid>
+      <msgstr locale="ru_RU">Корзина</msgstr>
+    </locale>
+    <locale>
+      <msgid>Easy shop</msgid>
+      <msgstr locale="ru_RU">Удобный интернет магазин</msgstr>
+    </locale>
+    <locale>
+      <msgid>24/7, seven days a week</msgid>
+      <msgstr locale="ru_RU">24/7, семь дней в неделю</msgstr>
+    </locale>
+    <locale>
+      <msgid>Home</msgid>
+      <msgstr locale="ru_RU">Главная</msgstr>
+    </locale>
+    <locale>
+      <msgid>View on map</msgid>
+      <msgstr locale="ru_RU">Посмотреть на карте</msgstr>
+    </locale>
+    <locale>
+      <msgid>Contacts</msgid>
+      <msgstr locale="ru_RU">Контакты</msgstr>
+    </locale>
+    <locale>
+      <msgid>Our news</msgid>
+      <msgstr locale="ru_RU">Наши новости</msgstr>
+    </locale>
+    <locale>
+      <msgid>Latest photos</msgid>
+      <msgstr locale="ru_RU">Последние фотографии</msgstr>
+    </locale>
+    <locale>
+      <msgid>Nothing found.</msgid>
+      <msgstr locale="ru_RU">Ничего не найдено.</msgstr>
+    </locale>
+    <locale>
+      <msgid>read more</msgid>
+      <msgstr locale="ru_RU">подробнее</msgstr>
+    </locale>
+    <locale>
+      <msgid>Search request</msgid>
+      <msgstr locale="ru_RU">Поиск по запросу</msgstr>
+    </locale>
+    <locale>
+      <msgid>Search</msgid>
+      <msgstr locale="ru_RU">Поиск</msgstr>
+    </locale>
+    <locale>
+      <msgid>Dear friends!</msgid>
+      <msgstr locale="ru_RU">Дорогие друзья!</msgstr>
+    </locale>
+    <locale>
+      <msgid>Unfortunately, your browser does not support modern technology used on our website.</msgid>
+      <msgstr locale="ru_RU">К сожалению, Ваш браузер не поддерживает современные технологии используемые на нашем сайте.</msgstr>
+    </locale>
+    <locale>
+      <msgid>Please refresh your browser by downloading it on the links below or contact your system administrator serving your computer.</msgid>
+      <msgstr locale="ru_RU">Пожалуйста, обновите браузер, скачав его по ссылкам ниже, или обратитесь к системному администратору, обслуживающему Ваш компьютер.</msgstr>
+    </locale>
+    <locale>
+      <msgid>We are using</msgid>
+      <msgstr locale="ru_RU">Мы используем</msgstr>
+    </locale>
+  </locales>
+</theme>

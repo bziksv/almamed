@@ -1,0 +1,9 @@
+<link href="{$wa_app_static_url}plugins/vendorlink/css/vendorlink.css?{time()}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$wa_app_static_url}plugins/vendorlink/js/vendorlink_order.js?{time()}"></script>
+<script>
+    $.Vendorlink.items = {$items};
+    $.Vendorlink.localization = {
+        vendor: '[`Vendor `]'
+    };
+    $.Vendorlink.init();
+</script>

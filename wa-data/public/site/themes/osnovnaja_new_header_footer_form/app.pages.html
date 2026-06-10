@@ -1,0 +1,8 @@
+{$pages = []}
+{foreach $_pages as $_p}
+    {if !isset($_p["not_`$pos`"])}
+        {$pages[] = $_p}
+    {/if}
+{/foreach}
+
+{wa_print_tree tree=$pages selected=$selected_page unfolded=true class=$class collapsible_class='parent' elem='<a href=":url">:name</a>'}

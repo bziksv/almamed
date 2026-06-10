@@ -1,0 +1,45 @@
+{strip}
+
+{* flag sidebar *}
+{$is_sidebar =  !empty($theme_settings.sidebar) &&
+                strpos($wa->currentUrl(), '/my/') === false &&
+                strpos($wa->currentUrl(), '/login/') === false &&
+                strpos($wa->currentUrl(), '/signup/') === false &&
+                strpos($wa->currentUrl(), '/forgotpassword/') === false}
+
+<div class="row-grid">
+
+    {if $wa->currentUrl() == $wa_app_url && (empty($page.id) && empty($page.content))}
+        
+        <div class="content col-grid s12">
+            <div class="fill-background">
+                <div class="welcome">
+                    <h1>[`Welcome to your new site!`]</h1>
+                    <p>{sprintf('[`Start by <a href="%s">creating a page</a> in your site backend.`]', $wa_backend_url|cat:'site/#/pages/')}</p>
+                </div>
+            </div>
+        </div>
+        
+    {else}
+        
+        {if $is_sidebar}
+            
+            <div class="sidebar col-grid s12 l3{if !empty($theme_settings.sidebar_pos)} float-right{/if}">
+                
+                {include file="sidebar.html"}
+                
+            </div>
+            
+        {/if}
+    
+        <article itemscope itemtype="http://schema.org/WebPage" class="content col-grid s12{if $is_sidebar} l9 without-sidebar{/if}">
+        
+            {$content} {* see page.html *}
+            
+        </article>
+        
+    {/if}
+
+</div>
+
+{/strip}

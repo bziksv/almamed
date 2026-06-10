@@ -1,0 +1,19 @@
+<div class="header-slider">
+    <div class="container">
+        <ul id="slider-head" style="opacity: 0">
+            {foreach $brands as $b}
+            <li>
+                <a href="{$b.url}">
+                    <img src="{$wa_url}wa-data/public/shop/brands/{$b.id}/{$b.id}{$b.image}">
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+</div>
+
+<script>
+    setTimeout(function(){
+        $('#slider-head').css('opacity',1);
+    },2000)
+</script>

@@ -1,0 +1,27 @@
+{strip}
+
+{$menu = $at['shop']['categories']|default:[]}
+
+{if !empty($menu)}
+    {$icon = $at['shop']['plugins']['wmimageincat']|default:[]}
+    {$selected = $at['shop']['selected_category']|default:null}
+    {$type = $theme_settings.category_tree_sidebar_type|default:'type1'}
+    
+    <div class="sidebar-group fill-background hide-on-med-and-down">
+        <div class="sidebar-title">
+            [`Categories`]
+            <button class="toggle-menu">
+                <i class="material-icons mi-2x">&#xE5D2;</i>
+            </button>
+        </div>
+        <div class="sidebar-box">
+            <ul class="base-menu {$type}">
+                {foreach $menu as $branch}
+                    {renderMenuItem menu=$branch icon=$icon selected=$selected exclude='not_sidebar'}
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+{/if}
+
+{/strip}

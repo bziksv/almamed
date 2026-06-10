@@ -1,0 +1,48 @@
+{strip}
+
+{* @event (frontend_action_default|frontend_action_post|frontend_action_page|frontend_action_error).%plugin_id%.nav_before *}
+{foreach $frontend_action as $plugin => $output}{if !empty($output.nav_before)}{$output.nav_before}{/if}{/foreach}
+
+{* flag sidebar *}
+{$is_sidebar =  !empty($theme_settings.sidebar) &&
+                strpos($wa->currentUrl(), '/my/') === false &&
+                strpos($wa->currentUrl(), '/login/') === false &&
+                strpos($wa->currentUrl(), '/signup/') === false &&
+                strpos($wa->currentUrl(), '/forgotpassword/') === false}
+
+<div class="row-grid">
+
+    {if empty($posts) && $wa->currentUrl() == $wa_app_url}
+        
+        <div class="content col-grid s12">
+            <div class="fill-background">
+                <div class="welcome">
+                    <h1>[`Welcome to your new blog!`]</h1>
+                    <p>{sprintf('[`Start by <a href="%s">writing a post</a> in your blog backend.`]', $wa_backend_url|cat:'blog/')}</p>
+                </div>
+            </div>
+        </div>
+    
+    {else}
+        
+        {if $is_sidebar}
+            
+            <nav class="sidebar col-grid s12 l3{if !empty($theme_settings.sidebar_pos)} float-right{/if}">
+                
+                {include file="`$wa_active_theme_path`/sidebar.html"}
+                
+            </nav>
+            
+        {/if}
+    
+        <div itemscope itemtype="http://schema.org/WebPage" class="content col-grid s12{if $is_sidebar} l9 without-sidebar{/if}">
+        
+            {$content}
+        
+        </div>
+        
+    {/if}
+    
+</div>
+
+{/strip}

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
+<theme id="profitbuy" system="0" vendor="873332" author="wm-site" app="blog" parent_theme_id="site:profitbuy" version="1.2.0">
+  <name locale="en_US">Profitbuy</name>
+  <name locale="ru_RU">Выгодная Покупка</name>
+  <files>
+    <file path="index.html" parent="1">
+        </file>
+    <file path="profitbuy.css" parent="1">
+        </file>
+    <file path="login.html" parent="1">
+        </file>
+    <file path="signup.html" parent="1">
+        </file>
+    <file path="forgotpassword.html" parent="1">
+        </file>
+    <file path="my.profile.html" parent="1">
+        </file>
+    <file path="error.html" parent="1">
+        </file>
+    <file path="profitbuy.js" parent="1">
+        </file>
+    <file path="profitbuy.blog.js" custom="0">      
+		</file>
+    <file path="profitbuy.blog.css" custom="0">
+      <description locale="en_US">Css styles Apps blog</description>
+      <description locale="en_US">Стили css приложения блог</description>
+    </file>
+    <file path="head.html" custom="0">
+      <description locale="en_US"/>
+      <description locale="en_US">Блок &lt;head&gt; приложения «Блог»</description>
+    </file>
+    <file path="main.html" custom="0">
+      <description locale="en_US">Main layout and navigation for the Blog app content</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="footer.html" custom="0">
+      <description locale="en_US">App specific footer content</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="stream.html" custom="0">
+      <description locale="en_US">Post stream wrapper</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="stream_search.html" custom="0">
+      <description locale="en_US">Post search (filtering) results, e.g. custom search, by tag, by author</description>
+      <description locale="ru_RU"></description>
+    </file>
+    <file path="stream_posts.html" custom="0">
+      <description locale="en_US">Default post list view mode</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="post.html" custom="0">
+      <description locale="en_US">Dedicated post page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="post.album.html" custom="0">
+      <description locale="en_US">Photo album attached to the blog post</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="page.html" custom="0">
+      <description locale="en_US">Static info page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="comments.html" custom="0">
+      <description locale="en_US">Post comment list</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="comment.html" custom="0">
+      <description locale="en_US">One comment template</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="my.nav.html" custom="0">
+      <description locale="en_US">Customer account navigation menu</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="searchform.html" custom="0">
+      <description locale="en_US">Search form blog entries</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="sidebar.html" custom="0">
+      <description locale="en_US">Sidebar</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.blog.min.css" custom="0">
+      <description locale="en_US">The condensed version of the file profitbuy.blog.css</description>
+      <description locale="ru_RU">Сжатая версия файла profitbuy.blog.css</description>
+    </file>
+    <file path="profitbuy.blog.min.js" custom="0">
+      <description locale="en_US">The condensed version of the file profitbuy.blog.js</description>
+      <description locale="ru_RU">Сжатая версия файла profitbuy.blog.js</description>
+    </file>
+  </files>
+  <about locale="en_US">
+&lt;p&gt;&lt;b&gt;Profitbuy&lt;/b&gt; is a universal adaptive design theme family for all basic Webasyst apps: Site, Blog, Photos, Shop-Script, and others. The parent (main) theme of the family, which includes the basic set of CSS rules and the common layout template index.html, is the Profitbuy theme for the Site application. All Profitbuy design themes used in other applications (e.g., Blog or Photos) link common CSS and index.html layout file from the main theme.&lt;/p&gt;
+&lt;p&gt;Supported devices and platforms: iOS or Android based mobile devices, tablet computers such as iPad, common desktop computers and laptops.&lt;/p&gt;
+</about>
+  <about locale="ru_RU">
+&lt;p&gt;&lt;b&gt;«Выгодная Покупка»&lt;/b&gt; — это универсальное семейство адаптивных тем дизайна для всех базовых приложений фреймворка Вебасист: Сайт, Блог, Фото, Shop-Script и других. Родительской (основной) темой семейства, включающей в себя базовый набор CSS-стилей и общий макет дизайна index.html, является тема «Выгодная Покупка» для приложения «Сайт» (данная тема). Все темы дизайна «Выгодная Покупка» для других приложений (Блог, Фото и других) используют базовый CSS и index.html из родительской (основной) темы.&lt;/p&gt;
+&lt;p&gt;Темы дизайна семейства «Выгодная Покупка» оптимизированы для всех современных браузеров, планшетных компьютеров и мобильных устройств на основе iOS и Android.&lt;/p&gt;
+</about>
+  <settings>
+    <setting var="sidebar" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show sidebar</name>
+      <name locale="ru_RU">Показывать боковую панель</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="sidebar_pos" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Sidebar Right</name>
+      <name locale="ru_RU">Боковая панель справа</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="desktop_pane" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show bottom panel</name>
+      <name locale="ru_RU">Показывать нижнюю панель</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="category_tree_sidebar_show" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show category tree in the sidebar.</name>
+      <name locale="ru_RU">Показывать дерево категорий в боковой панели.</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="pages_sidebar" control_type="select">
+      <value>blog</value>
+      <name locale="en_US">Links to the pages in the sidebar</name>
+      <name locale="ru_RU">Ссылки на страницы в боковой панели</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+      <options>
+        <option value="">
+          <name locale="en_US">Do not show</name>
+          <name locale="ru_RU">Не отображать</name>
+        </option>
+        <option value="site">
+          <name locale="en_US">Site</name>
+          <name locale="ru_RU">Сайт</name>
+        </option>
+        <option value="shop">
+          <name locale="en_US">Shop</name>
+          <name locale="ru_RU">Магазин</name>
+        </option>
+        <option value="blog">
+          <name locale="en_US">Blog</name>
+          <name locale="ru_RU">Блог</name>
+        </option>
+        <option value="photos">
+          <name locale="en_US">Gallery</name>
+          <name locale="ru_RU">Фотогалерея</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="divider_blog" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Blog commong settings</name>
+      <name locale="ru_RU">Общие настройки блога</name>
+    </setting>
+    <setting var="pagination" control_type="select">
+      <value>paging</value>
+      <name locale="en_US">Long lists</name>
+      <name locale="ru_RU">Длинные списки</name>
+      <options>
+        <option value="lazyloading">
+          <name locale="ru_RU">Автоматическая подгрузка при скролле (lazy loading)</name>
+          <name locale="en_US">Auto load on scroll (lazy loading)</name>
+        </option>
+        <option value="paging">
+          <name locale="ru_RU">Постраничная навигация (1 2 3 4 ...)</name>
+          <name locale="en_US">Paginated lists (1 2 3 4 ...)</name>
+        </option>
+      </options>
+    </setting>
+  </settings>
+  <locales>
+    <locale>
+      <msgid>Send comment</msgid>
+      <msgstr locale="ru_RU">Отправить комментарий</msgstr>
+    </locale>
+    <locale>
+      <msgid>Categories</msgid>
+      <msgstr locale="ru_RU">Категории</msgstr>
+    </locale>
+    <locale>
+      <msgid>Information</msgid>
+      <msgstr locale="ru_RU">Информация</msgstr>
+    </locale>
+    <locale>
+      <msgid>Links blog</msgid>
+      <msgstr locale="ru_RU">Ссылки блога</msgstr>
+    </locale>
+  </locales>
+</theme>

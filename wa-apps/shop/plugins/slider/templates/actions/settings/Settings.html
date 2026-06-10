@@ -1,0 +1,58 @@
+<h1>Слайдер</h1>
+
+<div class="fields form">
+    <form id="brand-edit-form" enctype="multipart/form-data" method="post" action="?plugin=slider&action=save">
+        {$wa->csrf()}
+
+
+        <div class="add-field">
+            {foreach $forms as $form}
+            <div class="field-group">
+                        <input type="text" placeholder="Сортировка" size="8" name="sort[]" value="{$form.sort}">
+                        <input type="text" placeholder="Ссылка" name="link[]" size="30" value="{$form.link}">
+                        <input type="text" placeholder="Alt" name="alt[]" size="30" value="{$form.alt}">
+                        <input type="file" name="img[]" value="">
+                        <input type="hidden" name="img_path[]" value="{$form.img}">
+                        <img src="{$form.img}" style="max-width: 50px;">
+                        <a href="#" class="button red remove">Удалить</a>
+
+            </div>
+            {/foreach}
+        </div>
+
+
+        <div class="field-group">
+            <a href="#" class="button green" id="add">Добавить</a>
+        </div>
+
+        <div class="field">
+            <div class="submit">
+                <input type="submit" class="button green" value="[s`Save`]">
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        $('#add').click(function() {
+            $('<div class="field-group">' +
+            '<input type="text" placeholder="Сортировка" name="sort[]" value="">' +
+            ' <input type="text" placeholder="Ссылка" name="link[]" value="">' +
+            ' <input type="file" name="img[]" value="">' +
+            ' <a href="#" class="button red remove">Удалить</a>' +
+            '</div>').fadeIn('slow').appendTo('.add-field');
+            return false;
+        });
+
+        $('.add-field').on('click','.remove',function() {
+            $(this).parent().remove();
+            return false;
+        });
+
+
+    });
+</script>

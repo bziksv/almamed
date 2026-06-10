@@ -1,0 +1,37 @@
+{strip}
+
+{if !$wa->isMobile() && !empty($theme_settings.category_tree_sidebar_show)}{include file="links.categories.sidebar.html" inline}{/if}
+{if !$wa->isMobile() && !empty($theme_settings.pages_sidebar)}{include file="links.pages.sidebar.html" inline}{/if}
+
+<!-- FOLLOW -->
+{if !$wa->isMobile()}
+<aside class="connect">
+    {if !empty($theme_settings.facebook_likebox_code)}
+        <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+            {$theme_settings.facebook_likebox_code}
+        </div>
+    {/if}
+    {if !empty($theme_settings.twitter_timeline_code)}
+        <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+            {$theme_settings.twitter_timeline_code}
+        </div>
+    {/if}
+    {if !empty($theme_settings.vk_widget_code)}
+        <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+            {$theme_settings.vk_widget_code}
+        </div>
+    {/if}
+    {if !empty($theme_settings.ok_widget_code)}
+        <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+            {$theme_settings.ok_widget_code}
+        </div>
+    {/if}
+    {if !empty($theme_settings.instagramm_widget_code)}
+        <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+            {$theme_settings.instagramm_widget_code}
+        </div>
+    {/if}
+</aside>
+{/if}
+
+{/strip}

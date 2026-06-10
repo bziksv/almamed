@@ -1,0 +1,15 @@
+{strip}
+
+{if $wa->mailer && $wa->getUrl('mailer/frontend/subscribe')}
+    <a href="#" class="top">[s`Follow us`]</a>
+    <div class="subscribe-wrapper">
+        <form action="{$wa->getUrl('mailer/frontend/subscribe')}" id="mailer-subscribe-form" target="mailer-subscribe-iframe">
+            <button type="submit" title="[s`Follow us`]"><i class="material-icons mi-2x">&#xE0E1;</i></button>
+            <input type="email" name="email" placeholder="your@email.here">
+        </form>
+    </div>
+    <iframe id="mailer-subscribe-iframe" name="mailer-subscribe-iframe" src="javascript:true" style="width:0;height:0;border:0px solid #666;float:right;background: #666;"></iframe>
+    <p style="display:none" id="mailer-subscribe-thankyou"><i>[s`Thank you! We’ll keep you posted.`]</i></p>
+{/if}
+
+{/strip}

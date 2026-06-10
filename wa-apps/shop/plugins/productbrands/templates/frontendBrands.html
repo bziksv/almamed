@@ -1,0 +1,8 @@
+{foreach $brands as $b}
+<div class="brand">
+    <a href="{$b.url}">{if $b.image}<img src="{$wa_url}wa-data/public/shop/brands/{$b.id}/{$b.id}{$b.image}">{else}{$b.name}{/if}</a>
+    <br>
+    {$b.summary}
+</div>
+<br clear="left">
+{/foreach}

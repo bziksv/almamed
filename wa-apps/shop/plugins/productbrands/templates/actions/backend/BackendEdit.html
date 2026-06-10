@@ -1,0 +1,309 @@
+{literal}
+<style>
+    #brand-edit-form .fields { float: none}
+    #brand-edit-form .fields .field { clear: none}
+    #brand-image-delete { white-space: nowrap}
+    #wa #brand-edit-form .redactor_editor { padding: 10px}
+    #brand-edit-form .redactor_toolbar:after { clear: none}
+    #brand-edit-form .redactor_toolbar li a:hover {color: #fff !important;}
+    .blank a.back {
+        vertical-align: middle;
+        font-size: 14px;
+    }
+    #brand-edit-form .wa-editor-core-wrapper .s-wysiwyg-html-toggle {
+        top: -34px;
+    }
+</style>
+{/literal}
+<div class="block box double-padded">
+    <h1>
+        <a href="#/brands/" class="back">← {_w('Back')}</a>
+        <span class="s-brand-name">{$brand.name}</span>
+    </h1>
+
+    <!--
+    <ul class="tabs">
+        <li class="selected">
+            <a href="#/brand/{$brand.id}">Описание</a>
+        </li>
+        <li>
+            <a href="#/brand/{$brand.id}/pages">Страницы</a>
+        </li>
+    </ul>
+    -->
+
+    <form id="brand-edit-form" enctype="multipart/form-data" method="post" action="?plugin=productbrands&action=save&id={$brand.id}" target="brand-edit-iframe">
+        {$wa->csrf()}
+    <div  class="fields form">
+        <div class="field-group">
+            <div class="field">
+                <div class="name">{_w('Name')}</div>
+                <div class="value">
+                    <input type="text" name="name" value="{$brand.name|escape}">
+                </div>
+            </div>
+			
+			<div class="field">
+                <div class="name">Название для подмены</div>
+                <div class="value">
+                    <input type="text" name="last_name" value="{$brand.last_name}" placeholder="Название для подмены">
+                    <br />
+                    <input type="checkbox" name="last_name_on" value="1" {if $brand.last_name_on}checked{/if}>
+                    Подмена названия бренда <span class="hint">Если галочка активна и заполнено поле, выводится название из поля "Название для подмены"</span>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="name">{_w('URL')}</div>
+                <div class="value">
+                    <input type="text" name="url" value="{$brand.url}" placeholder="{$brand.name|escape}">
+                    <br />
+                    <input type="checkbox" name="hidden" value="1" {if $brand.hidden}checked{/if}>
+                    [`Hidden brand`] <span class="hint">[`When enabled, this brand will be hidden from the storefront`]</span>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="name">{_w('Summary')}</div>
+                <div class="value">
+                    <textarea style="height: 40px" name="summary">{$brand.summary}</textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`Image`]</div>
+                <div class="value">
+                    {if $brand.image}
+                    <input type="hidden" name="image" value="{$brand.image}">
+                    <div style="width: 50px; text-align: center; display: inline-block">
+                        <img style="max-width: 50px; max-height: 50px" src="{$wa_url}wa-data/public/shop/brands/{$brand.id}/{$brand.id}{$brand.image}"><br>
+                        <a id="brand-image-delete" class="small inline-link" href="#"><i class="icon10 delete"></i>{_w('delete')}</a>
+                    </div>
+                    <script type="text/javascript">
+                        $("#brand-image-delete").click(function () {
+                            var p = $(this).parent();
+                            p.prev().val('');
+                            p.remove();
+                            $("#s-brand-save-button").removeClass('green').addClass('yellow');
+                            return false;
+                        });
+                    </script>
+                    {/if}
+                    <div style="display: inline-block">
+                        <input type="file" name="image_file"><br>
+                        <span class="hint">*.jpg, *.jpeg, *.gif, *.png</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="field-group">
+            <div class="field">
+                <div class="name"><strong class="title">H1</strong></div>
+                <div class="value">
+                    <input type="text" name="h1" value="{$brand.h1|escape}" placeholder="{$brand.name|escape}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[s`<strong class="title">Title</strong>`] <span class="hint">&lt;title&gt;</span></div>
+                <div class="value"><input type="text" name="title" value="{$brand.title|escape}"></div>
+            </div>
+            <div class="field">
+                <div class="name">[s`META Keywords`]</div>
+                <div class="value"><input type="text" name="meta_keywords" value="{$brand.meta_keywords}"></div>
+            </div>
+            <div class="field">
+                <div class="name">[s`META Description`]</div>
+                <div class="value">
+                    <textarea name="meta_description">{$brand.meta_description}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="field-group">
+            <div class="field">
+                <div class="name">{_w('Description')}
+                    <br><span class="hint">[`HTML`]</span>
+                </div>
+                <div class="value">
+                    <div class="wa-editor-core-wrapper s-editor-core-wrapper" style="display: none">
+                        <ul class="wa-editor-wysiwyg-html-toggle s-wysiwyg-html-toggle">
+                            <li class="selected"><a class="wysiwyg" href="#">{_w('WYSIWYG')}</a></li>
+                            <li><a class="html" href="#">HTML</a></li>
+                        </ul>
+                        <div>
+                            <textarea style="display:none" id="s-brand-description" name="description">{$brand.description|escape}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field-group">
+            <div class="field">
+                <div class="name">[`Additional description`]</div>
+                <div class="value">
+                    <textarea name="seo_description">{ifset($brand.seo_description)|escape}</textarea><br>
+                    <p>
+                        [`To display additional description add the following code to the template <b>search.html</b> (where you want, e.g. in the end of it)`]:<br>
+                        <b>
+                            &#123;if !empty($brand.seo_description) and $wa-&gt;get('page', 1) == 1&#125;&#123;$brand.seo_description&#125;&#123;/if&#125;
+                        </b>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="field-group">
+            <div class="field">
+            <div class="name">{_w('Frontend display')}:</div>
+            <div class="value">
+                {_w('Products sort order')}:
+                <select name="sort_products">
+                    <option value="name ASC" {if $brand.sort_products == 'name ASC'}selected="selected"{/if}>{_w('By name')}</option>
+                    <option value="price DESC"  {if $brand.sort_products == 'price DESC'}selected="selected"{/if}>{_w('Most expensive')}</option>
+                    <option value="price ASC"   {if $brand.sort_products == 'price ASC'}selected="selected"{/if}>{_w('Least expensive')}</option>
+                    <option value="rating DESC" {if $brand.sort_products == 'rating DESC'}selected="selected"{/if}>{_w('Highest rated')}</option>
+                    <option value="rating ASC"  {if $brand.sort_products == 'rating ASC'}selected="selected"{/if}>{_w('Lowest rated')}</option>
+                    <option value="total_sales DESC" {if $brand.sort_products == 'total_sales DESC'}selected="selected"{/if}>{_w('Best sellers')}</option>
+                    <option value="total_sales ASC" {if $brand.sort_products == 'total_sales ASC'}selected="selected"{/if}>{_w('Worst sellers')}</option>
+                    <option value="count DESC" {if $brand.sort_products == 'count DESC'}selected="selected"{/if}>{_w('In stock')}</option>
+                    <option value="create_datetime DESC" {if !$brand.sort_products || $brand.sort_products == 'create_datetime DESC'}selected="selected"{/if}>{_w('Date added')}</option>
+                </select>
+                <br />
+                <label class="small">
+                    <input type="checkbox" name="enable_sorting" {if !empty($brand.enable_sorting)}checked="checked"{/if} value="1">
+                    {_w('Customers can select preferable product sort order')}
+                </label>
+                <br /><br />
+                    <label>
+                        <input type="checkbox" name="allow_filter" value="1" id="brand-allow-filter" {if $brand.filter}checked{/if}> [`Allow product filtering`]
+                        <span class="hint">[`Product filtering allows your customers to filter (search) products within this brand by feature values, e.g. by color, size, price`]</span><br>
+                        <b>[`Not all themes have support for this feature`]</b>
+                    </label>
+                    <div class="block" id="brand-filter" {if !$brand.filter}style="display:none;"{/if}>
+                    <ul class="menu menu-v compact small">
+                        {foreach $filter_features as $feature}
+                        <li class="custom-mt-4">
+                            {if $ui == '2.0'}
+                            <i class="fas fa-bars sort" style="color: #ccc; font-size: 0.9em; margin-right: 5px"></i>
+                            {else}
+                            <i class="icon16 sort"></i>
+                            {/if}
+                            <label><input class="custom-mt-0" type="checkbox" name="filter[]" value="{$feature.id}"
+                                {if !empty($feature.checked) || ($feature.id == 'price' && !$brand.filter)}checked="checked"{/if}>
+                                {$feature.name|escape}
+                            </label>
+                        </li>
+                        {/foreach}
+                    </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field">
+                <div class="name">{_w('Custom parameters')}</div>
+                <div class="value">
+                    <textarea name="params">{if $brand.params}{foreach $brand.params as $k=>$v}{$k}={$v|escape|cat:"\n"}{/foreach}{/if}</textarea>
+                    <br>
+                    <span class="hint">
+                        [`Optional set of custom <em>key=value</em> parameters. Each key=value pair should be on a separate line.`]
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field">
+                <div class="value">
+                    <input id="s-brand-save-button" type="submit" class="button green" value="{_w('Save')}" /> {_w('or')}
+                    <a href="#/brands/">{_w('cancel')}</a>
+
+                    <span id="brand-form-status" style="display:none; padding-left: 20px">
+                        <i style="vertical-align:middle" class="icon16 yes"></i> {_w('Saved')}
+                    </span>
+                    <div id="brand-form-error" class="errormsg" style="margin-top: 10px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <iframe id="brand-edit-iframe" name="brand-edit-iframe" style="display: none"></iframe>
+</div>
+
+{$lang = substr($wa->locale(), 0, 2)}
+<script type="text/javascript">
+    $.wa.locale["delete"] = "{_w('delete')}";
+    var wa_url = '{$wa_url}';
+    var wa_app = 'shop';
+
+
+    $('#brand-edit-form .s-editor-core-wrapper').show();
+    $('#s-brand-description').waEditor({
+        lang: "{$lang}",
+        saveButton: '#s-brand-save-button',
+        toolbarFixedBox: false,
+        uploadFields: {
+            '_csrf': "{waRequest::cookie('_csrf', '')}"
+        }
+    });
+
+    $('#brand-allow-filter').change(function () {
+       if ($(this).is(':checked')) {
+           $('#brand-filter').show();
+       } else {
+           $('#brand-filter').hide();
+       }
+    });
+
+    $('#brand-filter ul').sortable({
+        distance: 5,
+        opacity: 0.75,
+        items: 'li',
+        handle: '.sort',
+        cursor: 'move',
+        tolerance: 'pointer'
+    });
+
+
+    $("#brand-edit-form").submit(function () {
+        $('#s-brand-description').waEditor('sync');
+        $("#brand-edit-iframe").one('load', function () {
+            try {
+                var data = $(this).contents().find('body').html();
+                var response = $.parseJSON(data);
+            } catch (e) {
+                alert('Error');
+                return;
+            }
+            if (response.status == 'ok') {
+                $('#brand-form-error').text('')
+                if (response.data.image) {
+                    $("#brand-edit-form input:file").replaceWith('<input type="file" name="image_file">');
+                    if ($("#brand-image-delete").length) {
+                        $("#brand-image-delete").parent().find('img').attr('src', response.data.image_url);
+                        $("#brand-edit-form input[name=image]").val(response.data.image);
+                    } else {
+                        $('<input type="hidden" name="image" value="' + response.data.image + '">' +
+                        '<div style="width: 50px; text-align: center; display: inline-block">' +
+                        '<img style="max-width: 50px; max-height: 50px" src="' + response.data.image_url + '"><br>' +
+                        '<a id="brand-image-delete" class="small inline-link" href="#"><i class="icon10 delete"></i>' + $_('delete') + '</a>' +
+                        '</div> ').insertBefore($("#brand-edit-form input:file").parent());
+                        $("#brand-image-delete").click(function () {
+                            var p = $(this).parent();
+                            p.prev().val('');
+                            p.remove();
+                            $("#s-brand-save-button").removeClass('green').addClass('yellow');
+                            return false;
+                        });
+                    }
+                }
+                $("#s-brand-save-button").removeClass('yellow').addClass('green');
+                $("#brand-form-status").fadeIn('slow', function () {
+                    $(this).fadeOut(1000);
+                });
+            } else {
+                $('#brand-form-error').text(response.errors)
+            }
+        });
+    });
+
+</script>

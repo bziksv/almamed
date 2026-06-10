@@ -1,0 +1,822 @@
+{strip}
+
+{if empty($theme_settings.color_scheme)}{$theme_settings.color_scheme = 'scheme1'}
+{else}{$theme_settings.color_scheme = str_replace('img/backgrounds/themesettings/','',str_replace('.png','',$theme_settings.color_scheme))}{/if}
+
+{*DEFAULT/SCHEME1 синий / оранжевый*}
+{if $theme_settings.color_scheme == 'scheme1'}
+    {*LINKS*}
+    {$scheme.color_a = '#188DAE'}
+    {$scheme.color_a_hover = '#F61E20'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#19A7CC'}
+    {$scheme.background_button_hover = '#188DAE'}
+    {$scheme.background_button_active = '#1AAED8'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#ff8c18'}
+    {$scheme.background_button2_hover = '#d56b00'}
+    {$scheme.background_button2_active = '#FFA244'}
+
+{*SCHEME2 синий / красный*}
+{elseif $theme_settings.color_scheme == 'scheme2'}
+    {*LINKS*}
+    {$scheme.color_a = '#318c90'}
+    {$scheme.color_a_hover = '#EF5350'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#318c90'}
+    {$scheme.background_button_hover = '#0c6468'}
+    {$scheme.background_button_active = '#50A5A9'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#EF5350'}
+    {$scheme.background_button2_hover = '#ad1612'}
+    {$scheme.background_button2_active = '#FF7B78'}
+
+{*SCHEME3 зеленый / розовый*}
+{elseif $theme_settings.color_scheme == 'scheme3'}
+    {*LINKS*}
+    {$scheme.color_a = '#0088D4'}
+    {$scheme.color_a_hover = '#E2004C'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#535353'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#70E600'}
+    {$scheme.background_button_hover = '#55AF00'}
+    {$scheme.background_button_active = '#8BE833'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#E91E63'}
+    {$scheme.background_button2_hover = '#E2004C'}
+    {$scheme.background_button2_active = '#ED457E'}
+
+{*SCHEME4 т.желтый / фиолетовый*}
+{elseif $theme_settings.color_scheme == 'scheme4'}
+    {*LINKS*}
+    {$scheme.color_a = '#00589C'}
+    {$scheme.color_a_hover = '#C32C00'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#A2B800'}
+    {$scheme.background_button_hover = '#849600'}
+    {$scheme.background_button_active = '#CCE60C'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#9C27B0'}
+    {$scheme.background_button2_hover = '#AE46C0'}
+    {$scheme.background_button2_active = '#8C04A4'}
+
+{*SCHEME5 зеленый / оранжевый*}
+{elseif $theme_settings.color_scheme == 'scheme5'}
+    {*LINKS*}
+    {$scheme.color_a = '#3B61A6'}
+    {$scheme.color_a_hover = '#BE000E'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#00796C'}
+    {$scheme.background_button_hover = '#006358'}
+    {$scheme.background_button_active = '#089889'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#C37F00'}
+    {$scheme.background_button2_hover = '#9F6700'}
+    {$scheme.background_button2_active = '#F5A40D'}
+
+{*SCHEME6 синий / зеленый*}
+{elseif $theme_settings.color_scheme == 'scheme6'}
+    {*LINKS*}
+    {$scheme.color_a = '#0043F8'}
+    {$scheme.color_a_hover = '#E31600'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#0031B6'}
+    {$scheme.background_button_hover = '#002790'}
+    {$scheme.background_button_active = '#0043F8'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#0099A7'}
+    {$scheme.background_button2_hover = '#007883'}
+    {$scheme.background_button2_active = '#00E1F6'}
+
+{*SCHEME7 зеленый*}
+{elseif $theme_settings.color_scheme == 'scheme7'}
+    {*LINKS*}
+    {$scheme.color_a = '#3A8589'}
+    {$scheme.color_a_hover = '#893A3E'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#34787B'}
+    {$scheme.background_button_hover = '#1D6265'}
+    {$scheme.background_button_active = '#559093'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#43A049'}
+    {$scheme.background_button2_hover = '#26842C'}
+    {$scheme.background_button2_active = '#6FC074'}
+
+{*SCHEME8 т.фиолетовый*}
+{elseif $theme_settings.color_scheme == 'scheme8'}
+    {*LINKS*}
+    {$scheme.color_a = '#3F4CAE'}
+    {$scheme.color_a_hover = '#AC4DBD'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#7E57C2'}
+    {$scheme.background_button_hover = '#643AAC'}
+    {$scheme.background_button_active = '#9E7DD8'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#AC4DBD'}
+    {$scheme.background_button2_hover = '#942FA6'}
+    {$scheme.background_button2_active = '#C775D5'}
+
+{*SCHEME9 серо-синий*}
+{elseif $theme_settings.color_scheme == 'scheme9'}
+    {*LINKS*}
+    {$scheme.color_a = '#436E9F'}
+    {$scheme.color_a_hover = '#893A3E'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#557585'}
+    {$scheme.background_button_hover = '#365C6E'}
+    {$scheme.background_button_active = '#79919D'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#78909C'}
+    {$scheme.background_button2_hover = '#557585'}
+    {$scheme.background_button2_active = '#A8B8BF'}
+
+{*SCHEME10 коричневый*}
+{elseif $theme_settings.color_scheme == 'scheme10'}
+    {*LINKS*}
+    {$scheme.color_a = '#5F7A91'}
+    {$scheme.color_a_hover = '#90608A'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#59433B'}
+    {$scheme.background_button_hover = '#553023'}
+    {$scheme.background_button_active = '#906F63'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#8D6E63'}
+    {$scheme.background_button2_hover = '#59433B'}
+    {$scheme.background_button2_active = '#B29388'}
+
+{*SCHEME11 т.оранжевый*}
+{elseif $theme_settings.color_scheme == 'scheme11'}
+    {*LINKS*}
+    {$scheme.color_a = '#0C71C3'}
+    {$scheme.color_a_hover = '#A70A1F'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#B5340B'}
+    {$scheme.background_button_hover = '#8E2200'}
+    {$scheme.background_button_active = '#E24C1C'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#E64A19'}
+    {$scheme.background_button2_hover = '#B5340B'}
+    {$scheme.background_button2_active = '#F17148'}
+
+{*SCHEME12 т.лимонный*}
+{elseif $theme_settings.color_scheme == 'scheme12'}
+    {*LINKS*}
+    {$scheme.color_a = '#1B6598'}
+    {$scheme.color_a_hover = '#A71E37'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#827717'}
+    {$scheme.background_button_hover = '#5A5102'}
+    {$scheme.background_button_active = '#ACA13B'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#5A5102'}
+    {$scheme.background_button2_hover = '#352F00'}
+    {$scheme.background_button2_active = '#827717'}
+
+{*SCHEME13 т.зеленый*}
+{elseif $theme_settings.color_scheme == 'scheme13'}
+    {*LINKS*}
+    {$scheme.color_a = '#237EB9'}
+    {$scheme.color_a_hover = '#CA264B'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#376914'}
+    {$scheme.background_button_hover = '#1C4502'}
+    {$scheme.background_button_active = '#568C2F'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#558B2F'}
+    {$scheme.background_button2_hover = '#376914'}
+    {$scheme.background_button2_active = '#75A950'}
+
+{*SCHEME14 зелено-синий*}
+{elseif $theme_settings.color_scheme == 'scheme14'}
+    {*LINKS*}
+    {$scheme.color_a = '#0052A2'}
+    {$scheme.color_a_hover = '#C00011'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#006F63'}
+    {$scheme.background_button_hover = '#00554C'}
+    {$scheme.background_button_active = '#09877A'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#00897A'}
+    {$scheme.background_button2_hover = '#006F63'}
+    {$scheme.background_button2_active = '#179D8F'}
+
+{*SCHEME15 синий*}
+{elseif $theme_settings.color_scheme == 'scheme15'}
+    {*LINKS*}
+    {$scheme.color_a = '#0383C8'}
+    {$scheme.color_a_hover = '#DC044C'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#026296'}
+    {$scheme.background_button_hover = '#014C75'}
+    {$scheme.background_button_active = '#0385CB'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#0289D1'}
+    {$scheme.background_button2_hover = '#026296'}
+    {$scheme.background_button2_active = '#0A9DEC'}
+
+{*SCHEME16 св.синий*}
+{elseif $theme_settings.color_scheme == 'scheme16'}
+    {*LINKS*}
+    {$scheme.color_a = '#0497C0'}
+    {$scheme.color_a_hover = '#CB047C'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#0497C0'}
+    {$scheme.background_button_hover = '#036884'}
+    {$scheme.background_button_active = '#1E9FC4'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#19A5CC'}
+    {$scheme.background_button2_hover = '#0497C0'}
+    {$scheme.background_button2_active = '#3DB3D4'}
+
+{*SCHEME17 индиго*}
+{elseif $theme_settings.color_scheme == 'scheme17'}
+    {*LINKS*}
+    {$scheme.color_a = '#3F50AA'}
+    {$scheme.color_a_hover = '#B5435D'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#3F50AA'}
+    {$scheme.background_button_hover = '#21359D'}
+    {$scheme.background_button_active = '#5D6CBE'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#5C6CC0'}
+    {$scheme.background_button2_hover = '#3F50AA'}
+    {$scheme.background_button2_active = '#828FD7'}
+
+{*SCHEME18 Пурпурный*}
+{elseif $theme_settings.color_scheme == 'scheme18'}
+    {*LINKS*}
+    {$scheme.color_a = '#0470A4'}
+    {$scheme.color_a_hover = '#B20449'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#8C04A4'}
+    {$scheme.background_button_hover = '#6A037C'}
+    {$scheme.background_button_active = '#9828AC'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#9C27B0'}
+    {$scheme.background_button2_hover = '#8C04A4'}
+    {$scheme.background_button2_active = '#AE46C0'}
+
+{*SCHEME19 красный*}
+{elseif $theme_settings.color_scheme == 'scheme19'}
+    {*LINKS*}
+    {$scheme.color_a = '#11799F'}
+    {$scheme.color_a_hover = '#C21915'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#C21915'}
+    {$scheme.background_button_hover = '#9B0703'}
+    {$scheme.background_button_active = '#E23B37'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#E53935'}
+    {$scheme.background_button2_hover = '#C21915'}
+    {$scheme.background_button2_active = '#FA605C'}
+
+{*SCHEME20 синий / желтый*}
+{elseif $theme_settings.color_scheme == 'scheme20'}
+    {*LINKS*}
+    {$scheme.color_a = '#515496'}
+    {$scheme.color_a_hover = '#97528B'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#fff'}
+    {$scheme.color_button_hover = '#fff'}
+    
+    {$scheme.background_button = '#777AB1'}
+    {$scheme.background_button_hover = '#515496'}
+    {$scheme.background_button_active = '#A5A7D0'}
+    
+    {$scheme.color_button2 = '#212121'}
+    {$scheme.color_button2_hover = '#212121'}
+    
+    {$scheme.background_button2 = '#FFF59D'}
+    {$scheme.background_button2_hover = '#D8CC64'}
+    {$scheme.background_button2_active = '#FFF9C1'}
+
+{*SCHEME21 желтый / фиолетовый*}
+{elseif $theme_settings.color_scheme == 'scheme21'}
+    {*LINKS*}
+    {$scheme.color_a = '#3B99DB'}
+    {$scheme.color_a_hover = '#EE405F'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#212121'}
+    {$scheme.color_button_hover = '#212121'}
+    
+    {$scheme.background_button = '#FFF59D'}
+    {$scheme.background_button_hover = '#D8CC64'}
+    {$scheme.background_button_active = '#FFF9C1'}
+    
+    {$scheme.color_button2 = '#fff'}
+    {$scheme.color_button2_hover = '#fff'}
+    
+    {$scheme.background_button2 = '#A367A7'}
+    {$scheme.background_button2_hover = '#88428D'}
+    {$scheme.background_button2_active = '#C799CA'}
+
+{*SCHEME22 желтый / голубой*}
+{elseif $theme_settings.color_scheme == 'scheme22'}
+    {*LINKS*}
+    {$scheme.color_a = '#179AAC'}
+    {$scheme.color_a_hover = '#CD1B21'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#212121'}
+    {$scheme.color_button_hover = '#212121'}
+    
+    {$scheme.background_button = '#FFDA89'}
+    {$scheme.background_button_hover = '#FFCE65'}
+    {$scheme.background_button_active = '#FFE6AF'}
+    
+    {$scheme.color_button2 = '#212121'}
+    {$scheme.color_button2_hover = '#212121'}
+    
+    {$scheme.background_button2 = '#80DDEA'}
+    {$scheme.background_button2_hover = '#58C8D8'}
+    {$scheme.background_button2_active = '#B0EEF7'}
+
+{*SCHEME23 голубой / красный*}
+{elseif $theme_settings.color_scheme == 'scheme23'}
+    {*LINKS*}
+    {$scheme.color_a = '#179AAC'}
+    {$scheme.color_a_hover = '#CD1B21'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#212121'}
+    {$scheme.color_button_hover = '#212121'}
+    
+    {$scheme.background_button = '#80DDEA'}
+    {$scheme.background_button_hover = '#58C8D8'}
+    {$scheme.background_button_active = '#B0EEF7'}
+    
+    {$scheme.color_button2 = '#212121'}
+    {$scheme.color_button2_hover = '#212121'}
+    
+    {$scheme.background_button2 = '#FF9289'}
+    {$scheme.background_button2_hover = '#FF7065'}
+    {$scheme.background_button2_active = '#FFB5AF'}
+
+{*SCHEME24 св.фиолетовый / св.зеленый*}
+{elseif $theme_settings.color_scheme == 'scheme24'}
+    {*LINKS*}
+    {$scheme.color_a = '#5D81B7'}
+    {$scheme.color_a_hover = '#BC6093'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#212121'}
+    {$scheme.color_button_hover = '#212121'}
+    
+    {$scheme.background_button = '#DAA8C4'}
+    {$scheme.background_button_hover = '#C27AA1'}
+    {$scheme.background_button_active = '#ECD0E0'}
+    
+    {$scheme.color_button2 = '#212121'}
+    {$scheme.color_button2_hover = '#212121'}
+    
+    {$scheme.background_button2 = '#A5D6A8'}
+    {$scheme.background_button2_hover = '#77BD7C'}
+    {$scheme.background_button2_active = '#CEE9D0'}
+
+{*SCHEME25 св.зеленый / св.бежевый*}
+{elseif $theme_settings.color_scheme == 'scheme25'}
+    {*LINKS*}
+    {$scheme.color_a = '#5F81B6'}
+    {$scheme.color_a_hover = '#BB6293'}
+    {*BASE COLOR*}
+    {$scheme.color_button = '#212121'}
+    {$scheme.color_button_hover = '#212121'}
+    
+    {$scheme.background_button = '#A5D6A8'}
+    {$scheme.background_button_hover = '#77BD7C'}
+    {$scheme.background_button_active = '#CEE9D0'}
+    
+    {$scheme.color_button2 = '#212121'}
+    {$scheme.color_button2_hover = '#212121'}
+    
+    {$scheme.background_button2 = '#FFE0C5'}
+    {$scheme.background_button2_hover = '#F0C097'}
+    {$scheme.background_button2_active = '#FFEFE1'}
+{/if}
+
+{*CUSTOM*}
+{*if !empty($theme_settings.custom_scheme)*}
+    {*LINKS*}
+    {if !empty($theme_settings.custom_a)}{$scheme.color_a = $theme_settings.custom_a}{/if}
+    {if !empty($theme_settings.custom_a_hover)}{$scheme.color_a_hover = $theme_settings.custom_a_hover}{/if}
+    {*BUTTONS*}
+    {if !empty($theme_settings.custom_color_button)}{$scheme.color_button = $theme_settings.custom_color_button}{/if}
+    {if !empty($theme_settings.custom_color_button_hover)}{$scheme.color_button_hover = $theme_settings.custom_color_button_hover}{/if}
+    
+    {if !empty($theme_settings.custom_background_button)}{$scheme.background_button = $theme_settings.custom_background_button}{/if}
+    {if !empty($theme_settings.custom_background_button_hover)}
+        {$scheme.background_button_hover = $theme_settings.custom_background_button_hover}
+        {$scheme.background_button_active = $theme_settings.custom_background_button_hover}
+    {/if}
+    
+    {if !empty($theme_settings.custom_color_button2)}{$scheme.color_button2 = $theme_settings.custom_color_button2}{/if}
+    {if !empty($theme_settings.custom_color_button2_hover)}{$scheme.color_button2_hover = $theme_settings.custom_color_button2_hover}{/if}
+    
+    {if !empty($theme_settings.custom_background_button2)}{$scheme.background_button2 = $theme_settings.custom_background_button2}{/if}
+    {if !empty($theme_settings.custom_background_button2_hover)}
+        {$scheme.background_button2_hover = $theme_settings.custom_background_button2_hover}
+        {$scheme.background_button2_active = $theme_settings.custom_background_button2_hover}
+    {/if}
+{*/if*}
+<style type="text/css" id="profitbuy-theme-css">
+{if !empty($theme_settings.desktop_pane)}
+    @media only screen and (min-width: 1201px) {
+        html body { padding-bottom: 56px; }
+    }
+{/if}
+{if !empty($theme_settings.show_background)}
+    body.is-background {
+        {if !empty($theme_settings.custom_background)}
+            background-image: url('{$wa_real_theme_url}{$theme_settings.custom_background}');
+        {else}
+            background-image: url('{$wa_theme_url}{str_replace("themesettings/", "", $theme_settings.background)}');
+        {/if}
+        {if empty($theme_settings.background_repeat)}
+            background-repeat: no-repeat;
+        {/if}
+        {if !empty($theme_settings.background_fixed)}
+            background-attachment: fixed;
+        {/if}
+        {if !empty($theme_settings.background_stretch)}
+            background-size: cover;
+        {/if}
+        {if !empty($theme_settings.background_center)}
+            background-position: center;
+        {/if}
+    }
+    {if !empty($theme_settings.alfa_main)}
+        {$_o = $theme_settings.alfa_main/100}
+        {if $_o > 1}{$_o = 1}{elseif $_o < 0}{$_o = 0}{/if}
+        main.maincontent {
+            background-color: rgba(255, 255, 255, {$_o|replace:',':'.'});
+        }
+    {/if}
+    {if !empty($theme_settings.alfa_pane)}
+        {$_o = $theme_settings.alfa_pane/100}
+        {if $_o > 1}{$_o = 1}{elseif $_o < 0}{$_o = 0}{/if}
+        .header-line.alfa-background {
+            background-color: rgba(255, 255, 255, {$_o|replace:',':'.'});
+        }
+        @media only screen and (min-width: 1201px) {
+            .footer-block.alfa-background {
+                background-color: rgba(255, 255, 255, {$_o|replace:',':'.'});
+            }
+        }
+    {/if}
+{/if}
+
+a {
+    color: {$scheme.color_a};
+}
+a:hover {
+    color: {$scheme.color_a_hover};
+}
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=time],
+input[type=date],
+input[type=datetime-local],
+input[type=tel],
+input[type=number],
+input[type=search],
+textarea,
+select {
+    outline-color: {$scheme.background_button};
+}
+input[type="button"],
+input[type="submit"],
+.button {
+    color: {$scheme.color_button};
+    background-color: {$scheme.background_button};
+}
+input[type="button"].second-type,
+input[type="submit"].second-type,
+.button.second-type {
+    color: {$scheme.color_button2};
+    background-color: {$scheme.background_button2};
+}
+input[type="button"].third-type,
+input[type="submit"].third-type,
+.button.third-type {
+    color: rgba(0, 0, 0, 0.87);
+    border-color: {$scheme.background_button};
+    background-color: #fff;
+}
+input[type=button].gray,
+input[type=submit].gray,
+.button.gray {
+    color: #9F9F9F;
+    background-color: #DFDFDF;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover,
+.button:hover {
+    color: {$scheme.color_button};
+    background-color: {$scheme.background_button_hover};
+}
+input[type="button"].second-type:hover,
+input[type="submit"].second-type:hover,
+.button.second-type:hover {
+    color: {$scheme.color_button2_hover};
+    background-color: {$scheme.background_button2_hover};
+}
+input[type="button"].third-type:hover,
+input[type="submit"].third-type:hover,
+.button.third-type:hover {
+    border-color: {$scheme.background_button_hover};
+}
+input[type="button"]:active,
+input[type="submit"]:active,
+.button:active {
+    background-color: {$scheme.background_button_active};
+}
+input[type="button"].second-type:active,
+input[type="submit"].second-type:active,
+.button.second-type:active {
+    background-color: {$scheme.background_button2_active};
+}
+
+@media only screen and (min-width: 1201px) {
+    ul.base-menu.tree > li:hover,
+    ul.base-menu.tree > li.selected {
+        background-color: {$scheme.background_button};
+    }
+    ul.base-menu.tree > li:hover > a,
+    ul.base-menu.tree > li.selected > a {
+        color: {$scheme.color_button};
+    }
+    ul.base-menu.type2 li li a {
+        color: {$scheme.color_a};
+    }
+    ul.base-menu.type2 li li a:hover {
+        color: {$scheme.color_a_hover};
+    }
+    {if !empty($theme_settings.category_tree_submenu_count)}
+    ul.base-menu.type2 li li li:nth-child(n+{$theme_settings.category_tree_submenu_count + 1}) {
+        display: none;
+    }
+    {/if}
+}
+ul.base-menu.pages-bottom > li {
+    background-color: {$scheme.background_button};
+}
+ul.base-menu.pages-bottom > li:hover {
+    background-color: {$scheme.background_button_hover};
+}
+ul.base-menu.pages-bottom > li > a {
+    color: {$scheme.color_button};
+}
+ul.base-menu.apps > li:hover {
+    background-color: {$scheme.background_button};
+}
+ul.base-menu.apps > li:hover > a {
+    color: {$scheme.color_button};
+}
+.mobile-nav-wrapper ul li.selected a {
+    border-color: {$scheme.background_button};
+}
+.addition-link.blink:before {
+    background-color: {$scheme.background_button};
+    color: {$scheme.color_button};
+}
+.addition-link.blink:after {
+    border-color: {$scheme.background_button} transparent transparent;
+}
+i.cart-count {
+    color: {$scheme.color_a};
+}
+i.cart-count:after {
+    background-color: {$scheme.color_a_hover};
+}
+#back-top {
+    background-color: {$scheme.background_button};
+    color: {$scheme.color_button};
+}
+#back-top:before {
+    border-color: transparent transparent {$scheme.background_button};
+}
+.tags a {
+    color: rgba(0, 0, 0, 0.87);
+    border-color: {$scheme.background_button};
+    background-color: #fff;
+}
+.tags a:hover {
+    color: {$scheme.color_button_hover};
+    border-color: {$scheme.background_button_hover};
+    background-color: {$scheme.background_button_hover};
+}
+.tags a:before {
+    border-color: transparent transparent transparent {$scheme.background_button};
+}
+.tags a:hover:before {
+    border-color: transparent transparent transparent {$scheme.background_button_hover};
+}
+.tags a:after {
+    border-color: transparent transparent transparent #fff;
+}
+.tags a:hover:after {
+    border-left-color: {$scheme.background_button_hover};
+}
+@media only screen and (min-width : 1201px) {
+    .sidebar-group .sidebar-title {
+        color: {$scheme.color_button2};
+        background-color: {$scheme.background_button2};
+    }
+    .sidebar-group .sidebar-title.second-type {
+        color: {$scheme.color_button};
+        background-color: {$scheme.background_button};
+    }
+}
+
+.da-dots span {
+	border-color: {$scheme.color_a} !important;
+}
+.da-dots span.da-dots-current {
+	background-color: {$scheme.color_a} !important;
+}
+{*
+.bx-wrapper .bx-pager.bx-default-pager a {
+    border-color: {$scheme.color_a} !important;
+}
+.bx-wrapper .bx-pager.bx-default-pager a:hover, .bx-wrapper .bx-pager.bx-default-pager a.active {
+    background-color: {$scheme.color_a} !important;
+}
+*}
+{*SHOP*}
+{if $wa_app == 'shop'}
+    .filters .ui-widget-content .ui-state-default {
+        background-color: {$scheme.background_button2};
+    }
+    .bullets h4 i {
+        color: {$scheme.color_a};
+    }
+    .bullet .bullet-button {
+        background: {$scheme.background_button2};
+    }
+    .bullet .bullet-button:before,
+    .bullet .bullet-button:after {
+        background-color: {$scheme.color_button2};
+    }
+    ul.product-list.colored.carousel li:first-child:hover,
+    ul.product-list.colored > li:hover {
+        box-shadow: inset 0 0 0 1px {$scheme.background_button2};
+        border-color: {$scheme.background_button2};
+    }
+    #product-tabs-nav li.selected a {
+        background: {$scheme.background_button};
+        color: {$scheme.color_button};
+    }
+    {if !empty($theme_settings.badge_new_background)}
+        .badge.new {
+            background: {$theme_settings.badge_new_background};
+        }
+    {/if}
+    {if !empty($theme_settings.badge_new_color)}
+        .badge.new span {
+            color: {$theme_settings.badge_new_color};
+        }
+    {/if}
+    
+    {if !empty($theme_settings.badge_lowprice_background)}
+        .badge.low-price {
+            background: {$theme_settings.badge_lowprice_background};
+        }
+    {/if}
+    {if !empty($theme_settings.badge_lowprice_color)}
+        .badge.low-price span {
+            color: {$theme_settings.badge_lowprice_color};
+        }
+    {/if}
+    
+    {if !empty($theme_settings.badge_bestseller_background)}
+        .badge.bestseller {
+            background: {$theme_settings.badge_bestseller_background};
+        }
+    {/if}
+    {if !empty($theme_settings.badge_bestseller_color)}
+        .badge.bestseller span {
+            color: {$theme_settings.badge_bestseller_color};
+        }
+    {/if}
+    {if !empty($theme_settings.addition_added_color)}
+        .addition-wrapper .addition-button.added {
+            color: {$theme_settings.addition_added_color};
+        }
+    {/if}
+{/if}
+</style>
+{if $user_css=$wa->block("`$at.theme_id`.user.css")}{$user_css}{/if}
+
+{/strip}

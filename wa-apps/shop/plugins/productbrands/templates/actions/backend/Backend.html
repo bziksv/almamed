@@ -1,0 +1,81 @@
+<div class="content box">
+    <div class="block double-padded">
+        <h1>[`Brands`]</h1>
+        <br>
+        <table class="zebra">
+            <thead>
+                <tr class="header">
+                    <th>{_w('Status')}</th>
+                    <th>{_w('Name')}</th>
+                    <th>[`Image`]</th>
+                    <th>{_w('Summary')}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $brands as $b}
+                <tr>
+                    <td>
+                        <span data-brand-id="{$b.id}" class="productbrands-hidden">
+                            <i class="productbrands-visibility{if $b.hidden}-off{/if}"></i>
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#/brand/{$b.id}/">{$b.name|escape}</a>
+                    </td>
+                    <td>
+                        {if $b.image}
+                            <img style="max-width: 200px; max-height: 100px" src="{$wa_url}wa-data/public/shop/brands/{$b.id}/{$b.id}{$b.image}">
+                        {/if}
+                    </td>
+                    <td>{$b.summary|escape}</td>
+                </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.productbrands-hidden').click(function () {
+            var icon = $(this).children('i');
+            var brandId = $(this).data('brand-id');
+            $.post(
+                "?plugin=productbrands&action=save&id=" + brandId,
+                {
+                    'hidden': icon.hasClass('productbrands-visibility') ? true : ''
+                },
+                function (response) {
+                    if (response.status === 'ok') {
+                        if (icon.hasClass('productbrands-visibility')) {
+                            icon.removeClass('productbrands-visibility')
+                            icon.addClass('productbrands-visibility-off')
+                        } else {
+                            icon.removeClass('productbrands-visibility-off')
+                            icon.addClass('productbrands-visibility')
+                        }
+                    }
+                },
+                "json"
+            );
+        });
+    })
+</script>
+
+<style>
+    .productbrands-visibility, .productbrands-visibility-off {
+        background-size: 16px 16px;
+        height: 16px;
+        width: 16px;
+        display: inline-block;
+        text-indent: -9999px;
+        cursor: pointer;
+    }
+    .productbrands-visibility {
+        background-image: url({$wa_url}wa-apps/shop/plugins/productbrands/img/visibility.png);
+    }
+    .productbrands-visibility-off {
+        opacity: 0.5;
+        background-image: url({$wa_url}wa-apps/shop/plugins/productbrands/img/visibility-off.png);
+    }
+</style>

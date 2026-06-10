@@ -1,0 +1,15 @@
+ul.plugmein {list-style-type: none;font-weight: bold;}
+hr.plugmein{clear:none;}
+li.disabled {color:gray; text-decoration:line-through;}
+span {color: lightgray;}
+
+.s-plugmein-panel{
+display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 -6px 10px -10px #AAAAAA;
+    z-index: 1052;
+}

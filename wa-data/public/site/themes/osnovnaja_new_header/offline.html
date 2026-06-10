@@ -1,0 +1,18 @@
+{strip}
+
+{$wh = null}
+{if $wa->shop}
+    {$wh = $wa->shop->settings("workhours")|default:"[`24/7, seven days a week`]"}
+{/if}
+{if !empty($theme_settings.address) || !empty($wh)}
+    <ul class="offline-wrapper">
+        {if !empty($theme_settings.address)}
+                <li class="address no-hover" style="line-height: 15px">
+                    <i class="material-icons mi-2x">&#xE55F;</i>
+                    Отправляем товары <span>по всей РФ</span>
+                </li>
+        {/if}
+    </ul>
+{/if}
+
+{/strip}

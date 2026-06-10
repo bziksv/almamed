@@ -1,0 +1,32 @@
+.fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    border: solid transparent;
+    border-width: 0 0 100px 600px;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    direction: ltr;
+    cursor: pointer;
+}
+
+#p-upload-step{
+    margin-bottom: 30px;
+    margin-top: 50px;
+}
+
+.image-box{
+    text-align: center;
+}
+
+.view-coordinat{
+    margin-left: 50px;
+    color: #aaa;
+}
+
+
+.image-box-preview{
+    overflow:hidden;
+    margin-left:5px;
+}

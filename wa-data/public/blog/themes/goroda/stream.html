@@ -1,0 +1,24 @@
+{* post stream (list) wrapper *}
+
+<div class="row-grid">
+    <div class="col-grid s12 l6">
+        <h1>НОВОСТИ</h1>
+    </div>
+    <div class="col-grid s12 l6">
+        {include file="`$wa_active_theme_path`/sidebar.html"}
+    </div>
+</div>
+
+    {include file="stream_posts.html" inline}
+
+<div class="row-grid">
+    <ul class="menu-h" id="stream-paging">
+        {for $p=1 to $pages}
+        <li{if $p eq $page} class="selected"{/if}>
+            <a href="{if $p eq $page}#page_{$page}{else}?page={$p}{if waRequest::get('posts_count', 0, 'int')}&posts_count={waRequest::get('posts_count', 0, 'int')}{/if}{/if}">{$p}</a>
+        </li>
+        {/for}
+    </ul>
+</div>
+
+

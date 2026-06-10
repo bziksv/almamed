@@ -1,0 +1,132 @@
+{literal}
+<div class="float-right">
+    {{if id}}
+    <ul class="menu-h">
+        <li><a id="message-delete" href="#/carts/" onclick="if(confirm('[`Are you sure?`]'))$.shop.carts.reloadContent({id: ${id}}, 1);"><i class="icon16 delete"></i>[`Delete message`]</a></li>
+    </ul>
+    {{/if}}
+</div>
+<h2>{{if id}}${name}{{else}}[`Create message`]{{/if}}
+    <span class="hint">
+        <i class="icon16 {{if type==0}}email{{else}}{{if type == 1}}mobile{{else}}im{{/if}}{{/if}}"></i>
+    </span>
+</h2>
+
+<form id="carts-settings-form" class="fields form">
+    <div class="field-group">
+        <div class="field">
+            <div class="name">[`Message name`]</div>
+            <div class="value">
+                <input type="text" name="shop_carts[name]" value="{{if id}}${name}{{else}}[`My new message`]{{/if}}" class="bold" placeholder="[`Message name`]">
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`Enabled`]</div>
+            <div class="value">
+                <input type="checkbox" name="shop_carts[status]" value="1"{{if status == 1}} checked{{/if}}>
+            </div>
+        </div>
+    </div>
+
+    <div class="field-group">
+        <div class="field">
+            <div class="name">
+                [`Sending rules`]
+            </div>
+            <div class="value">
+                [`Send after`]
+                <input type="text" class="short numerical" name="shop_carts[delay]" value="${delay}" size="3">
+                [`hours last product added to cart`]
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">
+                [`Source`]
+            </div>
+            <div class="value">
+                <select name="shop_carts[source]">
+                    <option value="">[`All storefronts`]</option>{/literal}{foreach $routes as $domain => $domain_routes}{foreach $domain_routes as $route}{$url = $domain|cat:"/":$route.url}
+
+                    <option{ldelim}{ldelim}if source == '{$url}'}} selected{ldelim}{ldelim}/if}} value="{$url}">{$url}</option>{/foreach}{/foreach}{literal}
+
+                </select>
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">
+                [`Message type`]
+            </div>
+            <div class="value">
+                <ul class="menu-v">
+                    {/literal}{foreach shopCartsPlugin::getTypeText() as $type_id => $type}<li>
+                        <label><input type="radio" name="shop_carts[type]" value="{$type_id}" {ldelim}{ldelim}if type == {$type_id}{rdelim}{rdelim}checked{ldelim}{ldelim}/if{rdelim}{rdelim}><i class="icon16 {$type[1]}"></i>{$type[0]}</label>
+                    </li>
+                {/foreach}{literal}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="field-group{{if type==1}} hidden{{/if}}" id="carts-email">
+        <div class="field">
+            <div class="name">[`Email sender`]</div>
+            <div class="value">
+                <input type="text" name="shop_carts[sender]" value="${sender}" placeholder="{/literal}{$default_sender|escape|default:'[`Default sender is not set in Shop settings!`]'}{literal}">
+                <input type="text" name="shop_carts[sender_name]" value="${sender_name}" placeholder="{/literal}{$default_sender_name|escape|default:'[`Sender name`]'}{literal}">
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`Email subject`]</div>
+            <div class="value">
+                <input type="text" class="bold long subject" name="shop_carts[subject]" value="${subject}">
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`Email body`]<br><span class="hint">HTML + Smarty</span></div>
+            <div class="value no-shift">
+                <div class="s-editor-core-wrapper">
+                    <textarea id="carts-email-body" class="body" name="shop_carts[body]">${body}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="field-group{{if type==0}} hidden{{/if}}" id="carts-sms">
+        <div class="field">
+            <div class="name">[`SMS sender`]</div>
+            <div class="value">
+                <input type="text" name="shop_carts[sender_sms]" value="${sender_sms}" placeholder="[`Default (as configured in SMS gateway)`]">
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`SMS text`]<br><span class="hint">HTML + Smarty</span></div>
+            <div class="value no-shift">
+                <div class="s-editor-core-wrapper">
+                    <textarea id="carts-sms-body" class="body" name="shop_carts[body_sms]">${body_sms}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="field">
+        <div class="value submit">
+            <div class="block half-padded float-right">
+                <ul class="menu-h with-icons">
+                    <li><a id="carts-help" href="#" class="inline-link"><i class="icon16 script"></i><b><i>[`Cheat sheet`]</i></b><i class="icon10 darr-tiny"></i></a></li>
+                </ul>
+            </div>
+            <input type="submit" class="button {{if id}}green{{else}}yellow{{/if}}" value="{{if id}}[`Save`]{{else}}[`Create`]{{/if}}">
+            {{if id}}
+            <input type="button" id="send-test-button" class="button" value="[`Send test`]">
+            {{/if}}
+            <span id="plugins-settings-form-status" style="display:none">
+                <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+            </span>
+        </div>
+        {/literal}{include file="plugins/carts/templates/actions/settings/SettingsHelp.html" inline}{literal}
+    </div>
+
+    {{if id}}<input type="hidden" name="id" value="${id}">{{/if}}
+    {/literal}{$wa->csrf()}{literal}
+</form>
+{/literal}

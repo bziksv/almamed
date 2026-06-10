@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
+<theme id="osnovnaja" system="0" vendor="873332" author="wm-site" app="shop" parent_theme_id="site:osnovnaja" version="1.2.0" source_theme_id="new_header">
+  <name locale="en_US">Profitbuy</name>
+  <name locale="ru_RU">Основная тема</name>
+  <files>
+    <file path="index.html" parent="1">	
+        </file>
+    <file path="profitbuy.css" parent="1">
+        </file>
+    <file path="profitbuy.shop.css" custom="0">
+      <description locale="ru_RU"/>
+      <description locale="en_US">Css styles app Shop-Script</description>
+    </file>
+    <file path="profitbuy.shop.js" custom="0">
+      <description locale="ru_RU"/>
+      <description locale="en_US">Scripts JS application Shop-Script</description>
+    </file>
+    <file path="head.html" custom="0" modified="1">
+      <description locale="en_US">Block &lt;head&gt; application Shop-Script</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="main.html" custom="0">
+      <description locale="en_US">Main storefront layout and navigation</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="footer.html" custom="0">
+      <description locale="en_US">App specific footer content</description>
+      <description locale="ru_RU">Содержимое подвала</description>
+    </file>
+    <file path="category.html" custom="0" modified="1">
+      <description locale="en_US">Wrapper for a category page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="list-thumbs.html" custom="0" modified="1">
+      <description locale="en_US">Product list thumbnail view</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="product.html" custom="0">
+      <description locale="en_US">Dedicated product page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="product.cart.html" custom="0" modified="1">
+      <description locale="en_US">Product add to cart block</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="product.js" custom="0">
+      <description locale="en_US">Product page JS</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="product.page.html" custom="0">
+      <description locale="en_US">Product static subpage content</description>
+      <description locale="ru_RU">Информационная страница товара</description>
+    </file>
+    <file path="review.html" custom="0">
+      <description locale="en_US">A single product review template</description>
+      <description locale="ru_RU">Отзывы о товаре</description>
+    </file>
+    <file path="reviews.html" custom="0">
+      <description locale="en_US">Список отзывов о товаре</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="compare.html" custom="0">
+      <description locale="en_US">Product comparison</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="cart.html" custom="0" modified="1">
+      <description locale="en_US">Shopping cart page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="cart.js" custom="0">
+      <description locale="en_US">Cart JS</description>
+      <description locale="ru_RU">Скрипты JS корзины магазина</description>
+    </file>
+    <file path="checkout.html" custom="0">
+      <description locale="en_US">Checkout core wrapper</description>
+      <description locale="ru_RU">Страница оформления заказа</description>
+    </file>
+    <file path="checkout.shipping.html" custom="0">
+      <description locale="en_US">Checkout: shipping option selection</description>
+      <description locale="ru_RU">Оформление заказа, шаг "доставка"</description>
+    </file>
+    <file path="checkout.payment.html" custom="0">
+      <description locale="en_US">Checkout: payment option selection</description>
+      <description locale="ru_RU">Оформление заказа, шаг "оплата"</description>
+    </file>
+    <file path="checkout.contactinfo.html" custom="0">
+      <description locale="en_US">Checkout: customer contact information form</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="checkout.confirmation.html" custom="0" modified="1">
+      <description locale="en_US">Checkout: order confirmation</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="checkout.success.html" custom="0" modified="1">
+      <description locale="en_US">Checkout: thank you page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="checkout.error.html" custom="0">
+      <description locale="en_US">Checkout: error page</description>
+      <description locale="ru_RU">Оформление заказа - вывод ошибок</description>
+    </file>
+    <file path="my.nav.html">
+      <description locale="en_US">Customer account navigation menu</description>
+      <description locale="ru_RU">Меню навигации в личном кабинете покупателя</description>
+    </file>
+    <file path="my.affiliate.html" custom="0">
+      <description locale="en_US">Customer account interface: affiliate program</description>
+      <description locale="ru_RU">Личный кабинет: партнерская программа</description>
+    </file>
+    <file path="my.profile.html" parent="1">
+        </file>
+    <file path="my.orders.html" custom="0">
+      <description locale="en_US">Customer account interface: order list</description>
+      <description locale="ru_RU">Личный кабинет: список заказов</description>
+    </file>
+    <file path="my.order.html" custom="0">
+      <description locale="en_US">Customer account interface: single order information</description>
+      <description locale="ru_RU">Личный кабинет: информация о заказе</description>
+    </file>
+    <file path="home.html" custom="0">
+      <description locale="en_US">Storefront homepage</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="search.html" custom="0">
+      <description locale="en_US">Wrapper for product search (filtering) results, e.g. by name, tag, or manufacturer</description>
+      <description locale="ru_RU">Страница вывода результата поиска товаров</description>
+    </file>
+    <file path="page.html" custom="0">
+      <description locale="en_US">Static page content</description>
+      <description locale="ru_RU">Информационная страница приложения "магазин"</description>
+    </file>
+    <file path="login.html" parent="1">
+        </file>
+    <file path="signup.html" parent="1">
+        </file>
+    <file path="forgotpassword.html" parent="1">
+        </file>
+    <file path="error.html" parent="1">
+        </file>
+    <file path="profitbuy.js" parent="1">
+        </file>
+    <file path="reviews.js" custom="0">
+      <description locale="en_US">Reviews JS</description>
+      <description locale="ru_RU">Скрипт JS обработки отзывов</description>
+    </file>
+    <file path="filter.html" custom="0">
+      <description locale="en_US">Filter products</description>
+      <description locale="ru_RU">Фильтр товаров</description>
+    </file>
+    <file path="sidebar.html" custom="0">
+      <description locale="en_US">Sidebar</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="product.images.html" custom="0">
+      <description locale="en_US">Images product</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="searchform.html" custom="0">
+      <description locale="en_US">Form Search products</description>
+      <description locale="ru_RU">Форма поиска товаров</description>
+    </file>
+    <file path="homepage.slider.html" custom="0">
+      <description locale="en_US">Slider home page</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="homepage.lastadd.html" custom="0" modified="1">
+      <description locale="en_US">Slider home page</description>
+      <description locale="ru_RU"></description>
+    </file>
+    <file path="homepage.callme.html" custom="0">      
+		</file>
+    <file path="homepage.categories.html" custom="0">
+      <description locale="en_US">Category on the home page</description>
+      <description locale="ru_RU">Категории на главной странице</description>
+    </file>
+    <file path="homepage.brands.html" custom="0">
+      <description locale="en_US">Brands on the main page</description>
+      <description locale="ru_RU">Бренды на главной странице</description>
+    </file>
+    <file path="profitbuy.shop.min.css" custom="0">
+      <description locale="en_US">Compressed file css styles</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="profitbuy.shop.min.js" custom="0">
+      <description locale="en_US">Compressed file js scripts</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="product.min.js" custom="0">
+      <description locale="en_US">Compressed file js scripts product</description>
+      <description locale="ru_RU"/>
+    </file>
+    <file path="cart.min.js" custom="0">
+      <description locale="en_US">Compressed script file js basket</description>
+      <description locale="ru_RU">Сжатый файл скриптов js корзины</description>
+    </file>
+    <file path="jquery.cookie.min.js" custom="0">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="footer_prime.html" custom="1" modified="1">
+      <description locale="ru_RU"/>
+    </file>
+    <file path="clickfrogru_udp_tcp.html" custom="1" modified="1">
+      <description locale="ru_RU"/>
+    </file>
+  </files>
+  <about locale="en_US">
+&lt;p&gt;&lt;b&gt;Profitbuy&lt;/b&gt; is a universal adaptive design theme family for all basic Webasyst apps: Site, Blog, Photos, Shop-Script, and others. The parent (main) theme of the family, which includes the basic set of CSS rules and the common layout template index.html, is the Profitbuy theme for the Site application. All Profitbuy design themes used in other applications (e.g., Blog or Photos) link common CSS and index.html layout file from the main theme.&lt;/p&gt;
+&lt;p&gt;Supported devices and platforms: iOS or Android based mobile devices, tablet computers such as iPad, common desktop computers and laptops.&lt;/p&gt;
+</about>
+  <about locale="ru_RU">
+&lt;p&gt;&lt;b&gt;«Выгодная Покупка»&lt;/b&gt; — это универсальное семейство адаптивных тем дизайна для всех базовых приложений фреймворка Вебасист: Сайт, Блог, Фото, Shop-Script и других. Родительской (основной) темой семейства, включающей в себя базовый набор CSS-стилей и общий макет дизайна index.html, является тема «Выгодная Покупка» для приложения «Сайт» (данная тема). Все темы дизайна «Выгодная Покупка» для других приложений (Блог, Фото и других) используют базовый CSS и index.html из родительской (основной) темы.&lt;/p&gt;
+&lt;p&gt;Темы дизайна семейства «Выгодная Покупка» оптимизированы для всех современных браузеров, планшетных компьютеров и мобильных устройств на основе iOS и Android.&lt;/p&gt;
+</about>
+  <settings>
+    <setting var="sidebar" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show sidebar</name>
+      <name locale="ru_RU">Показывать боковую панель</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="sidebar_pos" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Sidebar Right</name>
+      <name locale="ru_RU">Боковая панель справа</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="desktop_pane" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show bottom panel</name>
+      <name locale="ru_RU">Показывать нижнюю панель</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="category_tree_sidebar_show" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show category tree in the sidebar.</name>
+      <name locale="ru_RU">Показывать дерево категорий в боковой панели.</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+    </setting>
+    <setting var="pages_sidebar" control_type="select">
+      <value>shop</value>
+      <name locale="en_US">Links to the pages in the sidebar</name>
+      <name locale="ru_RU">Ссылки на страницы в боковой панели</name>
+      <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
+      <description locale="en_US">This setting should be determined in each of the applications.</description>
+      <options>
+        <option value="">
+          <name locale="en_US">Do not show</name>
+          <name locale="ru_RU">Не отображать</name>
+        </option>
+        <option value="site">
+          <name locale="en_US">Site</name>
+          <name locale="ru_RU">Сайт</name>
+        </option>
+        <option value="shop">
+          <name locale="en_US">Shop</name>
+          <name locale="ru_RU">Магазин</name>
+        </option>
+        <option value="blog">
+          <name locale="en_US">Blog</name>
+          <name locale="ru_RU">Блог</name>
+        </option>
+        <option value="photos">
+          <name locale="en_US">Gallery</name>
+          <name locale="ru_RU">Фотогалерея</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="divider_storefront" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Storefront</name>
+      <name locale="ru_RU">Витрина</name>
+    </setting>
+    <setting var="sidebar_home" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show sidebar on the main page of the application "store" (if enabled sidebar)</name>
+      <name locale="ru_RU">Показывать боковую панель на главной странице приложения "магазин"(если боковая панель включена)</name>
+    </setting>
+    <setting var="homepage_bxslider_mode" control_type="radio">
+      <value>promos</value>
+      <name locale="ru_RU">Слайдер</name>
+      <name locale="en_US">Slider</name>
+      <options>
+        <option value="promos">
+          <name locale="ru_RU">Промо-карточки</name>
+          <name locale="en_US">Promo cards</name>
+          <description locale="ru_RU">В слайдере будут показаны промо-карточки, созданные в разделе Товары &gt; Промо</description>
+          <description locale="en_US">Promo cards will be displayed on the main slider (use Products &gt; Promos to create new promo cards)</description>
+        </option>
+        <option value="products">
+          <name locale="ru_RU">Товары из списка</name>
+          <name locale="en_US">Products list</name>
+          <description locale="ru_RU">В слайдере будут показаны товары из списка указанного в настройках ниже.</description>
+          <description locale="en_US">Slider will present products from a set which ID is configured in the setting below. New product sets can be created in Products &gt; Sets (“Featured on homepage”).</description>
+        </option>
+        <option value="hidden">
+          <name locale="ru_RU">Не показывать слайдер</name>
+          <name locale="en_US">Don’t show the slider</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="homepage_productset_promo" control_type="text">
+      <value>category</value>
+      <name locale="en_US">Source products to the list in the main slider</name>
+      <name locale="ru_RU">Источник товаров для списка сладера на главной</name>
+      <description locale="ru_RU">В качестве источника могут служить: - список товаров магазина(пример: set/bestsellers), список товаров категории(пример: category/732), список товаров объеденных тегом(пример: tag/samsung). Товары из этого списка будут показаны в слайдере на главной, в случае если в настройке выше выбран параметр "товары из списка" и в данном списке будут присувствовать 1 или больше товаров.</description>
+      <description locale="en_US">Source: - products shop(example: set/bestsellers), products categories(example: category/732), products unite tag(example: tag/samsung). Products from this Promo set will be shown in the storefront slider if it is setup that way in the setting above.</description>
+    </setting>
+    <setting var="homepage_bxslider_mobile" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show slider on tablets and smartphones</name>
+      <name locale="ru_RU">Показывать слайдер на планшетах и смартфонах</name>
+    </setting>
+    <setting var="homepage_promocards_below_the_slider" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show smaller promo cards below the slider</name>
+      <name locale="ru_RU">Показывать маленькие промо-карточки под слайдером</name>
+    </setting>
+    <setting var="homepage_about_title" control_type="text">
+      <value>Оригинальные приборы и инструменты</value>
+      <name locale="en_US">About block title</name>
+      <name locale="ru_RU">Заголовок вступительного текста (главная страница "магазин")</name>
+    </setting>
+    <setting var="homepage_about_body" control_type="text">
+      <value>Поставки медицинского оборудования со всего мира: Европы, Америки, Англии, Кореи, Японии, Китая от ведущих производителей.</value>
+      <name locale="en_US">About block body</name>
+      <name locale="ru_RU">Вступительный текст (главная страница магазина)</name>
+    </setting>
+    <setting var="homepage_bullet_show" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show unit unique selling proposition</name>
+      <name locale="ru_RU">Показывать блок уникальных торговых предложений</name>
+    </setting>
+    <setting var="homepage_bullet_title_1" control_type="text">
+      <value locale="en_US">Faster delivery</value>
+      <value locale="ru_RU">Доставка по России</value>
+      <name locale="en_US">Title tab "delivery"</name>
+      <name locale="ru_RU">Заголовок вкладки "доставка"</name>
+    </setting>
+    <setting var="homepage_bullet_body_1" control_type="text">
+      <value locale="en_US">We offer domestic and international shipping via all major shipping carriers.</value>
+      <value locale="ru_RU">Мы доставим ваш заказ курьером по Москве и Петербургу или службой экспресс-доставки по всей России.</value>
+      <name locale="en_US">Text tab "delivery"</name>
+      <name locale="ru_RU">Текст вкладки "доставка"</name>
+    </setting>
+    <setting var="homepage_bullet_title_2" control_type="text">
+      <value/>
+      <name locale="en_US">Title tab "payment"</name>
+      <name locale="ru_RU">Заголовок вкладки "оплата"</name>
+    </setting>
+    <setting var="homepage_bullet_body_2" control_type="text">
+      <value/>
+      <name locale="en_US">Text tab "payment"</name>
+      <name locale="ru_RU">Текст вкладки "оплата"</name>
+    </setting>
+    <setting var="homepage_bullet_title_3" control_type="text">
+      <value/>
+      <name locale="en_US">Title tab "Contacts"</name>
+      <name locale="ru_RU">Заголовок вкладки "контакты"</name>
+    </setting>
+    <setting var="homepage_bullet_body_3" control_type="text">
+      <value/>
+      <name locale="en_US">Text tab "Contacts"</name>
+      <name locale="ru_RU">Текст вкладки "контакты"</name>
+    </setting>
+    <setting var="homepage_productset_bestsellers" control_type="text">
+      <value/>
+      <name locale="en_US">Source products list «Bestsellers»</name>
+      <name locale="ru_RU">Источник товаров для списка «Бестселлеры»</name>
+      <description locale="ru_RU">В качестве источника могут служить: - список товаров магазина(пример: set/bestsellers), список товаров категории(пример: category/732), список товаров объеденных тегом(пример: tag/samsung). Товары из этого списка будут показаны на витрине магазина под слайдером в блоке лучших приложений на текущий день.</description>
+      <description locale="en_US">Source: - products shop(example: set/bestsellers), products categories(example: category/732), products unite tag(example: tag/samsung). Bestseller products will be shown on the storefront homepage under the slider.</description>
+    </setting>
+    <setting var="homepage_bestsellers_title" control_type="text">
+      <value locale="en_US">Hot deals for {$date}</value>
+      <value locale="ru_RU">Лучшие предложения на {$date}</value>
+      <name locale="en_US">Title above the bestseller list</name>
+      <name locale="ru_RU">Заголовок списка "бестселлеров"</name>
+      <description locale="en_US">If provided, &lt;b&gt;{$date}&lt;/b&gt; will be replaced with the current date</description>
+      <description locale="ru_RU">Переменная &lt;b&gt;{$date}&lt;/b&gt; в заголовке (если указана) будет заменена на текущую дату</description>
+    </setting>
+    <setting var="homepage_productset_userset" control_type="text">
+      <value>set/promo_almamed</value>
+      <name locale="en_US">Source products list «User»</name>
+      <name locale="ru_RU">Источник товаров для списка «Промо»</name>
+      <description locale="ru_RU">В качестве источника могут служить: - список товаров магазина(пример: set/bestsellers), список товаров категории(пример: category/732), список товаров объеденных тегом(пример: tag/samsung).</description>
+      <description locale="en_US">Source: - products shop(example: set/bestsellers), products categories(example: category/732), products unite tag(example: tag/samsung).</description>
+    </setting>
+    <setting var="homepage_userset_title" control_type="text">
+      <value>Распродажа до конца месяца</value>
+      <name locale="en_US">Title above the «User» list</name>
+      <name locale="ru_RU">Заголовок списка «Промо»</name>
+      <description locale="en_US">If provided, &lt;b&gt;{$date}&lt;/b&gt; will be replaced with the current date</description>
+      <description locale="ru_RU">Переменная &lt;b&gt;{$date}&lt;/b&gt; в заголовке (если указана) будет заменена на текущую дату</description>
+    </setting>
+    <setting var="callme" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show banner on the main callback</name>
+      <name locale="ru_RU">Показывать баннер обратного звонка на главной</name>
+    </setting>
+    <setting var="callme_phone" control_type="text">
+      <value>8-800-100-37-97</value>
+      <name locale="en_US">Telephone banner</name>
+      <name locale="ru_RU">Телефон баннера</name>
+      <description locale="ru_RU">В случае пустого поля, будет отображен телефон указанный в настройках приложения "магазин" (магазин-настройки-общие настройки)</description>
+      <description locale="en_US">In the case of an empty field, the phone will display the configured application "store" (store settings, general settings)</description>
+    </setting>
+    <setting var="last_photos_show" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show the last image on the home page (requires installation of the application "Photo")</name>
+      <name locale="ru_RU">Показывать последние изображения на главной странице(требуется установка приложения "фото")</name>
+    </setting>
+    <setting var="last_posts_show" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show the latest news on the home page (requires installation of the application "blog")</name>
+      <name locale="ru_RU">Показывать последние новости на главной странице (требуется установка приложения "блог")</name>
+    </setting>
+    <setting var="divider_category" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Category</name>
+      <name locale="ru_RU">Категория</name>
+    </setting>
+    <setting var="filter_pos" control_type="select">
+      <value>sidebar</value>
+      <name locale="ru_RU">Место отображения фильтра</name>
+      <name locale="en_US">Place the display filter</name>
+      <options>
+        <option value="sidebar">
+          <name locale="ru_RU">В боковой панели</name>
+          <name locale="en_US">The sidebar</name>
+        </option>
+        <option value="content">
+          <name locale="ru_RU">Над списком товаров</name>
+          <name locale="en_US">Above the list of products</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="default_filters_expand" control_type="text">
+      <value>price</value>
+      <name locale="en_US">Ids characteristics of unit values which must be opened by default filter products</name>
+      <name locale="ru_RU">Идентификаторы характеристик, блок значений которых должен по умолчанию быть открыт в фильтре товаров</name>
+      <description locale="ru_RU">Введите коды характеристик разделяя их запятыми не используя пробелов.</description>
+      <description locale="en_US">Enter the code specifications separated by commas without using spaces.</description>
+    </setting>
+    <setting var="ajax_filters" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">AJAX-enabled product by-feature filtering</name>
+      <name locale="ru_RU">AJAX-фильтры товаров по характеристикам</name>
+    </setting>
+    <setting var="description_cut" control_type="text">
+      <value/>
+      <name locale="en_US">Hide long description category (specify the height of the visible contents of the unit value - an integer)</name>
+      <name locale="ru_RU">Скрывать длинное описание категории (укажите высоту видимого содержимого блока, значение - целое число)</name>
+    </setting>
+    <setting var="select_view" control_type="select">
+      <value>thumbs</value>
+      <name locale="ru_RU">Тип отображения товара в категории</name>
+      <name locale="en_US">Type of display items in category</name>
+      <options>
+        <option value="thumbs">
+          <name locale="ru_RU">Плиткой</name>
+          <name locale="en_US">thumbs</name>
+        </option>
+        <option value="list">
+          <name locale="ru_RU">Списком с изображениями</name>
+          <name locale="en_US">List with images</name>
+        </option>
+        <option value="short-list">
+          <name locale="ru_RU">Список без изображений</name>
+          <name locale="en_US">List without images</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="product_preview" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Enable "Preview of goods"</name>
+      <name locale="ru_RU">Включить "предпросмотр товара"</name>
+    </setting>
+    <setting var="scroll_image" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Include display of all the images in the list of products</name>
+      <name locale="ru_RU">Включить отображения всех изображений товаров в списке</name>
+    </setting>
+    <setting var="pagination" control_type="select">
+      <value>lazyloading</value>
+      <name locale="en_US">Download the list of categories of goods </name>
+      <name locale="ru_RU">Загрузка списка товаров категории</name>
+      <options>
+        <option value="lazyloading">
+          <name locale="ru_RU">Автоматическая подгрузка при прокрутке страницы вниз (lazy loading)</name>
+          <name locale="en_US">Auto load on scroll (lazy loading)</name>
+        </option>
+        <option value="paging">
+          <name locale="ru_RU">Постраничная навигация (1 2 3 4 ...)</name>
+          <name locale="en_US">Paginated lists (1 2 3 4 ...)</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="products_per_page" control_type="text">
+      <value>15,30,45</value>
+      <name locale="en_US">Number of products per page when the paramtre "pagination"</name>
+      <name locale="ru_RU">Количество товаров на странице при включенном параметре "постраничная навигация"</name>
+      <description locale="ru_RU">Позволяет дать возможность пользователю выбрать количество отображаемых товаров на странице, при постраничной навигации.</description>
+      <description locale="en_US">It allows you to enable the user to select the number of displayed products on the page with the pagination.</description>
+    </setting>
+    <setting var="divider_product" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Product</name>
+      <name locale="ru_RU">Товар</name>
+    </setting>
+    <setting var="sidebar_product" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show sidebar on the product page (if the Sidebar is enabled)</name>
+      <name locale="ru_RU">Показывать боковую панель на странице товара(если боковая панель включена)</name>
+    </setting>
+    <setting var="share" control_type="text">
+      <value>&lt;script type="text/javascript" src="//yastatic.net/share/share.js" charset="utf-8"&gt;&lt;/script&gt;&lt;div class="yashare-auto-init" data-yashareL10n="ru" data-yashareType="small" data-yashareQuickServices="vkontakte,facebook,twitter,odnoklassniki,moimir" data-yashareTheme="counter"&gt;&lt;/div&gt;</value>
+      <name locale="en_US">Widget block "Share"</name>
+      <name locale="ru_RU">Виджет блока «Поделиться»</name>
+      <description locale="ru_RU">Поместите в это поле код виджета блока «Поделиться». Например: https://tech.yandex.ru/share/</description>
+      <description locale="en_US">Put in this box widget code block "Share." For example: https://tech.yandex.ru/share/</description>
+    </setting>
+    <setting var="no_sku" control_type="text">
+      <value/>
+      <name locale="en_US">Your article text instead</name>
+      <name locale="ru_RU">Ваш текст вместо артикула</name>
+      <description locale="ru_RU">Если у товара не заполнено поле "артикула товара", будет показан текст из этой настройки.</description>
+      <description locale="en_US">If the goods do not fill in the "Product number" text will be shown in this setting.</description>
+    </setting>
+    <setting var="feature_button" control_type="text">
+      <value>color</value>
+      <name locale="en_US">Codes characteristics to be displayed buttons</name>
+      <name locale="ru_RU">Коды характеристик которые должны отображаться кнопками</name>
+      <description locale="ru_RU">Введите коды характеристик разделяя их запятыми не используя пробелов.</description>
+      <description locale="en_US">Enter the code specifications separated by commas without using spaces.</description>
+    </setting>
+    <setting var="tab_product" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show explanation tabs</name>
+      <name locale="ru_RU">Показывать описание товара вкладками</name>
+    </setting>
+    <setting var="reviews" control_type="select">
+      <value/>
+      <name locale="ru_RU">Отзывы о товаре</name>
+      <name locale="en_US">Product Reviews</name>
+      <options>
+        <option value="">
+          <name locale="ru_RU">Не отображать</name>
+          <name locale="en_US">Do not show</name>
+        </option>
+        <option value="webasyst">
+          <name locale="ru_RU">Отдельной страницей</name>
+          <name locale="en_US">A separate page</name>
+        </option>
+        <option value="ajax">
+          <name locale="ru_RU">На странице товара</name>
+          <name locale="en_US">On the product page</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="reviews_vk" control_type="text">
+      <value/>
+      <name locale="en_US">Product Reviews(widget VK)</name>
+      <name locale="ru_RU">Отзывы о товаре(виджет VK)</name>
+      <description locale="ru_RU">Вставьте в поле настройки код поля "Код для вставки" взятый с страницы настройки виджета: https://vk.com/dev/Comments</description>
+      <description locale="en_US">Insert in the field setting code "Embed" taken from the configuration page of the widget: https://vk.com/dev/Comments</description>
+    </setting>
+    <setting var="reviews_fb" control_type="text">
+      <value/>
+      <name locale="en_US">Product Reviews(widget Facebook)</name>
+      <name locale="ru_RU">Отзывы о товаре(виджет Facebook)</name>
+      <description locale="ru_RU">Вставьте в поле настройки код из пунктов 1 и 2, после нажатия на кнопку "GetCode" страницы настройки виджета: https://developers.facebook.com/docs/plugins/comments#configurator</description>
+      <description locale="en_US">Plug in the setup code of paragraphs 1 and 2, after clicking on the button "GetCode" page widget settings: https://developers.facebook.com/docs/plugins/comments#configurator</description>
+    </setting>
+    <setting var="divider_shop" control_type="group_divider">
+      <value/>
+      <name locale="en_US">Store commong settings</name>
+      <name locale="ru_RU">Общие настройки магазина</name>
+    </setting>
+    <setting var="autofit" control_type="text">
+      <value/>
+      <name locale="en_US">Search form of goods (number of first display of the goods found in the pop-up block, the value - an integer)</name>
+      <name locale="ru_RU">Форма поиска товаров(отобразить количество первых найденных товаров во всплывающем блоке, значение - целое число)</name>
+      <description locale="ru_RU">Если указать 0 или вовсе удалить значение в поле, автопоиск работать не будет (это на случай если у Вас установлен плагин "автопоиск товара")</description>
+      <description locale="en_US">If you specify 0 or even delete the value in the field, auto search will not work (this is in case you have installed the plugin "Auto Search Product")</description>
+    </setting>
+    <setting var="show_currency" control_type="checkbox">
+      <value>1</value>
+      <name locale="en_US">Show currency selection</name>
+      <name locale="ru_RU">Показывать выбор валюты</name>
+    </setting>
+    <setting var="show_payments_count" control_type="text">
+      <value>5</value>
+      <name locale="en_US">Maximum number of display methods of payment and delivery</name>
+      <name locale="ru_RU">Максимальное кол-во отображаемых способов оплаты и доставки</name>
+    </setting>
+    <setting var="show_payment" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show payment methods</name>
+      <name locale="ru_RU">Показывать способы оплаты</name>
+    </setting>
+    <setting var="show_shipping" control_type="checkbox">
+      <value/>
+      <name locale="en_US">Show delivery methods</name>
+      <name locale="ru_RU">Показывать способы доставки</name>
+    </setting>
+    <setting var="addition_added_color" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет активных иконок товаров (сравнение, в закладки) </name>
+      <name locale="en_US">Color icons of active products (comparison, bookmark) </name>
+    </setting>
+    <setting var="cart_crossselling" control_type="select">
+      <value>single</value>
+      <name locale="ru_RU">Рекомендуемые товары в корзине</name>
+      <name locale="en_US">Cross-selling in cart</name>
+      <options>
+        <option value="single">
+          <name locale="ru_RU">Единый список рекомендуемых товаров на основе всего содержимого корзины</name>
+          <name locale="en_US">Common recommended product list based on entire cart content</name>
+        </option>
+        <option value="many">
+          <name locale="ru_RU">Отдельные списки рекомендуемых товаров отдельно для каждого товара</name>
+          <name locale="en_US">Separate recommended product lists for each item</name>
+        </option>
+      </options>
+    </setting>
+    <setting var="badge_new_background" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет фона наклейки "NEW"</name>
+      <name locale="en_US">Background color stickers "NEW"</name>
+    </setting>
+    <setting var="badge_new_color" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет текста наклейки "NEW"</name>
+      <name locale="en_US">The color of the text label "NEW"</name>
+    </setting>
+    <setting var="badge_lowprice_background" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет фона наклейки "СКИДКА"</name>
+      <name locale="en_US">Background color stickers "DISCOUNT"</name>
+    </setting>
+    <setting var="badge_lowprice_color" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет текста наклейки "СКИДКА"</name>
+      <name locale="en_US">The color of the text labels "DISCOUNT"</name>
+    </setting>
+    <setting var="badge_bestseller_background" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет фона наклейки "ХИТ"</name>
+      <name locale="en_US">Background color stickers "HIT"</name>
+    </setting>
+    <setting var="badge_bestseller_color" control_type="color">
+      <value/>
+      <name locale="ru_RU">Цвет текста наклейки "ХИТ"</name>
+      <name locale="en_US">The color of the text labels "HIT"</name>
+    </setting>
+  </settings>
+  <thumbs>
+    <thumb>48x48</thumb>
+    <thumb>96x96</thumb>
+    <thumb>200</thumb>
+    <thumb>0x360</thumb>
+    <thumb>750</thumb>
+    <thumb>970</thumb>
+  </thumbs>
+  <locales>
+    <locale>
+      <msgid>E.g. %s</msgid>
+      <msgstr locale="ru_RU">Например, %s</msgstr>
+    </locale>
+    <locale>
+      <msgid>Show by</msgid>
+      <msgstr locale="ru_RU">Отображать</msgstr>
+    </locale>
+    <locale>
+      <msgid>%s products</msgid>
+      <msgstr locale="ru_RU">По %s товаров</msgstr>
+    </locale>
+    <locale>
+      <msgid>Article</msgid>
+      <msgstr locale="ru_RU">Артикул</msgstr>
+    </locale>
+    <locale>
+      <msgid>Options</msgid>
+      <msgstr locale="ru_RU">Варианты</msgstr>
+    </locale>
+    <locale>
+      <msgid>Additional services</msgid>
+      <msgstr locale="ru_RU">Дополнительные услуги</msgstr>
+    </locale>
+    <locale>
+      <msgid>Next ⇒</msgid>
+      <msgstr locale="ru_RU">Далее ⇒</msgstr>
+    </locale>
+    <locale>
+      <msgid>Clear list</msgid>
+      <msgstr locale="ru_RU">Очистить список</msgstr>
+    </locale>
+    <locale>
+      <msgid>%s list is empty.</msgid>
+      <msgstr locale="ru_RU">Список "%s" пуст.</msgstr>
+    </locale>
+    <locale>
+      <msgid>Bookmark</msgid>
+      <msgstr locale="ru_RU">Закладки</msgstr>
+    </locale>
+    <locale>
+      <msgid>In bookmarks</msgid>
+      <msgstr locale="ru_RU">В закладки</msgstr>
+    </locale>
+    <locale>
+      <msgid>In comparison</msgid>
+      <msgstr locale="ru_RU">К сравнению</msgstr>
+    </locale>
+    <locale>
+      <msgid>Print</msgid>
+      <msgstr locale="ru_RU">Печать</msgstr>
+    </locale>
+    <locale>
+      <msgid>Preview</msgid>
+      <msgstr locale="ru_RU">Предпросмотр</msgstr>
+    </locale>
+    <locale>
+      <msgid>Prev image</msgid>
+      <msgstr locale="ru_RU">Предыдущее изображение</msgstr>
+    </locale>
+    <locale>
+      <msgid>Next image</msgid>
+      <msgstr locale="ru_RU">Следующее изображение</msgstr>
+    </locale>
+    <locale>
+      <msgid>Request call back</msgid>
+      <msgstr locale="ru_RU">Заказать обратный звонок</msgstr>
+    </locale>
+    <locale>
+      <msgid>Do you have questions?</msgid>
+      <msgstr locale="ru_RU">У вас остались вопросы?</msgstr>
+    </locale>
+    <locale>
+      <msgid>Call us and our managers with great pleasure will answer all your questions and advise the best solutions.</msgid>
+      <msgstr locale="ru_RU">Позвоните нам и наши менеджеры с огромным удовольствием ответят на все вопросы и посоветуют лучшие решения.</msgstr>
+    </locale>
+    <locale>
+      <msgid>Your product</msgid>
+      <msgstr locale="ru_RU">Ваш товар</msgstr>
+    </locale>
+    <locale>
+      <msgid>Please select options</msgid>
+      <msgstr locale="ru_RU">Пожалуйста выберите нужные параметры</msgstr>
+    </locale>
+    <locale>
+      <msgid>Choose</msgid>
+      <msgstr locale="ru_RU">Выберите</msgstr>
+    </locale>
+    <locale>
+      <msgid>Continue shopping</msgid>
+      <msgstr locale="ru_RU">Продолжить покупки</msgstr>
+    </locale>
+    <locale>
+      <msgid>Product details</msgid>
+      <msgstr locale="ru_RU">Подробнее о товаре</msgstr>
+    </locale>
+    <locale>
+      <msgid>User reviews</msgid>
+      <msgstr locale="ru_RU">Отзывы посетителей</msgstr>
+    </locale>
+    <locale>
+      <msgid>More categories</msgid>
+      <msgstr locale="ru_RU">Еще категории</msgstr>
+    </locale>
+  </locales>
+</theme>

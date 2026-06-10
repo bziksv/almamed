@@ -1,0 +1,413 @@
+<div class="field-group">
+    <div class="field">
+        <div class="name">
+            Статус плагина для поселения
+        </div>
+        <div class="value no-shift s-ibutton-checkbox">
+            <input type="hidden" name="route_settings[status]" value="0">
+            <input type="checkbox" class="ibutton" name="route_settings[status]"
+                   value="1"{if $route_settings.status|default:0} checked{/if}>
+            <p class="hint">Чтобы плагин работал для выбранного поселения, необходимо задать «ВКЛ»</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Настройки минимального заказа в корзине</h3>
+
+    <div class="field">
+        <div class="name">
+            Селектор кнопки «Оформить заказ»
+        </div>
+        <div class="value">
+            <input type="text" name="route_settings[checkout_selector]"
+                   value="{$route_settings.checkout_selector|default:'[name=checkout]'|escape}"/>
+            <p class="hint">Используется для блокировки кнопки «Оформить заказ»</p>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">
+            Redirect. Перенаправление (дополнительная защита)
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[redirect]"/>
+            <input type="checkbox" value="1" name="route_settings[redirect]"
+                   {if $route_settings.redirect|default:1}checked="checked"{/if} />
+            <p class="hint">Если опция включена, тогда осуществляется перенаправление со страниц оформления заказа на
+                страницу корзины.
+                Данная опция позволяет предотвратить прямые переходы к оформлению заказа, минуя корзину, в обход
+                проверки минимального заказа.
+                Данная опция вызывает циклическую переадресацию и должна быть отключена, если у вас дополнительно
+                установлен плагин
+                <a target="_blank" href="http://www.webasyst.ru/store/plugin/shop/onestep/">"Заказ на одной
+                    странице"</a>
+            </p>
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">
+            Вывод уведомления о неверном минимальном заказе
+        </div>
+        <div class="value">
+            <p class="hint">
+                По умолчанию уведомление выводится после кнопки «Оформить заказ», для изменения положения вывода данного
+                сообщения разместите следующий код в нужном месте:
+                <strong>&lt;div id=&quot;wholesale-cart&quot;&gt;&lt;/div&gt;</strong><br/>
+                Для изменения цвета, размера текста используйте <strong>CSS</strong>. Внести изменения в стили можно
+                через <a target="_blank" href="?action=storefronts">Редактор дизайна</a> темы оформления
+            </p>
+
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Настройки минимального заказа в карточке товара</h3>
+    <div class="field">
+        <div class="name">
+            Плагин в карточке товара
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[frontend_product]"/>
+            <input class="ibutton s-ibutton-enabled-field" type="checkbox" value="1"
+                   name="route_settings[frontend_product]"
+                   {if $route_settings.frontend_product|default:0}checked="checked"{/if} />
+            <p class="hint">Плагин проверяет количество товара для заказа и изменяет его согласно настройкам
+                Минимального заказа</p>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.frontend_product|default:0} style="display:none"{/if}>
+        <div class="name">
+            Селектор формы
+        </div>
+        <div class="value">
+            <input type="text" value="{$route_settings.product_cart_form_selector|default:'form#cart-form'|escape}"
+                   name="route_settings[product_cart_form_selector]"/>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.frontend_product|default:0} style="display:none"{/if}>
+        <div class="name">
+            Селектор кнопки "В корзину"
+        </div>
+        <div class="value">
+            <input type="text"
+                   value="{$route_settings.product_add2cart_selector|default:'form#cart-form [type=submit]'|escape}"
+                   name="route_settings[product_add2cart_selector]"/>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.frontend_product|default:0} style="display:none"{/if}>
+        <div class="name">
+            Выводить сообщение
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[product_message]"/>
+            <input type="checkbox" value="1"
+                   name="route_settings[product_message]"{if $route_settings.product_message|default:'1'} checked="checked"{/if}/>
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Минимальная сумма всего заказа</h3>
+    <p class="hint">Плагин выполняет проверку минимальной суммы заказа на странице корзины</p>
+    <div class="field">
+        <div class="name">
+            Проверка минимальной суммы заказа
+        </div>
+        <div class="value no-shift">
+            <input type="hidden" name="route_settings[min_order_sum_enabled]" value="0">
+            <input type="checkbox" class="ibutton s-ibutton-enabled-field" name="route_settings[min_order_sum_enabled]"
+                   value="1"{if $route_settings.min_order_sum_enabled|default:0} checked{/if}>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.min_order_sum_enabled|default:0} style="display:none"{/if}>
+        <div class="name">
+            Минимальная сумма заказа
+        </div>
+        <div class="value">
+            <input class="short" type="text" name="route_settings[min_order_sum]"
+                   value="{$route_settings.min_order_sum|default:0|escape}"/> {$currency}
+        </div>
+    </div>
+
+    <div class="field"{if !$route_settings.min_order_sum_enabled|default:0} style="display:none"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[min_order_sum_message]">{$route_settings.min_order_sum_message|default:'Вы не можете оформить заказ т.к. сумма Вашего заказа меньше минимальной. Минимальная сумма заказа %s'|escape}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Минимальное количество всего заказа</h3>
+    <p class="hint">Плагин выполняет проверку минимального количества товаров в заказе на странице корзины</p>
+    <div class="field">
+        <div class="name">
+            Проверка минимальной суммы заказа
+        </div>
+        <div class="value no-shift">
+            <input type="hidden" name="route_settings[min_order_products_enabled]" value="0">
+            <input type="checkbox" class="ibutton s-ibutton-enabled-field"
+                   name="route_settings[min_order_products_enabled]"
+                   value="1"{if $route_settings.min_order_products_enabled|default:0} checked{/if}>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.min_order_products_enabled|default:0} style="display:none"{/if}>
+        <div class="name">
+            Минимальное количество товаров в заказе
+        </div>
+        <div class="value">
+            <input class="short" type="text" name="route_settings[min_order_products]"
+                   value="{$route_settings.min_order_products|default:0|escape}"/> шт.
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.min_order_products_enabled|default:0} style="display:none"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[min_order_products_message]">{$route_settings.min_order_products_message|default:'Вы не можете оформить заказ т.к. количество товаров в Вашей корзине меньше минимального. Минимальное количество товаров %s шт.'|escape}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Минимальное количество для товара и артикула</h3>
+    <div class="field">
+        <div class="name">
+            Использовать индивидуальные настройки минимального количества для каждого товара и артикула
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[product_count_setting]"/>
+            <input class="ibutton s-ibutton-enabled-field" type="checkbox" value="1"
+                   name="route_settings[product_count_setting]"{if $route_settings.product_count_setting|default:0} checked="checked"{/if} />
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.product_count_setting|default:0} style="display: none;"{/if}>
+        <div class="name">
+            Использовать автоматическое добавление недостающего числа товаров и артикулов
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[auto_add_product_count_setting]"/>
+            <input type="checkbox" value="1" name="route_settings[auto_add_product_count_setting]"
+                   {if $route_settings.auto_add_product_count_setting|default:0}checked="checked"{/if} />
+            <p class="hint">Если для товара установлено минимальное количество, и количество данного товара в корзине
+                покупателя меньше заданного, то плагин автоматически увеличит количество данного товара в корзине до
+                минимального</p>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.product_count_setting|default:0} style="display: none;"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[min_product_count_message]">{$route_settings.min_product_count_message|default:'Вы не можете оформить заказ т.к. количество товара "%s" в Вашей корзине меньше минимального. Минимальное количество товара %s шт.'|escape}</textarea>
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Кратность для товара и артикула</h3>
+    <div class="field">
+        <div class="name">
+            Использовать индивидуальные настройки кратности для каждого товара и артикула
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[product_multiplicity_setting]"/>
+            <input class="ibutton s-ibutton-enabled-field" type="checkbox" value="1"
+                   name="route_settings[product_multiplicity_setting]"
+                   {if $route_settings.product_multiplicity_setting|default:0}checked="checked"{/if} />
+        </div>
+        <p class="hint">Кратность позволяет продавать товар кратно какому-либо значению.
+            Например, установленная кратность для товара равная 3 позволяет заказать товар в количестве 3шт., 6шт., 9шт.
+            и тд.
+            При этом покупатель не может заказать 1шт,2шт,4шт и тд. штук товара.</p>
+    </div>
+    <div class="field"{if !$route_settings.product_multiplicity_setting|default:0} style="display: none;"{/if}>
+        <div class="name">
+            Использовать автоматическое добавление недостающего числа товаров и артикулов
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[auto_add_product_multiplicity_setting]"/>
+            <input type="checkbox" value="1" name="route_settings[auto_add_product_multiplicity_setting]"
+                   {if $route_settings.auto_add_product_multiplicity_setting|default:0}checked="checked"{/if} />
+            <p class="hint">Если для товара установлено кратное количество, и количество данного товара в корзине
+                покупателя не является кратным, то плагин автоматически увеличит количество данного товара в корзине до
+                кратного</p>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.product_multiplicity_setting|default:0} style="display: none;"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[multiplicity_product_message]">{$route_settings.multiplicity_product_message|default:'Количество товара "%s" в Вашей корзине должно быть кратно %s шт.'|escape}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Минимальная сумма для категории</h3>
+    <div class="field">
+        <div class="name">
+            Использовать индивидуальные настройки минимальной суммы заказа для категории
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[category_sum_setting]"/>
+            <input class="ibutton s-ibutton-enabled-field" type="checkbox" value="1"
+                   name="route_settings[category_sum_setting]"
+                   {if $route_settings.category_sum_setting|default:0}checked="checked"{/if} />
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.category_sum_setting|default:0} style="display: none;"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[min_order_sum_category_message]">{$route_settings.min_order_sum_category_message|default:'Вы не можете оформить заказ т.к. сумма Вашего заказа для категории "%s" меньше минимальной. Минимальная сумма заказа %s'|escape}</textarea>
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Минимальное количество для категории</h3>
+    <div class="field">
+        <div class="name">
+            Использовать индивидуальные настройки минимального количества товаров в заказе для категории
+        </div>
+        <div class="value">
+            <input type="hidden" value="0" name="route_settings[category_count_setting]"/>
+            <input class="ibutton s-ibutton-enabled-field" type="checkbox" value="1"
+                   name="route_settings[category_count_setting]"
+                   {if $route_settings.category_count_setting|default:0}checked="checked"{/if} />
+            <p class="hint">Задать настройки для каждой из категорий можно в разделе «Товары», затем выбрать нужную
+                категорию и нажать «Настройки категории»</p>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.category_count_setting|default:0} style="display: none;"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[min_order_count_category_message]">{$route_settings.min_order_count_category_message|default:'Вы не можете оформить заказ т.к. количество товаров для категории "%s" в Вашей корзине меньше минимального. Минимальное количество товаров %s шт.'|escape}</textarea>
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+
+    <h3>Настройки минимального заказа для различных способов доставки</h3>
+    <div class="field">
+        <div class="name">
+            Использовать настройки для способов доставки
+        </div>
+        <div class="value no-shift">
+            <input type="hidden" name="route_settings[shipping_settings_enabled]" value="0">
+            <input type="checkbox" class="ibutton s-ibutton-enabled-field"
+                   name="route_settings[shipping_settings_enabled]"
+                   value="1"{if $route_settings.shipping_settings_enabled|default:0} checked{/if}>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.shipping_settings_enabled|default:0} style="display:none"{/if}>
+        <div class="name">
+            Селектор кнопки "Далее" на шаге доставки
+        </div>
+        <div class="value">
+            <input type="text"
+                   value="{$route_settings.shipping_submit_selector|default:'.step-shipping .checkout-step-content:not(.auth) [type=submit]'|escape}"
+                   name="route_settings[shipping_submit_selector]"/>
+            <p class="hint">Плагин блокирует кнопку "Далее", используя указанный селектор</p>
+        </div>
+    </div>
+    <div class="field"{if !$route_settings.shipping_settings_enabled|default:0} style="display:none"{/if}>
+        <table class="zebra" id="s-settings-shipping">
+            <thead>
+            <th></th>
+            <th>Способ доставки</th>
+            <th>Минимальная сумма заказа</th>
+            </thead>
+            <tbody>
+            {foreach $instances|default:[] as $id => $plugin}
+                <tr data-id="{$id}">
+                    <td class="min-width">
+                        {if !empty($plugin.logo)}
+                            <img src="{$plugin.logo}">
+                        {elseif !empty($plugin.img)}
+                            <img src="{$plugin.img}">
+                        {/if}
+                    </td>
+                    <td style="width:30%">
+                        <h3 class="large{if empty($plugin.status)} gray{/if}">
+                            {$plugin.name|escape}
+                            {if empty($plugin.status)}(отключен){/if}
+                        </h3>
+                        <p class="hint">{strip_tags($plugin.description)}</p>
+                    </td>
+                    <td>
+                        <input type="text" name="route_settings[plugins][{$id}]"
+                               value="{$route_settings.plugins[$id]|escape|default:0}"/> {$currency}
+                    </td>
+                </tr>
+                {foreachelse}
+                <tr>
+                    <td colspan="3">
+                        <em class="gray">Не обнаружено способов доставки</em>
+                    </td>
+                </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="field"{if !$route_settings.shipping_settings_enabled|default:0} style="display:none"{/if}>
+        <div class="name">
+            Текст сообщения
+        </div>
+        <div class="value">
+            <textarea
+                    name="route_settings[shipping_message]">{$route_settings.shipping_message|default:'Вы не можете воспользоваться выбранным способом доставки т.к. сумма Вашего заказа меньше минимальной. Минимальная сумма заказа для данного способа доставки %s Попробуйте выбрать другой способ доставки или увеличить сумму заказа.'|escape}</textarea>
+        </div>
+    </div>
+</div>
+
+<div class="field-group"{if !$route_settings.status|default:0} style="display:none;"{/if}>
+    <h3>Шаблоны</h3>
+    <div class="templates-block">
+        {foreach $templates as $key  => $template}
+            <div class="field">
+                <div class="name">
+                    {$template.name|default:'Шаблон'}<br/><span class="hint">HTML + Smarty</span>
+                </div>
+                <div class="value no-shift">
+                    <a class="edit-template" href="#"><i class="icon16 edit"></i>Изменить шаблон</a><br/><br/>
+                    <div class="template-block">
+                        <textarea id="sf-template-{$key}"
+                                  name="templates[{$key}][template]">{$template.template|default:''|escape}</textarea>
+                        {if $template.change_tpl|default:0}
+                            <p class="gray"><i class="icon16 exclamation"></i>Внимание! Шаблон по умолчанию был изменен
+                            </p>
+                            <input type="checkbox" name="templates[{$key}][reset_tpl]" value="1"/>
+                            - Сбросить изменения, использовать шаблон по умолчанию
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        {/foreach}
+    </div>
+</div>
+

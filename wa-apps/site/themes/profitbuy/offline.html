@@ -1,0 +1,63 @@
+{strip}
+
+{$wh = null}
+{if $wa->shop}
+    {$wh = $wa->shop->settings("workhours")|default:"[`24/7, seven days a week`]"}
+{/if}
+{if !empty($theme_settings.address) || !empty($wh)}
+    <ul class="offline-wrapper">
+        {if !empty($theme_settings.address)}
+            {if !empty($theme_settings.address_map_url)}
+                <li class="address">
+                    <a href="{$theme_settings.address_map_url}" class="map-wrapper" rel="nofollow" target="_blank" title="[`View on map`]">
+                        <i class="material-icons mi-2x">&#xE55F;</i><span>{$theme_settings.address}</span>
+                    </a>
+                </li>
+            {else}
+                <li class="address no-hover">
+                    <i class="material-icons mi-2x">&#xE55F;</i>{$theme_settings.address}
+                </li>
+            {/if}
+        {/if}
+        {if !empty($wh)}
+            <li class="workhours no-hover hint">
+                {if is_array($wh)}
+                    {if method_exists($wa->shop, 'schedule')}
+                        {$_schedule = $wa->shop->schedule()}
+                        <div class="s-schedule-wrapper"{if empty($mobile)} id="js-schedule-wrapper"{/if}>
+                            <div class="s-visible">
+                                <div class="s-label-wrapper js-show-schedule" title="[`Business hours`]">
+                                    {$wh.days[1]}-{$wh.days|array_pop} {if $wh.hours_from && $wh.hours_to} {$wh.hours_from}—{$wh.hours_to}{/if}
+                                    <span class="info">i</span>
+                                    </div>
+                            </div>
+                            <div class="s-hidden">
+                                <div class="s-days-wrapper">
+                                    {foreach $_schedule.week as $_day}
+                                        <div class="s-day-wrapper">
+                                            <div class="s-date">{$_day.name|escape}</div>
+                                            <div class="s-value">
+                                                {if !empty($_day.work)}
+                                                    <div class="s-time">{$_day.start_work|escape} — {$_day.end_work|escape}</div>
+                                                {else}
+                                                    <div class="s-text">[`day off`]</div>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    {else}
+                        {$wh.days[1]}-{$wh.days|array_pop} {if $wh.hours_from && $wh.hours_to} {$wh.hours_from}—{$wh.hours_to}{/if}
+                    {/if}
+                    
+                {else}
+                    {$wh}
+                {/if}
+            </li>
+        {/if}
+    </ul>
+{/if}
+
+{/strip}

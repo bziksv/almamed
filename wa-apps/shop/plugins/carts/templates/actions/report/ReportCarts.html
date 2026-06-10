@@ -1,0 +1,155 @@
+<style>
+#carts-report .carts-menu {
+    margin-bottom: 15px;
+}
+#carts-report .carts-menu form {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+#carts-report .carts-menu input[type="text"] {
+    -webkit-transition: width .2s;
+    -moz-transition: width .2s;
+    -ms-transition: width .2s;
+    -o-transition: width .2s;
+    transition: width .2s;
+    width: 50px;
+    vertical-align: middle;
+}
+#carts-report .carts-menu input[type="text"]:focus,
+#carts-report .carts-menu input[type="text"].focus {
+    width: 150px;
+}
+#carts-report .carts-menu input[type="submit"] {
+    width: 18px;
+    height: 16px;
+    background: #fff url('{$wa_static_url}wa-apps/shop/plugins/carts/img/search.png') 50% 50% no-repeat;
+    background-size: 12px 12px;
+    margin: 0;
+    border: 0;
+    vertical-align: middle;
+    display: inline-block;
+    position: relative;
+    left: -20px;
+    border-left: 1px solid #eee;
+
+}
+</style>
+<div class="block double-padded" id="carts-report">
+
+<h1>[`Abandoned carts`]</h1>
+
+<ul class="menu-h small carts-menu">
+    <li{if !$hash[0]} class="selected"{/if}><a href="#/carts/" class="inline-link"><b><i>[`Only with contact details`]</i></b></a></li>
+    <li{if $hash[0] == 'all'} class="selected"{/if}><a href="#/carts/all/" class="inline-link"><b><i>[`All`]</i></b></a></li>
+    <li>
+        <form action="?plugin=carts&module=report#/carts/search/" id="carts-search">
+            <input type="text"{if ($hash[0] == 'search') && !empty($hash[1])} value="{$hash[1]|escape}" class="focus"{/if}><input type="submit" value="">
+        </form>
+    </li>
+</ul>
+
+{if $data.items}
+    <table class="zebra">
+        <tr>
+            <th>[`Contact`]</th>
+            <th>[`Cart`]</th>
+            <th>[`Storefront`]</th>
+            <th>[`Source`]</th>
+            <th>[`Left`]</th>
+            <th>[`Messages`]</th>
+            <th>[`State`]</th>
+        </tr>
+{foreach $data.items as $item}
+    <tr data-code="{$item.code|escape}" data-storefront_id="{$item.id|escape}">
+        <td>
+            {if !$item.contact}
+                <i class="icon16 status-red-tiny"></i> [`No contact details!`]
+            {elseif $item.contact_id}
+                <a href="../contacts/#/contact/{$item.contact_id}/" target="_blank"><i class="icon16 status-green-tiny" title="[`Registered user`]"></i> {$item.contact.name|escape}</a>
+            {else}
+                <a href="#/carts/id/{$item.id|escape}" class="inline-link"><i class="icon16 status-yellow-tiny" title="[`Unregistered user`]"></i> <b><i>{$item.contact.name|escape|default:'[`(no name)`]'}</i></b></a>
+            {/if}
+            {if $item.contact}
+                {$phone = $item.contact->get('phone', 'default')}
+                {$phone = trim($phone)}
+                {$email = $item.contact->get('email', 'default')}
+                {$email = trim($email)}
+                {if $email || $phone}
+                    {* жесть *}
+                    ({if $phone}{$phone}{if $email}, {/if}{/if}{if $email}{$email}{/if})
+                {/if}
+            {/if}
+        </td>
+        <td>
+            {if $item.order_id}
+            [`Order created`]
+            <a href="?action=orders#/orders/id={$item.order_id}/" style="display: inline-block">{shopHelper::encodeOrderId($item.order_id)}</a>
+            {elseif $item.total_products}
+                {if $item.total_skus}
+                    {$item.total_skus} SKU,
+                {/if}
+            {_wp('%d product', '%d products', $item.total_products)},
+            {$item.total|wa_format_amount_currency:$item.currency}<sup class="hint">*</sup>
+            (<a href="#/carts/id/{$item.id|escape}" class="inline-link" style="display: inline"><b><i>[`show`]</i></b></a>,
+                <a href="?action=orders#/orders/new/carts_plugin={$item.code|escape}" class="inline-link" style="display: inline"><b><i>[`create order`]</i></b></a>)
+            {else}
+                <em class="hint">[`empty`]</em>
+            {/if}
+        </td>
+        <td><span class="hint">{$item.storefront|escape}</span></td>
+        <td>
+            {if !empty($item.source)}
+                <span class="hint" title="{$item.source.referer|escape}">{$item.source.referer|escape|truncate:50|default:'[`direct hit`]'}</span>
+            {else}
+                <span class="hint">[`Not set`]</span>
+            {/if}
+        </td>
+        <td><span class="hint">{$item.edit_datetime|wa_date:'humandatetime'}</span></td>
+        <td>
+            <span class="hint">
+                {if !$item.last_send_datetime}
+                    [`Not sent yet`]
+                {else}
+                    {$item.last_send_datetime|wa_date:'humandatetime'}
+                    (<a href="#/carts/id/{$item.id|escape}" class="inline-link" style="display: inline"><b><i>[`show`]</i></b></a>)
+                {/if}
+            </span>
+        </td>
+        <td>
+            {if $item.cancel}<i class="icon16 no"></i>{/if}
+            {if $item.restore}<i class="icon16 update"></i>{/if}
+            {if $item.order_id}
+                <a href="?action=orders#/orders/id={$item.order_id}/" style="display: inline-block"><i class="icon16 dollar"></i> {shopHelper::encodeOrderId($item.order_id)}</a>
+            {/if}
+        </td>
+    </tr>
+{/foreach}
+    </table>
+{else}
+    <p>[`No data matched selected period`].</p>
+{/if}
+    <div class="block" id="carts-pagination">{wa_pagination total=$pages_total attrs=['class' => 'menu-h']}</div>
+
+
+    <div class="block shadowed">
+        <ul class="menu-v">
+            <li><i class="icon16 status-green-tiny"></i> &mdash; [`Registered user`]</li>
+            <li><i class="icon16 status-yellow-tiny"></i> &mdash; [`Unregistered user`]</li>
+            <li><i class="icon16 status-red-tiny"></i> &mdash; [`No contact details!`]</li>
+            <li><i class="icon16 no"></i> &mdash; [`Canceled`]</li>
+            <li><i class="icon16 update"></i> &mdash; [`Restored`]</li>
+            <li><i class="icon16 dollar"></i> &mdash; [`Order`]</li>
+            <li>* [`This amount has been shown in a shopping cart (including all discounts, etc).`]</li>
+        </ul>
+    </div>
+
+
+    <div class="block">
+        <p class="hint">{sprintf('[`Report generated at %f ms`]', $generated)}</p>
+    </div>
+</div>
+
+<script>
+document.title = '[`Abandoned carts report`]';
+</script>

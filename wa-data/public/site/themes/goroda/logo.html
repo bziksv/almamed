@@ -1,0 +1,17 @@
+{strip}
+
+<a id="logo" href="{$wa_url}">
+    {if !empty($theme_settings.logo)}
+        <img src="{$wa_theme_url}{$theme_settings.logo}?v{$wa_theme_version}" alt="{$theme_settings.logo_title|default:''}" id="logo-image" />
+    {else}
+        <img src="{$wa_theme_url}img/wm_site.png" alt="{$theme_settings.logo_title|default:''}"/>
+    {/if}
+    {if empty($theme_settings.logo_image_only) && (!empty($theme_settings.logo_title) || !empty($theme_settings.logo_tagline))}
+        <div class="logo-text">
+            {if !empty($theme_settings.logo_title)}<div class="account-name">{$theme_settings.logo_title}</div>{/if}
+            {if !empty($theme_settings.logo_tagline)}<span class="hint">{$theme_settings.logo_tagline}</span>{/if}
+        </div>
+    {/if}
+</a>
+
+{/strip}

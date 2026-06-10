@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<title>{$settings.TITLE_PAGE|default:{$plugin_name}|escape}</title>
+		<script src="{$wa_url}wa-content/js/jquery/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery-ui.custom.min.js"></script>
+		<style type="text/css">
+			{$css.css}
+		</style>
+	</head>
+<body>
+<!-------------[`top menu`]------------------>
+	<div class="invoice_menu_mass no_print">
+		<span class="button green translate" onclick="window.print();">[`PRINT`]</span>
+		<a href="?action=plugins#/{$plugin_id}" class="translate" style="float: right;" target="_blank">[`Settnings plugin`]</a>
+		<div class="orders-alert"></div>
+	</div>
+</body>
+
+</html>
+<script type="text/javascript">
+	{if $orders}
+		var orders = {$orders};
+	{else}
+		var orders = null;
+	{/if}
+	var o = $(orders).length;
+	$(".orders-alert").append('<span class="translate">[`formed`]</span><b> '+o+' </b><span class="translate">[`orders`]</span>');
+	$(function(){
+		var docHeight = $(document).height();
+		$("body").append("<div id='overlay'><div class='overlay'>[`Wait, is the formation`]</div></div>");
+		$("#overlay").height(docHeight).css({ 'position': 'fixed', 'top': 0, 'left': 0, 'background-color': 'rgba(0, 0, 0, 0.55)', 'width': '100%', 'z-index': 5000 });	   
+		$(".overlay").css({ 'position':'absolute', 'top':'50%', 'left':'45%', 'color':'#000', 'background-color':'#fff', 'width':'230px', 'z-index': 5001, 'padding':'15px 5px', 'text-align':'center', 'white-space':'nowrap' });	   
+		if (orders.length) {
+			for (i = 0; i < orders.length; ++i) {
+				url = '{$url}';
+				id = orders[i];
+				getUrl = url + id;
+				$.get(getUrl, function( data ) {
+					var nsheet = "<div class='frame_form{if $settings.PRINT_FORMAT} book{else} landscape{/if}'></div>";    
+					$('body').append(nsheet);
+					$('.frame_form:last').append(data);
+					$('.invoice_menu').remove();
+					$('.frame_form meta').remove();
+					$('.frame_form title').remove();
+				}).fail(function() {
+					var nsheet = "<div class='frame_form{if $settings.PRINT_FORMAT} book{else} landscape{/if}'></div>";
+					$('body').append(nsheet);
+					$('.frame_form:last').append('[`Error loading the document. This message will not be printed on the sheet when starting to print`]');
+					$('.invoice_menu').remove();
+					$('.frame_form .frame').remove();
+				});
+			}
+		}
+		window.onload=function(){			
+			setTimeout(window.onload=function(){
+				var context = $('.frame');
+				while( context.children('div.frame_form' ).length){
+					context.children('div.frame_form:lt({$settings.SHEET_COUNT|default:"1"})').wrapAll('<div class="page_break">');
+				}
+				$('#overlay').remove();
+				if ('{$settings.SPEED_PRINT}' !== '0'){
+					$('.invoice_menu_mass .button').click();		
+				}			
+			}, '{$settings.SPEED_PRINT_T|default:"3000"|escape}');
+		}
+	});
+</script>

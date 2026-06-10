@@ -1,0 +1,31 @@
+<h1>Форма</h1>
+
+<div class="fields form">
+    <form action="?module=plugins&id=form&action=save" method="post" id="plugins-settings-form">
+        {$wa->csrf()}
+        <div class="field add-field">
+            <div class="name">
+                Почта
+            </div>
+            <div class="values">
+                <input type="text" placeholder="Email" name="shop_form[email]" value="{$settings.email}">
+            </div>
+        </div>
+
+        <div class="field add-field">
+            <div class="name">
+                Письмо клиенту
+            </div>
+            <div class="values">
+                <textarea cols="100" rows="30" name="shop_form[email_client]">{$settings.email_client}</textarea>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="submit">
+                <input type="submit" class="button green" value="[s`Save`]">
+                <span id="plugins-settings-form-status" style="display:none"></span>
+            </div>
+        </div>
+    </form>
+</div>

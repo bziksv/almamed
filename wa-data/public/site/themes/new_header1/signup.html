@@ -1,0 +1,57 @@
+{strip}
+
+<div id="page" role="main" class="wa-signup-form fill-background">
+
+    {if !empty($confirmed_email)}
+    
+        <h1>[s`Thank you!`]</h1>
+        <p>[s`You have successfully confirmed your email.`]</p>
+        
+    {else if !empty($contact)}
+    
+        <h1>[s`Thank you!`]</h1>
+        <p>[s`You have successfully signed up.`]</p>
+
+        {if !empty($email_confirmation_hash)}
+            <p><em>[s`A confirmation link has been sent to you by email. Please click this link to confirm your signup and to sign in.`]</em></p>
+        {/if}
+        
+    {else}
+
+        <h1>[s`Sign up`]</h1>
+        {$wa->authAdapters()}
+        {$wa->signupForm($errors)}
+
+    <style>
+        .wa-field .wa-value label.at-stylize-label{
+            width: 5%;
+            float: left;
+        }
+
+        .wa-field .wa-value span.obr{
+            width: 95%;
+            float: left;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+        ;(function($) { 'use strict';
+
+            var text = '<div class="wa-field"><div class="wa-value"><input id="tm-license-agreement" class="agreement" type="checkbox" checked="ckecked" /><span class="obr">Нажимая на эту кнопку , я даю свое согласие на <a href="/rules/personal.pdf">обработку персональных данных</a> и соглашаюсь с условиями <a href="/rules/user_yes.pdf">политики конфиденциальности</a></span></div></div>';
+            $('.wa-field-password_confirm').after(text);
+            var $checkbox = $('.agreement');
+            var $submit = $('.wa-field .wa-submit input');
+            $checkbox.on('change', function() {
+                $submit.attr('disabled', $checkbox.prop('checked') ? false : true);
+                    }).trigger('change');
+
+
+        })(jQuery);
+    </script>
+        
+    {/if}
+    
+</div>
+
+{/strip}

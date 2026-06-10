@@ -1,0 +1,35 @@
+
+<h2>Очистить изображения</h2> <br>
+
+<div class="fields form">
+    <form action="?plugin=ic&action=clean" method="post" id="plugins-settings-form" enctype="multipart/form-data">
+        {$wa->csrf()}
+
+        <div class="field">
+            <div class="name">
+                <label>Файл</label>
+            </div>
+            <div class="value">
+                <input type="file" name="csv_file" class="file"> <br>
+                <span class="hint">Файл "лягушки" csv в котором содержатся все используемые на сайте изображения.</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="value submit">
+                <input type="submit" class="button green" value="Загрузить и очистить">
+                <span id="plugins-settings-form-status" style=""></span>
+            </div>
+        </div>
+    </form>
+
+    <h3 style="margin-top: 20px;">Защищенные файлы:</h3>
+
+    <p class="block hint">
+        Количество: {$protected.count}<br>
+        Размер: {$protected.size}<br>
+        Путь: {$protected.path}<br>
+    </p>
+
+    <a href="/webasyst/logs/?action=file&path=ic.log" target="_blank" class="small">Лог с последними удаленными файлами.</a>
+</div>

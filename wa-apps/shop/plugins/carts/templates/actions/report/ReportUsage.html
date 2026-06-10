@@ -1,0 +1,29 @@
+<div class="block double-padded">
+
+<h1>[`Used resources`]</h1>
+
+    {if !empty($memory)}
+        <div class="block shadowed highlighted ">
+            <p>{sprintf('[`Plugin uses <strong>%s</strong> of database disc space.`]', $memory)}<br>
+            <p>{sprintf('[`You can delete old info except for last %s days by clicking this button:`]', '<input type="number" class="short numerical" value="10">')}
+            <a href="#" class="button red" id="carts-clear-database">[`Delete`]</a></p>
+        </div>
+    {/if}
+</div>
+
+<script>
+    $(function(){
+        document.title = '[`Abandoned carts report`] | [`Used resources`]';
+
+
+        $('#carts-clear-database').click(function (e) {
+            e.preventDefault();
+            var days = $(this).parent().find('input').val();
+            if(confirm('[`This operation cannot be canceled. Proceed?`]')) {
+                $.post('?plugin=carts&module=report&action=cleanDb', { days: days }, function() {
+                    location.reload();
+                })
+            }
+        })
+    });
+</script>

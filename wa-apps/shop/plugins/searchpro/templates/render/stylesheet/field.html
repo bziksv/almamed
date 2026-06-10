@@ -1,0 +1,53 @@
+{capture assign="styles"}
+    <style>
+	    {if !empty($settings.design_field_width)}
+	    .searchpro__field {
+		    width: {if $settings.design_field_width === '100%'}100%{else}{$settings.design_field_width}px{/if};
+	    }
+	    {/if}
+
+        {if !empty($settings.design_field_main_color)}
+		.searchpro__field
+		.searchpro__field-container.js-searchpro__field-container--focus {
+			border-color: {$settings.design_field_main_color};
+		}
+
+		.searchpro__field
+		.searchpro__field-container.js-searchpro__field-container--focus
+		.searchpro__field-button-container
+		.searchpro__field-button {
+			background-color: {$settings.design_field_main_color};
+		}
+
+		.searchpro__field .searchpro__field-category:hover,
+		.searchpro__field .searchpro__field-subcategory:hover,
+		.searchpro__dropdown .searchpro__dropdown-view-all-link:hover {
+			color: {$settings.design_field_main_color};
+		}
+
+		.searchpro__field
+		.searchpro__field-subcategories-list
+		.searchpro__field-subcategory:hover:before {
+			background-image: url('data:image/svg+xml;charset=utf-8,<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="2" fill="{$settings.design_field_main_color|default:'#f2994a'|replace:'#':'%23'}"></circle></svg>');
+		}
+        {/if}
+
+		{if !empty($settings.design_field_border_color)}
+		.searchpro__field .searchpro__field-container {
+			border-color: {$settings.design_field_border_color};
+		}
+		.searchpro__field .searchpro__field-button-container .searchpro__field-button {
+			background-color: {$settings.design_field_border_color};
+		}
+		{/if}
+
+		{if !empty($settings.design_field_hint_color)}
+		.searchpro__field .searchpro__field-category,
+		.searchpro__field .searchpro__field-subcategory,
+		.searchpro__dropdown .searchpro__dropdown-group-title,
+		.searchpro__dropdown .searchpro__dropdown-entity_subname {
+			color: {$settings.design_field_hint_color};
+		}
+		{/if}
+    </style>
+{/capture}{$styles|regex_replace:'/<\/?style>/':''|strip}

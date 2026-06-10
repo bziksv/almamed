@@ -1,0 +1,859 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/easyinvoicephys\n"
+"POT-Creation-Date: 2016-06-12 20:47+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: shop/plugins/easyinvoicephys\n"
+"Language-Team: shop/plugins/easyinvoicephys\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:81
+msgid "COMPANY"
+msgstr "ОРГАНИЗАЦИЯ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:82
+msgid "BUYER"
+msgstr "ПОКУПАТЕЛЬ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:83
+msgid "IMAGES"
+msgstr "ИЗОБРАЖЕНИЯ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:84
+msgid "SETTINGS"
+msgstr "НАСТРОЙКИ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:85
+msgid "TEMPLATE"
+msgstr "ШАБЛОН"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:86
+msgid "USER CSS"
+msgstr "Стили - CSS"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:87
+msgid "SUPPORT"
+msgstr "ПОДДЕРЖКА"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:93
+msgid "Company name"
+msgstr "Название организации"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:99
+msgid "The head of the organization"
+msgstr "Руководитель Организации"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:105
+msgid "Accountant of the organization"
+msgstr "Бухгалтер Организации"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:111
+msgid "Address"
+msgstr "Адрес организации"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:117
+msgid "DETAILS"
+msgstr "РЕКВИЗИТЫ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:121
+msgid "Name of the Bank"
+msgstr "Наименование банка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:127
+msgid "Bank account number"
+msgstr "Рас/счет"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:133
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:235
+msgid "INN"
+msgstr "ИНН"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:139
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:241
+msgid "KPP"
+msgstr "КПП"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:145
+msgid "Correspondent number"
+msgstr "Корреспондентский счет"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:151
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:265
+msgid "BIK"
+msgstr "БИК"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:157
+msgid "Managers"
+msgstr "Менеджеры"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:160
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:178
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:470
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:477
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:488
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:495
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:508
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:517
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:528
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:533
+msgid "not show"
+msgstr "не показывать"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:164
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPage.html:347
+msgid "to display the current default"
+msgstr "выводить текущего по умолчанию"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:183
+msgid "The storekeeper"
+msgstr "Кладовщик"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:184
+msgid "Manager"
+msgstr "Менеджер"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:185
+msgid "Director"
+msgstr "Директор"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:186
+msgid "The cashier"
+msgstr "Кассир"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:190
+msgid "CONTACT INFORMATION"
+msgstr "КОНТАКТНАЯ ИНФОРМАЦИЯ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:193
+msgid "Phone number"
+msgstr "Номер телефона"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:199
+msgid "Em@il address"
+msgstr "Em@il адрес"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:208
+msgid "The display format name of the buyer"
+msgstr "Формат отображения имени покупателя"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:212
+msgid "FML"
+msgstr "ИОФ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:214
+msgid "LFM"
+msgstr "ФИО"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:219
+msgid "Fields are configured - <a href=\"?action=settings#/checkout/\">\"Store\" > Settings\" > \"checkout\" > \"Contact information\"</a>"
+msgstr "Поля настраиваются - <a href=\"?action=settings#/checkout/\">\"Магазин\" > \"Настройки\" > \"Оформление заказа\" > \"Контактная информация\"</a>"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:220
+msgid "ATTENTION! If you don't know what to do, don't change anything!"
+msgstr "ВНИМАНИЕ! Если вы не знаете что делать, ничего не меняйте!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:223
+msgid "Legal name"
+msgstr "Юридическое название"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:229
+msgid "Legal Address"
+msgstr "Юр. адрес:"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:247
+msgid "The account"
+msgstr "Рас/счет"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:253
+msgid "Bank name"
+msgstr "Наименование банка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:259
+msgid "Correspondent account"
+msgstr "Корреспондентский счет"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:271
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:299
+msgid "Additional field 1"
+msgstr "Доп. поле 1"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:272
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:280
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:288
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:300
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:308
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:316
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:324
+msgid "Name"
+msgstr "Название"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:279
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:307
+msgid "Additional field 2"
+msgstr "Доп. поле 2"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:287
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:315
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:323
+msgid "Additional field 3"
+msgstr "Доп. поле 3"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:295
+msgid "ADDITIONAL FIELDS' ADDRESS"
+msgstr "ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ АДРЕСА"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:297
+msgid "select only from the section \"the Address\""
+msgstr "выбирайте только из раздела \"Адрес\""
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:333
+msgid "You can drag a seal, stamp facsimile and in any place."
+msgstr "Вы можете перетащить печать, штамп факсимиле и в любое место."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:334
+msgid "Attention! pictures of press and facsimilie should have a transparent background!"
+msgstr "Внимание! Картинки печати и подписи должны иметь прозрачный фон!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:342
+msgid "Faximile"
+msgstr "Факсимилия"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:347
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:389
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:682
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:690
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:698
+msgid "Delete"
+msgstr "Удалить"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:348
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:390
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:685
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:693
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:702
+msgid "open the original image"
+msgstr "посмотреть исходное изображение"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:360
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:402
+msgid "size"
+msgstr "размер"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:362
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:404
+msgid "W"
+msgstr "Ш"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:362
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:363
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:404
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:405
+msgid "mm"
+msgstr "мм"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:363
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:405
+msgid "H"
+msgstr "В"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:368
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:410
+msgid "position"
+msgstr "позиция"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:384
+msgid "Stamp"
+msgstr "Печать магазина"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:431
+msgid "The title of the document"
+msgstr "Название документа"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:437
+msgid "Button name"
+msgstr "Название кнопки в заказе"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:443
+msgid "The size of the base font"
+msgstr "Базовый размер текста"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:450
+msgid "Margin"
+msgstr "Отступы"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:456
+msgid "The text in the \"Base\""
+msgstr "Текст в \"Основание\""
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:463
+msgid "Type the order number"
+msgstr "Тип номера заказа"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:482
+msgid "Show tax"
+msgstr "Показывать налог"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:485
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:490
+msgid "show everywhere"
+msgstr "везде"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:486
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:492
+msgid "only show in the end"
+msgstr "показать только в итоге"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:496
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:518
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:534
+msgid "Attention! Only hides the field!!!"
+msgstr "Внимание! Скрывается только поле!!!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:501
+msgid "Show shipping"
+msgstr "Показать доставку"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:504
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:509
+msgid "the row accounts show without a title"
+msgstr "строкой счета показывать без названиия"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:505
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:512
+msgid "the row accounts show called"
+msgstr "строкой счета показывать с названием"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:507
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:514
+msgid "show in the end"
+msgstr "показывать в итоге"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:523
+msgid "Show discount"
+msgstr "Скидка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:527
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:530
+msgid "show"
+msgstr "показывать"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:538
+msgid "The source of the prepayment"
+msgstr "Источник предоплаты"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:542
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:546
+msgid "from \"Account payment plugin\""
+msgstr "из \"Счета-плагина оплаты"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:543
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:548
+msgid "from the field in the order"
+msgstr "из поля в заказе"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:550
+msgid "from the field - generated field that is displayed in the section of the order \"Buyer\"<br>from \"Account payment plugin\" - field from the plugin \"payment Account\" and other similar with this field"
+msgstr "из поля в заказе - созданное поле, отображаемое в разделе заказа \"Покупатель\"<br>из \"Счета-плагина оплаты\"- поле из плагина оплаты \"Счет\" и другие аналогичные имеющие его."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:554
+msgid "Field prepaid"
+msgstr "Поле предоплаты"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:556
+msgid "Attention! if you don't know what this means don't change"
+msgstr "ВНИМАНИЕ! Если вы не знаете что делать, ничего не меняйте!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:561
+msgid "To take into account the prepayment"
+msgstr "Учитывать предоплату"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:565
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:574
+msgid "not taken into account"
+msgstr "не учитывается"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:566
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:569
+msgid "subtract from the \"Total to pay\""
+msgstr "вычесть из \"Итого к оплате\""
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:567
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:571
+msgid "the Deposit as the \"Total payable\""
+msgstr "Итоговая сумма к оплате"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:579
+msgid "Quick print"
+msgstr "Быстрая печать"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:583
+msgid "in a standard location"
+msgstr "в стандартном месте"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:585
+msgid "in the field of product"
+msgstr "в поле продукта"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:586
+msgid "Print immediately after clicking the button."
+msgstr "Печатать сразу же после нажатия кнопки."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:591
+msgid "If there is no tax at the product show"
+msgstr "Если нет налога"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:595
+msgid "dash"
+msgstr "тире"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:600
+msgid "0.00"
+msgstr "0.00"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:602
+msgid "The print format"
+msgstr "Формат листа печати"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:606
+msgid "book"
+msgstr "книжный"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:610
+msgid "landscape"
+msgstr "альбомный"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:614
+msgid "CURRENCY"
+msgstr "ВАЛЮТА"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:614
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:658
+msgid "Add your own styles if you want something to change or add to the template"
+msgstr "Добавьте свои стили, если вы хотите что то поменять или дополнить шаблон"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:617
+msgid "The text in the header of the invoice"
+msgstr "Расположение шапки накладной"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:621
+msgid "top"
+msgstr "сверху"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:625
+msgid "bottom"
+msgstr "снизу"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:627
+msgid "Внимание! Счет действителен 30 дней. Оплата данного счета означает согласие с условиями поставки товара.. Уведомление об оплате обязательно, в противном случае не гарантируется наличие товара на складе. Товар отпускается по факту прихода денег на р/с Поставщика."
+msgstr "Внимание! Счет действителен 30 дней. Оплата данного счета означает согласие с условиями поставки товара.. Уведомление об оплате обязательно, в противном случае не гарантируется наличие товара на складе. Товар отпускается по факту прихода денег на р/с Поставщика."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:639
+msgid "Warning!! The default template has been changed."
+msgstr "Внимание!! Шаблон по умолчанию был изменен."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:640
+msgid "Template to default settings."
+msgstr "Шаблон по-умолчанию"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:646
+msgid " - Reset template to default settings (this is to remove all the changes to the template)."
+msgstr "- Сброс шаблона по умолчанию (это удалит все изменения в шаблоне)."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:655
+msgid "IN DEMO MODE IS NOT AVAILABLE"
+msgstr "НЕ ДОСТУПЕН В ДЕМО-РЕЖИМЕ!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:662
+msgid "example:"
+msgstr "например:"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:667
+msgid "Save"
+msgstr "Сохранить"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:669
+msgid "Saved"
+msgstr "Сохранено"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:671
+msgid "After every change don't forget to click on the \"save\"button"
+msgstr "После каждого изменения не забудьте нажать на кнопку «Сохранить»"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:675
+msgid "Are you sure you want to remove the picture?"
+msgstr "Вы уверены, что хотите удалить изображение?"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPage.html:17
+msgid "Редактировать"
+msgstr "Edit"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPage.html:18
+msgid "Двойной клик для редактирования"
+msgstr "ДВОЙНОЙ КЛИК ДЛЯ РЕДАКТИРОВАНИЯ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPage.html:23
+msgid "OK"
+msgstr "ОК"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/lib/shopEasyinvoicephys.plugin.php:87
+msgid "Print form template (EasyinvoicephysPage.html)"
+msgstr "Шаблон формы (EasyinvoicephysPage.html)"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/lib/shopEasyinvoicephys.plugin.php:130
+msgid "File could not be saved due to the insufficient file write permissions for the %s folder."
+msgstr "Файл не может быть сохранен из-за недостаточных прав на запись файлов в папке %s."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/lib/shopEasyinvoicephys.plugin.php:134
+msgid "Failed to upload file."
+msgstr "Не удалось загрузить файл."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:579
+msgid "off"
+msgstr "выкл."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:582
+msgid "on"
+msgstr "вкл."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:610
+msgid "HEND"
+msgstr "ШАПКА"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:622
+msgid "Attention! Account valid for 30 days. Payment of this invoice signifies acceptance of the conditions of delivery.. payment Notification is necessary, otherwise is not guaranteed availability of goods in the warehouse. Product is released upon the arrival of money with the Vendor."
+msgstr "Внимание! Счет действителен 30 дней. Оплата данного счета означает согласие с условиями поставки товара.. Уведомление об оплате обязательно, в противном случае не гарантируется наличие товара на складе. Товар отпускается по факту прихода денег на р/с Поставщика."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:221
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:225
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:229
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:233
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:237
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:241
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:245
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:249
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:259
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:267
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:275
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:287
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:295
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:303
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:311
+msgid "not selected"
+msgstr "не выбран"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:307
+msgid "Additional field 4"
+msgstr "Доп. поле 4"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:642
+msgid "Setup and recommendations"
+msgstr "Настройка и рекомендации"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:643
+msgid "Technical support"
+msgstr "Техническая поддержка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:636
+msgid "The default CSS has been saved."
+msgstr "CSS по умолчанию был сохранен."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:638
+msgid "CSS to default settings."
+msgstr "CSS по умолчанию"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:641
+msgid " - Reset CSS to default settings (this is to remove all the changes to the CSS)."
+msgstr "- Сброс CSS по умолчанию (это удалит все изменения в css)."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/lib/shopEasyinvoicephys.plugin.php:113
+msgid "CSS (easyinvoicephys.css)"
+msgstr "CSS (easyinvoicephys.css)"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:100
+msgid "Warning!! The default css has been changed."
+msgstr "Внимание!! Шаблон по умолчанию был изменен."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:480
+msgid "Invoice date"
+msgstr "Дата счета"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:484
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:492
+msgid "The invoice date and the date of the Foundation = the day of the order"
+msgstr "Дата счета  = дата печати, дата в основания = дата заказа"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:485
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:494
+msgid "Invoice date = date of printing date of Foundation = the day of the order"
+msgstr "Дата счета  = дата заказа, дата в основания = дата печати"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:486
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:496
+msgid "Invoice date = order date, base date = date printing"
+msgstr "Дата счета и дата в основания = дата печати"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:489
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:504
+msgid "The invoice date and the Foundation date = date printing"
+msgstr "Дата счета и дата в основания = дата заказа"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:659
+msgid "The default template has been changed."
+msgstr "Шаблон по умолчанию был изменен."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:665
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:695
+msgid "not save"
+msgstr "не сохранять"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:671
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:701
+msgid "save"
+msgstr "сохранять"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:674
+msgid " - Selecting don't save will delete all your changes in the template!"
+msgstr "- Выбрав \"не сохранять\" удалит все ваши изменения в шаблоне!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:690
+msgid "The default css has been changed."
+msgstr "CSS по умолчанию был изменен."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:704
+msgid " - Selecting don't save will delete all your changes in the css!"
+msgstr "- Выбрав \"не сохранять\" отменит все ваши изменения в css!"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:257
+msgid "Fields name"
+msgstr "Имя поля"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:259
+msgid "Priority"
+msgstr "Приоритет"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:259
+msgid "Fields payments"
+msgstr "Поля оплаты"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:265
+msgid "Legal Name"
+msgstr "Юр. название"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:328
+msgid "ADDITIONAL FIELDS' BUYER"
+msgstr "ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ АДРЕСА"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:336
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:344
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:352
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:360
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:368
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:375
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:388
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:396
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:404
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:413
+msgid "Additional field"
+msgstr "Доп. поле"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:530
+msgid "Button position"
+msgstr "Позиция кнопки"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:531
+msgid "left"
+msgstr "слева"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:531
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:540
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:544
+msgid "link"
+msgstr "ссылка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:531
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:535
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:540
+msgid "only massive printing"
+msgstr "только массовая печать"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:532
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:533
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:535
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:539
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:542
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:544
+msgid "right"
+msgstr "справа"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:532
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:535
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:542
+msgid "button"
+msgstr "кнопка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:533
+msgid "block"
+msgstr "блок"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:542
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:544
+msgid "only current"
+msgstr "только текущий"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:544
+msgid "The button layout of the plugin in the backend (in order)"
+msgstr "Расположение кнопок плагина в бекенде (в заказе)"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:550
+msgid "Default order status"
+msgstr "Статусы заказов по умолчанию"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:553
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:16
+msgid "All statuses"
+msgstr "Все статусы"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:559
+msgid "In the popup window, select orders"
+msgstr "В открывшемся окне статус по умолчанию"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:609
+msgid "the text for zero tax."
+msgstr "текст при нулевом налоге"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysButton.html:26
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysButton.html:39
+msgid "current"
+msgstr "с печатью"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysButton.html:26
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysButton.html:39
+msgid "current no print"
+msgstr "без печати"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysButton.html:33
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysButton.html:40
+msgid "choice"
+msgstr "выбрать"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPage.html:32
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:107
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:15
+msgid "PRINT"
+msgstr "РАСПЕЧАТАТЬ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPage.html:33
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:16
+msgid "Settnings plugin"
+msgstr "Настройки плагина"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:7
+msgid "The choice of orders"
+msgstr "Выбор заказов"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:12
+msgid "Order"
+msgstr "Заказ"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:13
+msgid "Date"
+msgstr "Дата"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:22
+msgid "Total"
+msgstr "Итого"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:23
+msgid "Buyer"
+msgstr "Покупатель"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:24
+msgid "Shipping"
+msgstr "Доставка"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:42
+msgid "date shipping"
+msgstr "дата доставки"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:46
+msgid "date order"
+msgstr "дата заказа"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:63
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:109
+msgid "Select orders"
+msgstr "Выберите заказы"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPopup.html:65
+msgid "Cancel"
+msgstr "Отмена"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:13
+msgid "top menu"
+msgstr "меню сверху"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:29
+msgid "formed"
+msgstr "сформировано"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:29
+msgid "orders"
+msgstr "заказа(ов)"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:32
+msgid "Wait, is the formation"
+msgstr "Ожидайте, идет формирование."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/EasyinvoicephysPrint.html:51
+msgid "Error loading the document. This message will not be printed on the sheet when starting to print"
+msgstr "Ошибка загрузки документа. Это сообщение не будет распечатано на листе при запуске на печать"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/lib/actions/shopEasyinvoicephysPluginBackendPrint.action.php:32
+msgid "You need to select the orders to print"
+msgstr "Необходимо выбрать заказы для печати"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:678
+msgid "COLOR SCHEME"
+msgstr "ЦВЕТОВАЯ СХЕМА"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:681
+msgid "The color of the header"
+msgstr "Цвет заголовков"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:683
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:686
+msgid "invoice"
+msgstr "накладная"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:683
+msgid "background"
+msgstr "фон"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:687
+msgid "text"
+msgstr "текст"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:764
+msgid "Custom styles, you can add your own styles for the template, they are unchanged after an update of the plugin."
+msgstr "Пользовательские стили, вы можете добавить свои собственные стили для шаблона."
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:621
+msgid "smudge delivery"
+msgstr "размыть по товарам"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:653
+msgid "Article"
+msgstr "Артикул"
+
+#: /wa-apps/shop/plugins/easyinvoicephys/templates/actions/settings/Settings.html:550
+msgid "Number of displayed orders"
+msgstr "Кол-во выводимых заказов"

@@ -1,0 +1,124 @@
+{strip}
+
+{* LAST POSTS*}
+
+
+
+{if !empty($theme_settings.last_posts_show) && $wa->blog}
+{$company_news_posts = $wa->blog->posts(3, 5)}
+{$med_news_posts = $wa->blog->posts(2, 4)}
+
+{/if}
+
+{if !empty($med_news_posts) || !empty($company_news_posts)}
+
+<div class="row-grid hide-on-small-and-down">
+
+    {if !empty($company_news_posts)}
+
+    <div class="last-post-wrapper col-grid m12">
+
+        <div class="fill-background">
+
+            <h2 class="last-post-header">Новости компании</h2>
+
+            {foreach $company_news_posts as $post}
+
+            <div class="row-grid">
+                <div class="last-post-wrapper col-grid m6" style="overflow: hidden;height: 250px;">
+
+
+                    <img src={$post.image} style="max-width:485px;">
+                </div>
+                <div class="last-post-wrapper col-grid m6" style="height: 250px;">
+                    <h4 class="last-post-title" style="margin-top: 10px;">
+
+                        <a href="{$post.link}">{$post.title}</a>
+                        {* @event prepare_posts_frontend.%plugin_id%.post_title *}
+                        {if !empty($post.plugins.post_title)}{foreach $post.plugins.post_title as $plugin => $output}{$output}{/foreach}{/if}
+
+                    </h4>
+
+                    <br>
+                    <div class="credentials">
+
+                        <i class="material-icons mi-lg">&#xE192;</i>
+                        <span class="date">{$post.datetime|wa_datetime:"humandate"}</span>
+
+                    </div>
+                    <br>
+                    <p>{$post.text|strip_tags|truncate:200}</p>
+                    <a href="{$post.link}">Читать далее >></a>
+
+                </div>
+
+
+
+            </div>
+
+            {$section = $post.blog_url}
+            {/foreach}
+            <div class="row-grid" style="text-align: right">
+                <a href="/{$section}/" style="color: #999;">Еще >></a>
+            </div>
+
+        </div>
+    </div>
+
+    {/if}
+
+</div>
+
+
+<div class="row-grid hide-on-small-and-down">
+
+    {if !empty($med_news_posts)}
+
+    <div class="last-post-wrapper col-grid m12">
+
+        <div class="fill-background">
+
+            <h2 class="last-post-header">Новости медицины</h2>
+
+            {foreach $med_news_posts as $post}
+            <div class="last-post-wrapper col-grid m3" style="">
+
+                <div class="images-post" style="overflow: hidden;height: 170px">
+                    <img src={$post.image} style="max-width: 240px;">
+                </div>
+
+                <h4 class="last-post-title" style="margin-top: 10px;height: 80px;">
+
+                    <a href="{$post.link}">{$post.title|truncate:40:"...":true}</a>
+                    {* @event prepare_posts_frontend.%plugin_id%.post_title *}
+                    {if !empty($post.plugins.post_title)}{foreach $post.plugins.post_title as $plugin => $output}{$output}{/foreach}{/if}
+
+                </h4>
+
+                <p style="">{$post.text|strip_tags|truncate:200:"...":true}</p>
+                <a href="{$post.link}">Читать далее >></a>
+                <div class="credentials" style="margin-top: 10px;">
+                    <i class="material-icons mi-lg">&#xE192;</i>
+                    <span class="date">{$post.datetime|wa_datetime:"humandate"}</span>
+                </div>
+
+
+            </div>
+
+            {$section = $post.blog_url}
+            {/foreach}
+            <div class="last-post-wrapper col-grid m12" style="text-align: right">
+
+                <a href="/novosti/" style="color: #999;">Еще >></a>
+            </div>
+
+        </div>
+    </div>
+
+    {/if}
+
+</div>
+
+{/if}
+
+{/strip}

@@ -1,0 +1,11 @@
+<div style="display: none">
+	<input id="filter_meta_title" type="hidden" value="{$seofilter_category_title|escape}" />
+	<input id="filter_h1" type="hidden" value="{$seofilter_category_h1|default:$category.name|escape}" />
+	<input id="filter_description" type="hidden" value="{$seofilter_category_description|default:$category.description|escape}" />
+	<input id="filter_current_url" type="hidden" value="{$seofilter_current_url|default:$wa->currentUrl()|escape}" />
+	<input id="filter_additional_description" type="hidden" value="{$seofilter_category_additional_description|default:$category.additional_description|default:''|escape}" />
+
+	<div id="feature_value_ids" data-feature_value_ids="{$seofilter_current_feature_value_ids|json_encode|escape}"></div>
+
+	<input id="filter_is_sfilter" type="hidden" value="{($is_seofilter|default:false) ? '1' : '0'}" >
+</div>

@@ -1,0 +1,19 @@
+{strip}
+
+{if $wa->isAuthEnabled()}
+    <ul class="base-menu">
+        <li{if $wa->globals('isMyAccount')} class="selected"{/if}>
+            {if $wa->user()->isAuth()}
+                {if $wa->myUrl()}
+                    <a href="{$wa->myUrl()}"><i class="icon16 userpic20" style="background-image: url('{$wa->user()->getPhoto2x(20)}');"></i>[s`My account`]</a>
+                {else}
+                    <span>{$wa->user('firstname')}</span>
+                {/if}
+            {else}
+                <a href="{$wa->loginUrl()}"{if !empty($theme_settings.authpopup)} class="authpopup"{/if}><i class="material-icons mi-lg">&#xE7FD;</i>[s`Log in`]</a>
+            {/if}
+        </li>
+    </ul>
+{/if}
+
+{/strip}

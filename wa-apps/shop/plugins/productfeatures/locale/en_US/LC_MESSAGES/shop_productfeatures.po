@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/productfeatures\n"
+"POT-Creation-Date: 2014-01-22 17:22+0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator:  shop/plugins/productfeatures\n"
+"Language-Team:  shop/plugins/productfeatures\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: en_US\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/settings/Settings.html:1
+msgid "Product features"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/settings/Settings.html:50
+msgid "Saved"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:37
+msgid "other"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:114
+msgid "color name"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:118
+msgid "000000"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:130
+msgid "Yes"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:137
+msgid "No"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:144
+msgid "Not defined"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/lib/config/plugin.php:9
+msgid "This plugin allow you edit features from product list page"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/Toolbar.html:3
+msgid "Edit features"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/settings/Settings.html:11
+msgid "To edit the features of products, open any list (all products, some category, search results),<br>select products by clicking the checkbox and then click on \"Edit features\" on the right sidebar."
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:4
+msgid "Please select at least one product"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:10
+msgid "Features"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:12
+msgid "Save"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:12
+msgid "cancel"
+msgstr ""

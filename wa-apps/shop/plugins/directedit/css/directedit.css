@@ -1,0 +1,14 @@
+.directedit__look{
+    background-image: url("../img/directedit__look.png") !important;
+}
+.directedit__active{
+    background: #87ff8d !important;
+}
+.directedit__active td{
+    background: #87ff8d !important;
+}
+
+
+.directedit__active td div i.shortener{
+    box-shadow: -10px 0 10px #87ff8d inset !important;
+}

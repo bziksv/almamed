@@ -1,0 +1,124 @@
+.tab-content div.cr_block {
+    margin-top: 10px;
+    color:red; 
+}
+
+.update_rate_button {
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 10px;
+    float: left;
+}
+
+.update_rate_button a {
+    margin-right:10px;
+}
+
+.update_rate h5 {
+    font-size:14px;
+    display:inline-block;
+    width:170px;
+    float: left;
+}
+
+
+#update_all_rate a {
+    color: #000;
+    text-decoration: none;
+}
+
+a.button {
+    display:inline-block; 
+    line-height:16px; 
+    height:auto;
+}
+.zebra .currency {
+    width:315px;
+}
+
+.zebra .rate_td .rate { 
+    display:inline-block;
+    width:150px;
+    height: 24px;
+    margin-top: 5px;
+}
+
+.zebra .update_rate {
+    width:320px;
+    text-align:right;
+}
+
+table.zebra {
+    width:auto;
+}
+
+.title_currencyrates {
+    margin:20px 0 10px;
+}
+
+.name_currencyrates {
+    display:inline-block;
+}
+
+#update_all_rate {
+    display:block !important;
+    margin:20px 0 !important;
+}
+
+.name {
+    margin:20px 0;
+}
+
+.currency .rate {
+    margin:10px 0;
+    border-bottom:1px dashed #777;
+}
+
+.setting_div {
+    margin:10px 0 10px;
+    border:1px solid #ccc;
+    background:#eee;
+    padding:10px;
+}
+
+.setting_div h3 {
+    margin:0 0 10px;
+}
+
+.currency .preview_rate {
+    display:block !important;
+    margin:10px !important;
+    border:1px solid red;
+    font-weight:bold;
+    padding:10px;
+    margin:5px 0;
+    font-size:16px;
+    color:red;
+}
+ 
+.state {
+    font-size:16px;
+}
+
+.setting_fields {
+    margin-top:10px;
+}
+
+.cron_result p, 
+.cmd_path {
+    background-color: #eee; 
+    padding:5px 10px; 
+    border:1px solid #ddd; 
+    display:inline-block; 
+    font-family:monospace; 
+    font-weight:normal;
+}
+
+#currencyrates_cron_settings_currencies_list .currencies_list-item {
+    cursor: pointer;
+}
+
+.cron_save_curencies_list_button,
+.cron_gen_button {
+    cursor: pointer;
+}

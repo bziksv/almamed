@@ -1,0 +1,20 @@
+<link href="{$wa_app_static_url}plugins/descriptionmanager/css/descriptionmanager.css?{time()}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$wa_app_static_url}plugins/descriptionmanager/js/description_manager_product.js?{time()}"></script>
+
+<div class="descriptionmanager">
+	{if $data['manager_description']}
+        <p class="hidden-print">{$data['manager_description']}</p>
+    {/if}
+	
+    {if $data['description']}
+        <p class="hidden-print">{$data['description']}</p>
+    {/if}
+
+    <form id="descriptionmanager_form_frontend" class="hidden-print">
+        <input type="hidden" name="product_id" value="{$data['product_id']}">
+
+        <input type="text" name="price" placeholder="Цена" value="{$data['price']}">
+        <input type="text" name="delivery" placeholder="Срок поставки" value="{$data['delivery']}">
+        <input type="submit" value="Save">
+    </form>
+</div>

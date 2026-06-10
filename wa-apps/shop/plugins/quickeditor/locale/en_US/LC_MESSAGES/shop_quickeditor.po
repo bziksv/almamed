@@ -1,0 +1,201 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/quickeditor\n"
+"POT-Creation-Date: 2017-03-15 22:09+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: shop/plugins/quickeditor\n"
+"Language-Team: shop/plugins/quickeditor\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: en_US\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+msgid "Quick editor"
+msgstr ""
+
+msgid ".com"
+msgstr ""
+
+msgid "Instructions for using the plugin"
+msgstr ""
+
+msgid "Answers to questions"
+msgstr ""
+
+msgid "Enable plugin"
+msgstr ""
+
+msgid "Enable «frontend_head» hook"
+msgstr ""
+
+msgid "Location of the edit button on a product page"
+msgstr ""
+
+msgid "On the right side of the page"
+msgstr ""
+
+msgid "On the left side of the page"
+msgstr ""
+
+msgid "In main description area"
+msgstr ""
+
+msgid "Usually in a sidebar"
+msgstr ""
+
+msgid "Next to links to custom product pages"
+msgstr ""
+
+msgid "Next to the «Add to cart» button"
+msgstr ""
+
+msgid "Hidden"
+msgstr ""
+
+msgid "Always opening the product editing page"
+msgstr ""
+
+msgid "Show product descriptions on «Basics» tab"
+msgstr ""
+
+msgid "Enable «Save and close» button"
+msgstr ""
+
+msgid "Show the text «Edit» at the edit button"
+msgstr ""
+
+msgid "A fixed button for edit category"
+msgstr ""
+
+msgid "A fixed button for edit information pages"
+msgstr ""
+
+msgid "A fixed button<br>“Quick access”"
+msgstr ""
+
+msgid "Opening editor in the tab"
+msgstr ""
+
+msgid "By default the plugin is disabled."
+msgstr ""
+
+msgid "First of all, set mark «Enable plugin»."
+msgstr ""
+
+msgid "The plugin automatically adding fixed edit button on: information pages, product pages, categories pages"
+msgstr ""
+
+msgid "To display additional edit button for each product in category, insert a plugin code in list-thumbs.html as shown below"
+msgstr ""
+
+msgid "Paste code here"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Quick products editor"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit product"
+msgstr ""
+
+msgid "Edit category"
+msgstr ""
+
+msgid "Save and update"
+msgstr ""
+
+msgid "Save and close"
+msgstr ""
+
+msgid "Edit page"
+msgstr ""
+
+msgid "Quick access"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Plugins"
+msgstr ""
+
+msgid "Qrders"
+msgstr ""
+
+msgid "Products"
+msgstr ""
+
+msgid "Customers"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Storefronts"
+msgstr ""
+
+msgid "Please enter a valid plugin parameters"
+msgstr ""
+
+msgid "Saved"
+msgstr ""
+
+msgid "Use multi-storefront settings"
+msgstr ""
+
+msgid "Enable separate plugin settings for each storefront"
+msgstr ""
+
+msgid "Storefront"
+msgstr ""
+
+msgid "Select storefront for saving current settings"
+msgstr ""
+
+msgid "Reset settings"
+msgstr ""
+
+msgid "Reset settings to default"
+msgstr ""
+
+msgid "Storefront not found"
+msgstr ""
+
+msgid "Open setting tab"
+msgstr ""
+
+msgid "For opening specific setting tab press \"Shift\" button, then click \"Edit\""
+msgstr ""
+
+msgid "Description & SEO"
+msgstr ""
+
+msgid "Images & Video"
+msgstr ""
+
+msgid "Features"
+msgstr ""
+
+msgid "Services"
+msgstr ""
+
+msgid "Related products"
+msgstr ""
+
+msgid "Edit category settings"
+msgstr ""

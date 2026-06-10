@@ -1,0 +1,51 @@
+<div class="searchpro__dropdown">
+	<div class="searchpro__dropdown-group searchpro__dropdown-group-history">
+		{if $popular}
+			<div class="searchpro__dropdown-group-title">
+				Популярные запросы
+			</div>
+			<div class="searchpro__dropdown-group-entities js-searchpro__dropdown-entities">
+				{foreach $popular as $entity}
+					<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity"
+					   data-action="value:data-value" data-value="{$entity.query|escape}" href="{$entity.url}">
+						{$entity.query|escape:'html'}
+
+						{if !empty($entity.category_id)}
+							{if !isset($entity.category_name)}
+								{$category = $wa->shop->category($entity.category_id)}
+								{$category_name = $category.name}
+							{else}
+								{$category_name = $entity.category_name}
+							{/if}
+							<span class="searchpro__dropdown-entity_subname">
+						  		        {$category_name}
+									</span>
+						{/if}
+					</a>
+				{/foreach}
+			</div>
+		{/if}
+		<div class="js-searchpro__dropdown-history">
+			{if $history}
+				<div class="searchpro__dropdown-group-title">
+					История запросов
+				</div>
+				<div class="searchpro__dropdown-group-entities js-searchpro__dropdown-entities">
+					{foreach $history as $entity}
+						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity"
+						   data-action="value:data-value" data-value="{$entity.query|escape}" href="{$entity.url}">
+					<span class="js-searchpro__dropdown-entity_query">
+						{$entity.query|escape:'html'}
+					</span>
+							{if $history_delete_status}
+								<div class="searchpro__dropdown-entity_delete-button js-searchpro__dropdown-entity_delete-button">
+									Удалить
+								</div>
+							{/if}
+						</a>
+					{/foreach}
+				</div>
+			{/if}
+		</div>
+	</div>
+</div>

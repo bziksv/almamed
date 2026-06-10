@@ -1,0 +1,151 @@
+{strip}
+
+{*
+Options:
+mode='horizontal' ('horizontal'|'vertical'|'fade')
+loop=true (true|false)
+autoHideControl=false (true|false)
+speed=500
+adaptiveHeight=false (true|false)
+autoplay=false (true|false)
+pause=4000
+
+Items:
+{$promoOrig = [
+    0 => [
+        'link' => 'www.mysite.com/page0/',
+        'image' => 'www.mysite.com/myImage0.jpg',
+        'title' => 'Title',
+        'body' => 'Description'
+    ],
+    1 => [
+        'link' => 'www.mysite.com/page1/',
+        'image' => 'www.mysite.com/myImage1.jpg',
+        'title' => 'Title',
+        'body' => 'Description'
+    ]
+]}
+*}
+{if !empty($promos)}
+
+    {if count($promos) < 2}{$pager = false}{$autoplay = false}{/if}
+    {if empty($imageBackground)}{$adaptiveHeight = true}{/if}
+    {$options = [
+        'mode' => $mode|default:'horizontal',
+    	'infiniteLoop' => $loop|default:true,
+    	'hideControlOnEnd' => $autoHideControl|default:false,
+    	'speed' => $speed|default:500,
+    	'adaptiveHeight' => $adaptiveHeight|default:false,
+    	'pager' => $pager|default:true,
+    	'auto' => $autoplay|default:false,
+    	'pause' => $pause|default:4000,
+    	'autoHover' => false,
+    	'imageBackground' => $imageBackground|default:false
+    ]}
+    
+    <article class="global-promo-slider">
+        <ul class="gps-bxslider" data-options='{json_encode($options)}' style="position:relative;list-style:none;">
+            {if empty($imageBackground)}
+                {foreach $promos as $promo}
+                    <li class="gps-user-image-tag">
+                        <a href="{$promo.link|escape}">
+                            <img src="{$promo.image}" alt="{$promo.title|escape}">
+                            <div class="gps-user-caption">
+                                {if !empty($promo.title)}<h3>{$promo.title|escape}</h3><br />{/if}
+                                {if !empty($promo.body)}<div class="gps-user-body">{$promo.body|strip}</div>{/if}
+                                {if !empty($promo.countdown_datetime) && time() <= strtotime($promo.countdown_datetime)}
+                                    <div class="countdown">
+                                        <span class="js-promo-countdown"
+                                              data-start="{date('Y-m-d H:i:s')}"
+                                              data-end="{$promo.countdown_datetime}">
+                                        </span>
+                                    </div>
+                                {/if}
+                            </div>
+                        </a>
+                    </li>
+                {/foreach}
+            {else}
+                {foreach $promos as $promo}
+                    <li class="gps-user-image-background" style="background-image:url({$promo.image});">
+                        <a href="{$promo.link|escape}">
+                            <div class="gps-user-caption">
+                                {if !empty($promo.title)}<h3>{$promo.title|escape}</h3><br />{/if}
+                                {if !empty($promo.body)}<div class="gps-user-body">{$promo.body|strip}</div>{/if}
+                                {if !empty($promo.countdown_datetime) && time() <= strtotime($promo.countdown_datetime)}
+                                    <div class="countdown">
+                                        <span class="js-promo-countdown"
+                                              data-start="{date('Y-m-d H:i:s')}"
+                                              data-end="{$promo.countdown_datetime}">
+                                        </span>
+                                    </div>
+                                {/if}
+                            </div>
+                        </a>
+                    </li>
+                {/foreach}
+            {/if}
+        </ul>
+    </article>
+    
+{elseif $photos}
+    
+    {if count($photos) < 2}{$pager = false}{$autoplay = false}{/if}
+    {if empty($imageBackground)}{$adaptiveHeight = true}{/if}
+    {$options = [
+        "mode" => $mode|default:"horizontal",
+    	"infiniteLoop" => $loop|default:true,
+    	"hideControlOnEnd" => $autoHideControl|default:false,
+    	"speed" => $speed|default:500,
+    	"adaptiveHeight" => $adaptiveHeight|default:false,
+    	"pager" => $pager|default:true,
+    	"auto" => $autoplay|default:false,
+    	"pause" => $pause|default:4000,
+    	"autoHover" => false,
+    	"imageBackground" => $imageBackground|default:false
+    ]}
+
+    <article class="global-promo-slider">
+        <ul class="gps-bxslider" data-options='{json_encode($options)}'>
+            {if empty($imageBackground)}
+                {foreach $photos as $photo}
+                    {$photo.url = ''}
+                    {if strpos($photo.description, '<!--mark-->') !== false}
+                        {$photo.description = explode('<!--mark-->', $photo.description, 2)}
+                        {$photo.url = $photo.description[0]}
+                        {$photo.description = $photo.description[1]|default:''}
+                    {/if}
+                    <li class="gps-user-image-tag">
+                        <a href="{$photo.url|escape}">
+                            <img src="{$photo['thumb_'|cat:$size].url}" alt="{$photo.name|escape}">
+                            <div class="gps-user-caption">
+                                {if !empty($photo.name)}<h3>{$photo.name|escape}</h3><br />{/if}
+                                {if !empty($photo.description)}<div class="gps-user-body">{$photo.description}</div>{/if}
+                            </div>
+                        </a>
+                    </li>
+                {/foreach}
+            {else}
+                {foreach $photos as $photo}
+                    {$photo.url = ''}
+                    {if strpos($photo.description, '<!--mark-->') !== false}
+                        {$photo.description = explode('<!--mark-->', $photo.description, 2)}
+                        {$photo.url = $photo.description[0]}
+                        {$photo.description = $photo.description[1]|default:''}
+                    {/if}
+                    <li class="gps-user-image-background" style="background-image:url({$photo['thumb_'|cat:$size].url});">
+                        <a href="{$photo.url|escape}">
+                            <div class="gps-user-caption">
+                                {if !empty($photo.name)}<h3>{$photo.name|escape}</h3><br />{/if}
+                                {if !empty($photo.description)}<div class="gps-user-body">{$photo.description}</div>{/if}
+                            </div>
+                        </a>
+                    </li>
+                {/foreach}
+            {/if}
+        </ul>
+    </article>
+    
+{/if}
+
+{/strip}

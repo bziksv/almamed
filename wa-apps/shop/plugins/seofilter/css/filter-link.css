@@ -1,0 +1,15 @@
+.filter-link:link,
+.filter-link:visited,
+.filter-link:hover,
+.filter-link:active,
+
+.seofilter-link:link,
+.seofilter-link:visited,
+.seofilter-link:hover,
+.seofilter-link:active{
+	color: inherit !important;
+	font: inherit !important;
+	text-decoration: inherit !important;
+	cursor: inherit !important;
+	border-bottom: inherit !important;
+}

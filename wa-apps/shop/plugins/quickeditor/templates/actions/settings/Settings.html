@@ -1,0 +1,337 @@
+{* iButton *}
+<link rel="stylesheet" href="{$wa_url}wa-content/js/jquery-plugins/ibutton/jquery.ibutton.min.css?v={$wa->version()}">
+<script src="{$wa_url}wa-content/js/jquery-plugins/ibutton/jquery.ibutton.min.js"></script>
+
+{literal}<style type="text/css">
+    #wa .CodeMirror {border: 1px solid #eee;}
+    .CodeMirror-scroll  {height: auto; overflow-y: hidden; overflow-x: auto;}
+    #code {width: 310px;}
+    .quickeditor-storefronts, .quickeditor-ibutton {display: none;}
+</style>
+{/literal}
+<h1>[`Quick editor`]</h1>
+<div class="fields form">
+    <form id="plugins-settings-form" method="post" action="?plugin=quickeditor&action=save">
+        {$wa->csrf()}
+        <div class="field">
+            <p><a target="_blank" href="https://www.webasyst[`.com`]/store/plugin/shop/quickeditor/help/" class="inline-link"><i class="icon16 info"></i>[`Instructions for using the plugin`]</a><br>
+                <a target="_blank" href="https://www.webasyst[`.com`]/store/plugin/shop/quickeditor/answers/" class="inline-link"><i class="icon16 info"></i>[`Answers to questions`]</a></p>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`Use multi-storefront settings`]
+            </div>
+            <div class="value">
+                <input id="quickeditor-enable-multisettings" class="quickeditor-ibutton" type="checkbox" value="1" name="enable_multisettings" {if $enable_multisettings}checked="checked"{/if}>
+		<p class="hint">[`Enable separate plugin settings for each storefront`]</p>
+            </div>
+        </div>
+        
+	<div class="field quickeditor-storefronts">
+            <div class="name">
+                [`Storefront`]
+            </div>
+            <div class="value">
+		<select name="active_storefront" id="quickeditor-active-storefront">
+                    {foreach $storefronts as $storefront}
+                        <option {if $storefront == $active_storefront}selected="selected"{/if} value="{$storefront|escape}">{$storefront|escape}</option>
+                    {/foreach}
+		</select>
+                <p class="hint">[`Select storefront for saving current settings`]</p>
+            </div>
+        </div>
+        
+        <div class="field">
+            <div class="name">
+                [`Enable plugin`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="enable_plugin" {if $enable_plugin>0}checked="checked"{/if}><br>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`Enable «frontend_head» hook`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="frontend_head_hook" {if $frontend_head_hook>0}checked="checked"{/if}>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`Location of the edit button on a product page`]
+            </div>
+            <div class="value">
+                <select name="location_on_product">
+                    <option value="right" {if $location_on_product == "right"}selected{/if}>
+                        [`On the right side of the page`]
+                    </option>
+                    <option value="left" {if $location_on_product == "left"}selected{/if}>
+                        [`On the left side of the page`]
+                    </option>
+                    <option value="block" {if $location_on_product == "block"}selected{/if}>
+                        [`In main description area`] (block)
+                    </option>
+                    <option value="block_aux" {if $location_on_product == "block_aux"}selected{/if}>
+                        [`Usually in a sidebar`] (block_aux)
+                    </option>
+                    <option value="menu" {if $location_on_product == "menu"}selected{/if}>
+                        [`Next to links to custom product pages`] (menu)
+                    </option>
+                    <option value="cart" {if $location_on_product == "cart"}selected{/if}>
+                        [`Next to the «Add to cart» button`] (cart)
+                    </option>
+                    <option value="hidden" {if $location_on_product == "hidden"}selected{/if}>
+                        [`Hidden`]
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`Always opening the product editing page`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="always_edit_page" {if $always_edit_page>0}checked="checked"{/if}>
+            </div>
+        </div>
+
+	<div class="field">
+            <div class="name">
+                [`Open setting tab`]
+            </div>
+            <div class="value">
+		<select name="open_setting_tab">
+                    {foreach shopQuickeditorPlugin::getTabNames() as $tab_id => $tab_name}                    
+                        <option {if $tab_id == $open_setting_tab}selected="selected"{/if} value="{$tab_id}">{$tab_name|escape}</option>
+                    {/foreach}
+		</select>
+                <p class="hint">[`For opening specific setting tab press "Shift" button, then click "Edit"`]</p>
+            </div>
+        </div>        
+        
+        
+        <div class="field">
+            <div class="name">
+                [`Show product descriptions on «Basics» tab`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="show_description" {if $show_description>0}checked="checked"{/if}>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`Enable «Save and close» button`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="save_and_close" {if $save_and_close>0}checked="checked"{/if}>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`Show the text «Edit» at the edit button`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="show_buttons_title" {if $show_buttons_title>0}checked="checked"{/if}>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                [`A fixed button for edit category`]
+            </div>
+            <div class="value">
+                <select name="category_link_location">
+                    <option value="right" {if $category_link_location == "right"}selected{/if}>
+                        [`On the right side of the page`]
+                    </option>
+                    <option value="left" {if $category_link_location == "left"}selected{/if}>
+                        [`On the left side of the page`]
+                    </option>
+                    <option value="hidden" {if $category_link_location == "hidden"}selected{/if}>
+                        [`Hidden`]
+                    </option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="field">
+            <div class="name">
+                [`Edit category settings`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="edit_category_settings" {if $edit_category_settings>0}checked="checked"{/if}>
+            </div>
+        </div>        
+
+        <div class="field">
+            <div class="name">
+                [`A fixed button for edit information pages`]
+            </div>
+            <div class="value">
+                <select name="page_link_location">
+                    <option value="right" {if $page_link_location == "right"}selected{/if}>
+                        [`On the right side of the page`]
+                    </option>
+                    <option value="left" {if $page_link_location == "left"}selected{/if}>
+                        [`On the left side of the page`]
+                    </option>
+                    <option value="hidden" {if $page_link_location == "hidden"}selected{/if}>
+                        [`Hidden`]
+                    </option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="field">
+            <div class="name">
+                [`A fixed button<br>“Quick access”`]
+            </div>
+            <div class="value">
+                <select name="quick_access_location">
+                    <option value="right" {if $quick_access_location == "right"}selected{/if}>
+                        [`On the right side of the page`]
+                    </option>
+                    <option value="left" {if $quick_access_location == "left"}selected{/if}>
+                        [`On the left side of the page`]
+                    </option>
+                    <option value="hidden" {if $quick_access_location == "hidden"}selected{/if}>
+                        [`Hidden`]
+                    </option>
+                </select>
+            </div>
+        </div>                
+
+        <div class="field">
+            <div class="name">
+                [`Opening editor in the tab`]
+            </div>
+            <div class="value">
+                <input class="quickeditor-ibutton" type="checkbox" value="1" name="tab_window" {if $tab_window>0}checked="checked"{/if}>
+            </div>
+        </div>
+
+	<div class="field">
+            <div class="name">[`Instructions for using the plugin`]<br><span class="hint">Smarty</span></div>
+            <div class="value no-shift">
+
+                <textarea id="how_to_use" class="body">
+[`By default the plugin is disabled.`]
+[`First of all, set mark «Enable plugin».`]
+[`The plugin automatically adding fixed edit button on: information pages, product pages, categories pages`].
+[`To display additional edit button for each product in category, insert a plugin code in list-thumbs.html as shown below`]:
+...
+<ul class="thumbs product-list">
+{literal}{foreach $products as $p}{/literal}
+    ...
+    <li itemscope itemtype ="http://schema.org/Product">
+        <div class="image">
+            ...
+        </div>
+        <div itemprop="offers" class="offers" itemscope itemtype="http://schema.org/Offer">
+            ...
+        </div>
+        <!-- [`Paste code here`] -->
+        {literal}{shopQuickeditorPlugin::show($p.id)}{/literal}
+        <!-- [`Paste code here`] -->
+    </li>
+{literal}{/foreach}{/literal}
+</ul>
+...
+</textarea>
+            </div>
+        </div>
+      
+        <div class="field">
+            <div class="name">
+                [`Reset settings`]
+            </div>
+            <div class="value">
+                <input type="checkbox" value="1" name="reset_settings" id="quickeditor-reset-settings">
+                <p class="hint">[`Reset settings to default`]</p>
+            </div>
+        </div>
+        
+        <div class="field">
+            <div class="name"></div>
+            <div class="value no-shift">
+                <input type="submit" class="button green" value="[`Save`]">
+		<span id="plugins-settings-form-status" style="display:none"></span>
+            </div>
+        </div>
+
+    </form>
+</div>
+{literal}
+<script>
+    $(function() {
+
+        //Storefront settings
+        var setActiveStorefront = function(domain){
+            var postData = {'domain':domain};            
+            $.post('?plugin=quickeditor&action=storefront', postData, function (response) {
+                if(response.status == "ok"){
+                    location.reload(true);
+                } else {
+                    alert (response.errors);
+                }
+            }, 'json');
+        };
+
+        $('#quickeditor-enable-multisettings').change(function(){
+            if ($(this).attr('checked')){
+                $('.quickeditor-storefronts').slideDown();                
+                setActiveStorefront($('#quickeditor-active-storefront').val());
+            } else {
+                $('.quickeditor-storefronts').slideUp();
+                setActiveStorefront('main');
+            }
+        });
+        
+        if ($('#quickeditor-enable-multisettings').attr('checked')){
+            $('.quickeditor-storefronts').slideDown();
+        }
+        
+        $('#quickeditor-active-storefront').change(function(){
+            setActiveStorefront($('#quickeditor-active-storefront').val());
+        });
+
+        //iButton
+        $(".quickeditor-ibutton").iButton({
+            labelOn: '{/literal}[`On`]{literal}',
+            labelOff: '{/literal}[`Off`]{literal}',
+            className: 'mini'
+        });
+
+        $('#help-link').click(function(){
+	    $('#help').css({display:'block'});
+	    $('#help-link').css({display:'none'});
+	    return false;
+	});
+
+        //CodeMirror
+	CodeMirror.fromTextArea(document.getElementById('how_to_use'), {
+	    mode: "text/html",
+	    tabMode: "indent",
+	    height: "dynamic",
+	    readOnly: true,
+	    lineWrapping: true
+	});
+
+        $("#plugins-settings-form").submit(function (event) {
+            $(document).ajaxComplete(function (event, xhr, settings) {
+                if($('#quickeditor-reset-settings').attr('checked')){
+                    location.reload(true);
+                }                
+            });
+        });
+
+    });
+</script>
+{/literal}

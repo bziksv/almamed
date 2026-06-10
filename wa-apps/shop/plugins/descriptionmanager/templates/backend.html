@@ -1,0 +1,11 @@
+<link href="{$wa_app_static_url}plugins/descriptionmanager/js/vendors/select2/select2.min.css" rel="stylesheet" />
+<script src="{$wa_app_static_url}plugins/descriptionmanager/js/vendors/select2/select2.min.js"></script>
+<script type="text/javascript" src="{$wa_app_static_url}plugins/descriptionmanager/js/description_manager_product.js?{time()}"></script>
+
+<div class="field">
+    <div class="name">Комментарий по товару</div>
+    <div class="value">
+        <textarea id="descriptionmanager_edit" data-edit_product_id="{$data['product_id']}">{$data['description']}</textarea>
+        <br><span class="hint">Комментарий по товару для менеджера.</span>
+    </div>
+</div>

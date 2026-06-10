@@ -1,0 +1,112 @@
+<div style="display: none;" id="{$plugin_id}-show-dialog">
+	<div class="dialog-background"></div>
+	<form id="{$plugin_id}-form" target="_blank" method="post" action="?plugin={$plugin_id}&action=print">
+		{$wa->csrf()}
+		<div class="dialog-window">
+			<div class="dialog-content">
+				<h2>[`The choice of orders`] - {$plugin_name}</h2>
+				<table class="zebra single-lined padded" id="order-list">
+					<thead>
+						<tr class="header">
+							<th><input type="checkbox" id="checkall" /> </th>
+							<th>[`Order`]:</th>
+							<th>[`Date`]:</th>
+							<th>
+								<select name='{$plugin_id}-status-type' id="{$plugin_id}-status-type" style="width: 120px;">
+									<option value="all">[`All statuses`]</option>
+									{foreach $state_names as $id => $state}
+									<option value="{$id}"{if $id == $settings.DEFAULT_ORDER_STATUS} selected{/if}>{$state}</option>
+									{/foreach}
+								</select>
+							</th>
+							<th>[`Total`]:</th>   
+							<th>[`Buyer`]</th>                          
+							<th>[`Shipping`]:</th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$orders item=_order}
+						<tr class="order {$_order.state_id}" data-order-id="{$_order.id}" {if $_order.state_id != $settings.DEFAULT_ORDER_STATUS && ($settings.DEFAULT_ORDER_STATUS != "all")}style="display:none;"{/if} >
+							<td style="{$_order.style}">
+								<input type="checkbox" name="orders[{$_order.id}]" value="1" />
+							</td>
+							<td style="{$_order.style}">
+								<div style="min-width: 100px;">
+									<a href="#/order/{$_order.id}/">
+										<i class="{$_order.icon}"></i><span {if $_order.state_id == 'new'} class="highlighted"{/if}>{$_order.id_str}</span>
+									</a>
+								</div>
+							</td>
+							<td style="{$_order.style}" class="nowrap">
+							{if isset($_order.params['shipping_start_datetime']) && $_order.params['shipping_start_datetime']}
+								<b class="hint">[`date shipping`]</b><br>
+								{$_order.params['shipping_start_datetime']|wa_datetime|date_format:'d.m.Y'}<br>
+								{$_order.params['shipping_start_datetime']|wa_datetime|date_format:'h:m'}-{$_order.params['shipping_end_datetime']|wa_datetime|date_format:'h:m'}
+							{else}
+								<b class="hint">[`date order`]</b><br>
+								{$_order.create_datetime|wa_datetime:"humandate"}
+							{/if}
+							</td>
+							<td style="{$_order.style}" class="states">
+								{foreach $state_names as $id => $state}{if $_order.state_id == $id}{$state}{/if}{/foreach}
+							</td>
+							<td style="{$_order.style}" class="nowrap">{waCurrency::format('%2{s}', $_order.total, $_order.currency)}</td>
+							<td style="{$_order.style}">{$_order.contact.name}</td>
+							<td style="{$_order.style}">{$_order.shipping_name}</td>
+						</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</div>
+			<div class="dialog-buttons">
+				<div class="dialog-buttons-gradient">
+					<input type="submit" disabled value="[`Select orders`]" class="button grey">
+					<i class="icon16 loading" style="display:none;"></i>                
+					<a class="cancel" href="#">[`Cancel`]</a>           
+					<span style="display:none;" class="split-response"></span>
+				</div>
+			</div>         
+		</div>		
+	</form>  
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('.dialog-buttons .close').on('click', function() {
+			$('#split-dialog').hide();
+            return false;
+        });
+    });
+    $("#checkall").on('click', function(){
+		var status = $("#{$plugin_id}-status-type").val();
+		if (status == 'all') {
+			$('.order input:checkbox').not(this).prop('checked', this.checked);
+		} else {		
+			$('.'+status+' input:checkbox').not(this).prop('checked', this.checked);
+		}
+    });
+    $("#{$plugin_id}-status-type").on('change', function(){
+        var state =  $(this).val();
+        if (state == 'all') {
+            $("#order-list tbody tr").show();
+        } 
+        else {            
+            $("#order-list tbody tr").hide();
+            $('#order-list tbody tr.'+state).show();
+        }
+    });    
+    $("#{$plugin_id}-form").on('click', function(){
+		var status = $("#{$plugin_id}-status-type").val();
+        var fields = $(this).serializeArray();
+        var index = false;
+        if (fields.length >=3) {
+            index = true;        
+        } else {
+            index = false;
+        }
+        if (index && ($('.'+status+' input:checkbox').find('checked')) ) {
+            $('#{$plugin_id}-form input[type="submit"]').removeAttr('disabled').attr('class','button green').val('[`PRINT`]'); 
+         } else {
+            $('#{$plugin_id}-form input[type="submit"]').attr('disabled','disabled').attr('class','button grey').val('[`Select orders`]');			
+         }
+    });
+</script>

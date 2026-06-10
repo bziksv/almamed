@@ -1,0 +1,84 @@
+{strip}
+
+{$at = []}
+
+{* IE *}
+{$at['ie'] = preg_match("/(MSIE)(?:\/| )([0-9.]+)/", $wa->userAgent(), $matches)}
+{if $at['ie']}{$at['ie'] = $matches[2]}{/if}
+
+{* PAGE SPEED *}
+{$at['speedup'] = !empty($theme_settings.speedup) && !waRequest::isXMLHttpRequest()}
+{$at['regex']['s'] = "/(<script\b[^>]*>[\s\S]*?<\/script>)/"}
+{$at['regex']['l'] = "/(<link\b[^>]*rel\s*=\s*['\"]stylesheet['\"][^>]*>)/"}
+{$at['scripts'] = []}
+{$at['links'] = []}
+
+{$at['action'] = $action|default:$wa->param('action')}
+{$at['theme_id'] = waRequest::getTheme()}
+
+{$apps = $wa->apps()}
+{foreach $apps as $a}
+    {$at['apps'][] = [
+        'id' => $a.url,
+        'url' => $a.url,
+        'name' => $a.name
+    ]}
+{/foreach}
+{$at['selected_app'] = $wa_app_url}
+
+{* SITE *}
+{if $wa->site}
+    {$at['site']['pages'] = $wa->site->pages()}
+    {if $wa_app == 'site' && isset($page.id)}{$at['site']['selected_page'] = $page.id}{/if}
+{/if}
+
+{* SHOP *}
+{if $wa->shop}
+    {* CATEGORIES *}
+    {$at['shop']['categories'] = $wa->shop->categories(0, null, true, true)}
+    {if isset($category) && $wa_app == 'shop'}{$at['shop']['selected_category'] = $category.id|default:null}{/if}
+    {if isset($product) && $product.categories}{$at['shop']['selected_category'] = $product.category_id|default:null}{/if}
+    {$at['shop']['pages'] = $wa->shop->pages()}
+    {if $wa_app == 'shop'}{$at['shop']['selected_page'] = $wa->param('page_id')}{/if}
+    
+    {* PLUGIN WMIMAGEINCAT: replace 0 to 1 to enable *}
+    {if 0 && class_exists('shopWmimageincatPlugin')}{$at['shop']['plugins']['wmimageincat'] = shopWmimageincatPlugin::getCategoryImageObj()}{/if}
+{/if}
+
+{* BLOG *}
+{if $wa->blog}
+    {$at['blog']['pages'] = $wa->blog->pages()}
+    {if $wa_app == 'blog' && isset($page_id)}{$at['blog']['selected_page'] = $page_id}{/if}
+{/if}
+
+{* PHOTOS *}
+{if $wa->photos}
+	{$at['photos']['pages'] = $wa->photos->pages()}
+	{if $wa_app == 'photos'}{$at['photos']['selected_page'] = $wa->param('page_id')}{/if}
+{/if}
+
+{* MENU *}
+{*$selected = ( strlen($menu.url) > 1 && $wa->currentUrl()|strstr:$menu.url )*}
+{function renderMenuItem menu=[] icon=[] selected=null exclude=null}
+    {if !$exclude || empty($menu[$exclude]) && empty($menu['params'][$exclude])}
+        <li class="{if $selected == $menu.id}selected{/if} {if !empty($menu.childs)}parent{/if}">
+            <a href="{$menu.url}">
+                {if !empty($icon[$menu.id]) && !empty($icon[$menu.id].icon)}
+                    <img class="plugin-imageincat-img" src="{$icon[$menu.id].icon}" alt="" />
+                {/if}
+                {$menu.name}
+            </a>
+            {if !empty($menu.childs)}
+                <ul>
+                    {foreach $menu.childs as $submenu}
+                        {renderMenuItem menu=$submenu icon=$icon selected=$selected exclude=$exclude}
+                    {/foreach}
+                </ul>
+            {/if}
+        </li>
+    {/if}
+{/function}
+
+{assign var=at value=$at scope="root"}
+
+{/strip}

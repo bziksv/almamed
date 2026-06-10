@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/productfeatures\n"
+"POT-Creation-Date: 2014-01-22 17:22+0400\n"
+"PO-Revision-Date: \n"
+"Last-Translator:  shop/plugins/productfeatures\n"
+"Language-Team:  shop/plugins/productfeatures\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-Language: ru_RU\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/settings/Settings.html:1
+msgid "Product features"
+msgstr "Характеристики товаров"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/settings/Settings.html:50
+msgid "Saved"
+msgstr "Сохранено"
+
+msgid "This plugin allow you edit features from product list page"
+msgstr "Позволяет редактировать характеристики товаров из списка"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:37
+msgid "other"
+msgstr "другое"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:114
+msgid "color name"
+msgstr "название цвет"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:118
+msgid "000000"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:130
+msgid "Yes"
+msgstr "Да"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:137
+msgid "No"
+msgstr "Нет"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/dialog/Dialog.html:144
+msgid "Not defined"
+msgstr "Не определено"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/Toolbar.html:3
+msgid "Edit features"
+msgstr "Редактировать характеристики"
+
+#: /wa-apps/shop/plugins/productfeatures/templates/actions/settings/Settings.html:11
+msgid "To edit the features of products, open any list (all products, some category, search results),<br>select products by clicking the checkbox and then click on \"Edit features\" on the right sidebar."
+msgstr "Для редактирования характеристик товаров, откройте любой список товаров (все товары, категория, результаты поиска),<br>отметьте галочками нужные товары или выберите все товары списка и справа нажмите \"Редактировать характеристики\"."
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:4
+msgid "Please select at least one product"
+msgstr ""
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:10
+msgid "Features"
+msgstr "Характеристики"
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:12
+msgid "Save"
+msgstr "Сохранить"
+
+#: /wa-apps/shop/plugins/productfeatures/js/productfeatures.js:12
+msgid "cancel"
+msgstr "отмена"

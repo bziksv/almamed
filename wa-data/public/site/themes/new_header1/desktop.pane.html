@@ -1,0 +1,43 @@
+{strip}
+
+{$bookmark_p = waRequest::cookie('shop_bookmark', array(), waRequest::TYPE_ARRAY_INT)}
+{$compare_p = waRequest::cookie('shop_compare', array(), waRequest::TYPE_ARRAY_INT)}
+{$viewed_p = waRequest::cookie('shop_viewed', array(), waRequest::TYPE_ARRAY_INT)}
+{*
+<style type="text/css">
+@media only screen and (min-width: 993px) {
+    body { padding-bottom: 56px; }
+}
+</style>
+*}
+<aside id="footer-pane" class="hide-on-med-and-down">
+    <div class="container">
+        <div class="row-grid"><div class="table-grid">
+            <div class="col-grid">
+                <a id="bookmark-link" href="{$wa->getUrl('shop/frontend')}search/?addition=bookmark" rel="nofollow" class="addition-link {if !count($bookmark_p)}gray{else}added{/if}" data-hint="[`Bookmarked`]"><i class="material-icons mi-2x">&#xE838;</i><span class="text">[`Goods bookmarks`]</span> (<span class="count">{count($bookmark_p)}</span>)</a>
+            </div>
+            <div class="col-grid">
+                <a id="compare-link" data-href="{$wa->getUrl('shop/frontend')}compare/" href="{if count($compare_p)}{$wa->getUrl('shop/frontend/compare/', ['id' => implode(',',$compare_p)])}{else}{$wa->getUrl('shop/frontend')}compare/{/if}" rel="nofollow" class="addition-link {if count($compare_p)<2}gray{else}added{/if}" data-hint="[`In comparison`]"><i class="material-icons mi-2x">&#xE01D;</i><span class="text">[`Compare products`]</span> (<span class="count">{count($compare_p)}</span>)</a>
+            </div>
+            <div class="col-grid">
+                <a id="viewed-link" href="{$wa->getUrl('shop/frontend')}search/?addition=viewed" rel="nofollow" class="addition-link {if !count($viewed_p)}gray{else}added{/if}"><i class="material-icons mi-2x">&#xE8F4;</i><span class="text">[`Viewed products`]</span> (<span class="count">{count($viewed_p)}</span>)</a>
+            </div>
+            {if !empty($theme_settings.show_currency) && isset($currencies) && count($currencies) > 2}
+            <div class="col-grid currency">
+                <aside class="currency-toggle">
+                    <span id="currency-name">[`Currency`]:</span>
+                    <select id="currency">
+                        {$currency = $wa->shop->currency()}
+                        {foreach $currencies as $c_code => $c}
+                            <option value="{$c_code}" {if $c_code == $currency} selected{/if}>{$c.title}</option>
+                        {/foreach}
+                    </select>
+                </aside>
+            </div>
+            {/if}
+
+        </div></div>
+    </div>
+</aside>
+
+{/strip}

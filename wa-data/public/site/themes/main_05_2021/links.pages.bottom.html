@@ -1,0 +1,35 @@
+{strip}
+
+{$source = $theme_settings.pages_bottom|default:''}
+
+{if $source == 'site'}
+	{$menu = $at['site']['pages']|default:[]}
+	{$selected = $at['site']['selected_page']|default:null}
+{elseif $source == 'shop'}
+	{$menu = $at['shop']['pages']|default:[]}
+	{$selected = $at['shop']['selected_page']|default:null}
+{elseif $source == 'blog'}
+	{$menu = $at['blog']['pages']|default:[]}
+	{$selected = $at['blog']['selected_page']|default:null}
+{elseif $source == 'photos'}
+	{$menu = $at['photos']['pages']|default:[]}
+	{$selected = $at['photos']['selected_page']|default:null}
+{elseif $source == 'apps'}
+    {$menu = $at['apps']|default:[]}
+	{$selected = $at['selected_app']|default:null}
+{/if}
+
+{if !empty($menu)}
+    <ul class="base-menu type1 dt pages-bottom">
+		<li class="parent">
+			<a href="#" onclick="return false;" rel="nofollow">[`Information`]</a>
+			<ul>
+                {foreach $menu as $branch}
+                    {renderMenuItem menu=$branch selected=$selected exclude='not_bottom'}
+                {/foreach}
+            </ul>
+		</li>
+	</ul>
+{/if}
+
+{/strip}

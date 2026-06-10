@@ -1,0 +1,184 @@
+<div class="sidebar right200px" style="position: relative">
+
+    <div style="position: fixed">
+
+        <div class="block">
+
+            <h6 class="heading">Фильтр</h6>
+            <ul class="menu-v">
+                <li>Категории</li>
+                <li>
+                    <select class="seofield_filter" data-type="category_filter" style="width: 100%">
+                        <option value="" {if !$category_filter} selected {/if}>Показать все</option>
+                        <option value="seo_name" {if $category_filter == 'seo_name'} selected {/if}>Категории SEO Названием</option>
+                        <option value="h1" {if $category_filter == 'h1'} selected {/if}>Категории Заголовоком H1</option>
+                    </select>
+                </li>
+                <li class="top-padded"></li>
+                <li>Товары</li>
+                <li>
+                    <select class="seofield_filter" data-type="product_filter" style="width: 100%">
+                        <option value="" {if !$product_filter} selected {/if}>Показать все</option>
+                        <option value="seo_name" {if $product_filter == 'seo_name'} selected {/if}>Товары SEO Названием</option>
+                        <option value="h1" {if $product_filter == 'h1'} selected {/if}>Товары Заголовоком H1</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <div class="block">
+
+            <h6 class="heading">[`Badge`]</h6>
+            <ul class="menu-v with-icons">
+                {$badges = shopProductModel::badges()}
+                {foreach $badges as $bid => $b}
+                <li data-action='set-badge' data-type="{$bid}">
+                    <a href="#"><i class="icon16 ss {$bid}"></i>{$b.name}</a>
+                </li>
+                {/foreach}
+                <li data-action='set-custom-badge' data-type="custom">
+                    <a href="#"><i class="icon16 ss div"></i>[`Custom`]</a><span class="small editable"></span>
+                    <div class="textarea-wrapper" style="display:none;">
+                    <textarea style="min-height: 100px; margin: 10px 0 5px;">{strip}
+                        {htmlspecialchars('<div class="badge" style="background-color: #a1fcff;"><span>[`YOUR TEXT`]</span></div>')}
+                    {/strip}</textarea>
+                        <input type="button" value="[`Set custom badge`]">
+                    </div>
+                </li>
+                <li class="top-padded" data-action='delete-badge'><a href="#"><i class="icon16 no-bw"></i>[`Remove badge`]</a></li>
+            </ul>
+        </div>
+        <div class="block">
+            <h6 class="heading">[`Organize`]</h6>
+            <ul class="menu-v with-icons compact p-no-photo-selected123 thumbs-view-menu" id="organize-menu">
+
+                {*<li data-action="new-set"><a href="#"><i class="icon16 ss set"></i>[`Create new set`]</a></li>*}
+                <li data-action="duplicate">
+                    <a href="#"><i class="icon16 split"></i>[`Duplicate`]</a>
+                </li>
+
+                {if $wa->userRights('setscategories')}
+                <li data-action="category">
+                    <a href="#"><i class="icon16 folder"></i>[`Add to category`]</a>
+                </li>
+                {/if}
+
+                {if $wa->userRights('setscategories')}
+                <li data-action="set">
+                    <a href="#"><i class="icon16 ss set"></i>[`Add to set`]</a>
+                </li>
+                {/if}
+
+                <li data-action="assign-tags">
+                    <a href="#"><i class="icon16 tags"></i>[`Assign tags`]</a>
+                </li>
+
+                {if $info && $info.hash == 'set' && $info.type == shopSetModel::TYPE_STATIC && $info.count > 0}
+                <li data-action="delete-from-set"><a href="#"><i class="icon10 no-bw"></i>[`Remove from set`]</a></li>
+                {/if}
+
+                {if $info && $info.hash == 'category' && $info.type == shopCategoryModel::TYPE_STATIC && $info.count > 0}
+                <li data-action="delete-from-category"><a href="#"><i class="icon10 no-bw"></i>[`Remove from category`]</a></li>
+                {/if}
+
+                <li data-action="visibility" class="top-padded">
+                    <a href="javascript:void(0)"><i class="icon16 ss visibility"></i>[`Manage visibility`]</a>
+                </li>
+                <li data-action="type">
+                    <a href="#"><i class="icon16 box"></i>[`Change product type`]</a>
+                </li>
+                <li data-action="delete"><a href="#"><i class="icon16 delete"></i>[`Delete products`]</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="content right200px">
+
+    <div class="block">
+        <h1>Всего категории: {$total_category_count}</h1>
+        <p>
+            Категории. <br/>
+
+            <span class="small">***</span> <br/>
+            <span class="small">Категории с SEO полями.</span> <br/>
+        </p>
+
+        <table class="zebra" id="">
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>SEO Название</th>
+                <th>Заголовок H1</th>
+            </tr>
+
+            {foreach $category as $c}
+            <tr>
+                <td>{$c.id}</td>
+                <td><a href="/webasyst/shop/?action=products#/products/category_id={$c.id}" target="_blank" class="inline-link">{$c.name}</a></td>
+                <td>{$c.seo_name}</td>
+                <td>{$c.h1}</td>
+            </tr>
+            {/foreach}
+        </table>
+
+        <div class="block">
+            <div class="paging seofield" data-type="page_category">
+                {for $inc=1 to $pages_category}
+                <a href="#" data-page="{$inc}" style="line-height: 2;">{$inc}</a>
+                {/for}
+            </div>
+        </div>
+    </div>
+
+    <div class="block">
+        <h1>Всего товаров: {$total_product_count}</h1>
+        <p>
+            Товары. <br/>
+
+            <span class="small">***</span> <br/>
+            <span class="small">Товары с SEO полями.</span> <br/>
+        </p>
+
+        <table class="zebra" id="product-list">
+            <tr>
+                <th><input type="checkbox" id="selected-all"></th>
+                <th></th>
+                <th>ID</th>
+                <th>Название</th>
+                <th>SEO Название</th>
+                <th>Заголовок H1</th>
+            </tr>
+
+            {foreach $products as $p}
+            <tr data-product-id="{$p.id}">
+                <td><input type="checkbox" name="product_id[]" value="{$p.id}"></td>
+                <td>
+                    <div class="s-image">
+                        <a href="/product/{$p.url}/" target="_blank">
+                            <div class="s-image-corner">
+                                {$wa->shop->badgeHtml($p.badge)}
+                            </div>
+                            <img src="{$p.image_crop_small}" width="48" height="48" class="drag-handle">
+                        </a>
+                    </div>
+                </td>
+                <td>{$p.id}</td>
+                <td><a href="/webasyst/shop/?action=products#/product/{$p.id}" target="_blank" class="inline-link">{$p.name}</a></td>
+                <td>{$p.seo_name}</td>
+                <td>{$p.h1}</td>
+            </tr>
+            {/foreach}
+        </table>
+
+        <div class="block">
+            <div class="paging seofield" data-type="page_product">
+                {for $inc=1 to $pages_product}
+                <a href="#" data-page="{$inc}" style="line-height: 2;">{$inc}</a>
+                {/for}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

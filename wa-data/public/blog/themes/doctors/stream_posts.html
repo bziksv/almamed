@@ -1,0 +1,21 @@
+{* post stream (list): default view mode *}
+
+<div class="row-grid">
+    {foreach $posts as $post}
+        <div class="col-grid l2 m3 s12">
+            <a href="{$post.link}">
+                <div class="docs-section">
+                    <div class="docs-img">
+                        <img class="lazy-fadein" data-src="{$post.image}" alt="{$post.title}">
+                    </div>
+                    <div class="docs-title">{$post.title}</div>
+                </div>
+            </a>
+        </div>
+    {foreachelse}
+    {if $page lt 2}
+        <div class="pageless-card">{_w('%d post','%d posts',0)}</div>
+    {/if}
+    {/foreach}
+</div>
+

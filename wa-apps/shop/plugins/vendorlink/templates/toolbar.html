@@ -1,0 +1,16 @@
+<link href="{$wa_app_static_url}plugins/vendorlink/css/vendorlink.css?{time()}" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$wa_app_static_url}plugins/vendorlink/js/vendorlink_product.js?{time()}"></script>
+<div class="block noprint" style="border: 1px solid #ccc;">
+    <form action="javascript:void(0);" onsubmit="$.Vendorlink.save(this)">
+        <label><span class="small">[`Input the vendor link`]</span>
+            <div id="vendorlink_links">
+                {include file="./links.html" inline}
+            </div>
+        </label>
+        <div style="text-align: right">
+            <i onclick="$.Vendorlink.add()" class="icon16 add"></i>
+        </div>
+        <button id="vendorlink_save_button" class="button green">[`Save`]</button>
+    </form>
+</div>
+

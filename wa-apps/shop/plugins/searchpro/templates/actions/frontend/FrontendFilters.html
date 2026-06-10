@@ -1,0 +1,16 @@
+{capture assign="filters"}
+	{include file="shop_searchpro:{$current_theme_id}/filters" inline}
+{/capture}
+{$content = $filters|trim}
+{if !empty($content)}
+	<div id="{$id}">
+		{$content}
+	</div>
+	<script type="text/javascript">
+		(function($) {
+			if (window.shop_searchpro_filters) {
+				new window.shop_searchpro_filters('{$id}', '{$page_id}', {if $ajax}true{else}false{/if});
+			}
+		})(jQuery);
+	</script>
+{/if}

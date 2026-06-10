@@ -1,0 +1,42 @@
+<div class="searchpro__page-empty">
+	<div class="searchpro__page-empty_header">
+		По вашему запросу ничего не найдено
+	</div>
+	<div class="searchpro__page-empty_hint">
+		Попробуйте изменить критерии подбора товара
+	</div>
+	<div class="searchpro__page-empty_delimiter"></div>
+
+	{if $content}
+		<div class="searchpro__page-empty_block">
+			<div class="searchpro__page-empty_block-header">
+				Возможно, вас заинтересует
+			</div>
+			<div class="searchpro__page-empty_block-content">
+				{$content}
+			</div>
+		</div>
+	{/if}
+
+	{if $popular}
+		<div class="searchpro__page-empty_block">
+			<div class="searchpro__page-empty_block-header">
+				Популярные запросы
+			</div>
+			<div class="searchpro__page-empty_block-content">
+				{foreach $popular as $entity}
+					<a href="{$entity.url}" class="searchpro__page-empty_item">
+						{$entity.query}
+
+						{if $entity.category_id}
+							{$category = $wa->shop->category($entity.category_id)}
+							<span class="searchpro__page-empty_item-category">
+						  		{$category.name}
+							</span>
+						{/if}
+					</a>
+				{/foreach}
+			</div>
+		</div>
+	{/if}
+</div>

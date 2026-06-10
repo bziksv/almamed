@@ -1,0 +1,201 @@
+<style>
+    #wa .CodeMirror{
+        border: 1px solid #ccc;
+        padding: 2px;
+    }
+    .CodeMirror-scroll {
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+</style>
+<h1>[`Brands`]</h1>
+<div class="fields form">
+    <form action="?module=plugins&id=productbrands&action=save" method="post" id="plugins-settings-form">
+    {$wa->csrf()}
+
+    <div class="field">
+        <div class="name">
+            [`Brand feature`]
+        </div>
+        <div class="value">
+            <select name="shop_productbrands[feature_id]">
+                {foreach $features as $f}
+                <option {if $f.id == $feature_id}selected="true"{/if} value="{$f.id}">{$f.name|escape}</option>
+                {/foreach}
+            </select>
+            <p class="hint">[`Select the feature you want products to be filtered by`]</p>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Manage brands`]</div>
+        <div class="value no-shift">
+            <a href="{$wa_app_url}?action=products#/brands/">{_w('Products')} - [`Brands`]</a>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Brand page URL`]</div>
+        <div class="value no-shift">
+            {$wa->getUrl('shop/frontend', [], true)}<input class="short" type="text" name="shop_productbrands[url]" placeholder="brand" value="{$settings.url|escape}">/&lt;brand_url&gt;/
+            <br>
+            <span class="hint">[`When changing, make sure that the new address not used by other pages (for example, static pages or other plugins)`]</span>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`All brands page URL`]</div>
+        <div class="value no-shift">
+            {$wa->getUrl('shop/frontend', [], true)}<input class="short" type="text" name="shop_productbrands[url_all]" placeholder="brands" value="{$settings.url_all|escape}">/
+            <br>
+            <span class="hint">[`When changing, make sure that the new address not used by other pages (for example, static pages or other plugins)`]</span>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Thumbnail sizes`]</div>
+        <div class="value">
+            <input type="text" name="shop_productbrands[sizes]" placeholder="200;150x0" value="{$sizes}"><br>
+            <span class="hint">[`Allowed thumbnail sizes (semicolon separated)`]</span>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Frontend navigation template (frontend_nav)`]<br><span class="hint">HTML + Smarty</span></div>
+        <div class="value no-shift">
+            <div class="s-editor-core-wrapper">
+                <textarea class="template-code" name="shop_productbrands[template_nav]">{$template_nav}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">
+            [`Hook`]<br>
+            <span class="hint">[`What hook to use?`]</span>
+        </div>
+        <div class="value no-shift">
+            <select name="shop_productbrands[hook]">
+                <option {if $settings.hook === 'frontend_nav'}selected{/if} value="frontend_nav">frontend_nav</option>
+                <option {if $settings.hook === 'frontend_nav_aux'}selected{/if} value="frontend_nav_aux">frontend_nav_aux</option>
+                <option {if !$settings.hook}selected{/if} value="">[`Don't use hook (manual)`]</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">
+            [`What brands to show?`]
+        </div>
+        <div class="value no-shift">
+            <select name="shop_productbrands[products]">
+                <option {if $settings.products === 'published'}selected{/if} value="published">[`Only for published products`]</option>
+                <option {if $settings.products === 'available'}selected{/if} value="available">[`Only for available products on the storefront (including hidden products)`]</option>
+                <option {if $settings.products === 'all'}selected{/if} value="all">[`All brands`]</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Sort by alphabet`]</div>
+        <div class="value">
+            <label>
+                <input type="checkbox" name="shop_productbrands[sort]" value="1" {if !empty($sort)}checked{/if}>
+                [`Sort by alphabet`]
+            </label><br>
+            <span class="hint">[`You can sort manually on page`] <a href="?action=settings#/features/">{_w('Settings')}</a></span>
+        </div>
+    </div>
+
+
+    <div class="field" style="display: none">
+        <div class="name">[`Brand page theme template`]</div>
+        <div class="value">
+            <input type="text" name="shop_productbrands[brand_theme_template]" value="{$settings.brand_theme_template}">
+            <br>
+            <span class="hint"></span>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Frontend search results template (frontend_search)`]<br><span class="hint">HTML + Smarty</span></div>
+        <div class="value no-shift">
+            <div class="s-editor-core-wrapper">
+                <textarea class="template-code" name="shop_productbrands[template_search]">{$template_search}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Use meta title for H1`]</div>
+        <div class="value">
+            <label>
+                <input type="checkbox" name="shop_productbrands[title_h1]" value="1" {if !empty($title_h1)}checked{/if}>
+                [`If checked H1 on the brand page will be same as meta title`]
+            </label>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Links to categories`]</div>
+        <div class="value">
+            <label><input {if empty($categories_filter)}checked{/if} type="radio" name="shop_productbrands[categories_filter]" value="0"> [`Open category (filter by brand)`]</label><br>
+            <label><input {if $categories_filter == 2}checked{/if} type="radio" name="shop_productbrands[categories_filter]" value="2"> [`Open category (without filters)`]</label><br>
+            <label><input {if $categories_filter == 1}checked{/if} type="radio" name="shop_productbrands[categories_filter]" value="1"> [`Open brand subpage (filter by selected category)`]</label><br>
+            <label><input {if $categories_filter == -1}checked{/if} type="radio" name="shop_productbrands[categories_filter]" value="-1"> [`Don't display`]</label><br>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`All brands page title`]</div>
+        <div class="value">
+            <input name="shop_productbrands[brands_name]" class="long" placeholder="[`Brands`]" value="{ifset($settings.brands_name)}">
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`All brands meta description`]</div>
+        <div class="value">
+            <textarea name="shop_productbrands[brands_meta_description]" class="long">{ifset($settings.brands_meta_description)}</textarea>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`All brands meta keywords`]</div>
+        <div class="value">
+            <textarea name="shop_productbrands[brands_meta_keywords]" class="long">{ifset($settings.brands_meta_keywords)}</textarea>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="name">[`Frontend "All brands" template`] (/brands/)<br><span class="hint">HTML + Smarty</span></div>
+        <div class="value no-shift">
+            <div class="s-editor-core-wrapper">
+                <textarea class="template-code" name="shop_productbrands[template_brands]">{$template_brands}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="value submit">
+            <input type="submit" class="button green" value="Сохранить">
+            <span id="plugins-settings-form-status" style="display:none">
+                <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+            </span>
+        </div>
+    </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("textarea.template-code").each(function () {
+            CodeMirror.fromTextArea(this, {
+                mode: "text/html",
+                tabMode: "indent",
+                height: "dynamic",
+                lineWrapping: true
+            });
+        });
+    });
+</script>

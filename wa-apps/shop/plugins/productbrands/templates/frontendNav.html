@@ -1,0 +1,7 @@
+<ul class="menu-v brands">
+{foreach $brands as $b}
+    <li {if $b.name == $wa->param('brand')}class="selected"{/if}>
+        <a href="{$b.url}" title="{$b.name|escape}">{if 0 && $b.image}<img src="{$wa_url}wa-data/public/shop/brands/{$b.id}/{$b.id}{$b.image}">{else}{$b.name|escape}{/if}</a>
+    </li>
+{/foreach}
+</ul>

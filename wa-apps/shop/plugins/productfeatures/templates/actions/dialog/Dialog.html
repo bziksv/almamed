@@ -1,0 +1,180 @@
+<p>
+    Выбранные характеристики будут сохранены для <span class="productfeatures-count"></span> <span class="productfeatures-w">товаров</span>.<br>
+    Характеристики, для которых вы не укажете значение, изменены не будут!
+</p>
+
+<style type="text/css">
+    .features-form .field-delete {
+        float: right;
+    }
+    .features-form .field .value {
+        margin-right: 100px;
+    }
+</style>
+
+<div class="fields form features-form">
+    {foreach $features as $code => $feature}
+    {if strpos($code,'.') == false}
+    <div class="field{if $feature.type eq 'divider'} divider{/if}" data-type="{$feature.type}" data-multiple="{$feature.multiple}"
+         data-selectable="{$feature.selectable}" data-code="{$code|escape}">
+        <div class="name"><label for="product-features-{$code}">{$feature.name|escape}</label><br><span class="hint">{$feature.code}</span></div>
+        <div class="field-delete">
+            <input type="checkbox" class="productfeatures-plugin-delete" value="1" name="features_delete[{$code}]"> <i class="icon16 delete"></i> очистить
+            <br>
+            <span class="hint">удалить значения</span>
+        </div>
+
+        {if $feature.selectable}
+            {if $feature.multiple}
+                {*<input type="hidden" name="features[{$code}][]" value="">*}
+                {foreach $feature.values as $value_id => $value}
+                <div class="value">
+                    <label>
+                        <input type="checkbox" name="features[{$code}][]" value="{$value_id}"{if !empty($values[$code][$value_id])} checked="checked"{/if}>
+                        {if is_object($value) && isset($value.icon)}{$value.icon}{/if}{$value|escape}
+                    </label>
+                </div>
+                {/foreach}
+            {else}{* $feature.multiple*}
+                <div class="value">
+                    <select name="features[{$code}]">
+                        <option value=""{if empty($values[$code])} selected="selected"{/if}>&nbsp;</option>
+                        {foreach $feature.values as $value_id => $value}
+                        {$selected_ =  (!empty($values[$code]) && ((string)$values[$code] == $value))}
+                        <option value="{$value_id}"{if $selected_} selected="selected"{/if}{if is_object($value)} style="{$value.style|default:''}"{/if}>{$value|escape}</option>
+                        {/foreach}
+                        {if empty($smarty.capture) && empty($smarty.capture['feature-value-template-js'])}
+                        <!-- {capture name="feature-value-template-js"}{literal} edit feature jquery template -->
+                        <option value="{%=o.value%}">{%=o.value%}</option>
+                        <!-- {/literal}{/capture} -->
+                        {/if}
+                    </select>
+                </div>
+            {/if}
+            {*
+            <div class="value">
+                <a href="#" class="inline-link hint js-action"><b><i>[`other`]</i></b></a>
+            </div>
+            *}
+        {else}
+        <div class="value">
+            {*$feature.selectable*}
+
+            {if (strpos($feature.type,'2d') === 0) || (strpos($feature.type,'3d') === 0)}
+            {$type = substr($feature.type,3)}
+            {if strpos($type,'dimension') === 0}
+            {$units = shopDimension::getUnits($type)}
+            {$d=intval($feature.type)}
+            {$feature_unit = null}
+            {if !$feature_unit && isset($values[$code][$d-1])}
+            {$feature_unit=$values[$code][$d-1]->unit}
+            {/if}
+            {for $i=0;$i<$d;$i++}
+            {$code_="`$code`.`$i`"}
+            {if !$feature_unit && isset($values[$code][$i])}
+            {$feature_unit=$values[$code][$i]->unit}
+            {/if}
+            {if $i}×{/if}
+            <input id="product-features-{$code_}" type="text"
+                   value="{if isset($values[$code][$i])}{$values[$code][$i]->convert($feature_unit,false)|escape}{/if}"
+                   name="features[{$code_}][value]" class="numerical short">
+            {/for}
+            <select name="features[{$code}.0][unit]">
+                {foreach $units as $unit}
+                {$selected_ = (!$feature_unit && $unit@first)||(($feature_unit == $unit.value))}
+                <option value="{$unit.value|escape}"
+                        title="{$unit.title|escape}"{if $selected_} selected="selected"{/if}>{$unit.title|escape}</option>
+                {/foreach}
+            </select>
+            {else}
+            {for $i=0;$i<intval($feature.type);$i++}
+            {$code_="`$code`.`$i`"}
+            {if $i}×{/if}
+            <input id="product-features-{$code_}" type="text"
+                   value="{if isset($values[$code][$i])}{$values[$code][$i]|escape}{/if}"
+                   name="features[{$code_}]" class="numerical short">
+            {/for}
+            {/if}
+            {elseif strpos($feature.type,'dimension') === 0}
+            {$units = shopDimension::getUnits($feature.type)}
+            <input id="product-features-{$code}" type="text"
+                   value="{if isset($values[$code])}{$values[$code]->value|escape}{/if}"
+                   name="features[{$code}][value]">
+            <select name="features[{$code}][unit]">
+                {foreach $units as $unit}
+                {$selected_ = (!isset($values[$code]) && $unit@first)||(isset($values[$code]) && ($values[$code]->unit == $unit.value))}
+                <option value="{$unit.value|escape}"
+                        title="{$unit.title|escape}"{if $selected_} selected="selected"{/if}>{$unit.title|escape}</option>
+                {/foreach}
+            </select>
+            {elseif strpos($feature.type,'range') === 0}
+            <input id="product-features-{$code}" type="text"
+                   value="{if isset($values[$code]) && !$values[$code]->begin->is_null()}{$values[$code]->begin->value|escape}{/if}"
+                   name="features[{$code}][value][begin]" class="numerical short">
+            —
+            <input id="product-features-{$code}" type="text"
+                   value="{if isset($values[$code]) && !$values[$code]->end->is_null()}{$values[$code]->end->value|escape}{/if}"
+                   name="features[{$code}][value][end]" class="numerical short">
+            {$units = shopDimension::getUnits($feature.type)}
+            {if $units}
+            <select name="features[{$code}][unit]">
+                {foreach $units as $unit}
+                {$selected_ = (!isset($values[$code]) && $unit@first)||(isset($values[$code]) && ($values[$code]->unit == $unit.value))}
+                <option value="{$unit.value|escape}"
+                        title="{$unit.title|escape}"{if $selected_} selected="selected"{/if}>{$unit.title|escape}</option>
+                {/foreach}
+            </select>
+            {/if}
+            {elseif strpos($feature.type,'text') === 0}
+            <textarea id="product-features-{$code}"
+                      name="features[{$code}]">{if isset($values[$code])}{$values[$code]|escape}{/if}</textarea>
+
+            {elseif strpos($feature.type,'color') === 0}
+            <input name="features[{$code}][value]" type="text" value="{$values[$code]['value']|default:''|escape}" placeholder="[`color name`]">
+            <a href="#" class="inline-link js-action" style="display: inline;">
+                <i class="icon16 color" style="background: {$values[$code]['hex']|default:'#FFFFFF'};"></i>
+            </a>
+            #<input name="features[{$code}][code]" type="text" value="{$values[$code]['hex']|default:''|replace:'#':''|escape}" placeholder="[`000000`]" class="small">
+
+
+            {elseif strpos($feature.type,'boolean') === 0}
+            {if isset($values[$code])}
+            {$value = $values[$code]->value}
+            {else}
+            {$value = false}
+            {/if}
+            <label>
+                <input type="radio" name="features[{$code}]"
+                       value="1"{if $value===1} checked="checked"{/if}>
+                [`Yes`]
+            </label>
+        </div>
+        <div class="value">
+            <label>
+                <input type="radio" name="features[{$code}]"
+                       value="0"{if $value === 0} checked="checked"{/if}>
+                [`No`]
+            </label>
+        </div>
+        <div class="value">
+            {*
+            <label>
+                <input type="radio" name="features[{$code}]"
+                       value=""{if $value === false} checked="checked"{/if}>
+                [`Not defined`]
+            </label>
+            *}
+            {elseif strpos($feature.type,'divider') === 0}
+            <input type="hidden" value="-" name="features[{$code}]">
+            {else}
+            <input id="product-features-{$code}" type="text" name="features[{$code}]" data-type="{$feature.type}"
+                   value="{if isset($values[$code])}{$values[$code]|escape}{/if}">
+            {/if}
+        </div>
+        {/if}
+    </div>
+    {/if}
+    {foreachelse}
+    Для выбранных товаров не настроены характеристики
+    {/foreach}
+</div>

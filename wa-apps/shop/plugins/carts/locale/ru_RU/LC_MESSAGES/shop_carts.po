@@ -1,0 +1,911 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: shop/plugins/carts\n"
+"POT-Creation-Date: 2014-05-28 12:57+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: shop/plugins/carts\n"
+"Language-Team: shop/plugins/carts\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n"
+"%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:2
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:13
+#: /wa-apps/shop/plugins/carts/lib/config/plugin.php:4
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:45
+msgid "Abandoned carts"
+msgstr "Брошенные корзины"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:7
+msgid "Message"
+msgstr "Сообщение"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:8
+msgid "Contact"
+msgstr "Покупатель"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:9
+msgid "Email"
+msgstr "Email"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:10
+msgid "SMS"
+msgstr "SMS"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:11
+msgid "Sent"
+msgstr "Отправлено"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:12
+msgid "Status"
+msgstr "Статус"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:13
+msgid "Comment"
+msgstr "Комментарий"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:20
+msgid "Edit message"
+msgstr "Редактировать сообщение"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:20
+msgid "edit"
+msgstr "редактировать"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:22
+msgid "This message have been deleted"
+msgstr "Сообщение было удалено"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:28
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:34
+msgid "show"
+msgstr "показать"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:45
+msgid "No data matched selected period"
+msgstr "За выбранный период нет данных"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:52
+msgid "Abandoned carts report"
+msgstr "Отчёт по брошенным корзинам"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:62
+msgid "Close"
+msgstr "Закрыть"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:20
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:40
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:7
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:18
+msgid "New message"
+msgstr "Новое сообщение"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:29
+msgid "Loading"
+msgstr "Загрузка"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:4
+msgid "Messages have not been sent more than 2 hours."
+msgstr "Отправка не осуществлялась более 2х часов."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:6
+msgid "Messages are sending successfully"
+msgstr "Отправка отложенных сообщений в данный момент работает."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:8
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:17
+msgid "Messages will not be sent, because cron is not properly configured."
+msgstr ""
+"Отправка отложенных сообщений в данный момент не работает, так как не "
+"настроен планировщик CRON."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:10
+msgid "How to setup cron?"
+msgstr "Как настроить CRON?"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:15
+msgid "Cron settings"
+msgstr "Настройка CRON"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:16
+msgid "Cron is working properly. Latest execution time:"
+msgstr ""
+"Отправка отложенных сообщений в данный момент работает. Последняя проверка"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:19
+msgid ""
+"Setup cron with the following command (<a href=\"%s\" target=\"_blank\">cron "
+"setup instructions</a>):"
+msgstr ""
+"Настройте CRON с указанной ниже командой в контрольной панели вашего "
+"хостинга (<a href=\"%s\" target=\"_blank\">документация по настройке</a>):"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:20
+msgid "http://www.webasyst.com/framework/docs/server/cron/"
+msgstr "http://hardmandev.com/article/nastroyka-cron-dlya-webasyst/"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:23
+msgid "Recommended script execution period - 1 hour"
+msgstr "Рекомендуемое время выполнения скрипта - раз в 1 час"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsCron.html:23
+msgid "for example"
+msgstr "например"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:9
+msgid ""
+"An array containing information about the customer according to the Contacts "
+"app setup and your storefront’s checkout contact info form"
+msgstr ""
+"Массив данных покупателя в соответствии с настройками приложения Контакты и "
+"формы заполнения контактных данных при оформлении заказа"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:17
+msgid "Customer full name"
+msgstr "Полное имя покупателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:25
+msgid "Customer first name"
+msgstr "Имя покупателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:33
+msgid "Customer last name"
+msgstr "Фамилия покупателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:41
+msgid "Customer email"
+msgstr "Email-адрес покупателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:49
+msgid "Customer phone"
+msgstr "Номер телефона покупателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:57
+msgid ""
+"The list of available contact fields is defined in your store backend: "
+"Settings &rarr; Checkout &rarr; Contact info checkout step"
+msgstr ""
+"Список доступных полей контакта определяется в бекенде магазина: Настройки "
+"&rarr; Оформление заказа &rarr; Контактная информация"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:65
+msgid "Affiliate bonus"
+msgstr "Количество бонусов у покупателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:66
+msgid "\"0\" for unregistered users"
+msgstr "незарегистрированным пользователям вернёт «0»"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:74
+msgid "Products in cart"
+msgstr "Товары, добавленные в корзину"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:82
+msgid "Product info"
+msgstr "Данные о товаре"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:90
+msgid "Selected services"
+msgstr "Выбранные услуги"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:4
+msgid "Are you sure?"
+msgstr "Вы уверены?"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:4
+msgid "Delete message"
+msgstr "Удалить уведомление"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:16
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:18
+msgid "Message name"
+msgstr "Название сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:22
+msgid "Enabled"
+msgstr "Включен"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:32
+msgid "Sending rules"
+msgstr "Правила отправки"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:35
+msgid "Send after"
+msgstr "Отправлять через"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:37
+msgid "hours last product added to cart"
+msgstr "часов после того, как был добавлен последний товар"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:42
+msgid "Message type"
+msgstr "Тип сообщений"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:57
+msgid "Email subject"
+msgstr "Тема сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:63
+msgid "Email body"
+msgstr "Текст сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:73
+msgid "SMS text"
+msgstr "Текст SMS сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:87
+msgid "Cheat sheet"
+msgstr "Шпаргалка"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:90
+msgid "Save"
+msgstr "Сохранить"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:92
+msgid "Saved"
+msgstr "Сохранено"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/shopCartsPluginBackendMessage.controller.php:57
+msgid "We have something you forget"
+msgstr "Вы, кажется, что-то забыли"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/shopCartsPluginBackendMessage.controller.php:58
+msgid "Hello"
+msgstr "Здравствуйте"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/shopCartsPluginBackendMessage.controller.php:60
+msgid "We are sincerely glad you chose our shop."
+msgstr "Благодарим вас за выбор нашего магазина!"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/shopCartsPluginBackendMessage.controller.php:61
+msgid ""
+"If you have some troubles with your order please feel free to let us know "
+"about it!"
+msgstr ""
+"Если у вас возникли какие-либо вопросы в связи с вашим заказом, просим вас "
+"сообщить об этом. Мы будем всегда рады вам помочь!"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/shopCartsPluginBackendMessage.controller.php:63
+msgid "You added next products to your cart:"
+msgstr "Товары, добавленные Вами в корзину:"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/shopCartsPluginBackendMessage.controller.php:89
+msgid "Any problems with order? Let us know"
+msgstr "Проблемы с заказом? Поможем по телефону"
+
+#: /wa-apps/shop/plugins/carts/lib/classes/shopCartsPluginPhoneValidator.class.php:14
+msgid "Invalid phone"
+msgstr "Неверный формат номера телефона"
+
+#: /wa-apps/shop/plugins/carts/lib/cli/shopCartsPluginCheck.cli.php:52
+msgid "No contact data!"
+msgstr "Не указаны контактные данные!"
+
+#: /wa-apps/shop/plugins/carts/lib/cli/shopCartsPluginCheck.cli.php:128
+msgid "Email is required"
+msgstr "Email обязателен"
+
+#: /wa-apps/shop/plugins/carts/lib/cli/shopCartsPluginCheck.cli.php:139
+msgid "Phone number is required"
+msgstr "Номер телефона обязателен"
+
+#: /wa-apps/shop/plugins/carts/lib/config/plugin.php:5
+msgid "Sending notifications about forgotten products"
+msgstr "Автоматическая отправка напоминаний о забытых товарах"
+
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:65
+msgid "Email only."
+msgstr "Только Email."
+
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:66
+msgid "SMS only."
+msgstr "Только SMS"
+
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:67
+msgid "Both, SMS and Email."
+msgstr "И email, и SMS"
+
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:68
+msgid "Email. If fails send SMS."
+msgstr "Отправка Email. Если не указан, отправка SMS."
+
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:69
+msgid "SMS. If fails send Email."
+msgstr "Отправка SMS. Если не указан, отправка Email."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:5
+msgid "Only sent"
+msgstr "Отправленные"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendReport.html:6
+msgid "All"
+msgstr "Все"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendTest.html:6
+msgid "Test message"
+msgstr "Пробное сообщение"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendTest.html:8
+msgid "Testing requires at least one abandoned cart for sample data."
+msgstr ""
+"Для отправки проверочного сообщения необходима хотя бы одна брошенная "
+"корзина."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendTest.html:13
+msgid "Send to"
+msgstr "Отправить"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendTest.html:20
+msgid "Phone"
+msgstr "Телефон"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendTest.html:25
+msgid "Select an abandoned cart to fetch sample data from"
+msgstr "Выберите брошенную корзину для получения тестовых данных"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/backend/BackendTest.html:68
+msgid "Send"
+msgstr "Отправить"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:42
+msgid "Source"
+msgstr "Источник"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:46
+msgid "All storefronts"
+msgstr "Все витрины"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:105
+msgid "Send test"
+msgstr "Проверить отправку"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendTestSend.controller.php:27
+msgid "Message not found!"
+msgstr "Сообщение не найдено!"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendTestSend.controller.php:31
+msgid "Wrong storefront!"
+msgstr "Брошенная корзина сделана на другой витрине!"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:70
+msgid "Email sender"
+msgstr "Отправитель Email"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:72
+msgid "Default sender is not set in Shop settings!"
+msgstr "Отправитель по-умолчанию не задан в настройках Магазина!"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:92
+msgid "SMS sender"
+msgstr "Отправитель SMS"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:94
+msgid "Default (as configured in SMS gateway)"
+msgstr "По-умолчанию (задаётся SMS-шлюзом)"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:115
+msgid "Create"
+msgstr "Создать"
+
+#: /wa-apps/shop/plugins/carts/lib/classes/shopCartsPluginSender.class.php:115
+msgid "Sender's email is incorrect! Check the message settings."
+msgstr "Отправитель Email указан неверно! Проверьте настройки сообщения."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:27
+msgid ""
+"Messages will not be sent, because no message has been created. Just click "
+"\"Create\" button below."
+msgstr ""
+"Отправка отложенных сообщений в данный момент не работает, так как не "
+"создано ни одно сообщение. Для начала просто нажмите кнопку «Создать» ниже."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:25
+msgid "Old version of this report"
+msgstr "Старая версия отчёта"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:31
+msgid "Only with contact details"
+msgstr "Только с контактными данными"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:39
+msgid "Cart"
+msgstr "Корзина"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:40
+msgid "Storefront"
+msgstr "Витрина"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:41
+msgid "Left"
+msgstr "Брошена"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:42
+msgid "Messages"
+msgstr "Сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:43
+msgid "Canceled"
+msgstr "Отменена"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:44
+msgid "Restored"
+msgstr "Восстановлена"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:45
+msgid "Order"
+msgstr "Заказ"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:51
+msgid "No contact details!"
+msgstr "Не указаны контактные данные!"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:53
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:55
+msgid "Registered user"
+msgstr "Зарегистрированный пользователь"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:55
+msgid "Unregistered user"
+msgstr "Незарегистрированный пользователь"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:63
+msgid "empty"
+msgstr "пусто"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:70
+msgid "Not sent yet"
+msgstr "Ещё не отправлялось"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:72
+msgid "Last at"
+msgstr "Последнее "
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:95
+msgid "Plugin uses <strong>%s</strong> of database disc space."
+msgstr "Плагин использует <strong>%s</strong> дискового простанства."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:96
+msgid ""
+"You can delete old info except for last %s days by clicking this button:"
+msgstr ""
+"Вы можете удалить старую информацию, за исключением последних %s дней, нажав "
+"на кнопку:"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:97
+msgid "Delete"
+msgstr "Удалить"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:101
+msgid "Report generated at %f ms"
+msgstr "Отчёт сформирован за %f мс"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:136
+msgid "This operation cannot be canceled. Proceed?"
+msgstr "Операция не может быть отменена. Продолжить?"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:60
+msgid "%d product"
+msgid_plural "%d products"
+msgstr[0] "%d товар"
+msgstr[1] "%d товара"
+msgstr[2] "%d товаров"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:3
+msgid "Customer"
+msgstr "Покупатель"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:5
+msgid "Current customer didn't enter any contact details."
+msgstr "Выбранный покупатель не ввёл контактные данные."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:32
+msgid "save as a contact"
+msgstr "сохранить как контакт"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:36
+msgid ""
+"In case if customer will proceed with filling an order after his contact was "
+"saved - a duplicate will be created."
+msgstr ""
+"Если после сохранения контакта пользователь дооформит заказ, появится "
+"дубликат контакта."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:72
+msgid "Sent messages"
+msgstr "Отправленные сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:80
+msgid "Used contacts"
+msgstr "Контакты получателя"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:120
+msgid "Nothing has been sent to this customer yet."
+msgstr "Выбранному пользователю пока ничего не отправлено."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:144
+msgid "Cart is empty. Order have been completed or have been cancelled."
+msgstr "Корзина пуста. Заказ был оформлен или отменён."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:158
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:212
+msgid "Message template"
+msgstr "Шаблон сообщения"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:161
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:215
+msgid "write new message"
+msgstr "написать новое сообщение"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:169
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:223
+msgid "Recipient"
+msgstr "Получатель"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:235
+msgid "SMS body"
+msgstr "Тескт SMS"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:43
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:9
+msgid "Create message"
+msgstr "Создать сообщение"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:50
+msgid "hr"
+msgstr "ч"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/Settings.html:68
+msgid "I know"
+msgstr "Я знаю"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:9
+msgid "View helper"
+msgstr "Помощник вида"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:17
+msgid ""
+"Returns absolute URL to restore shopping cart. Works for any customer's "
+"device, browser, etc."
+msgstr ""
+"Возвращает абсолютный URL на восстановление корзины. Работает независимо от "
+"устройства, на котором пользватель откроет ссылку, браузера и т.п."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:25
+msgid "Returns absolute URL to clear cart and cancel messages"
+msgstr ""
+"Возвращает абсолютный URL на очистку корзины и отмену последующих сообщений"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:33
+msgid "Returns absolute URL of the current shop settlement"
+msgstr "Возвращает абсолютный URL на поселение магазина"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:41
+msgid "Returns absolute URL of this Webasyst installation"
+msgstr "Возвращает абсолютный URL на установку Webasyst"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:49
+msgid "Returns domain name without \"http://\""
+msgstr "Возвращает название домена без «http://»"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:57
+msgid "Returns valid product page absolute URL"
+msgstr "Возвращает абсолютный URL на карточку товара"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:65
+msgid "Returns specified product default image URL."
+msgstr "Возвращает абсолютный URL на изображение товара"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:66
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:76
+msgid "product"
+msgstr "товар"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:67
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:77
+msgid "image size, e.g. 96x96"
+msgstr "размер изображения, например 96x96"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:75
+msgid "Displays specified product object’s default image."
+msgstr "Выводит изображение выбранного товара."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsMessage.html:20
+msgid "My new message"
+msgstr "Моё новое сообщение"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendMessage.controller.php:99
+msgid "Back to shopping cart"
+msgstr "Вернуться в корзину"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendMessage.controller.php:100
+msgid "I have already bought all I need"
+msgstr "Я уже купил всё, что мне нужно"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendWhatsnew.controller.php:27
+msgid "What's new?"
+msgstr "Что нового?"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendWhatsnew.controller.php:35
+msgid "<a href=\"%s\">Contact us</a> for support."
+msgstr "Для поддержки <a href=\"%s\">свяжитесь с нами</a>"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendWhatsnew.controller.php:36
+msgid "https://hardmandev.com/feedback/"
+msgstr "https://hardmandev.com/feedback/"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendWhatsnew.controller.php:39
+msgid "Don't forget to leave a <a href=\"%s\">review</a>."
+msgstr "Не забудьте оставить <a href=\"%s\">отзыв</a>."
+
+#: /wa-apps/shop/plugins/carts/lib/actions/backend/shopCartsPluginBackendWhatsnew.controller.php:40
+msgid "http://www.webasyst.com/store/plugin/shop/carts/reviews/"
+msgstr "http://www.webasyst.ru/store/plugin/shop/carts/reviews/"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/report/shopCartsPluginCustomerSave.controller.php:23
+msgid "An error occurred! This contact cannot be saved."
+msgstr "Возникла ошибка! Невозможно осхранить контакт."
+
+#: /wa-apps/shop/plugins/carts/lib/actions/report/shopCartsPluginReport.action.php:74
+msgid "Bytes,KBytes,MBytes,GBytes"
+msgstr "байт,кб,мб,гб"
+
+#: /wa-apps/shop/plugins/carts/lib/classes/shopCartsPluginSender.class.php:174
+msgid "Can't send SMS. Gateway problem."
+msgstr "Не удаётся отправить SMS. Ошибка шлюза."
+
+#: /wa-apps/shop/plugins/carts/lib/config/whatsnew.php:5
+msgid "More powerful <a href=\"?action=reports#/carts/\">reports</a>."
+msgstr "Улучшенные  <a href=\"?action=reports#/carts/\">отчёты</a>"
+
+#: /wa-apps/shop/plugins/carts/lib/config/whatsnew.php:6
+msgid "Added message view helper. Please check the cheatsheet for more info."
+msgstr "Добавлен помощник вида в сообщениях. Подробнее смотрите в шпаргалке."
+
+#: /wa-apps/shop/plugins/carts/lib/models/shopCartsPluginStorefront.model.php:59
+msgid "Removed"
+msgstr "Удалён"
+
+#: /wa-apps/shop/plugins/carts//templates/actions/settings/Settings.html:38
+msgid "Settings"
+msgstr "Настройки"
+
+#: /wa-apps/shop/plugins/carts//templates/actions/settings/SettingsMessage.html:75
+msgid "Sender name"
+msgstr "Имя отправителя"
+
+#: /wa-apps/shop/plugins/carts//lib/config/settings.php:5
+msgid "Unconfigured cron reminder"
+msgstr "Напоминание о ненастроенном cron"
+
+#: /wa-apps/shop/plugins/carts//lib/config/settings.php:10
+msgid "Unconfigured messages reminder"
+msgstr "Напоминание об отсутствии сообщений"
+
+#: /wa-apps/shop/plugins/carts//lib/config/settings.php:15
+msgid "Auto save contact information"
+msgstr "«Запоминать» контактную информацию"
+
+#: /wa-apps/shop/plugins/carts//lib/config/whatsnew.php:7
+msgid "Check new \"Settings\" block."
+msgstr "Добавлен новый блок «Настройки»."
+
+#: /wa-apps/shop/plugins/carts//lib/config/whatsnew.php:8
+msgid "You can change email sender's name."
+msgstr "Теперь вы можете натроить имя отправителя."
+
+#: /wa-apps/shop/plugins/carts//lib/config/whatsnew.php:9
+msgid "You can disable plugin reminders."
+msgstr "Возможность отключить напоминания о незавершённых настройках плагина."
+
+#: /wa-apps/shop/plugins/carts//lib/config/whatsnew.php:10
+msgid "You can disable auto save contact information."
+msgstr ""
+"Можно отключить автоматическое сохранение контактных данных в форме заказа."
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:16
+msgid ""
+"The plugin is saving contact information in order form by default. You can "
+"disable this setting if you don't need this feature."
+msgstr ""
+"Плагин автоматически сохраняет контактные данные из формы оформления заказа. "
+"Вы можете отключить эту возможность, если в ней нет необходимости."
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:21
+msgid "Auto save authorized user"
+msgstr "Сохранять данные авторизованных пользователей"
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:22
+msgid ""
+"The plugin doesn't saving new data for authorized user by default. You can "
+"enable this setting if you need this feature."
+msgstr ""
+"Плагин по-умолчанию не меняет контактные данные, если пользователь "
+"авторизован. Если необходимо, чтобы введённые данные автоматически "
+"сохранялись в профиле пользователя, включите данную настройку."
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:27
+msgid "Send email if shopping cart is empty"
+msgstr "Отправлять email, если корзина пуста"
+
+#: /wa-apps/shop/plugins/carts/lib/cli/shopCartsPluginCheck.cli.php:62
+msgid "Shopping cart is empty!"
+msgstr "Корзина пуста!"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:63
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:124
+msgid "create order"
+msgstr "создать заказ"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:142
+msgid "Total"
+msgstr "Сумма"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:147
+msgid "User total"
+msgstr "Сумма для покупателя"
+
+#: /wa-apps/shop/plugins/carts/lib/actions/order/shopCartsPluginOrderGetData.controller.php:15
+msgid "Unknown cart"
+msgstr "Неизвестная корзина"
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:33
+msgid "Improved statistics"
+msgstr "Улучшенная статистика"
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:37
+msgid ""
+"More accurate carts statistics: last page visit time, cart total, storefront "
+"currency etc. Requires additional requests to web-server."
+msgstr ""
+"Опция позволяет более точно собирать данные о посещении последней страницы, "
+"суммы козины включая скидку, выбранной валюты. Но создаёт дополнительные "
+"запросы к серверу."
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:43
+msgid "Delete backend carts"
+msgstr "Удалять корзины из бекенда"
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:45
+msgid "Delete cart statistics if order has been created in backend."
+msgstr "Удалять статистику по корзине, если заказ был оформлен в бекенде"
+
+#: /wa-apps/shop/plugins/carts/lib/config/whatsnew.php:11
+msgid ""
+"Now you can create an order directly from <a href=\"?action=reports#/carts/"
+"\">plugin's report page</a>"
+msgstr ""
+"Теперь можно создать заказ прямо со <a href=\"?action=reports#/carts/"
+"\">страницы отчёта</a>"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:43
+msgid "State"
+msgstr "Статус"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:100
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:152
+msgid ""
+"This amount has been shown in a shopping cart (including all discounts, etc)."
+msgstr "Эта сумма была показана в корзине покупателя (включая скидки и т.п.)"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:82
+msgid "Sending has been stopped"
+msgstr "Отправка остановлена"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:85
+msgid "Stops message sending."
+msgstr "Остановка отправки сообщения."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/settings/SettingsHelp.html:159
+msgid "Check if the customer has at least one order."
+msgstr "Проверяет есть ли хотя бы один заказ у покупателя."
+
+#: /wa-apps/shop/plugins/carts/lib/config/settings.php:159
+msgid "Use HTTPS for links and images"
+msgstr "Использовать HTTPS-соединение в ссылках и картинках"
+
+msgid "Admin statistics"
+msgstr "Статистика для администраторов"
+
+msgid "Enable or disable statistics and messages for backend users."
+msgstr ""
+"Включить или отключить статистику и сообщения для пользователей бекенда."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:14
+msgid "from"
+msgstr "от"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:15
+msgid "to"
+msgstr "до"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:25
+msgid "All time"
+msgstr "Всё время"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:26
+msgid "Select dates..."
+msgstr "Выберите даты..."
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:36
+msgid "Contacts"
+msgstr "Контакты"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:41
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportUsage.html:3
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportUsage.html:16
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:274
+msgid "Used resources"
+msgstr "Использованные ресурсы"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/Report.html:52
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: /wa-apps/shop/plugins/carts/lib/config/whatsnew.php:5
+msgid ""
+"More powerful <a href=\"?plugin=carts&module=report#/carts/\">reports</a>."
+msgstr "Улучшенные <a href=\"?plugin=carts&module=report#/carts/\">отчёты</a>."
+
+#: /wa-apps/shop/plugins/carts/lib/config/whatsnew.php:11
+msgid ""
+"Now you can create an order directly from <a href=\"?"
+"plugin=carts&module=report#/carts/\">plugin's report page</a>"
+msgstr ""
+"Теперь можно создать заказ прямо со <a href=\"?plugin=carts&module=report#/"
+"carts/\">страницы отчёта</a>"
+
+#: /wa-apps/shop/plugins/carts/lib/shopCarts.plugin.php:268
+msgid "Contacts report"
+msgstr "Отчёт по контактам"
+
+msgid "Order created"
+msgstr "Заказ оформлен"
+
+msgid "(no name)"
+msgstr "(без имени)"
+
+msgid "Back"
+msgstr "Назад"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportCarts.html:93
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:95
+msgid "direct hit"
+msgstr "прямой заход"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportCarts.html:95
+msgid "Not set"
+msgstr "Не задан"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:77
+msgid "Sources"
+msgstr "Источники"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:84
+msgid "Landing page"
+msgstr "Страница входа"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:85
+msgid "Date"
+msgstr "Дата"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:102
+msgid "not set"
+msgstr "не указана"
+
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:399
+#: /wa-apps/shop/plugins/carts/templates/actions/report/ReportMessages.html:430
+msgid "Unable to send XHR request. Please try again later."
+msgstr "Не удается отправить запрос XHR. Пожалуйста, повторите попытку позже."
+
+#: /wa-apps/shop/plugins/carts/lib/actions/report/shopCartsPluginMessageSend.controller.php:23
+#: /wa-apps/shop/plugins/carts/lib/actions/report/shopCartsPluginReportMessages.action.php:22
+msgid "Cart not found!"
+msgstr "Корзина не найдена!"

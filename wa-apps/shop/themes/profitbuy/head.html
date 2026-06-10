@@ -1,0 +1,61 @@
+{strip}
+
+{* shop app css *}
+<link href="{$wa_active_theme_url}profitbuy.shop.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" />
+{*<link href="{$wa_active_theme_url}jquery.bxslider.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" />*}
+<link href="{$wa_active_theme_url}owl.carousel.css?v2.0.0" rel="stylesheet" type="text/css" />
+
+{* shop app js *}
+<script type="text/javascript">
+( function ($, undefined) {
+    $.at = $.at || { };
+    $.at.plugins["jquery.countdowntimer"] = {
+        is_done: function () {
+            return !!$.fn.countdowntimer;
+        },
+        href: "{$wa_active_theme_url}jquery.countdownTimer.css",
+        src: "{$wa_active_theme_url}jquery.countdownTimer.min.js"
+    };
+})(jQuery);
+</script>
+<script type="text/javascript" src="{$wa_app_static_url}js/lazy.load.js?v{$wa->version()}"></script>
+{*<script type="text/javascript" src="{$wa_active_theme_url}jquery.bxslider.min.js?v{$wa_theme_version}"></script>*}
+<script type="text/javascript" src="{$wa_active_theme_url}owl.carousel.min.js?v2.0.0"></script>
+{*<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-plugins/jquery.cookie.js?v{$wa->version(true)}"></script>*}
+<script type="text/javascript" src="{$wa_active_theme_url}jquery.cookie.min.js?v{$wa_theme_version}"></script>
+<script type="text/javascript" src="{$wa_active_theme_url}profitbuy.shop.min.js?v{$wa_theme_version}"></script>
+{if $wa->shop->config('enable_2x')}
+    <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-plugins/jquery.retina.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript">
+        $(window).load(function() { 
+            $('.promo img').retina({ force_original_dimensions: false });
+            $('.product-list img,.product-info img,.cart img').retina();
+            $('.bestsellers img').retina();
+        });
+    </script>
+{/if}
+
+{if !empty($theme_settings.autofit) || !empty($filters)}
+    <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa->version(true)}"></script>
+    {if !empty($theme_settings.autofit)}
+        <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.position.min.js?v{$wa->version(true)}"></script>
+        <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.autocomplete.min.js?v{$wa->version(true)}"></script>
+    {/if}
+    {if !empty($filters)}
+        <link href="{$wa_static_url}wa-content/css/jquery-ui/base/jquery.ui.slider.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa->version(true)}"></script>
+        <script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa->version(true)}"></script>
+    {/if}
+{/if}
+
+{if !empty($nofollow)}
+    <!-- "nofollow" for pages not to be indexed, e.g. customer account -->
+    <meta name="robots" content="noindex,nofollow" />
+{/if}
+
+<!-- plugin hook: 'frontend_head' -->
+{* @event frontend_head.%plugin_id% *}
+{foreach $frontend_head as $_}{$_}{/foreach}
+
+{/strip}

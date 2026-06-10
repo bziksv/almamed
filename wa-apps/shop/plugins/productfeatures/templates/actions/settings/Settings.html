@@ -1,0 +1,99 @@
+<style type="text/css">
+    .type-features {
+        padding-top: 0.45em; cursor: pointer
+    }
+    .type-features span {
+        margin-left: 20px
+    }
+</style>
+<h1>[`Product features`]</h1>
+<p>
+    [`To edit the features of products, open any list (all products, some category, search results),<br>select products by clicking the checkbox and then click on "Edit features" on the right sidebar.`]
+</p>
+<div class="fields form">
+    <form action="?module=plugins&id=productfeatures&action=save" method="post" id="plugins-settings-form">
+        {$wa->csrf()}
+
+        <div class="field">
+            <div class="name">Множественные характеристики (чекбоксы)</div>
+            <div class="value">
+                Выберите режим сохранения множественных характеристик (только для случая, когда выбрано несколько товаров)<br><br>
+                <label><input type="radio" name="shop_productfeatures[checkbox_add]" {if empty($settings.checkbox_add)}checked{/if} value="0"> Заменять на выбранные значения</label>
+            </div>
+            <div class="value">
+                <label><input type="radio" name="shop_productfeatures[checkbox_add]" {if !empty($settings.checkbox_add)}checked{/if} value="1"> Добавлять выбранные значения к существующим</label>
+            </div>
+        </div>
+        <div style="clear: left; margin-top: 10px; {if empty($settings.advanced)}display:none{/if}">
+            <b>Использовать характеристики в качестве описания</b><br>
+            <div class="field">
+                <div class="name">
+                    Лимит<br>
+                    <span class="hint">сколько характеристик показывать по умолчанию</span>
+                </div>
+                <div class="value">
+                    <input type="text" class="short" name="shop_productfeatures[limit]" value="{ifset($settings.limit)}">
+                </div>
+            </div>
+            {foreach $types as $t}
+            {$_cs = count(ifset($settings.summary[$t.id], []))}
+            {$_cp = count(ifset($settings.product_summary[$t.id], []))}
+            <div class="field">
+                <div class="name">
+                    {$t.name|escape}
+                </div>
+                <div class="value">
+                    <div class="type-features">
+                        В списке <b>({$_cs})</b>
+                        <span>В карточке товара <b>({$_cp})</b></span>
+                        <span><i class="icon16 settings"></i></span>
+                    </div>
+                    <table class="zebra" style="display: none">
+                        <tr>
+                            <th>Характеристика</th>
+                            <th><input class="all" type="checkbox"{if $_cs == count($t.features)} checked{/if}> В списке</th>
+                            <th><input class="all" type="checkbox"{if $_cp == count($t.features)} checked{/if}> В карточке товара</th>
+                        </tr>
+                        {foreach $t.features as $f_id}
+                        <tr>
+                            <td>{$features[$f_id].name|escape}</td>
+                            <td><input type="checkbox" name="shop_productfeatures[summary][{$t.id}][]" {if in_array($f_id, ifset($settings.summary[$t.id], []))}checked{/if} value="{$f_id}"></td>
+                            <td><input type="checkbox" name="shop_productfeatures[product_summary][{$t.id}][]" {if in_array($f_id, ifset($settings.product_summary[$t.id], []))}checked{/if} value="{$f_id}"></td>
+                        </tr>
+                        {/foreach}
+                    </table>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+
+        <div class="field">
+            <div class="value submit">
+                <input type="submit" class="button green" value="Сохранить">
+            <span id="plugins-settings-form-status" style="display:none">
+                <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+            </span>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $('.type-features').click(function () {
+        $(this).next().show();
+        $(this).remove();
+        return false;
+    });
+
+    $('input.all:checkbox').change(function () {
+        var i = $(this).parent().prevAll('th').length;
+        if ($(this).is(':checked')) {
+            $(this).closest('table').find('tr').each(function () {
+                $(this).find('td:eq(' + i + ') input').attr('checked', true);
+            });
+        } else {
+            $(this).closest('table').find('tr').each(function () {
+                $(this).find('td:eq(' + i + ') input').removeAttr('checked');
+            });
+        }
+    });
+</script>

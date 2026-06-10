@@ -1,0 +1,188 @@
+<div class="hidden block s-cheatsheet" id="carts-help-content">
+    <div class="fields">
+        <!-- CUSTOMER -->
+        <div class="field">
+            <div class="name bold">
+                &#123;$carts&#125;
+            </div>
+            <div class="value no-shift">
+                [`View helper`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->restoreUrl()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns absolute URL to restore shopping cart. Works for any customer's device, browser, etc.`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->cancelUrl()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns absolute URL to clear cart and cancel messages`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->waAppUrl()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns absolute URL of the current shop settlement`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->waUrl()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns absolute URL of this Webasyst installation`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->domain()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns domain name without "http://"`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->productUrl($product)&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns valid product page absolute URL`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->productImgUrl($p, $size)&#125;
+            </div>
+            <div class="value no-shift">
+                [`Returns specified product default image URL.`]
+                $p - [`product`].
+                $size - [`image size, e.g. 96x96`].
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->productImgHtml($p, $s, $a)&#125;
+            </div>
+            <div class="value no-shift">
+                [`Displays specified product object’s default image.`]
+                $p - [`product`].
+                $s - [`image size, e.g. 96x96`].
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$carts->stop("[`Sending has been stopped`]")&#125;
+            </div>
+            <div class="value no-shift">
+                [`Stops message sending.`]
+            </div>
+        </div>
+        <div class="field">
+            <div class="name bold">
+                &#123;$customer&#125;
+            </div>
+            <div class="value no-shift">
+                [`An array containing information about the customer according to the Contacts app setup and your storefront’s checkout contact info form`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer.name&#125;
+            </div>
+            <div class="value no-shift">
+                [`Customer full name`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer.firstname&#125;
+            </div>
+            <div class="value no-shift">
+                [`Customer first name`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer.lastname&#125;
+            </div>
+            <div class="value no-shift">
+                [`Customer last name`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer->get('email', 'default')&#125;
+            </div>
+            <div class="value no-shift">
+                [`Customer email`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer->get('phone', 'default')&#125;
+            </div>
+            <div class="value no-shift">
+                [`Customer phone`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer. … &#125;
+            </div>
+            <div class="value no-shift">
+                [`The list of available contact fields is defined in your store backend: Settings &rarr; Checkout &rarr; Contact info checkout step`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer->affiliateBonus()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Affiliate bonus`]<br>
+                <span class="hint">[`"0" for unregistered users`]</span>
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$customer->hasOrders()&#125;
+            </div>
+            <div class="value no-shift">
+                [`Check if the customer has at least one order.`]
+            </div>
+        </div>
+        <div class="field">
+            <div class="name bold">
+                &#123;$items&#125;
+            </div>
+            <div class="value no-shift">
+                [`Products in cart`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$items[].product&#125;
+            </div>
+            <div class="value no-shift">
+                [`Product info`]
+            </div>
+        </div>
+        <div class="field s-sub-field">
+            <div class="name">
+                &#123;$items[].services&#125;
+            </div>
+            <div class="value no-shift">
+                [`Selected services`]
+            </div>
+        </div>
+
+    </div>
+    <div class="clear-both"></div>
+</div>

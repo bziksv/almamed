@@ -1,0 +1,35 @@
+{* post stream (list): default view mode *}
+
+<div class="row-grid">
+    {foreach $posts as $post}
+        <div class="col-grid l3 m6 s12">
+            <div class="post-section">
+                <div class="post-title">
+                    <a href="{$post.link}">{$post.title}</a>
+                </div>
+                <div class="post-img">
+                    <img class="lazy-fadein" data-src="{$post.image}" alt="{$post.title}">
+                </div>
+                <div class="post-date">
+                    <span><i class="fa fa-calendar-o" aria-hidden="true"></i> {$post.datetime|wa_datetime:"humandate"}</span>
+                    <span>
+                        <a href="{$post.user.posts_link}" class="username">
+                            <i class="fa fa-user" aria-hidden="true"></i> {$post.user.name}
+                        </a>
+                    </span>
+                </div>
+                <div class="post-desc">
+                    {blogCustom::str_width($post.text)}
+                    <div class="post-read">
+                        <a class="" href="{$post.link}">Читать полностью</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {foreachelse}
+    {if $page lt 2}
+        <div class="pageless-card">{_w('%d post','%d posts',0)}</div>
+    {/if}
+    {/foreach}
+</div>
+

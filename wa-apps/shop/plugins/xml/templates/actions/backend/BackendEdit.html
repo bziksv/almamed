@@ -1,0 +1,56 @@
+<div class="sidebar right15px">
+    <div class="block s-nolevel2-sidebar"></div>
+</div>
+<div class="sidebar left15px">
+    <div class="block s-nolevel2-sidebar"></div>
+</div>
+
+<div class="content left15px right15px s-nolevel2-box">
+
+    <div class="sidebar left300px blank">
+        <div class="block double-padded">
+            <p>Бренды</p>
+            <form method="post" action="">
+				{$wa->csrf()}
+
+                {foreach from=$brand item=b}
+                <input type="checkbox" name="brand[]" value="{$b.id}"/>{$b.name} id:({$b.id})<br>
+                {/foreach}
+                <br>
+
+        </div>
+
+    </div>
+
+    <div class="content left200px blank bordered-left">
+
+        <div class="block double-padded">
+            <div style="border: 1px solid red;padding: 10px;max-width: 475px;margin-left: 80px;margin-bottom: 20px;">
+                Количество процента из цен всех товаров:
+                <input type="number" name="percent" step="0.1" min="-100" max="100" value="0.1" style="text-align: center"> %
+            </div>
+
+            <p>Категории</p>
+
+                {foreach from=$cat item=c}
+                <input type="checkbox" name="del_cat[]" value="{$c.id}"/>{$c.name}<br>
+                <input type="hidden" name="all_cat[]" value="{$c.id}">
+                {/foreach}
+                <br>
+                <input type="submit" value="экспорт">
+            </form>
+
+            {if $import == true}
+                <p>Экспорт успешно завершён!</p>
+                <a href="/import.xml" download>Скачать файл импорта</a> |
+                <a href="/import_files.zip" download>Скачать импорт картинок</a>
+            {/if}
+
+        </div>
+
+
+
+
+    </div>
+
+</div>

@@ -1,0 +1,39 @@
+{strip}
+
+{$title = "[`Search request`] «{$wa->get('query')|escape}»"}
+{if !$wa->title()}{$wa->title($title)}{/if}
+
+<div class="fill-background">
+
+    <h1 itemprop="name">{$title}</h1>
+    
+    {*
+    <form action="{$wa_app_url}search/">
+        <input type="text" name="query" value="{$wa->get('query')|escape}">
+        <input type="submit" value="[`Search`]">
+    </form>
+    *}
+    
+    <div id="page" role="main" itemprop="description">
+    
+        {foreach $pages as $page}
+            <h2><a href="{$page.frontend_url}">{$page.name}</a></h2>
+            <p>
+                {$page.content|regex_replace:'/\{[^}]+}?/':''|strip_tags|truncate:300}<br/>
+                <a href="{$page.frontend_url}">[`read more`]...</a>
+            </p>
+        {/foreach}
+        
+        {if empty($pages)}
+            <p>
+                [`Nothing found.`]
+            </p>
+        {/if}
+        
+        <div class="block paging-nav">{wa_pagination total=$paging.total page=$paging.page attrs=[class=>'menu-h']}</div>
+    
+    </div>
+    
+</div>
+
+{/strip}

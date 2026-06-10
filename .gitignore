@@ -1,0 +1,79 @@
+# almamed.su — Webasyst + Shop-Script
+# Пересмотрен 2026-06-10 (старый .gitignore от предыдущего программиста)
+
+# --- Секреты и конфиги окружения (на prod/local — вне git) ---
+wa-config/
+
+# --- Runtime ---
+wa-cache/
+wa-log/
+nginx_cache/
+
+# --- Installer: кеш скачанных обновлений ---
+wa-sources/
+
+# --- wa-data: приватные данные ---
+wa-data/protected/
+
+# --- wa-data/public: медиа и uploads (гигабайты), кроме кастомных тем ---
+wa-data/public/blog/*
+wa-data/public/contacts/*
+wa-data/public/site/*
+wa-data/public/webasyst/*
+wa-data/public/shop/*
+
+# Кастомные темы — в git (negation: сначала dir, потом содержимое)
+!/wa-data/public/blog/themes/
+!/wa-data/public/blog/themes/**
+!/wa-data/public/site/themes/
+!/wa-data/public/site/themes/**
+!/wa-data/public/shop/themes/
+!/wa-data/public/shop/themes/**
+
+# --- Локальная разработка ---
+.local/run/
+.db-dump/
+.cursor/
+
+# --- Бэкапы и служебные каталоги ---
+ChangedFilesCopies/
+sxd/
+DUMPER/
+bx-import/
+cgi-bin/
+access/
+
+# --- Корневой .htaccess prod (IP-блоки, rewrite) — на сервере свой файл ---
+# НЕ игнорируем .htaccess в wa-apps/ — там security Deny from all
+/.htaccess
+
+# --- Файлы верификации поисковиков (лежат только на prod) ---
+yandex_*
+google*
+mailru-*
+cmsmagazine*
+
+# --- IDE / OS / Webasyst служебное ---
+.idea/
+.vscode/
+.DS_Store
+.fw_compatible
+.files.md5
+config.codekit
+
+# --- Архивы и логи ---
+*.zip
+*.tar.gz
+*.log
+
+# --- Тестовые/отладочные файлы в корне ---
+info.php
+php.php
+testmail.php
+pcopy.php
+test.html
+test-my.html
+new_server.txt
+
+# --- Выгрузки 1С / импорт (данные, не код) ---
+import.xml

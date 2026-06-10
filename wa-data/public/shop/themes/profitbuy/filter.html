@@ -1,0 +1,89 @@
+{strip}
+
+{$feature_button = $theme_settings.feature_button|default:""}
+{$filters_expand = $theme_settings.default_filters_expand|default:""}
+
+{*$feature_button = 'touch_screen,manufacturer'*}
+{*$filters_expand = 'price,touch_screen'*}
+
+{$filters_expand = $filters_expand|cat:waRequest::cookie('shop_filters_expand', '', waRequest::TYPE_STRING)}
+
+{* filtering by product features *}
+{if waRequest::isXMLHttpRequest() && waRequest::get('page', 1) == 1}
+<link href="{$wa_static_url}wa-content/css/jquery-ui/base/jquery.ui.slider.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{$wa->version(true)}"></script>
+<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa->version(true)}"></script>
+<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa->version(true)}"></script>
+<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa->version(true)}"></script>
+{/if}
+<div class="filters sidebar-box{if !empty($theme_settings.ajax_filters)} ajax{/if}">
+    <form method="get" action="{$wa->currentUrl(0,1)}" data-loading="{$wa_parent_theme_url}img/loading16.gif" data-title="[`Filter`]: ">
+        {foreach $filters as $fid => $filter}
+            <div class="filter-param">
+                {if $fid == 'price'}
+                    {$c = $wa->shop->currency(true)}
+                    <h5 class="collapsible {if strpos($filters_expand, 'price') !== false} expand{/if}" data-feature="price">
+                        [`Price`]
+                        <span class="hint">({$c.sign})</span>
+                        {*<button class="toggle-filter"><i class="material-icons mi-2x">&#xE5CF;</i></button>*}
+                    </h5>
+                    <div class="filter-content">
+                        <div class="filter-slider-wrapper">
+                            <input type="text" class="min" name="price_min" {if $wa->get('price_min')}value="{(int)$wa->get('price_min')}"{/if} placeholder="{floor($filter.min)}">
+                            &mdash; <input type="text" class="max" name="price_max" {if $wa->get('price_max')}value="{(int)$wa->get('price_max')}"{/if} placeholder="{ceil($filter.max)}">
+                        </div>
+                    </div>
+                {else}
+                    <h5 class="collapsible{if strpos($filters_expand, $filter.code) !== false} expand{/if}" data-feature="{$filter.code}">
+                        {$filter.name|escape}
+                        {if isset($filter.min) && !empty($filter.unit)}<span class="hint">({$filter.unit.title})</span>{/if}
+                        <span class="fiwex-feat" data-feat_id="{$filter.id}"></span>
+                        {*<button class="toggle-filter"><i class="material-icons mi-2x">&#xE5CF;</i></button>*}
+                    </h5>
+                    <div class="filter-content{if strpos($feature_button, $filter.code) !== false} feature-button{/if}">
+                        {if $filter.type == 'boolean'}
+                            <label><input type="radio" name="{$filter.code}"{if $wa->get($filter.code)} checked{/if} value="1">[`Yes`]</label>
+                            <label><input type="radio" name="{$filter.code}"{if $wa->get($filter.code) === '0'} checked{/if} value="0">[`No`]</label>
+                            <label><input type="radio" name="{$filter.code}"{if $wa->get($filter.code, '') === ''} checked{/if} value="">[`Any`]</label>
+                        {elseif isset($filter.min)}
+                            {$_v = $wa->get($filter.code)}
+                            <div class="filter-slider-wrapper">
+                                <input type="text" class="min" name="{$filter.code}[min]" placeholder="{$filter.min}" {if !empty($_v.min)}value="{$_v.min}"{/if}>
+                                &mdash; <input type="text" class="max" name="{$filter.code}[max]" placeholder="{$filter.max}" {if !empty($_v.max)}value="{$_v.max}"{/if}>
+                            {if !empty($filter.unit)}
+                                {*$filter.unit.title*}
+                                {if $filter.unit.value != $filter.base_unit.value}<input type="hidden" name="{$filter.code}[unit]" value="{$filter.unit.value}">{/if}
+                            {/if}
+                            </div>
+                        {else}
+                            {foreach $filter.values as $v_id => $v}
+                                <label{if strpos($feature_button, $filter.code) !== false} class="at-stylize-label"{/if}>
+                                    <input{if strpos($feature_button, $filter.code) !== false} class="at-stylize-input"{/if} type="checkbox" name="{$filter.code}[]" {if in_array($v_id, (array)$wa->get($filter.code, array()))}checked{/if} value="{$v_id}">
+                                    {if strpos($feature_button, $filter.code) !== false}
+                                        {if $filter.type == 'color'}
+                                            <span class="at-stylize-color" style="{$v->style}" title="{strip_tags($v)}"></span>
+                                        {else}
+                                            <span class="at-stylize-button">{$v}</span>
+                                        {/if}
+                                    {else}
+                                        {$v}
+                                        <span class="fiwex-feat-val" data-feat_val_id="{$v_id}" data-fiwex-parent_id="{$filter.id}"></span>
+                                    {/if}
+                                </label>
+                            {/foreach}
+                        {/if}
+                    </div>
+                {/if}
+            </div>
+        {/foreach}
+        {if $wa->get('sort')}<input type="hidden" name="sort" value="{$wa->get('sort')|escape}">{/if}
+        {if $wa->get('order')}<input type="hidden" name="order" value="{$wa->get('order')|escape}">{/if}
+        {if !empty($filter_controls) || empty($theme_settings.ajax_filters)}
+        <div class="filter-param controls">
+            <input type="submit" value="[`Filter products`]"><a href="{$wa->currentUrl(0,1)}" id="clear-filters-expand" class="button third-type">[`Reset`]</a>
+        </div>
+        {/if}
+    </form>
+</div>
+
+{/strip}

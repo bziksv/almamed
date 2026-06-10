@@ -1,0 +1,61 @@
+{strip}
+
+{*
+Options:
+bgincrement=50
+autoplay=true (true|false)
+pause=4000
+*}
+
+{if !empty($products)}
+
+    {if count($products) < 2}{$autoplay = false}{$hideControls = true}{/if}
+    {$options = [
+        'hideControls' => $hideControls|default:false,
+    	'bgincrement' => $bgincrement|default:50,
+    	'autoplay' => $autoplay|default:true,
+    	'interval' => $pause|default:4000
+    ]}
+    
+    <article class="global-product-slider">
+        <div class="gps-cslider da-slider" data-options='{json_encode($options)}'>
+            {foreach $products as $p}
+            	<div class="da-slide" itemscope itemtype ="http://schema.org/Product">
+            		<h2><span itemprop="name">{$p.name|escape}</span></h2>
+                    <div class="da-description">
+                        <p class="da-slide-price">
+                            {if $p.compare_price > 0}<span class="compare-at-price nowrap">{shop_currency_html($p.compare_price)}</span>{/if}
+                            <span class="price nowrap">{shop_currency_html($p.price)}</span>
+                            <meta itemprop="price" content="{$p.price}">
+                            <meta itemprop="priceCurrency" content="{$wa->shop->primaryCurrency()}">
+                        </p>
+                		{if !empty($p.summary)}<p class="da-slide-summary" itemprop="description">{strip_tags($p.summary)}</p>{/if}
+                	</div>
+            		<a href="{$p.frontend_url}" class="da-link button">[`Learn more`]</a>
+            		<div class="da-img">
+                        <a href="{$p.frontend_url}" title="{$p.name}">
+                            <div class="image">
+                                <div class="badge-wrapper">
+                                    {$badge_html = $wa->shop->badgeHtml($p.badge)}
+                                    {if $badge_html}
+                                        <div class="corner top left">{$badge_html}</div>
+                                    {/if}
+                                    {$wa->shop->productImgHtml($p, $size, ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                </div>
+                            </div>
+                        </a>
+            		</div>
+            	</div>
+        	{/foreach}
+        	
+        	<nav class="da-arrows">
+        		<span class="da-arrows-prev"></span>
+        		<span class="da-arrows-next"></span>
+        	</nav>
+        	
+        </div>
+    </article>
+    
+{/if}
+
+{/strip}

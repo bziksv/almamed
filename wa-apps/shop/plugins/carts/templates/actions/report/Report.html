@@ -1,0 +1,64 @@
+<style>
+    #reportsmenu.s-level2 ul li.selected a {
+        font-weight: bold;
+    }
+</style>
+<div class="blank clear-both">
+<div class="s-level2" id="reportsmenu">
+    <div class="block bordered-bottom">
+
+        {* Reports common period selector *}
+        <div class="float-right">
+            <ul class="menu-h dropdown s-reports-timeframe float-right">
+                <li class="hidden s-custom-timeframe">
+                    [`from`] <input type="text" name="from">
+                    [`to`] <input type="text" name="to">
+                </li>
+                <li class="s-reports-timeframe-dropdown">
+                    <a href="javascript:void(0)" class="inline-link float-right"><b><i>{* Changed by JS *}</i></b>
+                        <i class="icon10 darr"></i>
+                    </a>
+                    <ul class="menu-v">
+                        <li data-timeframe="30" data-groupby="days" class="selected"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
+                        <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
+                        <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
+                        <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
+                        <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div id="s-reports-custom-controls" class="float-right"></div>
+        </div>
+
+        <ul class="menu-h s-reports">
+            {if !empty($rights.contacts_report)}
+            <li>
+                <a href="#/carts/">[`Abandoned carts`] &mdash; [`Contacts`]</a>
+            </li>
+            {/if}
+            {if !empty($rights.usage_settings)}
+            <li>
+                <a href="#/usage/">[`Used resources`]</a>
+            </li>
+            {/if}
+            {if !empty($rights.plugin_settings)}
+            <li>
+                <a href="?action=plugins#/carts/">[`Settings`]</a>
+            </li>
+            {/if}
+        </ul>
+
+    </div>
+</div>
+
+
+<div id="reportscontent">
+    <div class="block double-padded ">
+        [`Loading...`] <i class="icon16 loading"></i>
+    </div>
+</div>
+</div>
+
+<script src="{$wa_app_static_url}plugins/carts/js/reports.js?v=4.0.1"></script>
+<script> $.reports.init({ lang: '{$lang}' }); </script>
+

@@ -1,0 +1,26 @@
+{strip}
+
+
+{if empty($theme_settings.callme_phone)}{$theme_settings.callme_phone = $wa->shop->settings("phone")}{/if}
+<aside class="call-me-wrapper women{*or men*}">
+    <div class="call-me-block align-center">
+        <div class="call-me-text">
+            <h2>[`Do you have questions?`]</h2>
+            <p>[`Call us and our managers with great pleasure will answer all your questions and advise the best solutions.`]</p>
+            <ul class="phones-wrapper">
+                <li>
+                    <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.callme_phone)}">{$theme_settings.callme_phone}</a>
+                </li>
+            </ul>
+            <p>[`or`]</p>
+        </div>
+        
+        {if 0}{* PLUGIN RECALLBACK: replace 0 to 1 to enable *}
+            <a href="#" class="button second-type wm-recallback-plugin-button" onclick="return false;">[`Request call back`]</a>
+        {else}
+            <a href="#" class="button second-type">[`Request call back`]</a>
+        {/if}
+    </div>
+</aside>
+
+{/strip}

@@ -1,0 +1,22 @@
+{strip}
+
+<div class="fill-background">
+
+    <h1>
+    	{if $error_code}{$error_code}. {/if}
+    	{if $error_message}{$error_message}{else}[s`Error`]{/if}
+    </h1>
+    <p>Мы сожалеем, но категория или товар, который Вы запрашивали были удалены или распроданы.</p>
+    <p>Воспользуйтесь нашим поиском товаров, чтобы найти аналогичный</p>
+    {include file="`$wa_active_theme_path`/searchform.html" inline}<br>
+    <p>Если Вы не смогли найти товар, то Вы можете оставить контактные данные и наш менеджер с вами свяжется.</p>
+    <p></p>
+
+    <p></p>
+    {shopFormPlugin::getForm()}
+    <p></p>
+
+    
+</div>
+
+{/strip}

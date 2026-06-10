@@ -1,0 +1,8 @@
+{
+    "require": {
+        "symfony/finder": "2.8.34",
+        "dzegarra/tracy-mysqli": "^1.1",
+        "tracy/tracy": "2.5",
+        "netpromotion/profiler": "^1.3"
+    }
+}

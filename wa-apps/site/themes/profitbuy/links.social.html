@@ -1,0 +1,25 @@
+{strip}
+
+<div class="social-wrapper">
+    {if !empty($theme_settings.vk)}<a href="{$theme_settings.vk}" title="[s`VK`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} vk"></i></a>{/if}
+    {if !empty($theme_settings.gplus)}<a href="{$theme_settings.gplus}" title="[s`Google+`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} gplus"></i></a>{/if}
+    {if !empty($theme_settings.facebook)}<a href="{$theme_settings.facebook}" title="[s`Facebook`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} facebook"></i></a>{/if}
+    {if !empty($theme_settings.twitter)}<a href="{$theme_settings.twitter}" title="[s`Twitter`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} twitter"></i></a>{/if}
+    {if !empty($theme_settings.pinterest)}<a href="{$theme_settings.pinterest}" title="[s`Pinterest`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} pinterest"></i></a>{/if}
+    {*
+    <a href="" rel="nofollow"><i class="{$theme_settings.size_social_icon} mailru"></i></a>
+    <a href="" rel="nofollow"><i class="{$theme_settings.size_social_icon} skype"></i></a>
+    *}
+    {if $wa->blog && $rss}<a href="{$rss}" title="[s`RSS`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} rss"></i></a>{/if}
+    {*
+    <a href="" rel="nofollow"><i class="{$theme_settings.size_social_icon} odnoklassniki"></i></a>
+    *}
+    {if !empty($theme_settings.youtube)}<a href="{$theme_settings.youtube}" title="[s`Youtube`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} youtube"></i></a>{/if}
+    {if !empty($theme_settings.instagram)}<a href="{$theme_settings.instagram}" title="[s`Instagram`]" rel="nofollow"><i class="{$theme_settings.size_social_icon} instagram"></i></a>{/if}
+    {*
+    <a href="" rel="nofollow"><i class="{$theme_settings.size_social_icon} picasa"></i></a>
+    <a href="" rel="nofollow"><i class="{$theme_settings.size_social_icon} livejournal"></i></a>
+    *}
+</div>
+
+{/strip}

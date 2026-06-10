@@ -1,0 +1,15 @@
+{strip}
+
+{if $wa_app == "shop"}{* or visible all app: $wa->shop *}
+    <div class="alphacat-plugin">
+        <div class="container">
+            <div class="row-grid">
+                <div class="col-grid s12">
+                    {shopAlphacatPlugin::display()}
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}
+
+{/strip}

@@ -1,0 +1,61 @@
+<link href="{$wa_url}wa-content/js/codemirror/lib/codemirror.css" type="text/css" rel="stylesheet"/>
+
+<style type="text/css">
+    .CodeMirror{
+        border: 1px solid #eee;
+    }
+
+    .plugin-links { margin: 0 20px; position: absolute; right: 0; }
+    .plugin-links a { background: gray none repeat scroll 0 0; border-radius: 2px; color: #fefefe!important; display: none; font-size: 1em; margin: 0 0 10px; padding: 10px; position: relative; text-align: center; z-index: 9; }
+    .plugin-links a:hover { color: #fefefe!important; }
+    #plugin-support { background: rgb(1, 153, 102) none repeat scroll 0 0; }
+</style>
+
+<div class="plugin-links">
+    <a id="plugin-support" href="mailto:support@max-severin.com">[`For all questions`]:<br /><b>support@max-severin.com</b></a>
+</div>
+
+<h1>[`Smart search`]</h1>
+<div class="fields form">
+    <form action="?module=plugins&id=yoss&action=save" method="post" id="plugins-settings-form" enctype="multipart/form-data" target="plugins-settings-iframe">
+        {$wa->csrf()}
+        {foreach $settings_controls as $name => $control}
+        <div class="field">
+            {$control}
+        </div>
+        {/foreach}
+
+        <div class="field">
+            <div class="value submit">
+                <input type="submit" class="button green" value="{_w('Save')}">
+                <span id="plugins-settings-form-status" style="display:none"><!-- message placeholder --></span>
+            </div>
+        </div>
+
+    </form>
+    <iframe style="display:none" name="plugins-settings-iframe" id="plugins-settings-iframe"></iframe>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        var c = CodeMirror.fromTextArea(document.getElementById('yoss_shop_yoss_result_css'), {
+            mode: "text/css",
+            tabMode: "indent",
+            height: "dynamic",
+            lineWrapping: true
+        });
+
+        $('.plugin-links a#plugin-support').css({
+            'display': 'block',
+            'top': '-2000px'
+        }).animate({
+            'top': '0'
+        }, 1500).animate({
+            'top': '-25px'
+        }, 100).animate({
+            'top': '-35px'
+        }, 100).animate({
+            'top': '0'
+        }, 250);
+    });
+</script>

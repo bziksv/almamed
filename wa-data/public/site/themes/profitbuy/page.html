@@ -1,0 +1,41 @@
+{strip}
+
+{if $wa_url != $wa->currentUrl(false,true)}
+
+    <div class="fill-background">
+    
+        <div class="breadcrumbs" itemprop="breadcrumb">
+            <a href="{$wa_url}"><i class="material-icons mi-lg">&#xE88A;</i></a> <span class="rarr">&#47;</span>
+            {if $wa_app_url != '/'}<a href="{$wa_app_url}">{$wa->accountName()}</a> <span class="rarr">&#47;</span>{/if}
+            {if !empty($breadcrumbs)}
+                {foreach $breadcrumbs as $breadcrumb}
+                    <a href="{$breadcrumb.url}">{$breadcrumb.name|escape}</a> <span class="rarr">&#47;</span>
+                {/foreach}
+            {/if}
+            {$page.name|escape}
+        </div>
+    
+    </div>
+
+{/if}
+
+<div class="fill-background hoverable">
+
+    <h1 itemprop="name">{$page.name}</h1>
+    
+    {$subpages = $wa->site->pages($page.id)}
+    {if $subpages}
+        <ul class="sub-links">
+            {foreach $subpages as $p}
+                <li><a href="{$p.url}">{$p.name}</a></li>
+            {/foreach}
+        </ul>
+    {/if}
+    
+    <div id="page" role="main" itemprop="description">
+        {$page.content|strip}
+    </div>
+
+</div>
+
+{/strip}

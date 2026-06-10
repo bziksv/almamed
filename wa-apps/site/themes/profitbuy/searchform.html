@@ -1,0 +1,23 @@
+{strip}
+
+{if 0}{* PLUGIN SEARCH: replace 0 to 1 to enable *}
+    <form action="{$wa_app_url}search/">
+        <div class="search-wrapper">
+            <button type="submit"><i class="material-icons mi-2x">&#xE8B6;</i></button>
+            <input type="search" name="query" {if $wa->get('query')}value="{$wa->get('query')|escape}"{/if} placeholder="[`Search`]">
+        </div>
+    </form>
+{/if}
+
+{* OR *}
+
+{if 0}{* product search: replace 0 to 1 to enable *}
+<form method="get" action="{$wa->getUrl('shop/frontend/search')}">
+    <div class="search-wrapper">
+        <button type="submit"><i class="material-icons mi-2x">&#xE8B6;</i></button>
+        <input{if empty($mobile_search)} id="search"{/if} type="search" name="query" {if !empty($query)}value="{$query}"{/if} placeholder="[s`Find products`]">
+    </div>
+</form>
+{/if}
+
+{/strip}

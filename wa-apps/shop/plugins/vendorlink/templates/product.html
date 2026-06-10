@@ -1,0 +1,14 @@
+<style>
+    @media print {
+        .noprint {
+            display: none;
+        }
+    }
+</style>
+
+<p class="noprint">
+    {foreach $links as $key => $link}
+        [`Vendor `]{$key +1}: <a href="{$link.link}" target="_blank">{substr($link.link, 0, 100)}</a>
+        <br />
+    {/foreach}
+</p>

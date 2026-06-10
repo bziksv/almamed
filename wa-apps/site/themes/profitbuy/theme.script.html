@@ -1,0 +1,100 @@
+{strip}
+
+<script type="text/javascript">
+( function ($, undefined) {
+    
+    $.at = {
+        urls: {
+            wa_url: "{$wa_url}",
+            wa_theme_url: "{$wa_theme_url}",
+            wa_static_url: "{$wa_static_url}",
+            wa_app_static_url: "{$wa_app_static_url}",
+            wa_active_theme_url: "{$wa_active_theme_url}",
+            wa_parent_theme_url: "{$wa_parent_theme_url|default:$wa_theme_url}",
+            current_url: "{$wa->currentUrl()}",
+            dummy: {
+                "96": "{$wa_theme_url}img/dummy96.png"
+            }
+        },
+        is_mobile: !!("{$wa->isMobile()}"),
+        locale: "{$wa->locale()}",
+        app: {
+            fancybox: {$theme_settings.fancybox|default:'true'},
+            submenu_count: {$theme_settings.category_tree_submenu_count|default:'false'}
+        },
+        shop: {
+            url: "{$wa->getUrl('shop/frontend')}",
+            description_cut: {$theme_settings.description_cut|default:"false"},
+            autofit: {$theme_settings.autofit|default:"false"},
+            product_preview: {$theme_settings.product_preview|default:"false"},
+            scroll_image: {$theme_settings.scroll_image|default:"false"},
+            flying_cart_item: {$theme_settings.flying_cart_item|default:'false'},
+            setFlyingHeight: function () {
+                var t = this;
+                setTimeout( function () {
+                    var h = 0;
+                    $('#flying-cart li').filter(':lt(' + (parseInt(t.flying_cart_item) || 5) + ')').each(function(){
+                        h += $(this).innerHeight();
+                    });
+                    $('#flying-cart').css('max-height', h + 1);    
+                }, 300);
+                return (parseInt(t.flying_cart_item) || 5);
+            },
+            category: {
+                images: {if !empty($at['shop']['plugins']['wmimageincat'])}{json_encode($at['shop']['plugins']['wmimageincat'])}{else}{ }{/if}
+            }
+        }
+    };
+    $.at.plugins = {
+        "jquery.fancybox": {
+            is_done: function () {
+                return !!$.fancybox;
+            },
+            href: "{$wa_theme_url}fancybox/jquery.fancybox.css?v2.1.5",
+            src: "{$wa_theme_url}fancybox/jquery.fancybox.min.js?v2.1.5"
+        },
+        "jquery.bxslider": {
+            is_done: function () {
+                return !!$.fn.bxSlider;
+            },
+            href: "{$wa_theme_url}bxslider/jquery.bxslider.css",
+            src: "{$wa_theme_url}bxslider/jquery.bxslider.min.js"
+        },
+        "jquery.cslider": {
+            is_done: function () {
+                return !!$.fn.cslider;
+            },
+            href: "{$wa_theme_url}cslider/jquery.cslider.css",
+            src: "{$wa_theme_url}cslider/jquery.cslider.js"
+        },
+        "jquery.nivoslider": {
+            is_done: function () {
+                return !!$.fn.nivoSlider;
+            },
+            href: "{$wa_theme_url}nivoslider/nivo.slider.css",
+            src: "{$wa_theme_url}nivoslider/jquery.nivo.slider.min.js"
+        }
+    };
+    $.at.messages = {
+        'ru_RU': {
+            'More': 'Еще',
+            'Show more': 'Показать еще',
+            'More categories': 'Еще категории',
+            'Remove from cart': 'Удалить из корзины',
+            'pcs.': 'шт.',
+            'Expand description': 'Развернуть описание',
+            'Collapse description': 'Свернуть описание',
+            'Back to home page': 'Вернуться на главную',
+            'or': 'или',
+            'back to current page': 'остаться на текущей странице',
+            'Congratulations!': 'Поздравляем!',
+            'Authorization was successful!': 'Авторизация прошла успешно!',
+            'Much product is no longer available!': 'Столько товара нет в наличии!'
+        }
+    };
+    
+})(jQuery);
+</script>
+<script type="text/javascript" src="{$wa_theme_url}at.min.js?v0.0.1"></script>
+
+{/strip}

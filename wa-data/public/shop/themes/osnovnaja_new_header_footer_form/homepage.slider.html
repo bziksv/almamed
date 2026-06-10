@@ -1,0 +1,94 @@
+{strip}
+
+{if $theme_settings.homepage_bxslider_mode == 'promos'}
+    
+    {$promoOrig = $promocards}
+    {include file="`$wa_parent_theme_path`/slider.promos.html"
+             promos=$promoOrig|default:null
+             photos=$promoImit|default:null
+             size=$_size|default:"1280x0"
+             imageBackground=true
+             autoplay=true
+             mode="fade"
+    }
+
+{else}
+
+    {$_size = '300'}
+    {$prodOrig = $promoproducts}
+    {include file="`$wa_parent_theme_path`/slider.products.html"
+             products=$prodOrig|default:null
+             size=$_size|default:'300'
+             bgincrement=50
+             autoplay=true
+    }
+
+{/if}
+
+
+
+{*
+<article class="slider-homepage{if $theme_settings.homepage_bxslider_mode != 'products'} fill-entire-area{else} pager-color{/if}">
+
+    {if $theme_settings.homepage_bxslider_mode == 'promos'}
+
+        
+        
+        {if $promocards}
+            <ul class="homepage-bxslider">
+                {foreach $promocards as $promo}
+                    <li style="background-image: url('{$promo.image}');">
+                        <a href="{$promo.link|escape}">
+                            {if !empty($promo.title)}<h3>{$promo.title|escape}</h3>{/if}
+                            {if !empty($promo.body)}<p>{$promo.body}</p>{/if}
+                        </a>
+                    </li>
+                {/foreach}
+            </ul>
+        {/if}
+
+    {else}
+
+        
+
+        {if $promoproducts && count($promoproducts)}
+            <ul class="homepage-bxslider">
+                {foreach $promoproducts as $p}
+                    <li itemscope itemtype ="http://schema.org/Product">
+                        <a href="{$p.frontend_url}" title="{$p.name}{if $p.summary} &ndash; {strip_tags($p.summary)|escape}{/if}">
+                            <h3 itemprop="name">
+                                <span class="name">{$p.name}</span>
+                            </h3>
+
+                            <div class="image">
+                                    {$badge_html = $wa->shop->badgeHtml($p.badge)}
+                                    {if $badge_html}
+                                        <div class="corner top right">{$badge_html}</div>
+                                    {/if}
+                                    {if $theme_settings.homepage_bxslider_mode == 'products'}
+                                        
+                                        {$wa->shop->productImgHtml($p, '0x360', ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                    {/if}
+                            </div>
+                            <div itemprop="offers" class="info" itemscope itemtype="http://schema.org/Offer">
+                                {if $p.compare_price > 0}<span class="compare-at-price nowrap"> {shop_currency_html($p.compare_price)} </span>{/if} <span class="price nowrap">{shop_currency_html($p.price)}</span>
+                                <meta itemprop="price" content="{$p.price}">
+                                <meta itemprop="priceCurrency" content="{$wa->shop->primaryCurrency()}">
+                            </div>
+                            {if $p.summary}<p itemprop="description">{strip_tags($p.summary)|truncate:255}</p>{/if}
+                        </a>
+                    </li>
+                {/foreach}
+            </ul>
+        {else}
+        
+            <p class="hint align-center"><br><em>{sprintf('[`Product set with the ID <strong>%s</strong> either does not exist or does not contain any product. Add some products into a product set with the specified ID to make these products featured here.`]', $theme_settings.homepage_productset_promo|escape|default:'()' )}</em><br><br></p>
+            
+        {/if}
+
+    {/if}
+    
+</article>
+*}
+
+{/strip}

@@ -1,0 +1,7 @@
+<!-- QuickEditor plugin -->
+{if $settings.location_on_product == "menu" && $is_product_page}<li>{/if}
+    <div class="quickeditor-button {if isset($is_product_page) && $is_product_page}quickeditor-product-page{/if}" onclick="$.QuickEditor.showEditProductDialog('{$product_id}')" {if !$settings.show_buttons_title}style="width:36px"{/if} title="[`Quick products editor`]">
+         <i class="quickeditor-icon-list" style="padding-top: 2px;display:inline-block"></i>{if $settings.show_buttons_title}<span class="quickeditor-title">[`Edit`]</span>{/if}    
+    </div>
+{if $settings.location_on_product == "menu" && $is_product_page}</li>{/if}
+<!-- QuickEditor plugin -->

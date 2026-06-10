@@ -1,0 +1,42 @@
+.fields {
+	max-width: 100%;
+}
+.select--9a6d27 {
+	padding: 3px 2px 4px;
+	max-width: 100%;
+}
+.label--4ef94b {
+	display: inline-block;
+	vertical-align: text-bottom;
+}
+
+.control-container--879463 {
+	float: left;
+}
+
+.content-container--768736 {
+	display: block;
+	margin-left: 20px;
+}
+.list--adc214 {
+	margin-left: -10px;
+	overflow: hidden;
+}
+
+.list--adc214::before {
+	content: '';
+	display: table;
+	margin-bottom: -10px;
+}
+
+.list--adc214::after {
+	content: '';
+	display: table;
+}
+
+.item--d43c8b {
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 10px;
+	margin-top: 10px;
+}

@@ -1,0 +1,41 @@
+{strip}
+
+{$_type_categories = 2}{* type: 1 or 2 *}
+{$_categories = $wa->shop->categories(0, 1, true)}
+{if count($_categories)}
+<div class="fill-background">
+    {if $_type_categories == 1}
+        <ul class="piicsl">
+            {foreach $_categories as $sc}
+                <li class="piicsl-item">
+                    <a href="{$sc.url}">
+                        <div class="piicsl-img">
+                            <img src="{if shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="" />
+                        </div>
+                        <span class="piicsl-title">{$sc.name|escape}</span>
+                    </a>
+                </li>
+            {/foreach}
+        </ul>
+    {else}
+        <ul class="piicsl2">
+            {foreach $_categories as $sc}
+                <li class="piicsl-item">
+                    <div class="piicsl-img">
+                        <img src="{if shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="" />
+                    </div>
+                    <a href="{$sc.url}"><span class="piicsl-title">{$sc.name|escape}</span></a>
+                    {if !empty($sc.childs)}
+                        {foreach $sc.childs as $ch}
+                            <a href="{$ch.url}">{$ch.name|escape}</a>
+                            {if $ch@index == 4}<a href="{$sc.url}" class="hint">[`More categories`]...</a>{break}{/if}
+                        {/foreach}
+                    {/if}
+                </li>
+            {/foreach}
+        </ul>
+    {/if}
+</div>
+{/if}
+
+{/strip}

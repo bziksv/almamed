@@ -1,0 +1,32 @@
+{strip}
+
+<div class="copyright-wrapper">
+    <div class="copyright" role="complementary">
+        &copy; <a href="{$wa_url}">{$wa->accountName()}</a> 
+        {*
+        {time()|wa_datetime:"Y"}
+        *}
+        <br>
+        Поставки медицинского оборудования по всей России.<br>
+        Вся информация на сайте представлена для ознакомления и не является публичной офертой.<br>
+        <a href="/rules/user_yes.pdf">Политика конфиденциальности.</a> <br>
+        <a href="/rules/personal.pdf">Согласие на обработку персональных данных.</a>
+    </div>
+    {if !empty($theme_settings.powered_by)}
+        <div class="copyright">
+            {if $wa_app == 'shop'}
+                <a href="{if $wa->locale() == 'ru_RU'}//www.shop-script.ru/{else}//www.shop-script.com/{/if}" title="[`We are using`] Shop-Script 6">
+                    <img src="{$wa_theme_url}img/all-dots-default-order.png" alt="Shop-Script 6">
+                </a>
+                <span class="hint"> — Shop-Script 6</span>
+            {else}
+                <a href="{if $wa->locale() == 'ru_RU'}//www.webasyst.ru/{else}//www.webasyst.com/{/if}" title="[`We are using`] Webasyst">
+                    <img src="{$wa_theme_url}img/all-dots-default-order.png" alt="Webasyst">
+                </a>
+                <span class="hint"> — Webasyst</span>
+            {/if}
+        </div>
+    {/if}
+</div>
+
+{/strip}

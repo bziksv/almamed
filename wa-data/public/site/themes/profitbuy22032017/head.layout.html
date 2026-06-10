@@ -1,0 +1,50 @@
+{strip}
+
+{* fonts *}
+<link href='//fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400&amp;subset=cyrillic,latin' rel='stylesheet' type='text/css'>
+<link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type='text/css'>
+{if $wa->shop && $wa->shop->currency() == 'RUB'}<link href="{$wa_url}wa-content/font/ruble/arial/fontface.css" rel="stylesheet" type="text/css">{/if}
+
+{* css *}
+<link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
+{$wa->css()} {* links active plugins CSS *}
+
+{* js *}
+{if $at.ie && $at.ie < 10}<script type="text/javascript" src="{$wa_theme_url}matchMedia.js?v0.2.0" ></script>{/if}
+<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery/jquery-1.11.1.min.js" ></script>
+<script type="text/javascript" src="{$wa_static_url}wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
+{include file="theme.script.html" inline}
+<script type="text/javascript" src="{$wa_theme_url}profitbuy.min.js?v{$wa_theme_version}"></script>
+
+{$wa->js()} {* links active plugins JS *}
+
+{include file="`$wa_active_theme_path`/head.html" inline}
+
+{$wa->head()} {* links Google Analytics tracking code, site's custom JS (defined in Site app settings), and meta data such as Open Graph data *}
+
+{* theme & user CSS *}
+{include file="theme.css.html" assign="theme_css" inline}
+{if $at.speedup}
+<script id="at-theme-css">
+;( function (d) {
+    
+    var t = d.createElement('div'),
+        df = d.createDocumentFragment();
+    
+    t.innerHTML = {json_encode($theme_css)};
+    t = t.childNodes;
+    t = Array.prototype.slice.call(t);
+
+    t.forEach( function (e) {
+        df.appendChild(e);
+    });
+    
+    d.getElementsByTagName('head')[0].appendChild(df);
+    var s = d.getElementById('at-theme-css');
+    s.parentNode.removeChild(s);
+    
+})(document);
+</script>
+{else}{$theme_css}{/if}
+
+{/strip}

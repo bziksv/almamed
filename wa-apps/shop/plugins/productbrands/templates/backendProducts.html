@@ -1,0 +1,17 @@
+<div class="block">
+    <h5 class="heading">
+        <i class="icon16 darr collapse-handler" id="s-brands-list-handler"></i><a href="#/brands/">[`Brands`]</a>
+    </h5>
+    <div class="s-collection-list" id="s-brands-list">
+        <ul class="menu-v">
+            {foreach shopProductbrandsPlugin::getBrands(true) as $b}
+            <li data-type="type" id="type-{$b.id}">
+                <span class="count">{$b.count}</span>
+                <a href="#/products/hash=brand_{$b.id}">
+                    {$b.name}
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+</div>

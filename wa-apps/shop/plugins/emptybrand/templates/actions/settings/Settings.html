@@ -1,0 +1,50 @@
+<div class="block">
+    <h1>Всего товаров: {$total_count}</h1>
+    <p>Товары у которых не указан бренд.</p>
+
+    <table class="zebra">
+        <tr>
+            <th></th>
+            <th>ID</th>
+            <th>Категори</th>
+            <th>Название</th>
+            <th>URL</th>
+            <th>Бренд</th>
+        </tr>
+
+        {foreach $products as $p}
+        <tr>
+            <td><img src="{$p.image_crop_small}" width="48" height="48" class="drag-handle"></td>
+            <td>{$p.id}</td>
+            <td>
+                {if $p.category}
+                    {if $p.category.parent}
+                        <a href="/category/{$p.category.parent.full_url}" target="_blank">{$p.category.parent.name}</a>
+                    {/if}
+                    <a href="/category/{$p.category.full_url}" target="_blank">{$p.category.name}</a>
+                {/if}
+            </td>
+            <td><a href="/webasyst/shop/?action=products#/product/{$p.id}" target="_blank" class="inline-link">{$p.name}</a></td>
+            <td><a href="/product/{$p.url}/" target="_blank">/product/{$p.url}/</a></td>
+            <td style="position: relative">
+                <select id="brand-selected" data-id="{$p.id}" data-brand_id="{$features_brand.id}" data-brand_code="{$features_brand.code}" style="width:100%;max-width: 300px;">
+                    <option value="">Без бренда</option>
+                    {foreach $features_brand.values as $id => $val}
+                        <option value="{$val}">{$val}</option>
+                    {/foreach}
+                </select>
+            </td>
+        </tr>
+        {/foreach}
+    </table>
+</div>
+
+<div class="block">
+    <div class="paging" id="emptybrand">
+        {for $inc=1 to $pages}
+        <a href="#" data-page="{$inc}" style="line-height: 2;">{$inc}</a>
+        {/for}
+    </div>
+</div>
+
+

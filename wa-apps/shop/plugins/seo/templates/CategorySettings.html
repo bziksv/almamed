@@ -1,0 +1,12 @@
+<div id="seo-category-settings-page"></div>
+<script>
+	window.seo_category_settings = {$state|json_encode};
+</script>
+<script>
+	(function ($) {
+		var $link = $('<link rel="stylesheet" />');
+		$link.attr('href', {"{$wa_url}wa-apps/shop/plugins/seo/assets/category_settings.bundle.css?v={$version}"|json_encode});
+		$link.appendTo(document.head);
+	})(jQuery);
+</script>
+<script src="{$wa_url}wa-apps/shop/plugins/seo/assets/category_settings.bundle.js?v={$version}"></script>

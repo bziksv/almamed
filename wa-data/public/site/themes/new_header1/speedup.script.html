@@ -1,0 +1,39 @@
+<script type="text/javascript">
+    ;(function(document, window, undefined){
+        
+        window.sortLinks = function(m) {
+            m.forEach(function(l) {
+                var d = document.createElement('div');
+                d.innerHTML = l;
+                l = d.firstChild;
+                
+                if (l.href) {
+                    window.stack_css.push(l.getAttribute('href'));
+                    //window.stack_css.push(l.href.replace(window.location.protocol + '//' + window.location.hostname, ''));
+                }
+            });
+        };
+        
+        window.linksAppendHead = function(links, elem) {
+            var df = document.createDocumentFragment();
+            links.forEach(function(href) {
+                var link = document.createElement('link');
+                link.href = href;
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                df.appendChild(link);
+            });
+            
+            //window.addEventListener('load', function(){
+                if (typeof elem === 'undefined') {
+                    document.getElementsByTagName('head')[0].appendChild(df);
+                } else {
+                    document.getElementsByTagName('head')[0].insertBefore(df, elem);
+                }
+            //});
+        };
+        
+        window.stack_css = [];
+        
+    })(document, window);
+</script>

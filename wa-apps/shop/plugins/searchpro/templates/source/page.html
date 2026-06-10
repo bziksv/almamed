@@ -1,0 +1,146 @@
+<div class="searchpro__page" id="{$id}">
+	<div class="searchpro__page-title">
+		{$page_h1}
+	</div>
+	<div class="searchpro__page-description js-searchpro__page-description">
+		Найдено {$products_count} товаров
+		{if $is_in_category}
+			{$category = $wa->shop->category($category_id)}
+			в категории
+			<a href="{$wa->shop->categoryUrl($category)}">{$category.name}</a>.
+			Если в этой категории нет нужного товара, посмотрите
+			<a href="{$all_results_url}">
+				все результаты поиска
+			</a>
+		{elseif $categories_count > 1}
+			в
+			{$categories_count}
+			категориях
+		{/if}
+	</div>
+	{if !$is_in_category && $category_status && !empty($categories) && count($categories) > 1 && $category_mode === 'inline'}
+		{if $category_inline_mode_style === 'images'}
+			<div class="searchpro__page-categories_swiper js-searchpro__swiper" data-items-count="7">
+		{/if}
+		<div class="searchpro__page-categories searchpro__page-categories--{$category_inline_mode_style} js-searchpro__page-categories{if $category_inline_mode_style === 'images'} js-searchpro__swiper-wrapper{/if}">
+			{foreach $categories as $category}
+				{if !$category.name}
+					{continue}
+				{/if}
+				<a href="{$category.search_url}" class="searchpro__page-category js-searchpro__swiper-slide">
+					{if $category_inline_mode_style === 'images'}
+						<div class="searchpro__page-category_image">
+							{if !empty($category.image)}
+								<img src="{$category.image|escape}"/>
+							{else}
+								<img src="{$plugin_url}img/product.svg"/>
+							{/if}
+						</div>
+					{/if}
+
+					<div class="searchpro__page-category_name">
+						{if $category.existing_name}
+							{if $category.parent_id}
+								{$parent_category = $wa->shop->category($category.parent_id)}
+								{$parent_category.name}
+							{/if}
+						{/if}
+						{$category.name}
+						<span class="searchpro__page-category_hint">
+							({$category.count})
+						</span>
+					</div>
+				</a>
+			{/foreach}
+		</div>
+		{if $category_inline_mode_style === 'images'}
+			<div class="searchpro__page-categories_swiper-next-button js-searchpro__swiper-next-button"></div>
+			<div class="searchpro__page-categories_swiper-prev-button js-searchpro__swiper-prev-button"></div>
+			</div>
+		{/if}
+	{/if}
+	<div>
+		{if $sort_status}
+			{$sort_fields = [
+			'name' => '[`Name`]',
+			'price' => '[`Price`]',
+			'total_sales' => '[`Bestsellers`]',
+			'rating' => '[`Customer rating`]',
+			'create_datetime'=>'[`Date added`]',
+			'stock' => '[`In stock`]']}
+			<div class="searchpro__page-sort js-searchpro__page-sort">
+				<ul class="searchpro__page-sort_list">
+					<li class="searchpro__page-sort_caption">[`Sort by`]:</li>
+					<li class="searchpro__page-sort_item{if !$wa->get('sort')} searchpro__page-sort_item--selected{/if}">
+						<a href="{$wa->currentUrl(0, 1)}">По релевантности</a>
+					</li>
+					{foreach $sort_fields as $sort => $name}
+						<li class="searchpro__page-sort_item{if $wa->get('sort') === $sort} searchpro__page-sort_item--selected{/if}">
+							{$wa->shop->sortUrl($sort, $name, $wa->get('sort'))}
+						</li>
+					{/foreach}
+				</ul>
+			</div>
+			<div class="searchpro__page-mobile{if empty($filters)} searchpro__page-mobile--sort-only{/if}">
+				<div class="searchpro__page-mobile-sort js-searchpro__page-mobile-sort">
+					<select class="searchpro__page-mobile-sort_select js-searchpro__page-mobile-sort-select">
+						<option class="searchpro__page-mobile-sort_item"{if !$wa->get('sort')} selected{/if} value="">
+							[`New & Popular`]
+						</option>
+						{$order = $wa->get('order')}
+						{foreach $sort_fields as $sort => $name}
+							{$is_current = $wa->get('sort') === $sort}
+							<option class="searchpro__page-mobile-sort_item"{if $is_current} selected{/if}
+							        value="sort={$sort}&order={if $is_current}{$order}{else}asc{/if}">
+								{$name}
+								{if $is_current}
+									{if $order === 'asc'}
+										(по возрастанию)
+									{else}
+										(по убыванию)
+									{/if}
+								{/if}
+							</option>
+							{if $is_current}
+								<option class="searchpro__page-mobile-sort_item"
+								        value="sort={$sort}&order={if $order === 'desc'}asc{else}desc{/if}">
+									{$name}
+									{if $order === 'desc'}
+										(по возрастанию)
+									{else}
+										(по убыванию)
+									{/if}
+								</option>
+							{/if}
+						{/foreach}
+					</select>
+				</div>
+				{if !empty($filters)}
+					<div class="searchpro__page-mobile-filters">
+						<button type="button"
+						        class="searchpro__page-mobile-filters_button js-searchpro__filters-mobile-button"></button>
+					</div>
+				{/if}
+			</div>
+		{elseif !empty($filters)}
+			<div class="searchpro__page-mobile searchpro__page-mobile--filters-only">
+				<div class="searchpro__page-mobile-filters">
+					<button type="button"
+					        class="searchpro__page-mobile-filters_button js-searchpro__filters-mobile-button">
+						<span class="searchpro__page-mobile-filters_button-hint">Подбор по параметрам</span>
+					</button>
+				</div>
+			</div>
+		{/if}
+		<div class="searchpro__page-container{if !empty($filters) && $filter_position !== 'theme'}{if $filter_position === 'left'} searchpro__page-container--left-sidebar{/if}{else} searchpro__page-container--no-sidebar{/if}">
+			<div class="searchpro__page-content js-searchpro__page-content" data-count="{$products_count}">
+				{$page_content}
+			</div>
+			<div class="searchpro__page-sidebar">
+				{if !empty($filters)}
+					{$filters}
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>

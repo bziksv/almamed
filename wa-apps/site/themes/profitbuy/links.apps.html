@@ -1,0 +1,13 @@
+{strip}
+
+{if !empty($theme_settings.show_apps_links) && !empty($at['apps'])}
+    <ul class="base-menu type1 apps">
+        {foreach $at['apps'] as $app}
+            <li{if $app.url == $wa_app_url} class="selected"{/if}>
+                <a href="{$app.url}">{$app.name}</a>
+            </li>
+        {/foreach}
+    </ul>
+{/if}
+
+{/strip}

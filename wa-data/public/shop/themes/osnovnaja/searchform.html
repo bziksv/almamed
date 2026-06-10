@@ -1,0 +1,11 @@
+{strip}
+
+<!-- product search -->
+<form method="get" action="{$wa->getUrl('shop/frontend/search')}">
+    <div class="search-wrapper">
+        <button type="submit"><i class="material-icons mi-2x">&#xE8B6;</i></button>
+        <input{if empty($mobile_search)} id="search"{/if} type="search" name="query" {if !empty($query)}value="{$query}"{/if} placeholder="Поиск товара"{if !empty($theme_settings.autofit)} class="autofit"{/if}>
+    </div>
+</form>
+
+{/strip}

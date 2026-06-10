@@ -1,0 +1,70 @@
+{strip}
+
+{if $wa->shop && strpos($wa->currentUrl(), '/cart/') === false && strpos($wa->currentUrl(), '/checkout/') === false}
+{$cart_total = $wa->shop->cart->total()}
+{$cart_count = $wa->shop->cart->count()}
+<div class="col-grid">
+
+    <div id="cart"{if !$cart_total && !$cart_count} class="empty"{/if}>
+    <a href="{$wa->getUrl('shop/frontend/cart')}" class="link-to-cart">
+        {*<i class="mdi-shopping_cart mdi-3x cart-count" data-count="{$cart_count}"></i>*}
+        <i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>
+                            <span class="cart-text">
+                                <strong>[`Cart`]</strong>
+                                <span class="cart-total">{wa_currency_html($cart_total, $wa->shop->currency())}</span>
+                            </span>
+    </a>
+    {if !empty($theme_settings.flying_cart_item)}
+    {*$soaring_cart_items = $wa->shop->cart->items()*}{*krsort($soaring_cart_items)*}
+    <div class="flying-cart-wrapper">
+        <div id="flying-cart">
+            <ul>
+                {foreach $wa->shop->cart->items() as $item}{*$item|@debug_print_var*}
+                <li data-id="{$item.id}">
+                    <div class="flying-cart-img">
+                        <a href="{$wa->shop->productUrl($item.product)}" title="{$item.product.name|escape}">
+                            {*fix image sku*}
+                            {$ip = $wa->shop->product($item.product_id)}
+                            {if $ip.skus[$item.sku_id].image_id}{$item.product.image_id = $ip.skus[$item.sku_id].image_id}{/if}
+                            {if $ip.skus[$item.sku_id].frontend_price}{$item.price = $ip.skus[$item.sku_id].frontend_price * $item.quantity}{/if}
+                            {if $ip.skus[$item.sku_id].frontend_compare_price}{$item.compare_price = $ip.skus[$item.sku_id].frontend_compare_price}{/if}
+                            {*/fix image sku*}
+                            {$wa->shop->productImgHtml($item.product, '96x96', ['default' => "`$wa_theme_url`img/dummy96.png"])}
+                        </a>
+                    </div>
+                    <div class="flying-cart-offer align-left">
+                        <a href="{$wa->shop->productUrl($item.product)}">{$item.product.name|escape}</a>
+                        {if $item.sku_name && $item.sku_name != $item.product.name}<span class="gray">{$item.sku_name|escape}</span>{/if}
+                                                    <span class="flying-cart-price nowrap">
+                                                        {if !empty($item.compare_price) && $item.compare_price > 0}<span class="hint">{wa_currency_html($item.compare_price, $wa->shop->currency())}</span>{/if}
+                                                        <span class="price nowrap">{wa_currency_html($item.price, $wa->shop->currency())}</span>
+                                                    </span>
+                    </div>
+                    <div class="flying-cart-quantity">
+                        <input type="text" value="{$item.quantity}" class="flying-cart-qty"> [`pcs.`]
+                    </div>
+                    <div class="flying-cart-delete">
+                        <a href="#" class="flying-cart-del" title="[`Remove from cart`]" rel="nofollow"><i class="material-icons mi-2x">&#xE5CD;</i></a>
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="flying-cart-block align-left clear-both">
+            [`Total amount (with discount)`]<span class="bold cart-total">{wa_currency_html($cart_total, $wa->shop->currency())}</span>
+        </div>
+        <div class="flying-cart-block align-center">
+            {* PLUGIN QUICKORDER: replace 0 to 1 to enable *}
+            {if 0 && $wa_app == 'shop' && class_exists('shopQuickorderPlugin')}{shopQuickorderPlugin::submitCart()|replace:'quickorder-button-cart':'button'|replace:'quickorder-button':'button'}{/if}
+            <a class="button second-type" href="{$wa->getUrl('shop/frontend/cart')}">[`Go to cart`]</a>
+        </div>
+        <div class="flying-cart-block-empty align-center">
+            <span class="bold">[`Your cart is empty.`]</span>
+        </div>
+    </div>
+    {/if}
+</div>
+</div>
+{/if}
+
+{/strip}

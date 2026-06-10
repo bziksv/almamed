@@ -1,0 +1,381 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>{$settings.TITLE_PAGE|default:$plugin_name} {if ($settings.ORDER_NO == 1)}№ {elseif ($settings.ORDER_NO == 2)}# {else}&nbsp;{/if}{$order.id_str|default:'1234567890'|replace:'#':' '|replace:'№':' '} {if waRequest::get('print')}без печати{/if}</title>
+		<meta http-equiv=content-type content="text/html; charset=utf-8">
+		{$wa->css()}
+		<style type="text/css">
+			{$css.css}
+			@media print { @page { margin:{$settings.TOP_SIZE_LIST|default:'5mm'}; } }			
+			body { font-size:{$settings.FONT_SIZE|default:'14px'}; }			
+			.order-items th { background-color:{$settings.COLOR_SCHEME1|default:'#eed'}; color:{$settings.COLOR_SCHEME2|default:'#000'}; }
+			.faximile_src { 
+				width:{$settings.faximile_width|default:'40'}mm; 
+				height:{$settings.faximile_height|default:''}mm;
+				left: {$settings.faximile_x|default:'200'}px; 
+				bottom: {$settings.faximile_y|default:'-115px'}px;
+			}
+			.stamp_src { 
+				width:{$settings.stamp_width|default:'35'}mm; 
+				height:{$settings.stamp_height|default:''}mm;
+				left: {$settings.stamp_x|default:'0'}px; 
+				bottom: {$settings.stamp_y|default:'-115px'}px;
+			}
+		</style>
+		<script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery-ui.custom.min.js"></script>		
+	</head>
+	<body{if ($settings.SPEED_PRINT)} onload="window.print();"{/if}>
+		<div class="invoice_menu no_print">
+			<span class="button green translate" onclick="window.print();">[`PRINT`]</span>
+			<a href="?action=plugins#/{$plugin_id}" class="translate" style="float: right;" target="_blank">[`Settnings plugin`]</a>
+		</div>		
+		<div class="frame_form{if $settings.PRINT_FORMAT} book{else} landscape{/if}">
+			<div class="hend-top">		
+				<div class="top-column">
+					<div class="item-top-column inline_edit{if empty($settings.WORDTEXT) or !empty($settings.WORDTEXT_POS)} hide{/if}" contenteditable="true">{$settings.WORDTEXT}</div>
+					{if $settings.PRINT_FORMAT > 0}
+					<div class="item-top-column inline_edit{if empty($settings.COMPANY_NAME_1)} hide{/if}" contenteditable="true">{$settings.COMPANY_NAME_1|escape}</div>
+					<div class="item-top-column inline_edit{if empty($settings.COMPANY_ADDRESS)} hide{/if}" contenteditable="true">{$settings.COMPANY_ADDRESS|default:' '|escape}</div>
+					<div class="item-top-column inline_edit{if empty($settings.COMPANY_INN) && empty($settings.COMPANY_KPP)} hide{/if}" contenteditable="true">{if $settings.COMPANY_INN}ИНН: {$settings.COMPANY_INN|escape}{/if} {if $settings.COMPANY_KPP}КПП: {$settings.COMPANY_KPP|escape}{/if}</div>
+					<div class="item-top-column inline_edit{if empty($settings.COMPANY_PHONE1) && empty($settings.COMPANY_EMAIL1)} hide{/if}" contenteditable="true">{if ($settings.COMPANY_PHONE1)} тел: {$settings.COMPANY_PHONE1|escape}{/if} {if ($settings.COMPANY_EMAIL1)}{$settings.COMPANY_EMAIL1|escape}{/if}</div>
+					{/if}
+				</div>
+			</div>
+			<div class="hend-bottom">				
+				<div class="top-one">
+					<div class="top-item-one">
+						<div>ИНН:</div><div class="inline_edit" contenteditable="true">{$settings.COMPANY_INN|escape}</div>
+						<div>КПП:</div><div class="inline_edit" contenteditable="true">{$settings.COMPANY_KPP|escape}</div>
+					</div>
+					<div class="top-item-one"></div>
+					<div class="top-item-one"></div>
+				</div>
+				<div class="top-two">
+					<div class="top-item-two">Получатель</div>
+					<div class="top-item-two"></div>
+					<div class="top-item-two"></div>
+				</div>				
+				<div class="top-three">
+					<div class="top-item-three inline_edit" contenteditable="true">{$settings.COMPANY_NAME_1|escape}</div>
+					<div class="top-item-three">Р/счет</div>
+					<div class="top-item-three inline_edit" contenteditable="true">{$settings.COMPANY_BANK_NUMBER|escape}</div>
+				</div>			
+				<div class="top-four">
+					<div class="top-item-four">Банк получателя</div>
+					<div class="top-item-four">БИК</div>
+					<div class="top-item-four inline_edit" contenteditable="true">{$settings.COMPANY_BIK|escape}</div>
+				</div>
+				<div class="top-five">
+					<div class="top-item-five inline_edit" contenteditable="true">{$settings.COMPANY_BANK_NAME|escape}</div>
+					<div class="top-item-five">К/счет</div>
+					<div class="top-item-five inline_edit" contenteditable="true">{$settings.COMPANY_KORR|escape}</div>
+				</div>
+			</div>
+			<div class="hend-title">		
+				<div class="title">				
+					<div class="item-title">
+						<div class="title-line-title">
+							<div class="item-title-line-title">{$settings.TITLE_PAGE|default:'Счет на оплату'}</div>
+							<div class="item-title-line-title inline_edit" contenteditable="true">{if ($settings.ORDER_NO == 1)}№ {elseif ($settings.ORDER_NO == 2)}# {else}&nbsp;{/if}{$order.id_str|replace:'#':' '|replace:'№':' '}{$order.title|escape} от {if ($settings.DATE_TIME == 0 || $settings.DATE_TIME == 2)}{time()|wa_datetime:'humandate'}{else}{$order.datetime|wa_datetime:'humandate'}{/if}</div>
+						</div>
+					</div>					
+					<div class="item-title{if !empty($settings.PRINT_FORMAT)} hide{/if}">
+						<div class="line-title">
+							<div class="item-line-title">Поставщик:</div>
+							<div class="item-line-title inline_edit" contenteditable="true">{$settings.COMPANY_NAME_1|escape}, {$settings.COMPANY_ADDRESS|default:' '|escape}{if $settings.COMPANY_INN},ИНН: {$settings.COMPANY_INN|escape}{/if} {if $settings.COMPANY_KPP},КПП: {$settings.COMPANY_KPP|escape}{/if}{if ($settings.COMPANY_PHONE1)}, тел: {$settings.COMPANY_PHONE1|escape}{/if} {if ($settings.COMPANY_EMAIL1)}, {$settings.COMPANY_EMAIL1|escape}{/if}</div>
+						</div>
+					</div>
+					{$params = ($order.params)}
+					{if $params.payment_id == 3 }
+					{$company = ($params.{$settings.BUYER_JURNAME}|escape)}{else}{$company = $order.contact_name}{/if}
+
+					{$company = ifempty($company, $order->getContactField({$settings.BUYER_JURNAME_2|escape}, 'txt'))}
+					{$company = ifempty($company, $order->contact_company)}
+					{$company = ifempty($company,$order.billing_address.name)}
+					{$company = ifempty($company,$order.contact_name)}
+
+					{if isset($params.{$settings.BUYER_JURADDRESS}) } {$juraddress = ($params.{$settings.BUYER_JURADDRESS}|escape)}{else}{$juraddress = NULL}{/if}
+					{$juraddress = ifempty($juraddress, $order->getContactField({$settings.BUYER_JURADDRESS|default:'juraddress'|escape}, 'txt'))}	
+					{$juraddress = ifempty($juraddress, $order.billing_address.address)}
+					{$juraddress = ifempty($juraddress, $order.shipping_address.address)}					
+					{if isset($params.{$settings.BUYER_INN}) } {$inn = ($params.{$settings.BUYER_INN}|escape)}{else}{$inn = NULL}{/if}
+					{$inn = ifempty($inn, $order->getContactField({$settings.BUYER_INN|default:'inn'|escape}, 'txt'))}
+					{if isset($params.{$settings.BUYER_KPP}) } {$kpp = ($params.{$settings.BUYER_KPP}|escape)}{else}{$kpp = NULL}{/if}
+					{$kpp = ifempty($kpp, $order->getContactField({$settings.BUYER_KPP|default:'kpp'|escape}, 'txt'))}
+					{if isset($params.{$settings.BUYER_BIK}) } {$bik = ($params.{$settings.BUYER_BIK}|escape)}{else}{$bik = NULL}{/if}
+					{$bik = ifempty($bik, $order->getContactField({$settings.BUYER_BIK|default:'bik'|escape}, 'txt'))}
+					{if isset($params.{$settings.BUYER_BANK}) } {$bank = ($params.{$settings.BUYER_BANK}|escape)}{else}{$bank = NULL}{/if}
+					{$bank = ifempty($bank, $order->getContactField({$settings.BUYER_BANK|default:'bank'|escape}, 'txt'))}
+					{if isset($params.{$settings.BUYER_RS}) } {$rs = ($params.{$settings.BUYER_RS}|escape)}{else}{$rs = NULL}{/if}
+					{$rs = ifempty($rs, $order->getContactField({$settings.BUYER_RS|default:'rs'|escape}, 'txt'))}
+					{if isset($params.{$settings.BUYER_KS}) } {$ks = ($params.{$settings.BUYER_KS}|escape)}{else}{$ks = NULL}{/if}
+					{$ks = ifempty($ks, $order->getContactField({$settings.BUYER_KS|default:'ks'|escape}, 'txt'))}					
+					{if isset($settings.BUYER_DOP1) && $settings.BUYER_DOP1}{$dop1 = $order->getContactField({$settings.BUYER_DOP1|escape}, 'txt')}{/if}
+					{if isset($settings.BUYER_DOP2) && $settings.BUYER_DOP2}{$dop2 = $order->getContactField({$settings.BUYER_DOP2|escape}, 'txt')}{/if}
+					{if isset($settings.BUYER_DOP3) && $settings.BUYER_DOP3}{$dop3 = $order->getContactField({$settings.BUYER_DOP3|escape}, 'txt')}{/if}
+					{if isset($settings.BUYER_ADDR1) && $settings.BUYER_ADDR1}{$baddr1 = ($order.shipping_address[$settings.BUYER_ADDR1|replace:'address.':''])}{/if}
+					{if isset($settings.BUYER_ADDR2) && $settings.BUYER_ADDR2}{$baddr2 = ($order.shipping_address[$settings.BUYER_ADDR2|replace:'address.':''])}{/if}
+					{if isset($settings.BUYER_ADDR3) && $settings.BUYER_ADDR3}{$baddr3 = ($order.shipping_address[$settings.BUYER_ADDR3|replace:'address.':''])}{/if}
+					{if isset($settings.BUYER_ADDR4) && $settings.BUYER_ADDR4}{$baddr4 = ($order.shipping_address[$settings.BUYER_ADDR4|replace:'address.':''])}{/if}
+					{$phone = $order->getContactField('phone', 'thml')}
+					<div class="item-title">
+						<div class="line-title">
+							<div class="item-line-title">Плательщик:</div>
+							<div class="item-line-title inline_edit" contenteditable="true">
+							{if !empty($company)}{$company|escape}{/if}
+							{if !empty($inn) && $params.payment_id == 3}, <span class="nowrap">ИНН: {$inn|escape}</span>{/if}
+							{if !empty($juraddress) && $params.payment_id == 4}, <span class="nowrap">{$juraddress|escape}</span>{/if}
+							{if !empty($kpp)}, <span class="nowrap">{$kpp|escape}</span>{/if}
+							{if !empty($bik)}, <span class="nowrap">{$bik|escape}</span>{/if}
+							{if !empty($rs)}, <span class="nowrap">{$rs|escape}</span>{/if}
+							{if !empty($bank)}, <span class="nowrap">{$bank}</span>{/if}
+							{if !empty($ks)}, <span class="nowrap">{$ks|escape}</span>{/if}														
+							{if !empty($dop1)}, <span class="nowrap">{$settings.BUYER_DOP1_NAME|escape} {$dop1|escape}</span>{/if}
+							{if !empty($dop2)}, <span class="nowrap">{$settings.BUYER_DOP2_NAME|escape} {$dop2|escape}</span>{/if}
+							{if !empty($dop3)}, <span class="nowrap">{$settings.BUYER_DOP3_NAME|escape} {$dop3|escape}</span>{/if}
+							{if !empty($dop4)}, <span class="nowrap">{$settings.BUYER_DOP4_NAME|escape} {$dop4|escape}</span>{/if}							
+							{if !empty($baddr1)}, <span class="nowrap">{$settings.BUYER_ADDR1_NAME|escape} {$baddr1|escape}</span>{/if}
+							{if !empty($baddr2)}, <span class="nowrap">{$settings.BUYER_ADDR2_NAME|escape} {$baddr2|escape}</span>{/if}
+							{if !empty($baddr3)}, <span class="nowrap">{$settings.BUYER_ADDR3_NAME|escape} {$baddr3|escape}</span>{/if}
+							{if !empty($baddr4)}, <span class="nowrap">{$settings.BUYER_ADDR4_NAME|escape} {$baddr4|escape}</span>{/if}
+							{if !empty($baddr5)}, <span class="nowrap">{$settings.BUYER_ADDR5_NAME|escape} {$baddr5|escape}</span>{/if}
+							{if !empty($baddr6)}, <span class="nowrap">{$settings.BUYER_ADDR6_NAME|escape} {$baddr6|escape}</span>{/if}							
+							{if !empty($phone) && $params.payment_id == 4}, <span class="nowrap">тел.:{$phone|escape}</span>{/if}
+							</div>
+						</div>
+					</div>
+					<div class="item-title">
+						<div class="line-title">
+							<div class="item-line-title">Основание:</div>
+							<div class="item-line-title inline_edit" contenteditable="true">{if !empty($settings.BASEHYS)}{$settings.BASEHYS|default:'Оплата заказа:'|escape} {if ($settings.ORDER_NO == 1)}№ {elseif ($settings.ORDER_NO == 2)}# {else}&nbsp;{/if}{$order.id_str|replace:'#':' '|replace:'№':' '}{$order.title|escape} от {if ($settings.DATE_TIME == 0 || $settings.DATE_TIME == 3)}{time()|wa_datetime:'humandate'}{else}{$order.datetime|wa_datetime:'humandate'}{/if}{/if}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="order-items">
+				<table border="0" cellpadding="0" cellspacing="0" class="tablesorter">
+					<thead>
+						<tr>
+							<th>№</th>
+							<th>Наименование товара, работ, услуг</th>
+							<th>Ед.<br>изм.</th>
+							<th>Кол-<br>во</th>
+							<th>Цена</th>							
+							<th{if ($settings.TAX != 1)} class="hide"{else} colspan="2"{/if}><div>НДС</div><span>ставка&nbsp;</span><span>&nbsp;сумма</span></th>							
+							<th>Сумма{if ($settings.TAX != 0)}<br> с НДС{/if}</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+					{$item_quantity = 0}
+					{$total_totals=0.0}
+					{$total_tax=0.0}
+					{$total_taxs=0.0}
+					{$total_amount=0.0}	
+					{$total_amounts=0.0}
+					{foreach $items as $id => $item}
+					{if $item.tax_included}
+						{$total_taxs=$total_taxs+$item.tax}
+					{/if}
+					{$total_amounts=$total_amounts+$item.total}
+					{$total_totals=$total_totals+$item.total}
+					{if $item.tax_included}
+						{$total_tax=$total_tax+$item.tax}
+					{/if}
+					{$total_amount=$total_amount+$item.total}
+					{$item_quantity = $item_quantity + ($item.quantity)}
+					{if $item.type != 'service'}
+					{if $settings.TAX == '1'}{$colspan = '7'}{/if}
+						<tr>
+							<td><div class="counter"></div></td>
+							<td class="inline_edit" contenteditable="true">{$item.name}{if $item.sku && $settings.SKU} ({$item.sku}){/if}</td>
+							<td class="inline_edit" contenteditable="true">шт.</td>
+							<td class="inline_edit" contenteditable="true">{$item.quantity|string_format:'%d'}</td>
+							<td class="inline_edit" contenteditable="true">{$item.price|wa_format_amount:$order.currency:'%2'}</td>
+							<td class="{if ($settings.TAX != 1)}hide {/if}inline_edit" contenteditable="true">{if ($item.tax_percent > 0)}{$item.tax_percent|string_format:"%d"}%{else}<span>{$settings.TAX_TEXT|escape}</span>{/if}</td>							
+							<td class="{if ($settings.TAX != 1)}hide {/if}inline_edit" contenteditable="true">{if $item.tax_included}{$item.tax|default:0|wa_format_amount:$order.currency:'%2'}{else}{if ($settings.ZERO_TAX)}0.00{/if}{/if}</td>
+							<td class="inline_edit"contenteditable="true">{$item.total|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>
+					{/if}
+					{/foreach}
+					</tbody>					
+					<!---------------------------------------------->
+					<tbody class="RowAdd_{$order.id}"></tbody>
+					<!---------------------------------------------->
+					<tbody{if ($order.shipping == 0) or ($settings.SHIPPING <= 1) or ($settings.SHIPPING == 4)} class="hide"{/if}>
+						<tr>
+							<td><div class="counter"></div></td>
+							<td class="inline_edit" contenteditable="true">Доставка{if ($settings.SHIPPING == 3) && !empty($order.shipping_name)} - {$order.shipping_name|escape}{/if}</td>
+							<td class="inline_edit"contenteditable="true">шт.</td>
+							<td class="inline_edit"contenteditable="true">1</td>
+							<td class="inline_edit" contenteditable="true">{$order.shipping|wa_format_amount:$order.currency:'%2'}</td>
+							<td class="{if ($settings.TAX != 1)}hide {/if}inline_edit" contenteditable="true">{if ($order.shipping_tax > 0)}{$order.shipping_percent|string_format:"%d"}%{else}<span>{$settings.TAX_TEXT|escape}</span>{/if}</td>
+							<td class="{if ($settings.TAX != 1)}hide {/if}inline_edit" contenteditable="true">{if ($settings.ZERO_TAX)}0.00{/if}</td>
+							<td class="inline_edit" contenteditable="true">{$order.shipping|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>
+					</tbody>
+					<tbody class="invoice_table_bottom">
+						<tr>
+							<td colspan="{$colspan|default:'5'}">
+								<div class="addCols_{$order.id} no_print button green">Добавить строку</div>
+								<span>Итого{if ($settings.TAX != 0)} без НДС{/if}:</span>
+							</td>
+							{if ($order.shipping != 0) && ($settings.SHIPPING > 1)}
+								{$order_subtotal = $order.subtotal + $order.shipping}
+							{else}
+								{$order_subtotal = $order.subtotal}
+							{/if}							
+							<td colspan="1" class="inline_edit" contenteditable="true">
+								{if ($order.shipping > 0) && ($settings.SHIPPING == 1) && ($settings.SHIPPING == 3)}
+									{if ($settings.TAX != 0)}
+										{(($total_totals + $order.shipping)-$total_tax)|wa_format_amount:$order.currency:'%2'}
+									{else}
+										{($total_totals + $order.shipping)|wa_format_amount:$order.currency:'%2'}
+									{/if}
+								{else}
+									{if ($settings.TAX != 0)}
+										{($total_totals-$total_tax)|wa_format_amount:$order.currency:'%2'}
+									{else}
+										{$total_totals|wa_format_amount:$order.currency:'%2'}
+									{/if}
+								{/if}
+							</td>
+						</tr>						
+						<tr{if ($settings.TAX == 0)} class="hide"{/if}>
+							<td colspan="{$colspan|default:'5'}">Итого НДС:</td>
+							<td colspan="1" class="inline_edit" contenteditable="true">{$total_tax|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>
+						<tr{if ($order.shipping == 0) or ($settings.SHIPPING != 1)} class="hide"{/if}>
+							<td colspan="{$colspan|default:'5'}">Доставка:</td>
+							<td colspan="1" class="inline_edit" contenteditable="true">{$order.shipping|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>						
+						<tr{if ($order.discount == 0) or ($settings.DISCOUNT != 1)} class="hide"{/if}>
+							<td colspan="{$colspan|default:'5'}">Скидка:</td>
+							<td colspan="1" class="inline_edit" contenteditable="true">-{$order.discount|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>
+							{if ($order.shipping != 0) && ($settings.SHIPPING != 0) && ($settings.SHIPPING != 4)}
+								{$order_total = $order.total}
+							{else}
+								{$order_total = $order.total - $order.shipping}
+							{/if}
+						<tr{if ($settings.PREPAY_SYS == 0)} class="hide"{/if}>
+							<td colspan="{$colspan|default:'5'}">Сумма счета{if ($settings.TAX != 0)} c НДС{/if}:</td>
+							<td colspan="1" class="inline_edit" contenteditable="true">{$order_total|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>						
+						{$PREPAY=0.0}
+						{$PREPAY = ($order->getContactField({$settings.PREPAY|default:' '}, 'txt'))}						
+						{if ($settings.PREPAY_SYS == 1) && ($PREPAY > 0)}
+							{$order_total = ($order.total - $PREPAY)}
+						{else if ($settings.PREPAY_SYS == 2) && ($PREPAY > 0)}
+							{$order_total = $PREPAY}
+						{else}
+							{if ($order.shipping != 0) && ($settings.SHIPPING != 0)}
+								{$order_total = $order.total}
+							{else}
+								{$order_total = $order.total - $order.shipping}
+							{/if}
+						{/if}					
+						<tr{if ($settings.PREPAY_SYS == 0)} class="hide"{/if}>
+							<td colspan="{$colspan|default:'5'}">Предоплата:</td>
+							<td colspan="1" class="inline_edit" contenteditable="true">{$PREPAY|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>
+						<tr{if ($settings.PREPAY_SYS == 2)} class="hide"{/if}>
+							<td colspan="{$colspan|default:'5'}" class='price text_right'>Всего к оплате:</td>
+							<td colspan="1" class='amount text_right inline_edit font_weight700' contenteditable="true">{$order_total|wa_format_amount:$order.currency:'%2'}</td>
+						</tr>
+					</tbody>					
+				</table>
+			</div>
+			<div class="invoice_total">
+				<div class="invoice-total">
+					{$total_quantity = $order.total_quantity}
+					<div class="item-invoice-total">Всего наименований:</div>
+					<div class="item-invoice-total inline_edit" contenteditable="true">
+						{if $order.shipping > 0 && ($settings.SHIPPING >= 1) && ($settings.SHIPPING != 4)}{($total_quantity+1)|string_format:'%0.0f'}{else}{$total_quantity|string_format:'%0.0f'}{/if}, 
+						{if ($settings.PREPAY_SYS == 2)}предоплата {/if}на сумму: {$order_total|wa_format_amount:$order.currency:'%2'} руб., 
+						{if ($order.tax > 0 && $settings.TAX != 0)}в т.ч. НДС{if ($PREPAY == 0) or ($settings.PREPAY_SYS == 0)} {$total_taxs|wa_format_amount:$order.currency:'%2'} руб.{/if}{else}без НДС{/if}
+					</div>
+				</div>
+				<div class="invoice-total">
+					<div class="item-invoice-total">{$order_total|wa_format_amount:$order.currency:'words'}</div>
+				</div>
+			</div>
+			{if empty(waRequest::get('print'))}
+			<div class="draggable_block">
+				{if !empty($settings.faximile_src)}<div class="draggable"><img class="faximile_src" src="{$settings.faximile_src}" /></div>{/if}
+				{if !empty($settings.stamp_src)}<div class="draggable"><img class="stamp_src" src="{$settings.stamp_src}" /></div>{/if}
+			</div>
+			{/if}
+			<div class="bottom">
+				<div class="block-bottom">
+					<div class="item-bottom">Генеральный директор</div>
+					<div class="item-bottom inline_edit" contenteditable="true"></div>
+					<div class="item-bottom inline_edit" contenteditable="true">{$settings.COMPANY_BOSS|default:' '|escape}</div>
+				</div>				
+				<div class="block-bottom">
+					<div class="item-bottom"></div>
+					<div class="item-bottom">(подпись)</div>
+					<div class="item-bottom">(расшифровка подписи)</div>
+				</div>
+				<div class="block-bottom">
+					<div class="item-bottom">Бухгалтер</div>
+					<div class="item-bottom inline_edit" contenteditable="true"></div>
+					<div class="item-bottom inline_edit" contenteditable="true">{$settings.COMPANY_BUH|default:' '|escape}</div>
+				</div>				
+				<div class="block-bottom">
+					<div class="item-bottom"></div>
+					<div class="item-bottom">(подпись)</div>
+					<div class="item-bottom">(расшифровка подписи)</div>
+				</div>				
+				<div class="block-bottom">
+					<div class="item-bottom">Менеджер</div>
+					<div class="item-bottom inline_edit" contenteditable="true"></div>
+					<div class="item-bottom">
+							<select>
+							{foreach shopEasyinvoicephysPlugin::getUsers() as $id => $name}
+								<option value="{$name}" {if $settings.COMPANY_MAN == $name}selected{/if}>{$name|escape}</option>
+							{/foreach}
+								<option value="{$settings.COMPANY_MAN_2|escape}" {if $settings.COMPANY_MAN == $settings.COMPANY_MAN_2}selected{/if}>{$settings.COMPANY_MAN_2|escape}</option>
+								<option value="{$settings.COMPANY_MAN_3|escape}" {if $settings.COMPANY_MAN == $settings.COMPANY_MAN_3}selected{/if}>{$settings.COMPANY_MAN_3|escape}</option>
+								<option value="{$settings.COMPANY_MAN_4|escape}" {if $settings.COMPANY_MAN == $settings.COMPANY_MAN_4}selected{/if}>{$settings.COMPANY_MAN_4|escape}</option>
+								<option value="{$settings.COMPANY_MAN_5|escape}" {if $settings.COMPANY_MAN == $settings.COMPANY_MAN_5}selected{/if}>{$settings.COMPANY_MAN_5|escape}</option>
+								<option {if $settings.COMPANY_MAN == NULL}selected {/if}style="color: red;">&nbsp;&nbsp;</option>
+							</select>
+						<div class="inline_edit" contenteditable="true"></div>
+					</div>
+				</div>				
+				<div class="block-bottom">
+					<div class="item-bottom"></div>
+					<div class="item-bottom">(подпись)</div>
+					<div class="item-bottom">(расшифровка подписи)</div>
+				</div>
+			</div>
+			<div class="bottom_text">
+				<div class="inline_edit" contenteditable="true"{if empty($settings.WORDTEXT) or empty($settings.WORDTEXT_POS)} style="display:none"{/if}>{$settings.WORDTEXT}</div>
+			</div>
+		</div>		
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$( ".draggable" ).draggable();
+			$(".addCols_{$order.id}").click(function() {
+				$('.RowAdd_{$order.id}').append('<tr>'+
+							'<td><div class="remove no_print"><img src="{$plugin_path}img/mp.png"></div><div class="counter"></div></td>'+
+							'<td class="inline_edit" contenteditable="true"></td>'+
+							'<td class="inline_edit" contenteditable="true">шт.</td>'+
+							'<td class="inline_edit" contenteditable="true">1</td>'+
+							'<td class="inline_edit" contenteditable="true">0.00</td>'+
+							'<td class="{if ($settings.TAX != 1)}hide {/if}inline_edit" contenteditable="true"><span>{$settings.TAX_TEXT|escape}</span></td>'+
+							'<td class="{if ($settings.TAX != 1)}hide {/if}inline_edit" contenteditable="true">{if ($settings.ZERO_TAX)}0.00{/if}</td>'+
+							'<td class="inline_edit" contenteditable="true">0.00</td>'+
+						'</tr>');
+				return false;
+			});
+			$(".remove").live('click',function() {
+				$(this).parents("tr").remove();
+				return false;
+			});
+		});
+		</script>
+	</body>
+</html>

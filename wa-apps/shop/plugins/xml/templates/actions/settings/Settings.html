@@ -1,0 +1,113 @@
+<h1>XML</h1>
+<div class="value">
+    <h3 class="cmd_path">{$cmd_path}</h3>
+</div>
+<div class="fields form">
+
+        <div class="field">
+            <div class="name">
+                Бренды
+            </div>
+            <div class="value">
+                {foreach from=$brand item=b}
+                    <input type="checkbox" name="brand" class="brands" value="{$b.id}" data-name="{$b.name}"> {$b.name} |
+                {/foreach}
+            </div>
+        </div>
+
+    <div class="field">
+        <div class="name">
+            Категории
+        </div>
+        <div class="value">
+            {foreach from=$cat item=c}
+                <input type="checkbox" name="category" class="categories" value="{$c.id}" data-name="{$c.name}"> {$c.name} |
+            {/foreach}
+        </div>
+    </div>
+
+
+    <div class="field">
+        <div class="name">
+            Сохраненный импорт
+        </div>
+        {foreach from=$delete_all key=name item=id}
+        <div class="value">
+            <a href="#" name-del="{$name}" class="delete">Удалить: {str_replace('_',' ',$name)}</a><br>
+        </div>
+        {/foreach}
+    </div>
+
+
+
+    <form action="?module=plugins&id=xml&action=save" method="post" id="plugins-settings-form">
+        {$wa->csrf()}
+        <input type="hidden" id="send-brand" name="">
+        <input type="hidden" id="send-cat" name="">
+        <div class="value submit">
+            <input type="submit" class="button green" value="Сохранить">
+            <span id="plugins-settings-form-status" style="display:none"></span>
+        </div>
+    </form>
+
+
+</div>
+
+<script>
+
+
+    $(function(){
+
+
+        function add_settings(cla,id_e,n){
+
+            var brand_id = [];
+            var brand_name = [];
+            $(cla).change(function(){
+                var checkbox = $(this).is(':checked');
+                var id = $(this).attr('value');
+                var name = $(this).attr('data-name');
+                if(checkbox){
+                    brand_id.push(id);
+                    brand_name.push(name);
+                }else{
+                    brand_id.splice(brand_id.indexOf(id), 1);
+                    brand_name.splice(brand_name.indexOf(name), 1);
+                }
+                var str_id = brand_id.join('_');
+                var str_name = brand_name.join('_');
+                str_name = str_name.replace(/ /ig, '-')
+
+                $(id_e).attr({
+                    name:"shop_xml["+n+"_"+str_name+"]",
+                    value:str_id
+                });
+            });
+        }
+
+        add_settings(".brands","#send-brand","brands");
+        add_settings(".categories","#send-cat","category");
+
+
+    $('.delete').click(function(){
+        var self = $(this);
+        var name = $(this).attr('name-del');
+        if(name){
+            $.get( "/wa-apps/shop/plugins/xml/ajax.php", { name: name } )
+                    .done(function( data ) {
+                        if(data == 1){
+                            self.remove();
+                        }
+                        console.log(data);
+                    });
+        }
+        return false;
+    });
+
+
+    });
+
+
+
+
+</script>

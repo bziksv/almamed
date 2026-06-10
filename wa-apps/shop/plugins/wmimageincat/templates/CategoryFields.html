@@ -1,0 +1,228 @@
+<style type="text/css">
+ #wmimageincat-preview-block{
+  border: 5px solid #f1f1f1;
+  border-radius: 5px;
+  z-index: 300000;  
+  background-color: white;
+ }
+ 
+ .wmimageincat-preview-close{
+  cursor: pointer;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+ } 
+</style>
+
+
+<div class="field">
+ <div class="name">
+  Изображения
+ </div>
+ 
+ <div class="value">
+   <table class="zebra" style="width: 700px;" id="wmimageincat-image-list" data-cat_id="{$cat_id}" >
+    <tr data-image_type="banner" {if $images_flag.banner}data-id="{$images.banner.id}" data-ext="{$images.banner.ext}"{/if}>
+	 <td>
+	  Баннер <span class="hint">({$sizes.banner})</span>
+	 </td>
+	 
+	 <td>
+	  {if !$images_flag.banner}
+	   <input type='file' name='wmimageincat_banner_file' value="Загрузить изображение">
+	  {else}
+	   <a href="javascript: void(0);" class="preview_image">{$images.banner.file_name}</a>
+	  {/if}
+	 </td>
+	 
+	 <td>
+	  {if $images_flag.banner}
+	   <a href="javascript: void(0);" class="wmimageincat-del_image"><i class="icon16 delete"></i>Удалить</a>
+	  {/if}
+	 </td>
+	</tr>
+	
+	<tr data-image_type="image" {if $images_flag.image}data-id="{$images.image.id}" data-ext="{$images.image.ext}"{/if}>
+	 <td>
+	  Изображение <span class="hint">({$sizes.image})</span>
+	 </td>
+	 
+	 <td>
+	  {if !$images_flag.image}
+	   <input type='file' name='wmimageincat_image_file' value="Загрузить изображение">
+	  {else}
+	   <a href="javascript: void(0);" class="preview_image">{$images.image.file_name}</a>
+	  {/if}
+	 </td>
+	 
+	 <td>
+	  {if $images_flag.image}
+	   <a href="javascript: void(0);" class="wmimageincat-del_image"><i class="icon16 delete"></i>Удалить</a>
+	  {/if}
+	 </td>
+	</tr>
+	
+	<tr data-image_type="icon" {if $images_flag.icon}data-id="{$images.icon.id}" data-ext="{$images.icon.ext}"{/if}>
+	 <td>
+	  Иконка <span class="hint">({$sizes.icon})</span>
+	 </td>
+	 
+	 <td>
+	  {if !$images_flag.icon}
+	   <input type='file' name='wmimageincat_icon_file' value="Загрузить изображение">
+	  {else}	  
+	   <a href="javascript: void(0);" class="preview_image">{$images.icon.file_name}</a>
+	  {/if}
+	 </td>
+	 
+	 <td>
+	  {if $images_flag.icon}
+	   <a href="javascript: void(0);" class="wmimageincat-del_image"><i class="icon16 delete"></i>Удалить</a>
+	  {/if}
+	 </td>
+	</tr>
+   </table>
+   <p style="color: green;"><em>После внесения изменений не забудьте нажать на кнопку "Сохранить"</em></p>
+   <p class="wmimageincat_error_log" style="color: red;"></p>
+ </div>
+</div>
+
+
+<script type="text/javascript">
+ $(function(){
+  
+    //Скрытие всплывающего окна с эскизом  
+    $(document).off('click.hide_preview').on('click.hide_preview', '.wmimageincat-preview-close', function(){
+        $(this).parent().remove();
+    });
+  
+    $('#s-product-list-settings-form').click(function(){
+        $('#wmimageincat-preview-block').remove();
+    });
+  
+    $('#s-product-list-settings-form').find('div.dialog-buttons').find('a.cancel').click(function(){
+        $('#wmimageincat-preview-block').remove();
+    }); 
+  
+    $('#s-product-list-settings-form').find('div.dialog-buttons').find('input[type="submit"]').click(function(){
+        $('#wmimageincat-preview-block').remove();
+    });
+    
+    //Удаление изображения
+    $('.wmimageincat-del_image').off('click.del_image').on('click.del_image', function(){
+        $('#wmimageincat-preview-block').remove();
+        var tr = $(this).parent().parent();
+        var type = tr.data('image_type');
+        var cat_id = $('#wmimageincat-image-list').data('cat_id');
+        var id = tr.data('id');
+        var ext = tr.data('ext');
+        target = $(this);
+	 
+        if($('#wmimageincat-image-list').find('.loading').length == 0)
+        {
+            target.find('i').addClass('loading').removeClass('delete');
+            $.post('?plugin=wmimageincat&module=deleteimage',{literal}{type: type, cat_id: cat_id, id: id, ext: ext}{/literal},function(response){
+                if(response.data.state)
+                {
+                    target.parent().find('.loading').remove();
+                    tr.find('.preview_image').before('<input type="file" name="wmimageincat_'+type+'_file" value="Загрузить изображение">');
+                    tr.find('.preview_image').remove();
+                    target.remove();
+		   
+                }
+            },'json');
+        }
+	
+    });
+    
+    //Предпросмотр изображения	
+    $('.preview_image').off('click.preview_image').on('click.preview_image', function(e){
+        var target = $(this);
+        var tr = target.parent().parent();
+        var type = tr.data('image_type');
+        var ext = tr.data('ext');
+        var id = tr.data('id');
+        var cat_id = $('#wmimageincat-image-list').data('cat_id');
+	
+        if($('#wmimageincat-image-list').find('.loading').length == 0)
+        {
+            target.after('<i class="icon16 loading"></i>');
+           $.post('?plugin=wmimageincat&module=previewimage', {literal}{type: type, ext: ext, id: id, cat_id: cat_id}{/literal}, function(response){
+                if(response.data.path)
+                { 	  
+                    $('#wmimageincat-preview-block').remove();
+                    $('body').append('<div id="wmimageincat-preview-block"><i class="icon16 no wmimageincat-preview-close"></i><img src="'+response.data.path+'"></div>');
+                    var block = $('#wmimageincat-preview-block');
+                    block.css('position','absolute');	  
+                    block.css('top', e.clientY+'px');
+                    block.css('left', e.clientX+'px');
+                    if(type == 'icon')
+                    {
+                        block.css('display', 'block');
+                        block.css({
+                            'width' : '100px',
+                            'height' : '100px',
+                            'line-height': '100px',
+                            'text-align': 'center'
+                        });	   
+                        block.find('img').css('vertical-align', 'middle');
+                    }else{
+                        block.css({
+                            'display': 'inline-block',
+                            'width': 'auto',
+                            'height': 'auto',
+                            'line-height': '100%'
+                        });
+                    }
+	  
+                }
+                    tr.find('.loading').remove();
+            },'json');	 
+        }
+	
+    });
+   
+   //Обработка клика на "Сохранить"
+   $('#s-product-list-settings-dialog').find('#s-product-list-settings-form').find('.dialog-buttons').find('input[type="submit"]').off('click.exception').on('click.exception', function(){
+		var target = $('#s-product-list-settings-dialog');
+		//Отслеживаем появлением iframe
+		var intervalId = setInterval(function(){
+			if(target.find('#s-product-list-settings-form-iframe').length != 0)
+			{	
+				clearInterval(intervalId);
+				var frame = target.find('#s-product-list-settings-form-iframe');
+				//Отслеживаем заполнение iframe
+				var intervalId_1 = setInterval(function(){
+					if(frame.contents().find('body').html() != '')
+					{
+					    clearInterval(intervalId_1);						
+						var content = frame.contents().find('body').html();
+						var pattern = "%wmimageincat_plugin%";
+						var start = content.indexOf(pattern);
+						if(start != -1)
+						{	
+							var tmp_content = '';
+							var msg = '';
+							var end;
+							var error_log = target.find('#s-product-list-settings-form').find('.wmimageincat_error_log');
+							while(start !=-1)
+							{
+								end = content.indexOf(pattern, start+pattern.length);
+								tmp_content = content.substring(start, end);
+								start = content.indexOf(pattern, end+pattern.length);
+								tmp_content = tmp_content.replace(pattern,'');
+					            msg += tmp_content+"<br><br>";
+							}	
+							
+							error_log.empty();
+							error_log.append(msg);
+						}else{
+                            target.hide();
+                        }
+					}
+				},200);
+			}
+		},500);
+	});
+ });
+</script>

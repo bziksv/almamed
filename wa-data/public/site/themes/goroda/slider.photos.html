@@ -1,0 +1,98 @@
+{strip}
+
+{*
+Options:
+mode='random' ('random'|'sliceDown,sliceDownLeft,sliceUp,sliceUpLeft,sliceUpDown,sliceUpDownLeft,fold,fade,slideInRight,slideInLeft,boxRandom,boxRain,boxRainReverse,boxRainGrow,boxRainGrowReverse')
+speed=500
+pause=3000
+controls=true (true|false)
+pager=true (true|false)
+pauseOnHover=true (true|false)
+
+Items:
+{$photoImit = [
+    0 => [
+        'link' => 'www.mysite.com/page0/',
+        'image' => 'www.mysite.com/myImage0.jpg',
+        'title' => 'Title',
+        'body' => 'Description'
+    ],
+    1 => [
+        'link' => 'www.mysite.com/page1/',
+        'image' => 'www.mysite.com/myImage1.jpg',
+        'title' => 'Title',
+        'body' => 'Description'
+    ]
+]}
+*}
+{if !empty($promos)}
+
+    {if count($promos) < 2}{$pager = false}{$controls = false}{/if}
+
+    {$options = [
+    	'effect' => $mode|default:'random',
+        'animSpeed' => $speed|default:500,
+        'pauseTime' => $pause|default:3000,
+        'directionNav' => $controls|default:true,
+        'controlNav' => $pager|default:true,
+        'pauseOnHover' =>  $pauseOnHover|default:true
+    ]}
+    
+    <article class="global-photo-slider">
+        <div class="gps-nivoslider" data-options='{json_encode($options)}'>
+            {foreach $promos as $promo}
+                <a href="{$promo.link|escape}">
+                    <img src="{$promo.image}" alt="{$promo.title|escape}" title="#htmlcaption-{$promo@index}" />
+                </a>
+            {/foreach}
+        </div>
+        {if !empty($caption)}
+            {foreach $promos as $promo}
+                <div id="htmlcaption-{$promo@index}" class="nivo-html-caption">
+                    {if !empty($promo.title)}<h3>{$promo.title|escape}</h3><br />{/if}
+                    {if !empty($promo.body)}<div class="nivo-html-body">{$promo.body|strip}</div>{/if}
+                </div>    
+            {/foreach}
+        {/if}
+    </article>
+    
+{elseif $photos}
+    
+    {if count($photos) < 2}{$pager = false}{$controls = false}{/if}
+
+    {$options = [
+    	'effect' => $mode|default:'random',
+        'animSpeed' => $speed|default:500,
+        'pauseTime' => $pause|default:3000,
+        'directionNav' => $controls|default:true,
+        'controlNav' => $pager|default:true,
+        'pauseOnHover' =>  $pauseOnHover|default:true
+    ]}
+
+    <article class="global-photo-slider">
+        <div class="gps-nivoslider" data-options='{json_encode($options)}'>
+            {foreach $photos as $photo}
+                {$photo.url = ''}
+                {if strpos($photo.description, '<!--mark-->') !== false}
+                    {$photo.description = explode('<!--mark-->', $photo.description, 2)}
+                    {$photo.url = $photo.description[0]}
+                    {$photo.description = $photo.description[1]|default:''}
+                {/if}
+                <a href="{$photo.url|escape}">
+                    <img src="{$photo['thumb_'|cat:$size].url}" alt="{$photo.name|escape}" title="#htmlcaption-{$photo@index}" />
+                </a>
+            {/foreach}
+        </div>
+        {if !empty($caption)}
+            {foreach $photos as $photo}
+                <div id="htmlcaption-{$photo@index}" class="nivo-html-caption">
+                    {if !empty($photo.name)}<h3>{$photo.name|escape}</h3><br />{/if}
+                    {if !empty($photo.description)}<div class="nivo-html-body">{$photo.description|strip}</div>{/if}
+                </div>    
+            {/foreach}
+        {/if}
+    </article>
+    
+{/if}
+
+{/strip}

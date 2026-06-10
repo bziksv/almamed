@@ -1,0 +1,8 @@
+.descriptionmanager{
+    max-width: 287px;
+}
+.descriptionmanager input{
+    width: 100%;
+    margin-bottom: 10px;
+    height: 40px;
+}

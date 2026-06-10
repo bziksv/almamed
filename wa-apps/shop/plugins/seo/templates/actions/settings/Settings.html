@@ -1,0 +1,13 @@
+<div id="seo-settings-page"></div>
+<script>
+	window.seo_resource_base_url = {"{$wa_url}wa-apps/shop/plugins/seo/assets/"|json_encode};
+	window.seo_settings = {$state|json_encode};
+</script>
+<script>
+	(function ($) {
+		var $link = $('<link rel="stylesheet" />');
+		$link.attr('href', {"{$wa_url}wa-apps/shop/plugins/seo/assets/settings.bundle.css?v={$version}"|json_encode});
+		$link.appendTo(document.head);
+	})(jQuery);
+</script>
+<script src="{$wa_url}wa-apps/shop/plugins/seo/assets/settings.bundle.js?v={$version}"></script>

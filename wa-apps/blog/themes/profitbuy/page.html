@@ -1,0 +1,44 @@
+{strip}
+
+{$_app_name = '[`Blog`]'}
+{foreach $wa->apps() as $a}
+    {if $a.url==$wa_app_url}
+        {$_app_name = $a.name}
+    {/if}
+{/foreach}
+
+<div class="fill-background">
+
+    <div class="breadcrumbs" itemprop="breadcrumb">
+        <a href="{$wa_url}">{*[`Home`]*}<i class="material-icons mi-lg">&#xE88A;</i></a> <span class="rarr">&#47;</span>
+        {if $wa_app_url != '/'}<a href="{$wa_app_url}">{$_app_name}</a> <span class="rarr">&#47;</span>{/if}
+        {if !empty($breadcrumbs)}
+            {foreach $breadcrumbs as $breadcrumb}
+                <a href="{$breadcrumb.url}">{$breadcrumb.name|escape}</a> <span class="rarr">&#47;</span>
+            {/foreach}
+        {/if}
+        {$page.name|escape}
+    </div>
+
+</div>
+
+<div class="fill-background hoverable">
+
+    <h1>{$page.name}</h1>
+    
+    {$subpages = $wa->blog->pages($page.id)}
+    {if $subpages}
+        <ul class="sub-links">
+            {foreach $subpages as $p}
+                <li><a href="{$p.url}">{$p.name}</a></li>
+            {/foreach}
+        </ul>
+    {/if}
+    
+    <div id="page" role="main">
+        {$page.content|strip}
+    </div>
+
+</div>
+
+{/strip}

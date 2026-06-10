@@ -1,0 +1,15 @@
+<p>
+	Импорт/экспорт
+</p>
+<div id="seo-import-export-page"></div>
+<div class="clear"></div>
+<script>
+	window.seo_importexport = {([
+		'groups_storefronts' => $groups_storefronts,
+		'encoding' => $encoding,
+		'delimiters' => $delimiters
+	])|json_encode};
+
+	$(document.head).append('<link rel="stylesheet" href="{$wa_url}wa-apps/shop/plugins/seo/assets/importexport.bundle.css?v={$version}" />');
+</script>
+<script src="{$wa_url}wa-apps/shop/plugins/seo/assets/importexport.bundle.js?v={$version}"></script>

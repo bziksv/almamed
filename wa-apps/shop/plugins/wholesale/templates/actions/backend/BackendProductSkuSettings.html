@@ -1,0 +1,18 @@
+<div class="clear-both"></div>
+<div class="field-group">
+    <h3>Минимальный заказ</h3>
+    <div class="field">
+        <div class="name">Минимальное количество артикула для заказа</div>
+        <div class="value">
+            <input type="text" name="skus[{$sku_id|default:-1}][wholesale_min_sku_count]" value="{(int)$sku.wholesale_min_sku_count|default:'0'}" class="short numerical">
+        </div>
+    </div>
+    <div class="field">
+        <div class="name">Кратность заказываемого артикула</div>
+        <div class="value">
+            <input type="text" name="skus[{$sku_id|default:-1}][wholesale_sku_multiplicity]" value="{(int)$sku.wholesale_sku_multiplicity|default:'0'}" class="short numerical">
+        </div>
+    </div>
+</div>
+<hr/>
+<div class="clear-both"></div>

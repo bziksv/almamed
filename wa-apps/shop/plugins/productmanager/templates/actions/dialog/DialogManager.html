@@ -1,0 +1,40 @@
+<div class="dialog width400px" id="s-manager">
+    <div class="dialog-background"></div>
+    <form method="post" action="?plugin=productmanager&action=edit">
+        <div class="dialog-window">
+            <div class="dialog-content">
+                <div class="dialog-content-indent">
+                    <h1>Выберите менеджера для {$count} товар'а(ов)</h1>
+                    <p></p>
+                    <ul class="menu-v with-icons">
+						<li>
+                            <label>
+                                <input type="radio" name="manager_id" value="0">
+                                <span class="name red">Снять менеджера</span>
+                            </label>
+                        </li>
+						
+                        {foreach $users as $id => $user}
+                        <li>
+                            <label>
+                                <input type="radio" name="manager_id" value="{$id}">
+                                <span class="name">{$user.name}</span>
+                            </label>
+                        </li>
+                        {/foreach}
+                    </ul>
+
+                </div>
+            </div>
+
+            <div class="dialog-buttons">
+                <div class="dialog-buttons-gradient">
+                    <input type="submit" value="Сохранить" class="button green">
+                    <i class="icon16 loading"></i>
+                    или <a class="cancel" href="#">Закрыть</a>
+                </div>
+            </div>
+            {$wa->csrf()}
+        </div>
+    </form>
+</div>

@@ -1,0 +1,94 @@
+{if $breadcrumbs_plugin.breadcrumbs}
+	<script>
+		window.breadcrumbsPlugin = {
+			breadcrumbs: {$breadcrumbs_plugin.breadcrumbs|json_encode},
+			current_page_item: {$breadcrumbs_plugin.current_page_item|json_encode},
+			show_subcategories: {$breadcrumbs_plugin.show_subcategories|json_encode},
+			show_subcategories_on_hover: {$breadcrumbs_plugin.show_subcategories_on_hover|json_encode},
+		};
+	</script>
+
+	<script src="{$breadcrumbs_plugin.js_url}"></script>
+	<link rel="stylesheet" href="{$breadcrumbs_plugin.css_url}">
+
+	<div itemscope itemtype="http://schema.org/BreadcrumbList" class="breadcrumbs-plugin breadcrumbs">
+		{$_i = 1}
+		{foreach $breadcrumbs_plugin.breadcrumbs as $_breadcrumbs_index => $_item}
+			{if !$_item}
+				{continue}
+			{/if}
+
+			<div itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"
+					class="js-breadcrumbs-plugin__item-wrapper breadcrumbs-plugin__item-wrapper"
+					data-breadcrumbs_index="{$_breadcrumbs_index}"
+			>
+
+				{if $_i > 1}
+					<span class="breadcrumbs-plugin__item__arrow">{$breadcrumbs_plugin.separator}</span>
+				{/if}
+
+				<a href="{$_item.url}" itemprop="item" class="breadcrumbs-plugin__item breadcrumbs-plugin__item_href">
+					{if isset($_item.itemprop_name)}
+						<span class="breadcrumbs-plugin__item__label">
+							{$_item.name}
+						</span>
+						<span itemprop="name" class="breadcrumbs-plugin__itemprop-name_hidden">
+							{$_item.itemprop_name}
+						</span>
+					{else}
+						<span itemprop="name" class="breadcrumbs-plugin__item__label">
+							{$_item.name}
+						</span>
+					{/if}
+				</a>
+
+				<meta itemprop="position" content="{$_i++}" />
+
+				{if $breadcrumbs_plugin.show_subcategories && $_item.brothers|default:[]|count}
+					<span class="js-breadcrumbs-plugin__item__brothers__arrow breadcrumbs-plugin__item__brothers__arrow">&#9660;</span>
+				{/if}
+			</div>
+		{/foreach}
+
+		{if $breadcrumbs_plugin.current_page_item}
+			{if $breadcrumbs_plugin.hide_current_item}
+				<div class="breadcrumbs-plugin__item-wrapper">
+					<span class="breadcrumbs-plugin__item">
+						<span class="breadcrumbs-plugin__item__arrow">&darr;</span>
+					</span>
+				</div>
+			{else}
+				<div class="js-breadcrumbs-plugin__item-wrapper breadcrumbs-plugin__item-wrapper"
+						data-breadcrumbs_index="current"
+						{if $breadcrumbs_plugin.show_current_item_link}
+							itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"
+						{/if}
+				>
+					{if $breadcrumbs_plugin.show_current_item_link}
+						<span class="breadcrumbs-plugin__item__arrow">{$breadcrumbs_plugin.separator}</span>
+
+						<a href="{$breadcrumbs_plugin.current_page_item.url}" itemprop="item" class="breadcrumbs-plugin__item breadcrumbs-plugin__item_href">
+							<span itemprop="name" class="breadcrumbs-plugin__item__label">
+								{$breadcrumbs_plugin.current_page_item.name}
+							</span>
+						</a>
+					{else}
+						<span class="breadcrumbs-plugin__item">
+							<span class="breadcrumbs-plugin__item__arrow">{$breadcrumbs_plugin.separator}</span>
+
+							<span class="breadcrumbs-plugin__item__label">
+								{$breadcrumbs_plugin.current_page_item.name}
+							</span>
+						</span>
+					{/if}
+
+					<meta {if $breadcrumbs_plugin.show_current_item_link}itemprop="position"{/if} content="{$_i}" />
+
+					{if $breadcrumbs_plugin.show_subcategories && $breadcrumbs_plugin.current_page_item.brothers|default:[]|count}
+						<span class="js-breadcrumbs-plugin__item__brothers__arrow breadcrumbs-plugin__item__brothers__arrow">&#9660;</span>
+					{/if}
+				</div>
+			{/if}
+		{/if}
+	</div>
+{/if}

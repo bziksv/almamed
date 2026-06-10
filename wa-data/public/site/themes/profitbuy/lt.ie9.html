@@ -1,0 +1,125 @@
+{strip}
+
+<style type="text/css">
+a img { border: 0; }
+.container { width: 900px; margin: 0 auto; }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.align-middle { vertical-align:middle; }
+a#logo { text-decoration: none; display: inline-block; overflow: hidden; max-height: 120px; line-height: 1; vertical-align: middle; width: 100%; }
+a#logo img { vertical-align: middle; }
+a#logo #logo-image { max-width: 100%; max-height: 120px; }
+a#logo .logo-text { display: inline-block; line-height: 1.4; vertical-align: middle; padding-left: 1.5rem; }
+a#logo .account-name { font-size: 1.5rem; color: #353535; }
+.hint{ color:#aaa;font-size:.9em; }
+table { width:100%;margin:0 auto; }
+.browser-icon td { width:20%; }
+a { display:block; }
+.browser-icon a span { background-image:url("{$wa_theme_url}img/browser.jpg"); background-repeat: no-repeat; display:block; width:50px; height:50px; margin:0 auto 10px; cursor:pointer; }
+.explorer { background-position:0 0; }
+.chrome { background-position:-160px 0; }
+.safari { background-position:-325px 0; }
+.opera { background-position:-488px 0; }
+.firefox { background-position:-653px 0; }
+p { margin-top: 5px; }
+h1 { font-size: 24px; font-weight: bold; line-height: normal; margin:90px 0 0 0; }
+.wrapper-lt-ie8 p.hello { color: #353535; line-height: normal; font-size:16px; }
+p.help-text { margin:0 0 90px; }
+ul.phones-wrapper { margin: 0; padding: 0; }
+ul.phones-wrapper li .hint { display: none; }
+ul.phones-wrapper { display: inline-block; vertical-align: middle; line-height: 1.4; }
+ul.phones-wrapper li { display: inline-block; padding: 5px 0 5px 30px; text-align: right; vertical-align: top; list-style: none; }
+ul.phones-wrapper li > a { text-decoration: none; display: block; font-size: 1.55rem; line-height: normal; color: rgba(0, 0, 0, 0.87); }
+ul.phones-wrapper li .hint { display: initial; }
+</style>
+<div class="container">
+    <div class="row-grid">
+        <div class="col-grid s12">
+            <table>
+                <tr>
+                    <td colspan="3" class="align-left align-middle">
+                    	<a id="logo" href="{$wa_url}">
+                            {if !empty($theme_settings.logo)}
+                                <img src="{$wa_theme_url}{$theme_settings.logo}?v{$wa_theme_version}" alt="{$theme_settings.logo_title|default:''}" id="logo-image" />
+                            {else}
+                                <img src="{$wa_theme_url}img/wm_site.png" alt="{$theme_settings.logo_title|default:''}"/>
+                            {/if}
+                            {if empty($theme_settings.logo_image_only) && (!empty($theme_settings.logo_title) || !empty($theme_settings.logo_tagline))}
+                                <div class="logo-text">
+                                    {if !empty($theme_settings.logo_title)}<div class="account-name">{$theme_settings.logo_title}</div>{/if}
+                                    {if !empty($theme_settings.logo_tagline)}<span class="hint">{$theme_settings.logo_tagline}</span>{/if}
+                                </div>
+                            {/if}
+                        </a>
+                    </td>
+                    <td colspan="2" class="align-right align-middle">
+                      	{if !empty($theme_settings.phone_1) || !empty($theme_settings.phone_2)}
+                            <ul class="phones-wrapper">
+                                {if !empty($theme_settings.phone_1)}
+                                <li>
+                                    <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}">{$theme_settings.phone_1}</a>
+                                </li>
+                                {/if}
+                                {if !empty($theme_settings.phone_2)}
+                                <li>
+                                    <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_2)}">{$theme_settings.phone_2}</a>
+                                </li>
+                                {/if}
+                            </ul>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <h1>[`Dear friends!`]</h1>
+                        <p class="hello">[`Unfortunately, your browser does not support modern technology used on our website.`]</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <p class="hint help-text">[`Please refresh your browser by downloading it on the links below or contact your system administrator serving your computer.`]</p>
+                    </td>
+                </tr>
+                <tr class="browser-icon align-center">
+                    <td>
+                        <a rel="nofollow" href="//www.microsoft.com/rus/windows/internet-explorer/worldwide-sites.aspx" title="Internet Explorer">
+                            <span class="explorer"></span>
+                            Internet Explorer
+                        </a>
+                        <p class="hint">Microsoft</p>
+                    </td>
+                    <td>
+                        <a rel="nofollow" href="//www.google.com/chrome/" title="Chrome">
+                            <span class="chrome"></span>
+                            Chrome
+                        </a>
+                        <p class="hint">Google</p>
+                    </td>
+                    <td>
+                        <a rel="nofollow" href="//www.apple.com/ru/safari/" title="Safari">
+                            <span class="safari"></span>
+                            Safari
+                        </a>
+                        <p class="hint">Apple</p>
+                    </td>
+                    <td>
+                        <a rel="nofollow" href="//www.opera.com/" title="Opera">
+                            <span class="opera"></span>
+                            Opera
+                        </a>
+                        <p class="hint">Opera Software</p>
+                    </td>
+                    <td>
+                        <a rel="nofollow" href="//www.mozilla-europe.org/ru/firefox/" title="Firefox">
+                            <span class="firefox"></span>
+                            Firefox
+                        </a>
+                        <p class="hint">Mozilla</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+{/strip}

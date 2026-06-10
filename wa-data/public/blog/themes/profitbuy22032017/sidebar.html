@@ -1,0 +1,136 @@
+<div class="sidebar-group fill-background">
+    <div class="sidebar-title second-type">[`Links blog`]<button class="toggle-menu"><i class="mdi-menu mdi-2x"></i></button></div>
+    <div class="sidebar-box">
+        <ul class="base-menu type1">
+            <!-- SUBSCRIBE -->
+        	{$rss = $wa->blog->rssUrl()}
+        	{if $rss}
+                <li><a href="{$rss}" title="[s`RSS`]"><i class="icon16 rss"></i>[s`RSS`]</a></li>
+        		{*
+        		<li><a href="#" title="[s`Facebook`]"><i class="icon16 facebook"></i><span>[s`Facebook`]</span></a></li>
+        		<li><a href="#" title="[s`Twitter`]"><i class="icon16 twitter"></i><span>[`Twitter`]</span></a></li>
+        		<li><a href="#" title="[s`VK`]"><i class="icon16 vk"></i><span>[s`VK`]</span></a></li>
+        		*}
+        	{/if}
+        	
+        	<!-- BLOGS -->
+            {$blogs = $wa->blog->blogs()}
+            {foreach $blogs as $blog}
+                <li class="{if $wa->globals('blog_id') eq $blog.id && empty($is_search)}selected{/if}">
+                    <a href="{$blog.link}">{$blog.name}</a>
+                </li>
+            {foreachelse}
+                <li>
+                    <a href="{$wa->blog->url()}">[`All posts`]</a>
+                </li>
+            {/foreach}
+            
+            <!-- TIMELINE navigation -->
+            {$timeline = $wa->blog->timeline()}
+            {if !empty($timeline)}
+                <li class="parent">
+                    <a href="#">[`Calendar`]</a>
+                    <ul class="timeline">
+            		{$year=null}
+            		{foreach $timeline as $year_month => $item}
+            			{if $year neq $item.year}
+            				{if !$item@first}
+                                    </ul>
+                                </li>
+                            {/if}
+                            <li class="parent{if $item.year_selected} selected{/if}">
+            	            {$year=$item.year}
+                	        <a href="{$item.year_link}">{$item.year|default:'NULL'}</a>
+            				<ul>
+                        {/if}
+                        <li {if $item.selected}class="selected"{/if}>
+                            <a href="{$item.link}" title="{_w("%d post","%d posts",$item.count)}">{_ws(date("F",gmmktime(0,0,0,$item.month,1)))}</a>
+                        </li>
+            		    {if $item@last}
+            		            </ul>
+            	    	    </li>
+                        {/if}
+                    {/foreach}
+                    </ul>
+                </li>
+            {/if}
+            
+            <!-- PLUGIN CATEGORIES -->
+            {foreach $frontend_action as $plugin => $output}
+        	    {if !empty($output.sidebar) && $plugin == 'category-plugin'}
+        	        <li class="parent">
+        	            <a href="#">[`Categories`]</a>
+                        {$output.sidebar}
+                    </li>
+                {/if}
+            {/foreach}
+        </ul>
+    </div>
+</div>
+
+{if $wa->shop && !empty($theme_settings.category_tree_sidebar_show)}{include file="`$wa_parent_theme_path`/links.categories.sidebar.html" inline}{/if}
+{if !$wa->isMobile() && !empty($theme_settings.pages_sidebar)}{include file="`$wa_parent_theme_path`/links.pages.sidebar.html" inline}{/if}
+
+<!-- PLUGIN TAG -->
+{if !empty($theme_settings.tags) && !$wa->isMobile()}
+    {foreach $frontend_action as $plugin => $output}
+        {if !empty($output.sidebar) && $plugin == 'tag-plugin'}
+            <div class="sidebar-group fill-background tag-plugin hide-on-med-and-down">
+                {substr_replace($output.sidebar, 'sidebar-box tags', strpos($output.sidebar, 'tags'), 4)}
+            </div>
+        {/if}
+    {/foreach}
+{/if}
+
+<!-- PLUGINS -->
+{if !$wa->isMobile()}
+    {* @event (frontend_action_default|frontend_action_post|frontend_action_page|frontend_action_error).%plugin_id%.sidebar *}
+    {foreach $frontend_action as $plugin => $output}
+        {if !empty($output.sidebar) && $plugin != 'category-plugin' && $plugin != 'tag-plugin'}
+            <div class="sidebar-group fill-background {$plugin}">
+                <div class="sidebar-title">
+                    {if substr($plugin, -7) == '-plugin'}{$wa->pluginName(substr($plugin, 0, -7))}{else}[`More`]{/if}
+                    <button class="toggle-menu"><i class="mdi-menu mdi-2x"></i></button>
+                </div>
+                <div class="sidebar-box">
+                    {if strpos($output.sidebar, 'menu-v') !== false}
+                        {substr_replace($output.sidebar, 'base-menu type1', strpos($output.sidebar, 'menu-v'), 6)}
+                    {else}
+                        {$output.sidebar}
+                    {/if}
+                </div>
+            </div>
+        {/if}
+    {/foreach}
+{/if}
+
+<!-- FOLLOW -->
+{if !$wa->isMobile()}
+    <aside class="connect">
+        {if !empty($theme_settings.facebook_likebox_code)}
+            <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+                {$theme_settings.facebook_likebox_code}
+            </div>
+        {/if}
+        {if !empty($theme_settings.twitter_timeline_code)}
+            <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+                {$theme_settings.twitter_timeline_code}
+            </div>
+        {/if}
+        {if !empty($theme_settings.vk_widget_code)}
+            <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+                {$theme_settings.vk_widget_code}
+            </div>
+        {/if}
+        {if !empty($theme_settings.ok_widget_code)}
+            <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+                {$theme_settings.ok_widget_code}
+            </div>
+        {/if}
+        {if !empty($theme_settings.instagramm_widget_code)}
+            <div class="sidebar-group fill-background hide-on-med-and-down likebox">
+                {$theme_settings.instagramm_widget_code}
+            </div>
+        {/if}
+    </aside>
+{/if}

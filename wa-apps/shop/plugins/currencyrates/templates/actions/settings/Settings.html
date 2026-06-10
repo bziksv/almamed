@@ -1,0 +1,133 @@
+<link type="text/css" rel="stylesheet" href="{$wa_app_static_url}plugins/currencyrates/CSS/style.css">
+<script type="text/javascript" src="{$wa_app_static_url}plugins/currencyrates/JS/menu.js"></script>
+<script type="text/javascript" src="{$wa_app_static_url}plugins/currencyrates/JS/cur_list.js"></script>
+<script type="text/javascript" src="{$wa_app_static_url}plugins/currencyrates/JS/cron_list.js"></script>
+<link type="text/css" rel="stylesheet" href="{$wa_app_static_url}plugins/currencyrates/CSS/fontawesome.css">
+
+<div class='block'>
+    <ul class='tabs'>
+        <li class='selected hand_settings'><a href="javascript:void(0);">Список валют</a></li>
+        <li class='cron_settings'><a href="javascript: void(0);">Настройки "CRON (автоматическое обновление)"</a></li>
+    </ul>
+ 
+    <div class="tab-content">
+ 
+        <div class='cr_block'>
+            {$menu}
+        </div>
+  
+        {if ($menu eq '')}
+            <div class='hand_block'>
+                <h1 class="title_currencyrates">Валюты</h1>
+   
+                <div class='name_currencyrates'>
+                    Основная валюта - <h2 style="display: inline;">{$pc_title} <span class='hint'>{$pc_code}</span></h2>
+                </div>
+   
+               <div class="value">
+                    {if $update_all_rates neq ''}
+                        {$update_all_rates}
+                    {/if}
+               </div>
+   
+               <div class ="name">
+                    Другие валюты:
+               </div>
+   
+               <div class='value'>
+                   {if ($cur_list neq '')}
+                        <table class='zebra' id="cur_list">
+                            {foreach $cur_list as $key => $value}                         
+                                <tr data-cur="{$value['code']}">
+                                    <td class="min-width"></td>
+                                    
+                                    <td class="currency">
+                                        <strong>{$value['title']} </strong>
+                                        <span class="hint">{$value['sign']}</span>
+                                    </td>
+                                    
+                                    <td class="rate_td">
+                                        <span class='rate'>
+                                            1 {$value['code']} = {number_format($value['rate'], 3, '.', ' ')} {$pc_code}
+                                        </span>
+                                        <a href="javascript:void(0);" title="Настройка" style="display: inline;" class="button">
+                                            <span class="settings">Настройки</span>
+                                        </a>
+                                    </td>
+                                    
+                                    <td class="update_rate">
+                                        <div class="update_rate_button">
+                                            <a href="javascript:void(0);" class="button red">Обновить</a>
+                                        </div>
+                                        {$state_string[$value['code']]}
+                                    </td>
+                                </tr>                        
+                            {/foreach}
+                        </table>
+                   {/if}
+               </div>
+            </div>
+  
+            <div class='cron_block'>
+                {if count($cur_list) > 0}
+                    <div class="name">
+                        <h2>Выберите валюты для автоматического обновления</h2>
+                    </div>
+                    
+                    <div class="value">
+                        <form id = "currencyrates_cron_settings_currencies_list" style="width: 600px;">
+                            <fieldset>
+                                <legend>Доступные валюты магазина</legend>
+                                {if is_null($selected_currency)}
+                                    {foreach $cur_list as $key => $val} 
+                                        <label class="currencies_list-item">
+                                            <input type="checkbox" value="{$val['code']}" checked>
+                                            {$val['title']}
+                                        </label>
+                                        <br /><br />
+                                    {/foreach}
+                                {else if is_array($selected_currency)}
+                                    {foreach $cur_list as $key => $val}
+                                        {if in_array($val['code'], $selected_currency)}                                        
+                                            <label class="currencies_list-item">
+                                            <input type="checkbox" value="{$val['code']}" checked>
+                                            {$val['title']}
+                                            </label>
+                                            <br /><br />                                        
+                                        {else}
+                                            <label class="currencies_list-item">
+                                            <input type="checkbox" value="{$val['code']}">
+                                            {$val['title']}
+                                            </label>
+                                            <br /><br />
+                                        {/if}
+                                    {/foreach}
+                                {/if}                                
+                                <input type="button" class="cron_save_curencies_list_button button green" value="Сохранить">
+                            </fieldset>
+                    </form>
+                    </div>
+                {/if}
+                
+                <div class='name'>
+                    <h2>Команда для запуска скрипта из консоли:</h2>
+                </div>
+               
+                <div class="value">
+                    <h3 class="cmd_path">{$cmd_path}</h3>
+                </div>
+               
+                <div class='name' style="margin-top: 20px;">
+                    <h2>Генерация команды для CRON:</h2>
+                </div>
+               
+                <div class="value">
+                    <p>Укажите время ежедневного срабатывания скрипта(Часы : минуты):</p>
+                    <p><input type="text" value="23" style="width: 40px;" class="hours"> : 
+                    <input type="text" value='59' style="width: 40px;" class="minutes"> <br /><br />
+                    <input type='button' value='Генерация' class='cron_gen_button button blue'></p>
+                </div>
+            </div>
+        {/if}
+    </div>
+</div>

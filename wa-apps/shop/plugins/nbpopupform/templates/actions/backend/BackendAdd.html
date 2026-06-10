@@ -1,0 +1,110 @@
+<form method="post" action="?plugin=nbpopupform&action=save">
+
+    <div id="s-checkout-contact-form-wrapper">
+
+        <div class="field">
+            <div class="name">Название формы</div>
+            <div class="value">
+                <input type="text" name="nbpopupform[form][name]" class="bold" value="Контактная информация">
+                <br>
+                <span class="hint">Отображается на витрине</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">Название формы</div>
+            <div class="value">
+              <textarea name="nbpopupform[form][description]"></textarea>
+                <br>
+                <span class="hint">Отображается на витрине</span>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">Добавление полей формы</div>
+            <div class="value no-shift">
+
+                <table id="main-field-list" class="field-list zebra"><tbody>
+
+                <tr class="hidden field-row template editor-on just-added field-enabled" style="">
+                    <td class="min-width"><i class="icon16 sort sort-outer"></i></td>
+                    <td class="min-width">
+                        <input type="hidden" name="nbpopupform[fields][%FID%][disabled]" value="1">
+                        <input type="checkbox" id="" name="nbpopupform[fields][%FID%][disabled]" value="" checked="">
+                    </td>
+                    <td>
+                        <label for="" class="name-label"></label>
+                        <input type="text" class="name-input" placeholder="Название поля" name="nbpopupform[fields][%FID%][names]" value="">
+
+                    </td>
+                    <td class="min-width">
+
+                        <div class="hide-when-field-disabled">
+                            <em class="small"><label>
+                                <input type="hidden" name="nbpopupform[fields][%FID%][required]" value="">
+                                <input type="checkbox" name="nbpopupform[fields][%FID%][required]" value="1"> Обязательное
+                            </label></em>
+                        </div>
+
+                        <div class="hide-when-field-disabled">
+                            <select class="type-selector" name="nbpopupform[fields][%FID%][type]">
+                                <option value="text">Текст (input)</option>
+                                <option value="textarea">Текст (textarea)</option>
+                                <option value="checkbox">Флажок</option>
+                            </select>
+                            <div class="field-advanced-settings"></div>
+                        </div>
+                    </td>
+                </tr>
+
+
+                <tr class="white add-field">
+                    <td class="min-width">&nbsp;</td>
+                    <td class="min-width"><a class="add-field" href="#"><i class="icon16 add"></i></a></td>
+                    <td>
+                        <a href="javascript:void(0)" class="add-field inline-link"><b><i>Добавить поле</i></b></a>
+                    </td>
+                </tr>
+                </tbody></table>
+            </div>
+            <div class="buttons">
+                <div class="buttons-gradient">
+                    <input type="submit" value="Сохранить" class="button green">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {$wa->csrf()}
+</form>
+
+<script>
+    $(function(){
+
+        var max_field = 1;
+
+        var form = $("#checkout-step-contactinfo-form"),
+        wrapper = $("#s-checkout-contact-form-wrapper");
+
+
+        // Links to add new field
+        wrapper.on('click', 'table.field-list > tbody > tr.add-field a.add-field', function() {
+            // Clone row template
+            var table = $(this).closest('table');
+            var tmpl = table.find('tbody > .field-row.template');
+            var tr = tmpl.clone().insertBefore(tmpl).removeClass('template').removeClass('hidden');
+
+            var fid = max_field;
+            max_field++;
+            tr.find('[name]').each(function() {
+                var self = $(this);
+                self.attr('name', self.attr('name').replace(/%FID%/g, fid));
+            });
+            tr.data('fieldId', fid);
+            tr.find('select.type-selector').change();
+
+            return false;
+        });
+
+    });
+</script>

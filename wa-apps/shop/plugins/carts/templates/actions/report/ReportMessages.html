@@ -1,0 +1,435 @@
+<script type="text/javascript">
+    var wa_url = '{$wa_url}';
+    var wa_app = '{$wa_app}';
+    var wa_lang = '{$lang}';
+    var wa_csrf = '{waRequest::cookie("_csrf", "")}';
+    document.title = '[`Abandoned carts report`] — [`Cart`]';
+</script>
+
+<style type="text/css">
+    .carts-report-dialog .dialog-content{
+        position: relative;
+    }
+    .wa-editor-core-wrapper .wa-editor-wysiwyg-html-toggle .selected {
+        border: 1px solid #eee;
+        border-bottom: none;
+    }
+    .wa-editor-core-wrapper .wa-editor-wysiwyg-html-toggle + div {
+        clear: right;
+    }
+    .wa-editor-core-wrapper .ace{
+        border: 1px solid #eee;
+    }
+
+</style>
+
+<script type="text/javascript" src="{$wa_url}wa-content/js/ace/ace.js"></script>
+
+<link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/redactor/2/redactor.css?v{$wa->version(true)}">
+<script src="{$wa_url}wa-content/js/redactor/2/redactor.min.js?v{$wa->version(true)}"></script>
+{if $lang!='en'}<script src="{$wa_url}wa-content/js/redactor/2/{$lang}.js?v{$wa->version(true)}"></script>{/if}
+<script src="{$wa_url}wa-content/js/jquery-wa/editor2.js?v{$wa->version(true)}"></script>
+
+<div class="block double-padded">
+<h1>[`Abandoned carts`] &mdash; [`Cart`] <span class="hint">#{$storefront_id|escape}</span></h1>
+
+<p><a href="?plugin=carts&module=report#/carts/" class="inline-link">&larr; <b><i>[`Back`]</i></b></a></p>
+{if empty($customer)}
+    <p>[`Current customer didn't enter any contact details.`]</p>
+{else}
+    <div class="field">
+        <div class="name">[s`Name`]</div>
+        <div class="value">{$customer.name}</div>
+    </div>
+    {if $customer->get('email', 'default')}
+        <div class="field">
+            <div class="name">[s`Email`]</div>
+            {foreach $customer.email as $email}<div class="value"><i class="icon16 email"></i> {$email.value}</div>{/foreach}
+        </div>
+    {/if}
+    {if $customer->get('phone', 'default')}
+        <div class="field">
+            <div class="name">[s`Phone`]</div>
+            {foreach $customer.phone as $phone}<div class="value"><i class="icon16 phone"></i> {$phone.value}</div>{/foreach}
+        </div>
+    {/if}
+    {if $customer->get('address')}
+        <div class="field">
+            <div class="name">[s`Address`]</div>
+            {foreach $customer.address as $address}<div class="value">{$address.value}</div>{/foreach}
+        </div>
+    {/if}
+    {if empty($contact_id)}
+    <div class="field">
+        <div class="name" style="padding-top: 13px">
+            <a href="#" class="inline-link save-contact"><i class="icon10 add"></i> <b><i>[`save as a contact`]</i></b></a>
+        </div>
+        <div class="value no-shift">
+            <div class="highlighted block hint save-contact-hint">
+                [`In case if customer will proceed with filling an order after his contact was saved - a duplicate will be created.`]
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $('.save-contact').click(function(e) {
+                e.preventDefault();
+                var code = "{$code|escape}";
+                var p = $(this).parent();
+                p.html('<i class="icon16 loading"></i>');
+                $.post('?plugin=carts&module=customer&action=save', { code: code}, function(resp){
+                    if(resp.status == 'ok') {
+                        var a = $('tr[data-code="'+code+'"]').find('td:eq(0) a.show-customer');
+                        a.find('i.icon16').removeClass('status-yellow-tiny').addClass('status-green-tiny');
+                        a.prop('href', "../contacts/#/contact/"+resp.data.contact_id+"/");
+                        a.prop('title', '[`Registered user`]').unbind('click');
+                    } else {
+                        alert(resp.errors);
+                    }
+                    p.hide();
+                    $('.save-contact-hint').fadeOut('slow');
+                }, 'json');
+            })
+        })
+    </script>
+    {/if}
+
+
+{if $sources}
+    <div class="field">
+        <div class="name">
+            [`Sources`]
+        </div>
+        <div class="value">
+            <table class="zebra">
+                <thead>
+                <tr>
+                    <th>[`Source`]</th>
+                    <th>[`Landing page`]</th>
+                    <th>[`Date`]</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach $sources as $source}
+                    <tr>
+                        <td>
+                            {if $source.referer}
+                                {$source.referer|escape}
+                            {else}
+                                [`direct hit`]
+                            {/if}
+                        </td>
+                        <td>
+                            {if $source.landing}
+                                {$source.landing|escape}
+                            {else}
+                                [`not set`]
+                            {/if}
+                        </td>
+                        <td>
+                            {$source.create_datetime|wa_date:'humandatetime'}
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{/if}
+
+    <div class="clear"></div>
+{/if}
+</div>
+
+<div class="block double-padded">
+    <h2 id="send-messages">[`Send`]</h2>
+    <ul class="menu-h">
+        <li><a href="#" class="inline-link carts-send-email"><i class="icon16 email"></i>  <b><i>[`Email`]</i></b></a></li>
+        <li><a href="#" class="inline-link carts-send-sms">  <i class="icon16 mobile"></i> <b><i>[`SMS`]</i></b></a></li>
+    </ul>
+    <div class="block carts-new-email" style="display: none">
+        <div class="fields">
+            <div class="field">
+                <div class="name">[`Message template`]</div>
+                <div class="value">
+                    <select class="carts-message-template">
+                        <option value="0">[`write new message`]</option>
+                        {foreach $messages as $message}
+                            <option value="{$message.id}">{$message.name}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`Recipient`]</div>
+                <div class="value">
+                    <input type="text" name="email" class="carts-new-message__item"{if !empty($customer)} value="{$customer->get('email', 'default')}"{/if}>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`Email sender`]</div>
+                <div class="value">
+                    <input type="text" class="carts-new-message__item" name="sender" value="{$sender|default:''|escape}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`Email subject`]</div>
+                <div class="value"><input type="text" class="carts-new-message__item" name="subject"></div>
+            </div>
+            <div class="field">
+                <div class="name">[`Email body`]<br><span class="hint">HTML + Smarty</span></div>
+                <div class="value">
+                    <div class="wa-editor-core-wrapper">
+                        <ul class="wa-editor-wysiwyg-html-toggle">
+                            <li class="selected"><a class="wysiwyg" href="#">{_w('WYSIWYG')}</a></li>
+                            <li><a class="html" href="#">HTML</a></li>
+                        </ul>
+                        <div style="min-width:655px">
+                            <textarea style="display:none" class="carts-new-message__item" name="body"></textarea>
+                            <div class="ace">
+                                <div class="wa-ace-editor-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <div class="value">
+                    <input class="button green carts-new-message__send" value="[`Send`]" type="button" data-type="{shopCartsPlugin::MESSAGE_EMAIL}"/>
+                    <em class="carts-new-message__send-status"></em>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="block carts-new-sms" style="display: none">
+        <div class="fields">
+            <div class="field">
+                <div class="name">[`Message template`]</div>
+                <div class="value">
+                    <select class="carts-message-template">
+                        <option value="0">[`write new message`]</option>
+                        {foreach $messages as $message}
+                            <option value="{$message.id}">{$message.name}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`Recipient`]</div>
+                <div class="value">
+                    <input type="text" name="phone" class="carts-new-message__item"{if !empty($customer)} value="{$customer->get('phone', 'default')}"{/if}>
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`SMS sender`]</div>
+                <div class="value">
+                    <input type="text" class="carts-new-message__item" name="sender_sms">
+                </div>
+            </div>
+            <div class="field">
+                <div class="name">[`SMS body`]</div>
+                <div class="value"><textarea class="carts-new-message__item" name="body_sms"></textarea></div>
+            </div>
+            <div class="field">
+                <div class="value">
+                    <input class="button green carts-new-message__send" value="[`Send`]" type="button" data-type="{shopCartsPlugin::MESSAGE_SMS}"/>
+                    <em class="carts-new-message__send-status"></em>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear-both"></div>
+</div>
+
+<div class="block double-padded">
+<h2>[`Sent messages`]</h2>
+{if $sent_messages}
+    <table class="zebra">
+        <tr>
+            <th class="min-width">[`Status`]</th>
+            <th class="nowrap min-width">[`Sent`]</th>
+            <th class="nowrap">[`Message`]</th>
+            <th style="width:75px;"><i class="icon16 email"></i> [`Email`]</th>
+            <th style="width:75px;"><i class="icon16 mobile"></i> [`SMS`]</th>
+            <th>[`Used contacts`]</th>
+            <th>[`Comment`]</th>
+        </tr>
+        {foreach $sent_messages as $item}
+            <tr>
+                <td class="align-center"><i class="icon16 {if $item.status}yes{else}no{/if}"></i></td>
+                <td class="nowrap min-width">{$item.sent}</td>
+                <td class="nowrap">{$item.message_name} #{$item.message_id}</td>
+                <td class="align-center">
+                    {if $item.subject || $item.body}
+                        <a href="#" class="carts-email inline-link"><b><i>[`show`]</i></b></a>
+                        <div style="display:none;"><h2>{$item.subject}</h2><div>{$item.body}</div></div>
+                    {/if}
+                </td>
+                <td class="align-center">
+                    {if $item.body_sms}
+                        <a href="#" class="carts-sms inline-link"><b><i>[`show`]</i></b></a>
+                        <div style="display:none;"><div>{$item.body_sms}</div></div>
+                    {/if}
+                </td>
+                <td>{$item.email} {$item.phone}</td>
+                <td>{$item.comment}</td>
+            </tr>
+        {/foreach}
+    </table>
+    <script>
+    $(function () {
+        $('.carts-email, .carts-sms').click(function(e){
+            e.preventDefault();
+            var data = $(this).next().html();
+            $(data).waDialog({
+                buttons: '<input type="submit" value="[`Close`]" class="button green" />',
+                onSubmit: function (d) {
+                    d.trigger('close');
+                    return false;
+                }
+            });
+        });
+    })
+    </script>
+{else}
+    <p>[`Nothing has been sent to this customer yet.`]</p>
+{/if}
+</div>
+
+{if !empty($products)}
+<div class="block double-padded">
+<h2>[`Products in cart`] <a href="?action=orders#/orders/new/carts_plugin={$code|escape}" class="inline-link" style="display: inline"><b><i>[`create order`]</i></b></a></h2>
+{if $products.items}
+<table class="zebra">
+    {foreach $products.items as $i}
+        <tr>
+            <td class="min-width">
+                <a href="{$products.carts->productUrl($i.product)}" target="_blank">{$products.carts->productImgHtml($i.product, "48x48")}</a>
+            </td>
+            <td>
+                <a href="{$products.carts->productUrl($i.product)}" target="_blank">{$i.product.name|escape}</a>
+                {$i.sku_name} <em>{$i.sku_code}</em>
+                {if $i.services} <br> {foreach $i.services as $service} <i>{$service.name} {if $service.variants && $service.variant_id}
+                    {if !empty($service.variants[$service.variant_id].name)}({$service.variants[$service.variant_id].name}){/if}{/if}</i>{if !$service@last}, {/if}
+                {/foreach}{/if}
+            </td>
+            <td width="175">{shop_currency_html($i.full_price)}</td>
+            <td width="75">× {$i.quantity|default:1}</td>
+        </tr>
+    {/foreach}
+    <tr>
+        <td colspan="2"></td>
+        <td>[`Total`]</td>
+        <td>
+            <span class="nowrap">{shop_currency_html($products.total)}</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"></td>
+        <td>
+            <span class="nowrap">[`User total`] *</span>
+        </td>
+        <td>
+            <span class="nowrap">{shop_currency_html($storefront_data.total, $storefront_data.currency, $storefront_data.currency)}</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <p class="hint align-right">* [`This amount has been shown in a shopping cart (including all discounts, etc).`]</p>
+        </td>
+    </tr>
+</table>
+{else}
+    <p>[`Cart is empty. Order have been completed or have been cancelled.`]</p>
+{/if}
+</div>
+{/if}
+
+<script>
+(function ($) {
+$(function () {
+    $('.carts-new-message__item[name="body"]').waEditor2({
+        lang: wa_lang,
+        toolbarFixedBox: false,
+        //minHeight: 500,
+        minWidth: 500
+    });
+    $('.carts-send-email').on('click', function(e) {
+        e.preventDefault();
+        var t = $(this);
+        t.parent().addClass('selected').siblings().removeClass('selected');
+        $('.carts-new-email').fadeIn();
+        $('.carts-new-sms').hide();
+        $('html, body').animate({
+            scrollTop: $("#send-messages").offset().top
+        }, 500);
+    });
+
+    $('.carts-send-sms').on('click', function (e) {
+        e.preventDefault();
+        $(this).parent().addClass('selected').siblings().removeClass('selected');
+        $('.carts-new-sms').fadeIn();
+        $('.carts-new-email').hide();
+        $('html, body').animate({
+            scrollTop: $("#send-messages").offset().top
+        }, 500);
+    });
+    $('.carts-message-template').change(function (e) {
+        e.preventDefault();
+        var id = $(this).val();
+        if(!id) {
+            return;
+        }
+
+        $.post('?plugin=carts&module=message&action=prepare', { id:id, code:"{$code|escape}"}, function(resp) {
+            if(resp.status === 'ok') {
+                $.each(resp.data, function (i, v) {
+                    if(!v) return;
+                    var f = $('.carts-new-message__item[name="'+i+'"]');
+                    if(i === 'body') {
+                        f.val(v);
+                        f.waEditor2();
+                    } else {
+                        f.val(v);
+                    }
+                });
+            } else {
+                alert(resp.errors.join('\n'));
+            }
+        },'json').fail('[`Unable to send XHR request. Please try again later.`]');
+    });
+    $('.carts-new-message__send').click(function() {
+        var s = $(this).siblings('.carts-new-message__send-status');
+        s.html('<i class="icon16 loading"></i>');
+        var data = { }, items;
+        data.type = $(this).data('type');
+        data.storefront_id = "{$storefront_id|escape}";
+
+        if(data.type) {
+            items = $('.carts-new-sms');
+            data.phone = $('[name="phone"]', items).val();
+            data.body_sms = $('[name="body_sms"]', items).val();
+            data.sender_sms = $('[name="sender_sms"]', items).val();
+        } else {
+            items = $('.carts-new-email');
+            $('[name="body"]', items).waEditor2('sync');
+            data.email =  $('[name="email"]', items).val();
+            data.body =  $('[name="body"]', items).val();
+            data.sender =  $('[name="sender"]', items).val();
+            data.subject =  $('[name="subject"]', items).val();
+        }
+        $.post('?plugin=carts&module=message&action=send', data, function(resp) {
+
+            if(resp.status === 'ok') {
+                var html = '<i class="icon16 '+(resp.data.status?'yes':'no')+'"></i> ';
+                html += resp.data.sent+' '+resp.data.comment;
+                s.html(html);
+            } else {
+                s.html('<i class="icon16 no"></i>' + resp.errors.join('<br>'));
+            }
+        }, 'json').fail('[`Unable to send XHR request. Please try again later.`]');
+    })
+})
+})(jQuery);
+</script>

@@ -1,0 +1,157 @@
+{$settings = $plugin->getSettings()}
+<style type="text/css">
+    #wa .CodeMirror{
+        border: 1px solid #eee;
+    }
+    .CodeMirror-scroll {
+        height: auto;
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+    .plugin-menu{
+        float: right;
+        list-style: none;
+    }
+
+    .plugin-menu li{
+        float: left;
+        margin-left: 10px;
+    }
+    .plugin-menu li a{
+        text-decoration: underline;
+    }
+    .field-group.fixed{
+        width: calc(100% - 253px);
+        position: fixed;
+        background: #fff;
+        z-index: 99;
+        margin: 0;
+        bottom: 0;
+    }
+</style>
+
+<ul class="plugin-menu">
+    <li><a href="http://support.wa-plugins.ru" target="_blank"><i class="icon16 ss pt hammer"></i>Поддержка</a></li>
+</ul>
+
+<h1>{$plugin->getName()}</h1>
+<p>
+    Плагин позволяет задать ограничение на минимальный заказ. Ограничения могут относиться к минимальной сумме всего заказа, минимальному количеству, кратности товаров и артикулов...<br/>
+    <a href="http://www.webasyst.ru/store/plugin/shop/wholesale/" target="_blank">Подробнее</a> <i class="icon10 new-window"></i>
+</p>
+
+
+<div class="fields form">
+    <form action="?module=plugins&id=wholesale&action=save" method="post" id="plugins-settings-form">
+        {$wa->csrf()}
+
+        <div class="field-group">
+            <div class="field">
+                <div class="name">
+                    Статус плагина
+                </div>
+                <div class="value no-shift s-ibutton-checkbox">
+                    <input type="hidden" name="shop_wholesale[status]" value="0">
+                    <input type="checkbox" id="ibutton-status" name="shop_wholesale[status]" value="1"{if $settings.status|default:0} checked{/if}>
+                </div>
+            </div>
+        </div>
+        <div class="field-group"{if !$settings.status|default:0} style="display:none"{/if}>
+            <div class="field">
+                <div class="name">
+                    Выберите поселение
+                </div>
+                <div class="value">
+                    <select name="route_hash" id="route-selector">
+                        <option value="0">Общие настройки для всех поселений</option>
+                        {foreach $route_hashs as $route_url => $route_hash}
+                            <option value="{$route_hash}"{if $route_hash == $settings.route_hash|default:0} selected="selected"{/if}>{$route_url}</option>
+                        {/foreach}
+                    </select>
+                    <p class="hint">
+                        <strong>Внимательно отнеситесь к выбору верного поселения!</strong> От этого зависит корректность работы плагина.<br/>
+                        Если к сайту привязано только одно поселение, то рекомендуется выбирать в настройках именно это поселение, а не "Общие настройки для всех поселений".<br/>
+                        <strong>
+                            Убедитесь, что при использование "Общие настройки для всех поселений" отключены настройки для конкретного поселения,<br/>
+                            в противном случае они будут иметь приоритет над общими настройками при нахождение посетителя в данном поселение.
+                        </strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-group"{if !$settings.status|default:0} style="display:none"{/if}>
+            <div class="route-container block double-padded">
+
+            </div>
+        </div>
+
+        {*
+        <div class="field-group"{if !$settings.status|default:0} style="display:none"{/if}>
+        <h3>Расширьте функционал</h3>
+        <div class="field" id="wholesale-info">
+        <div class="name">
+        <strong>Быстрый заказ</strong><br/><br/>
+        <p class="hint">
+        <strong>Интеграция плагинов</strong> «Минимальный заказ» и «Быстрый заказ» позволяет использовать плагину «Быстрый заказ» функции «Минимального заказа»
+        </p>
+        </div>
+        <div class="value">
+        <a target="_blank" href="https://www.webasyst.ru/store/plugin/shop/instantorder/">
+        <img src="{$plugin->getPluginStaticUrl()}img/instantorder.png" />
+        </a>
+        <p class="hint">
+        Воспользуйтесь дополнительным плагином «<a target="_blank" href="https://www.webasyst.ru/store/plugin/shop/instantorder/">Быстрый заказ</a>» для сокращения времени совершения покупки.<br/>
+        Плагин позволяет оформить заказ во всплывающем окне в 1 клик с заполнением минимального количества полей, необходимых для совершения заказа
+        </p>
+        </div>
+        </div>
+        <div class="field" id="wholesale-info">
+        <div class="name">
+        <strong>Заказ на одной странице</strong><br/><br/>
+        <p class="hint">
+        <strong>Интеграция плагинов</strong><br/>
+        Возможно настроить совместную работу плагинов «Минимальный заказ» и «Заказ на одной странице»
+        </p>
+        </div>
+        <div class="value">
+        <a target="_blank" href="https://www.webasyst.ru/store/plugin/shop/onestep/">
+        <img src="{$plugin->getPluginStaticUrl()}img/onestep.png" />
+        </a>
+        <p class="hint">
+        Воспользуйтесь дополнительным плагином «<a target="_blank" href="https://www.webasyst.ru/store/plugin/shop/onestep/">Заказ на одной странице</a>» для упрощения и сокращения процедуры полного оформления заказа
+        </p>
+        </div>
+        </div>
+        </div>*}
+
+        <div class="field-group submit fixed"{if !$settings.status|default:0} style="display:none"{/if}>
+            <div class="field">
+                <div class="value submit">
+                    <input type="submit" class="button green" value="Сохранить">
+                    <span class="hint">Ctrl+S</span>
+                    <span id="plugins-settings-form-status" style="display:none">
+                        <i style="vertical-align:middle" class="icon16 yes"></i> [`Saved`]
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{$tpls = []}
+{foreach $templates as $key => $template}
+    {$mode = $template.tpl_ext}
+    {if $template.tpl_ext == 'js'}
+        {$mode = 'javascript'}
+    {/if}
+    {$tpls[] = ['id' => "sf-template-`$key`", 'mode' => $mode]}
+{/foreach}
+<script type="text/javascript" src="{$wa_app_static_url}plugins/wholesale/js/settings.js?{$plugin->getVersion()}"></script>
+<script type="text/javascript">
+    $(function () {
+        $.wholesale_settings.init({
+            templates: {json_encode($tpls)}
+        });
+    });
+</script>

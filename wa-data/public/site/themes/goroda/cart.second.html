@@ -1,0 +1,15 @@
+{strip}
+
+{if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
+    {$cart_total = $wa->shop->cart->total()}
+    {$cart_count = $wa->shop->cart->count()}
+    <a href="{$wa->getUrl('shop/frontend/cart')}" class="link-to-cart">
+        <i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>
+        <span class="cart-text">
+            <strong>[`Cart`]</strong>
+            <span class="cart-total">{wa_currency_html($cart_total, $wa->shop->currency())}</span>
+        </span>
+    </a>
+{/if}
+
+{/strip}

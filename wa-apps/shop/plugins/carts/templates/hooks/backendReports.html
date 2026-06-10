@@ -1,0 +1,22 @@
+{strip}
+{$u = $wa->user()}
+{if $u->isAdmin('shop') || $u->getRights('shop', 'carts_plugin.%')}
+<li class="{if $wa->get('plugin') == 'carts'}selected{else}no-tab{/if}">
+    <style>
+        #carts-plugin-menu-text {
+            display: none;
+        }
+        .dropdown #carts-plugin-menu-text {
+            display: block;
+        }
+        .dropdown #carts-plugin-menu-icon {
+            display: none;
+        }
+    </style>
+    <a href="?plugin=carts&module=report" title="[`Abandoned carts`]">
+        <i class="icon16 custom" style="background-image:url({$wa_app_static_url}plugins/carts/img/carts.png);background-position: 0 0!important;" id="carts-plugin-menu-icon"></i>
+        <span id="carts-plugin-menu-text">[`Abandoned carts`]</span>
+    </a>
+</li>
+{/if}
+{/strip}

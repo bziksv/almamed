@@ -1,0 +1,120 @@
+<div class="searchpro__dropdown">
+	{foreach $results as $group => $entities}
+		{if empty($entities)}
+			{continue}
+		{/if}
+		<div class="searchpro__dropdown-group searchpro__dropdown-group-{$group}">
+			<div class="searchpro__dropdown-group-title">
+				{shopSearchproPluginViewHelper::getGroupTitle($group)}
+			</div>
+			<div class="searchpro__dropdown-group-entities js-searchpro__dropdown-entities">
+				{foreach $entities as $entity}
+					{if isset($entity.regex)}
+						{$regex_pattern = "/("|cat:$entity.regex|cat:")/iu"}
+						{$name = $entity.name|regex_replace:$regex_pattern:'<span class="searchpro-highlighted">$1</span>'}
+					{else}
+						{$name = $entity.name}
+					{/if}
+
+					{if $group === 'products'}
+						{$product_url = shopSearchproPluginViewHelper::getProductUrl($entity)}
+						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity" data-action="goto:href"
+						   href="{$product_url}">
+							{if $products_image_status}
+								{$product_image = $wa->shop->productImgUrl($entity, '48x48')}
+
+								{if $product_image}
+									<div class="searchpro__dropdown-entity_image-container">
+										<img class="searchpro__dropdown-entity_image" src="{$product_image}"/>
+									</div>
+								{/if}
+							{/if}
+							<div class="searchpro__dropdown-entity_name">
+								{$name}
+							</div>
+							{if $products_price_status}
+								<div class="searchpro__dropdown-entity_price-container">
+									<span class="searchpro__dropdown-entity_price">{$entity.price|shop_currency_html:$c.code}</span>
+									{if $entity.compare_price > 0 && abs($entity.compare_price - $entity.price) > 0}
+										<span class="searchpro__dropdown-entity_compare-price">{$entity.compare_price|shop_currency_html:$c.code}</span>
+									{/if}
+								</div>
+							{/if}
+						</a>
+					{elseif $group === 'categories'}
+						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity" data-action="goto:data-link"
+						   data-link="{$wa->shop->categoryUrl($entity)}"
+						   href="{$entity.category_results_url|default:$wa->shop->categoryUrl($category)}">
+							<div class="searchpro__dropdown-entity_name">
+								{$name}
+
+								{if $entity.existing_name}
+									{* Если категория с таким же именем уже есть в списке выводим название категории на уровень выше *}
+									{if $entity.parent_id}
+										{$parent_category = $wa->shop->category($entity.parent_id)}
+										<span class="searchpro__dropdown-entity_subname">
+                                            {$parent_category.name}
+                                        </span>
+									{/if}
+								{/if}
+							</div>
+						</a>
+					{elseif $group === 'brands'}
+						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity" data-action="goto:data-link"
+						   data-link="{$entity.url}"
+						   href="{$entity.url}">
+							<div class="searchpro__dropdown-entity_name">
+								{$name}
+							</div>
+						</a>
+					{else}
+						{if array_key_exists('url', $entity)}
+							<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity"
+							   data-action="goto:data-link" data-value="{$entity.name|escape}" data-link="{$entity.url}"
+							   href="{$entity.url}">
+								{$name}
+
+								{if !empty($entity.category_id)}
+									{if !isset($entity.category_name)}
+										{$category = $wa->shop->category($entity.category_id)}
+										{$category_name = $category.name}
+									{else}
+										{$category_name = $entity.category_name}
+									{/if}
+									<span class="searchpro__dropdown-entity_subname">
+						  		        {$category_name}
+									</span>
+								{/if}
+							</a>
+						{else}
+							<div class="searchpro__dropdown-entity js-searchpro__dropdown-entity"
+							     data-action="value:data-value" data-value="{$entity.name|escape}">
+								{$name}
+
+								{if !empty($entity.category_id)}
+									{if !isset($entity.category_name)}
+										{$category = $wa->shop->category($entity.category_id)}
+										{$category_name = $category.name}
+									{else}
+										{$category_name = $entity.category_name}
+									{/if}
+									<span class="searchpro__dropdown-entity_subname">
+						  		        {$category_name}
+									</span>
+								{/if}
+							</div>
+						{/if}
+					{/if}
+				{/foreach}
+			</div>
+		</div>
+	{/foreach}
+
+	<div class="searchpro__dropdown-view-all">
+		<a href="{$results_url}" class="searchpro__dropdown-view-all-link js-searchpro__dropdown-entity"
+		   data-action="goto:href">
+			Все результаты поиска
+			<span class="searchpro__dropdown-view-all-count">({$count})</span>
+		</a>
+	</div>
+</div>

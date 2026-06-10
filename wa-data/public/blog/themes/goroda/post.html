@@ -1,0 +1,167 @@
+{strip}
+    {function addProductText hash=null}
+        {if $hash}
+            {if preg_match_all("/\{(.*?)\}/", $hash, $match)}
+                {foreach from=$match[1] key=Id item=m}
+                    {if (stripos($m,','))}
+                        {$m = explode(',',$m)}
+                    {/if}
+                    {capture name=products}
+                        <div class="row-grid">
+                            <div class="post-product">
+                                {if $category = $m}
+                                {foreach $wa->shop->products($category) as $product}
+                                <div class="col-grid l2 m3 s12">
+                                    <a href="{$product.frontend_url}">
+                                        <div class="post-product-section">
+                                            <div class="post-product-img">
+                                                <img class="lazy-fadein" data-src="{$wa->shop->productImgUrl($product,165)}" alt="{$product.name}">
+                                            </div>
+                                            <div class="post-product-title">{$product.name}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {foreachelse}
+
+                                {/foreach}
+                                {/if}
+                            </div>
+                        </div>
+                    {/capture}
+                    {if $smarty.capture.products ne ''}
+                        {$hash = $hash|replace:$match[0][$Id]:$smarty.capture.products}
+                    {/if}
+                {/foreach}
+            {/if}
+            {$hash}
+        {/if}
+    {/function}
+{/strip}
+
+<div itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="fill-background hoverable">
+    
+        <article class="post one" role="main" id="post-{$post.id}">
+
+            <div class="row-grid">
+                
+                <div class="col-grid s12">
+            
+                    <h1>
+                        <span itemprop="name">{$post.title}</span>
+                        {* @event prepare_posts_frontend.%plugin_id%.post_title *}
+                        {if !empty($post.plugins.post_title)}
+                            {foreach $post.plugins.post_title as $plugin => $output}{$output}{/foreach}
+                        {/if}
+                    </h1>
+            
+                </div>
+                <div class="col-grid s12">
+                    <div class="post-date">
+                        <div><i class="fa fa-calendar-o" aria-hidden="true"></i> {$post.datetime|wa_datetime:"humandate"}</div>
+                        <div>
+                        <a href="{$post.user.posts_link}" class="username">
+                            <i class="fa fa-user" aria-hidden="true"></i> {$post.user.name}
+                        </a>
+                    </div>
+                    </div>
+                </div>
+                
+            </div>
+    
+            {* @event prepare_posts_frontend.%plugin_id%.before *}
+            {if !empty($post.plugins.before)}
+                <div class="text_before">
+                    {foreach $post.plugins.before as $plugin => $output}{$output}{/foreach}
+                </div>
+            {/if}
+    
+            <div class="text" itemprop="articleBody">
+                {addProductText hash=$post.text}
+            </div>
+    
+            {if $post.album_id && $post.album.id && $post.album.photos}
+                {include 'post.album.html' album=$post.album inline}
+            {/if}
+            
+            {* @event prepare_posts_frontend.%plugin_id%.after *}
+            {if !empty($post.plugins.after)}
+                <div class="text_after">
+                    {foreach $post.plugins.after as $plugin => $output}{$output}{/foreach}
+                </div>
+            {/if}
+
+            {if !empty($theme_settings.share)}
+            <!-- share -->
+            <div class="row-grid">
+                <div class="col-grid s12">
+                    {$theme_settings.share}
+                </div>
+            </div>
+            {/if}
+        </article>
+
+    </div>
+
+    {* @event frontend_post.%plugin_id%.footer *}
+    {foreach $frontend_post as $plugin => $output}
+        {if !empty($output.footer)}{$output.footer}{/if}
+    {/foreach}
+
+    {if $show_comments && $post.comments_allowed}
+        <div class="fill-background">
+            {if $post.status eq blogPostModel::STATUS_PUBLISHED}
+                {include 'comments.html' inline}
+            {else}
+                <h4>[`Comments for non published posts are disabled`]</h4>
+            {/if}
+        </div>
+    {/if}
+
+
+    {if isset($post.product) || isset($post.category)}
+    <div class="row-grid">
+        <h1>Товары, которые могут пригодиться:</h1>
+    </div>
+
+    <div class="row-grid">
+        <div class="post-product">
+            {if $products = explode(",",$post.product)}
+            {foreach $wa->shop->products($products) as $product}
+            <div class="col-grid l2 m3 s12">
+                <a href="{$product.frontend_url}">
+                    <div class="post-product-section">
+                        <div class="post-product-img">
+                            <img class="lazy-fadein" data-src="{$wa->shop->productImgUrl($product,165)}" alt="{$product.name}">
+                        </div>
+                        <div class="post-product-title">{$product.name}</div>
+                    </div>
+                </a>
+            </div>
+            {foreachelse}
+
+            {/foreach}
+            {/if}
+
+            {if $category = $post.category}
+            {foreach $wa->shop->products($category) as $product}
+            <div class="col-grid l2 m3 s12">
+                <a href="{$product.frontend_url}">
+                    <div class="post-product-section">
+                        <div class="post-product-img">
+                            <img class="lazy-fadein" data-src="{$wa->shop->productImgUrl($product,165)}" alt="{$product.name}">
+                        </div>
+                        <div class="post-product-title">{$product.name}</div>
+                    </div>
+                </a>
+            </div>
+            {foreachelse}
+
+            {/foreach}
+            {/if}
+        </div>
+    </div>
+	{/if}
+
+</div>

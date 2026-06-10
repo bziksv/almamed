@@ -1,0 +1,511 @@
+{strip}
+
+<!DOCTYPE html>
+<html lang="{if $wa->locale()}{$locale = explode('_', $wa->locale())}{$locale[0]}{else}en{/if}">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1{if $wa->isMobile()}, maximum-scale=1, user-scalable=0{/if}" />
+
+    <title>{$wa->title()|escape}</title>
+
+    <meta name="Keywords" content="{$wa->meta('keywords')|escape}" />
+    <meta name="Description" content="{$wa->meta('description')|escape}" />
+
+    {if !empty($canonical)}<link rel="canonical" href="{$canonical}"/>{/if}
+
+    <link rel="shortcut icon" href="/favicon.ico"/>
+
+    {include file="at.html" inline}
+
+    {if $wa->blog}
+        <!-- rss -->
+        {$rss=$wa->blog->rssUrl()}
+        {if $rss}<link rel="alternate" type="application/rss+xml" title="{$wa->accountName()}" href="{$rss}">{/if}
+    {/if}
+
+    {if !$at.ie || $at.ie >= 9}
+        {if $at.speedup}{include file="profitbuy.critical.css.html"}{/if}
+        {include file="head.layout.html" assign="html" inline}
+        {if $at.speedup}
+            {if preg_match_all($at.regex.l, $html, $matches) !== false && count($matches[0])}
+                {$html = str_replace($matches[0], "", $html)}
+                {$at.links = array_merge($at.links, $matches[0])}
+            {/if}
+            {if preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+                {foreach $matches[0] as $script}
+                    {if strpos($script, "data-script-exception") === false}
+                        {$html = str_replace($script, "", $html)}
+                        {$at.scripts[] = $script}
+                    {/if}
+                {/foreach}
+            {/if}
+        {/if}
+
+		{array_shift($at.scripts)}
+		{$html}
+
+        {*
+        <!--[if lt IE 9]>
+            <script type="text/javascript">
+                var e = ("article,aside,footer,figure,header,hgroup,menu,main,nav,section").split(',');
+                e.forEach(function(e) {
+                    document.createElement(e);
+                });
+            </script>
+        <![endif]-->
+        *}
+
+    {/if}
+
+</head>
+<body class="{if !empty($theme_settings.show_background)}is-background{/if}{if !empty($theme_settings.volumetric)} is-volumetric{/if}">
+{if !$at.ie || $at.ie >= 9}
+    <header class="globalheader">
+
+        <nav class="nav-wrapper">
+            <div class="container">
+
+                <!-- MOBILE NAV -->
+                <div class="row-grid hide-on-large-only">
+                    <div class="col-grid s12">
+                    <div class="mobile-nav-button-wrapper float-left">
+                        <a href="#" data-nav="all" class="mobile-nav-button action"><i class="material-icons mi-3x">&#xE5D2;</i></a>
+                    </div>
+                    {if !empty($theme_settings.phone_1) || !empty($theme_settings.phone_2)}
+                        <div class="mobile-nav-button-wrapper float-left">
+                            <a href="#" data-nav="contacts" class="mobile-nav-button action"><i class="material-icons mi-3x">&#xE0CD;</i></a>
+                        </div>
+                    {/if}
+                    {if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
+                        <div class="mobile-nav-button-wrapper float-right" id="cart-mobile">
+                            {$cart_count = $wa->shop->cart->count()}
+                            <a href="{$wa->getUrl('shop/frontend/cart')}" class="mobile-nav-button{if !$cart_count} empty{/if}">
+                            	<i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>
+           	     			</a>
+                        </div>
+                    {/if}
+                </div>
+                </div>
+
+                <!-- DESKTOP NAV -->
+                {include file="logo.no.text.html" assign="header0" inline}
+                {include file="links.pages.top.html" assign="header1" inline}
+
+                {include file="links.auth.html" assign="header3" inline}
+                {include file="top.phone.head.html" assign="header4" inline}
+
+
+                <div class="row-grid hide-on-med-and-down header-fix-top-menu-hidden">
+                    <div class="table-grid">
+                        {if !empty($header0)}<div class="col-grid logo-menu-top-fix" style="display: none">{$header0}</div>{/if}
+                        {if !empty($header1)}<div class="col-grid link-top-not-fix">{$header1}</div>{/if}
+
+                        {include file="cart.top.menu.fix.html" inline}
+                        {if !empty($header3)}<div class="col-grid">{$header3}</div>{/if}
+                        {if !empty($header4)}<div class="col-grid h-p-grid">{$header4}</div>{/if}
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+
+        {include file="logo.html" assign="header4" inline}
+        {include file="phones.top.html" assign="header5" inline}
+        {include file="offline.html" assign="header6" inline}
+
+        <div class="header-line alfa-background">
+            <div class="container">
+                <div class="row-grid">
+                    <div class="table-grid">
+                {if !empty($header4)}<div class="col-grid s12 m6 align-center-on-small-and-down">{$header4}</div>{/if}
+                {if !empty($header6)}<div class="col-grid hide-on-med-and-down align-right">{$header6}</div>{/if}
+                {if !empty($header5)}<div class="col-grid m6 hide-on-small-and-down align-right align-right-on-med-and-down">{$header5}</div>{/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {shopSliderPlugin::slider()}
+
+        {include file="tree.html" inline}
+
+        {* PLUGIN ALPHACAT: replace 0 to 1, to enable *}
+        {if 0 && !$wa->isMobile()}
+            {include file="alphacat.plugin.html" assign="html"}
+            {if $at.speedup && preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+                {$html = str_replace($matches[0], "", $html)}
+                {$at.scripts = array_merge($at.scripts, $matches[0])}
+            {/if}{$html}
+        {/if}
+
+    </header>
+
+    <!-- APP CONTENT -->
+    <main class="maincontent">
+
+        <div class="container">
+            {include file="`$wa_active_theme_path`/main.html" assign="html" inline}
+            {if $at.speedup}
+                {if preg_match_all($at.regex.l, $html, $matches) !== false && count($matches[0])}
+                    {$html = str_replace($matches[0], "", $html)}
+                    {$at.links = array_merge($at.links, $matches[0])}
+                {/if}
+                {if preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+                    {foreach $matches[0] as $script}
+                        {if strpos($script, "data-script-exception") === false}
+                            {$html = str_replace($script, "", $html)}
+                            {$at.scripts[] = $script}
+                        {/if}
+                    {/foreach}
+                {/if}
+            {/if}{$html}
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    {include file="links.pages.bottom.html" assign="footer1" inline}
+    {include file="links.apps.html" assign="footer2" inline}
+    {include file="payment.logo.html" assign="footer3" inline}
+    {include file="links.social.html" assign="footer4" inline}
+    {include file="copyright.html" assign="footer5" inline}
+    {include file="e.address.html" assign="footer6" inline}
+    {include file="phones.bottom.html" assign="footer7" inline}
+    {$footer8 = $wa->block("`$at.theme_id`.counters")}
+
+    <footer class="globalfooter">
+
+        {include file="`$wa_active_theme_path`/footer.html" inline}
+
+        <div class="footer-line">
+            <div class="container"><div class="row-grid"><div class="table-grid">
+                {if !empty($footer1)}<div class="col-grid hide-on-med-and-down">{$footer1}</div>{/if}
+                {if !empty($footer2)}<div class="col-grid hide-on-med-and-down{if !empty($footer1)} align-center{/if}">{$footer2}</div>{/if}
+                {if !empty($footer3)}<div class="col-grid hide-on-med-and-down align-center">{$footer3}</div>{/if}
+                {if !empty($footer4)}<div class="col-grid s12 align-right align-left-on-med-and-down">{$footer4}</div>{/if}
+            </div></div></div>
+        </div>
+        <div class="footer-line alfa-background">
+            <div class="container">
+
+
+
+<div class="city_f" style=" width: auto; background: url(/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/map2.webp) center top no-repeat;  background-size: contain; font-size:12px">
+	<div class="row" style="border-bottom: 1px solid #eee;border-top: 0;    width:759px;margin: 0 auto;">
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Москва</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Казань</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Нижний Новгород</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Уфа</a></li>
+			</ul>
+		</div>
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Санкт-Петербург</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Ростов-на-Дону</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Челябинск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Красноярск</a></li>
+			</ul>
+		</div>
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Новосибирск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Волгоград</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Самара</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Воронеж</a></li>
+			</ul>
+		</div>
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Екатеринбург</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Омск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Пермь</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="row" style="border-bottom: 1px solid #eee;border-top: 0;    width:759px;margin: 0 auto;">
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Краснодар</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Барнаул</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Владивосток</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Новокузнецк</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Киров</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Тула</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Улан-Удэ</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Белгород</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Архангельск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Якутск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Орёл</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Мурманск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Новороссийск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Ижевск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Ярославль</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Кемерово</a></li>
+			</ul>
+		</div>
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Саратов</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Ульяновск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Махачкала</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Рязань</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Липецк</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Курск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Тверь</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Сургут</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Симферополь</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Саранск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Подольск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Петрозаводск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Йошкар-Ола</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Пенза</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Калининград</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Сочи</a></li>
+			</ul>
+		</div>
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Тюмень</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Иркутск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Томск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Набережные Челны</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Балашиха</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Ставрополь</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Магнитогорск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Владимир</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Калуга</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Череповец</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Грозный</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Нижневартовск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Химки</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Брянск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Нижний Тагил</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Волжский</a></li>
+			</ul>
+		</div>
+		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
+			<ul class="footer-menu_city" style=" padding: 0;">
+				<li style="display: block;  margin: 0 1%;"><a href="#">Тольятти</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Хабаровск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Оренбург</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Астрахань</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Чебоксары</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Севастополь</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Иваново</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Чита</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Смоленск</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Курган</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Владикавказ</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Кострома</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Вологда</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Тамбов</a></li>
+				<li style="display: block;  margin: 0 1%;"><a href="#">Стерлитамак</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<style>
+	@media screen and (max-width: 759px){
+		.city_f .row{
+			width: 300px !important;
+		}
+		.col.col_footer{
+		    width: 40% !important;
+		    margin: 0 0 0 10% !important;
+		}
+		.col.col_footer ul{
+			margin:0;
+		}
+	}
+</style>
+
+
+
+
+			<div class="row-grid"><div class="table-grid">
+                {if !empty($footer5)}<div class="col-grid s12" style="padding-top: 1.6rem;padding-bottom: 1.6rem;">{$footer5}</div>{/if}
+                {if !empty($footer6)}<div class="col-grid hide-on-med-and-down align-{if !empty($footer7)}center{else}right{/if}">{$footer6}</div>{/if}
+                {if !empty($footer7)}<div class="col-grid hide-on-med-and-down align-{if $footer8}center{else}right{/if}">{$footer7}</div>{/if}
+                {if !empty($footer8)}<div class="col-grid hide-on-med-and-down align-right">{$footer8}</div>{/if}
+            </div></div></div>
+        </div>
+    </footer>
+
+    {* PLUGIN RECALLBACK: replace 0 to 1, to enable *}
+    {if 0}
+        {include file="recallback.plugin.html" assign="html"}
+        {if $at.speedup && preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
+            {$html = str_replace($matches[0], "", $html)}
+            {$at.scripts = array_merge($at.scripts, $matches[0])}
+        {/if}{$html}
+    {/if}
+
+
+
+    {if !empty($theme_settings.desktop_pane)}{include file="desktop.pane.html" inline}{/if}
+
+    {include file="mobile.pane.html" inline}
+
+    {if !$wa->isMobile()}<div id="back-top-wrapper"><div class="container"><a id="back-top" href="#" rel="nofollow">[`Up`]</a></div></div>{/if}
+
+    <div id="dialog" class="dialog">
+        <div class="dialog-background"></div>
+        <div class="dialog-window">
+            <div class="cart"></div>
+        </div>
+    </div>
+
+{if $at.speedup}
+        <script type="text/javascript">
+            ;(function(d){
+
+                var t = {json_encode($at.links)},
+                    df = d.createDocumentFragment();
+
+                t.forEach(function(e) {
+                    var t = d.createElement('div');
+                    t.innerHTML = e;
+                    e = t.firstChild;
+                    df.appendChild(e);
+                });
+
+                d.getElementsByTagName('head')[0].appendChild(df);
+
+            })(document);
+        </script>
+        {foreach $at.scripts as $script}{$script}{/foreach}
+    {/if}
+	{*$html = null}{$at.links = null}{$at.scripts = null*}
+{else}
+    {include file="lt.ie9.html"}
+{/if}
+
+{* PRIME подключаем наш footer *}
+   {* {include file="footer_prime.html" inline}*}
+{* --------------------------- *}
+{include file="`$wa_active_theme_path`/footer_prime.html" inline}
+<style>
+    img.lazy-fadein {
+    opacity: 0;
+    }
+    img.lazy-fadein:not(.initial) {
+    transition: opacity 1s;
+    }
+    img.lazy-fadein.initial,
+    img.lazy-fadein.loaded,
+    img.lazy-fadein.error {
+    opacity: 1;
+    }
+</style>
+
+{if !shopCustom::roistat_cookie()}
+<script>
+    window.roistatVisitCallback = function(visitId) {
+        var roistatVisit = visitId + $('.roistatVisit').text();
+        var mail = roistatVisit.replace(/\s/g,'');
+        $('.roistatVisit').text(mail);
+        $('.roistatVisit').attr('href',"mailto:" + mail);
+    };
+</script>
+{/if}
+
+<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js"></script>
+<script>
+    $(function(){
+       $('input[value="В корзину"]').click(function(){
+           yaCounter34079080.reachGoal('dobavili_v_korzinu');
+       });
+		
+        $('.post img').each(function(li,el){
+            $(el).addClass('lazy-fadein');
+            var src = $(el).attr('src');
+            $(el).removeAttr( "src" );
+            $(el).attr('data-src',src);
+        });
+
+        $('.product-list .image .badge-wrapper img').each(function(li,el){
+            $(el).addClass('lazy-fadein');
+            var src = $(el).attr('src');
+            $(el).removeAttr( "src" );
+            $(el).attr('data-src',src);
+        });
+
+        $('#product-description img').each(function(li,el){
+            $(el).addClass('lazy-fadein');
+            var src = $(el).attr('src');
+            $(el).removeAttr( "src" );
+            $(el).attr('data-src',src);
+        });
+
+        var lazyLoadInstance = new LazyLoad({
+            elements_selector: ".lazy-fadein",
+            threshold: 0,
+        });
+        if (lazyLoadInstance) {
+            lazyLoadInstance.update();
+        }
+    });
+</script>
+
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+
+    $('.tag-slider').slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        autoplay: true,
+        variableWidth: true,
+        centerMode: true,
+        slidesToShow: 3,
+        responsive: [
+            {
+                breakpoint: 767,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
+    });
+
+    $(document).ready(function() {
+        $(".subcategories .open").click(function(){
+            $(this).hide();
+            $(".subcategories .close").show();
+            $(".subcategories .sub-links-2").addClass("open");
+            $('.tag-slider').slick('unslick');
+        });
+        $(".subcategories .close").click(function(){
+            $(this).hide();
+            $(".subcategories .open").show();
+            $(".subcategories .sub-links-2").removeClass("open");
+            $('.tag-slider').slick({
+                dots: false,
+                arrows: true,
+                infinite: true,
+                autoplay: true,
+                variableWidth: true,
+                centerMode: true,
+                slidesToShow: 3,
+            });
+        });
+    });
+
+    if($('load').length){
+        let load = $('load');
+        load.each(function (i,v) {
+            let file = $(v).data('id');
+            $(v).load('/wa-load/' + file + '.php');
+        });
+    }
+</script>
+
+</body>
+</html>
+
+{/strip}

@@ -1,0 +1,206 @@
+<link type="text/css" rel="stylesheet" href="{$wa_app_static_url}plugins/wmimageincat/CSS/settings_style.css">
+
+<h2>Настройки размеров формируемых эскизов</h2><br><br>
+
+<div class="fields_block">
+    <table class="zebra image_settings_list" style="width:auto;">
+        <tr>
+            <th style="padding:3px 5px; border-right:1px solid #ccc;">
+                Тип изображения
+            </th>
+   
+            <th style="padding:3px 5px; white-space:nowrap;">
+                Ширина х высота генерируемого эскиза
+            </th>
+   
+            <th></th>
+        </tr>
+  
+        <tr>
+            <td class="image_type">
+                <strong>Баннеры</strong>
+            </td>
+
+            <td class="image_size" data-width="{$banner.width}" data-height="{$banner.height}">
+                <input type="text" size="10" value="{$banner.width}" class="width"> X <input type="text" size="10" value="{$banner.height}" class="height">
+            </td>
+
+            <td data-image_type="banner">
+                <span class="image_save_button">Сохранить</span>
+            </td>
+        </tr>
+  
+        <tr>
+            <td class="image_type">
+                <strong>Изображения</strong>
+            </td>
+
+            <td class="image_size" data-width="{$image.width}" data-height="{$image.height}">
+                <input type="text" size="10" value="{$image.width}" class="width"> X <input type="text" size="10" value="{$image.height}" class="height">
+            </td>
+
+            <td data-image_type="image">
+                <span class="image_save_button">Сохранить</span>
+            </td>
+        </tr>
+  
+        <tr>
+            <td class="image_type">
+                <strong>Иконки</strong>
+            </td>
+
+            <td class="image_size" data-width="{$icon.width}" data-height="{$icon.height}">
+                <input type="text" size="10" value="{$icon.width}" class="width"> X <input type="text" size="10" value="{$icon.height}" class="height">
+            </td>
+
+            <td data-image_type="icon">
+                <span class="image_save_button">Сохранить</span>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <br>
+    <a href="javascript: void(0);" class="button green" id="wm-regenerate-images-button">Удалить и заново создать эскизы всех изображений категорий</a>
+ 
+    <div id='wm-regenerate-thumbs-progressbar' style="margin-top: 20px; display: none;">
+        <div class="progressbar blue">
+            <div class="progressbar-outer">
+                <div class="progressbar-inner"></div>
+            </div>
+        </div>
+
+        <div class="wm-progressbar-progress_and_notice">
+            <img src = "{$wa_url}wa-content/img/loading32.gif">
+            <span class="wm-progressbar-description"></span>
+            <em class="hint">Пожалуйста не закрывайте окно браузера, пока процесс не будет завершён</em>
+        </div>
+        <br>
+        <em class="wm-regenerate-errormsg"></em>
+    </div>
+
+    <div id="wm-regenerate-report" style="margin-top: 15px;"></div>
+</div>
+
+<script type="text/javascript" src="{$wa_app_static_url}plugins/wmimageincat/JS/settings.js"></script>
+ 
+ 
+ <h3 style="margin-top:100px;">Размещение иконок, изображений и банера на сайте</h3>
+ 
+
+ <p class="block hint ltr"> 
+
+  * Плагин предоставляет возможность загрузить изображения (иконка, изображение, банер) для категории и получить на них ссылки в шаблонах тем оформления.<br />
+  * Плагин не предоставляет оформления вывода навигации и списка категорий.<br />
+  * Многие темы уже интегрированны с плагином "иконка, изображение и банер для категории", если же нет, вы можете воспользоваться нашими решениями:<br />
+    <a href="https://www.webasyst.ru/store/plugin/shop/wmimageincat/kak-vstavit-spisok-izobrazheniy/">Как отобразить изображения в спике категорий (на главной, на странице категории)</a><br>
+    <a href="https://www.webasyst.ru/store/plugin/shop/wmimageincat/kak-vstavit-baner/">Как отобразить банер</a><br>
+    <a href="https://www.webasyst.ru/store/plugin/shop/wmimageincat/kak-otobrazit-ikonki-v-menyu-navigatsii/">Как отобразить иконки в меню навигации категорий</a>
+  
+  </p>
+
+<script type="text/javascript">
+ $(function(){
+      
+    //генерировать эскизы
+    $('#wm-regenerate-images-button').click(function () {
+        var pul=[];
+        var url = '?plugin=wmimageincat&module=regeneratethumbs';
+        var processId;
+        var progress_block = $('#wm-regenerate-thumbs-progressbar');
+        var errormsg = $('.wm-regenerate-errormsg');
+        var report = $('#wm-regenerate-report');
+
+        progress_block.show();
+        progress_block.find('.wm-progressbar-progress_and_notice').show();
+        progress_block.find('.progressbar-inner').css('width','0%');
+        $('span.wm-progressbar-description').text('0.000%');
+        errormsg.empty();
+        report.hide();
+   
+        //Удаление таймеров
+        function dropPul() {
+            var timer_id = pul.pop();
+            while (timer_id) {
+                clearTimeout(timer_id);
+                timer_id = pul.pop();
+            }
+        };
+   
+        var cleanup = function () {
+            $.post(url, {literal}{processId: processId, cleanup: 1}{/literal}, function (response) {
+	            progress_block.hide();
+		        report.show();
+                dropPul();
+
+                if (response.report) {
+		            report.html(response.report);
+		        }
+	        }, 'json');
+        };
+   
+        var step = function (delay) {
+            delay = delay || 2000;
+        	var timer_id = setTimeout(function () {
+	            $.post(url, {literal}{processId: processId}{/literal}, function (response) {
+	                if (!response) {
+	                    step(3000);
+	                } else if (response && response.ready) {
+	                    progress_block.find('.progressbar-inner').css('width', '100%');
+	                    progress_block.find('.wm-progressbar-description').text('100%');
+	                    cleanup();
+	                } else if(response && response.error) {
+	                    errormsg.text(response.error);
+	                } else {
+	                    if (response && response.progress) {
+	                        var progress = parseFloat(response.progress);
+		                    progress_block.find('.progressbar-inner').animate({
+		                        'width' : progress+'%'
+		                    });
+		                    progress_block.find('.wm-progressbar-description').text(response.progress);
+	                    }
+	   
+	                    if(response && response.warning){
+	                        progress_block.find('.wm-progressbar-description').append('<i class="icon16 exclamation"></i><p>'+r.warning+'</p>');
+	                    }
+	                    step();
+	                }
+	            }, 'json').error(function(){
+	                step(3000);
+	            });
+	        },delay);
+
+	        pul.push(timer_id);
+        };
+
+        $.post(url, {literal}{}{/literal}, function (response) {
+            if(response && response.processId){
+	            processId = response.processId;
+	            step(1000);
+	            step();
+	        } else if(response && response.error) {
+	            errormsg.text(response.error);
+                dropPul();
+	        } else {
+	            errormsg.text('Server error');
+                dropPul();
+	        }
+        },'json').error(function () {
+            progress_block.find('.wm-progressbar-progress_and_notice').hide();
+            errormsg.append('<span style="color: red;">Ни для одной из категорий не загруженно ни одного изображения. Формирование эскизов не возможно!</span>');
+            errormsg.append('<a href="javascript: void(0);" class="wm-progressbar-close">(Закрыть панель)</a>');
+            dropPul();
+
+            errormsg.find('.wm-progressbar-close').click(function(){
+                progress_block.hide();
+	        });
+        });
+  
+
+        //Закрываем информацию об окончании процесса создания эскизов
+        $('#wm-regenerate-report').off('click.report').on('click.report','a.close', function () {
+            $(this).parent().parent().empty();
+        });
+    });
+ });
+</script>
+

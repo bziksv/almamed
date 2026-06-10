@@ -1,0 +1,75 @@
+<div class="searchpro__field">
+	<div class="searchpro__field-container js-searchpro__field-container">
+		<div class="searchpro__field-input-container">
+			<input class="searchpro__field-input js-searchpro__field-input" autocomplete="off"
+			       placeholder="{$placeholder}"{if $wa->param('query')} value="{$wa->param('query')|escape}"{/if}/>
+			<div class="searchpro__field-clear-button js-searchpro__field-clear-button"{if !$wa->param('query')} style="display: none;"{/if}></div>
+		</div>
+		{if $category_filter_status && $category_filter_deep}
+			{if $wa->param('category_id')}
+				{$selected_category_id = $wa->param('category_id')}
+			{/if}
+
+			{if !empty($selected_category_id)}
+				{$selected_category = $wa->shop->category($selected_category_id)}
+			{/if}
+
+			{if !empty($selected_category)}
+				{$selected_category_name = $selected_category.name}
+				{$selected_category_id = $selected_category.id}
+			{/if}
+			<div class="searchpro__field-categories-container">
+				<input type="hidden" name="category_id"
+				       value="{if !empty($selected_category_name)}{$selected_category_id}{else}0{/if}"
+				       class="js-searchpro__field-category-input"/>
+				<div class="searchpro__field-categories-label js-searchpro__field-category-selector">
+                    <span>
+                        {if !empty($selected_category_name)}
+	                        {$selected_category_name}
+                        {else}
+	                        Все категории
+                        {/if}
+                    </span>
+				</div>
+				<ul class="searchpro__field-categories-list js-searchpro__field-categories-list">
+					<li class="js-searchpro__field-category searchpro__field-category searchpro__field-category-all selected"
+					    data-id="0">Все категории
+					</li>
+					{function subcategories category=[]}
+						{$deep = $deep+1}
+						{if !empty($category.childs)}
+							<ul class="searchpro__field-subcategories-list">
+								{foreach $category.childs as $subcategory}
+									<li class="js-searchpro__field-category searchpro__field-subcategory"
+									    data-id="{$subcategory.id}" title="{$subcategory.name}">
+										<span>
+											{$subcategory.name}
+										</span>
+									</li>
+									{if $category_filter_deep > $deep}
+										{subcategories category=$subcategory deep=$deep}
+									{/if}
+								{/foreach}
+							</ul>
+						{/if}
+					{/function}
+					{$deep = 1}
+					{foreach $categories as $category}
+						<li class="js-searchpro__field-category searchpro__field-category" data-id="{$category.id}"
+						    title="{$category.name}">
+							<span>
+								{$category.name}
+							</span>
+						</li>
+						{if $category_filter_deep > 1}
+							{subcategories category=$category deep=$deep}
+						{/if}
+					{/foreach}
+				</ul>
+			</div>
+		{/if}
+		<div class="searchpro__field-button-container">
+			<div class="searchpro__field-button js-searchpro__field-button">{$button}</div>
+		</div>
+	</div>
+</div>

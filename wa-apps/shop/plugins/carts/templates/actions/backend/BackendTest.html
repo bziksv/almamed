@@ -1,0 +1,75 @@
+
+<div class="dialog-window">
+    <form>
+    <div class="dialog-content">
+        <div class="dialog-content-indent">
+            <h1>[`Test message`]</h1>
+            {if empty($test_carts)}
+            <p>[`Testing requires at least one abandoned cart for sample data.`]</p>
+            {else}
+            <div class="test-message">
+                <div class="fields form">
+                    <div class="field">
+                        <div class="name">[`Send to`]</div>
+                        <div class="value">
+                            <input type="text" value="{$wa->user()->get('email', 'default')|escape}" class="bold" name="email">
+                            <p class="hint">Email</p>
+                        </div>
+                        <div class="value">
+                            <input type="text" value="{$wa->user()->get('phone', 'default')|escape}" class="bold" name="phone">
+                            <p class="hint">[`Phone`]</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="clear-left message">[`Select an abandoned cart to fetch sample data from`]</p>
+                <table class="zebra">
+                    {foreach $test_carts as $c}
+                    <tr>
+                        <td class="min-width">
+                            <input type="radio" name="code" value="{$c.code|escape}"{if $c@first} checked{/if}>
+                        </td>
+                        <td>
+                            {foreach $c.items as $i}
+                            {$i.name|escape} <span class="gray">x {$i.quantity}</span><br />
+                            {/foreach}
+                        </td>
+                        <td class="nobr"><span class="hint">{$c.storefront}</span></td>
+                    </tr>
+                    {/foreach}
+                </table>
+            </div>
+            <div class="test-status" style="display: none;">
+                <div class="fields form">
+                    <div class="field">
+                        <div class="name">[`Status`]</div>
+                        <div class="value">
+                            <i class="icon16 status"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">[`Sent`]</div>
+                        <div class="value sent"></div>
+                    </div>
+                    <div class="field">
+                        <div class="name">[`Comment`]</div>
+                        <div class="value comment"></div>
+                    </div>
+                </div>
+
+                <div class="clear-left"></div>
+            </div>
+            {/if}
+        </div>
+    </div>
+    <div class="dialog-buttons">
+        {if !empty($test_carts)}
+        <span class="test-message-send-buttons">
+            <input class="button green" type="submit" value="[`Send`]">
+            <i class="icon16 loading" style="display: none"></i>
+        </span>
+        {/if}
+        <input class="button cancel" type="button" value="[`Close`]">
+    </div>
+    </form>
+</div>

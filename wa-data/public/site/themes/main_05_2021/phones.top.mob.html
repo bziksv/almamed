@@ -1,0 +1,18 @@
+{strip}
+
+{$wh = null}
+{if $wa->shop}
+{$wh = $wa->shop->settings("workhours")|default:"[`24/7, seven days a week`]"}
+{/if}
+
+{if !empty($theme_settings.address) || !empty($wh)}
+<ul class="phones-wrapper">
+    {if !empty($theme_settings.phone_1)}
+    <li class="">
+        <a href="tel:{$theme_settings.phone_1}">{$theme_settings.phone_1}</a>
+    </li>
+    {/if}
+</ul>
+{/if}
+
+{/strip}

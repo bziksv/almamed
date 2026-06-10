@@ -1,0 +1,101 @@
+{strip}
+
+{* LAST POSTS & PHOTOS *}
+{if !empty($theme_settings.last_photos_show) && $wa->photos}
+    {$last_photos = $wa->photos->photos('', '300x150', 9)}
+{/if}
+{if !empty($theme_settings.last_posts_show) && $wa->blog}
+    {$last_posts = $wa->blog->posts(null, 3)}
+{/if}
+
+{if !empty($last_posts) || !empty($last_photos)}
+
+    <div class="row-grid hide-on-small-and-down">
+        
+        {if !empty($last_photos)}
+        
+            <div class="last-photos-wrapper col-grid m12 l6"><div class="fill-background">
+            
+                <h2 class="last-photos-header">[`Latest photos`]</h2>
+        
+                <ul>
+                    {foreach from=$last_photos item=photo}
+                        <li{if $photo.stack_count > 0} class="stacked"{/if}>
+                            {if empty($photo.frontend_link)}
+                                <div class="image" style="background-image: url({$photo.thumb_300x150.url});"{if $photo.description} title="{$photo.description|escape}"{/if}></div>
+                            {else}
+                                <a href="{$photo.frontend_link|default:'#'}"><div class="image" style="background-image: url({$photo.thumb_300x150.url});"{if $photo.description} title="{$photo.description|escape}"{/if}></div></a>
+                            {/if}
+                        </li>
+                    {/foreach}
+                </ul>
+            
+            </div></div>
+            
+        {/if}
+    
+        {if !empty($last_posts)}
+        
+            <div class="last-post-wrapper col-grid m12 l6"><div class="fill-background">
+                
+                <h2 class="last-post-header">[`Our news`]</h2>
+                
+                {foreach $last_posts as $post}
+                    
+                    <div class="post">
+                        
+                        <h4 class="last-post-title">
+                        
+                            <a href="{$post.link}">{$post.title}</a>
+                            
+                            {* @event prepare_posts_frontend.%plugin_id%.post_title *}
+                            {if !empty($post.plugins.post_title)}{foreach $post.plugins.post_title as $plugin => $output}{$output}{/foreach}{/if}
+                            
+                        </h4>
+                        
+                        {if $post.album_id && $wa->photos}
+                            {$_post_image = $wa->photos->photos("album/`$post.album_id`", "300x150", 1)}
+                            {$_post_image = current($_post_image)}
+                            {if $_post_image}
+                                <img class="post-image" src="{$_post_image.thumb_300x150.url}" alt="{$_post_image.name|escape}">
+                            {/if}
+                        {/if}
+                        
+                        <div class="credentials">
+                            
+                            {if isset($post.user.photo_url_20)}
+                                {if $post.user.posts_link}
+                                    <a href="{$post.user.posts_link}">
+                                        <img src="{$post.user.photo_url_20}" class="userpic" alt="">
+                                    </a>
+                                {else}
+                                    <img src="{$post.user.photo_url_20}" class="userpic" alt="">
+                                {/if}
+                            {/if}
+                            
+                            {if $post.user.posts_link}
+                              <a href="{$post.user.posts_link}" class="username">{$post.user.name}</a>
+                            {else}
+                              <span class="username">{$post.user.name}</span>
+                            {/if}
+                            
+                            <i class="material-icons mi-lg">&#xE192;</i>
+                            <span class="small date">{$post.datetime|wa_datetime:"humandate"}</span>
+                            
+                        </div>
+                        
+                        <p>{$post.text|strip_tags|truncate:200}</p>
+                        
+                    </div>
+                    
+                {/foreach}
+                
+            </div></div>
+        
+        {/if}
+
+    </div>
+    
+{/if}
+
+{/strip}

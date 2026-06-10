@@ -1,0 +1,205 @@
+.field-group__header,
+.field-group__fields {
+	margin-right: 33%;
+}
+
+.field-group_tiny {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.field-group__description {
+	font-size: 10pt;
+	color: #666666;
+	box-sizing: border-box;
+	margin: 3px 0 3px 33%;
+}
+
+.field-box {
+	margin-bottom: 7px;
+}
+
+.field-box_sep {
+	margin-bottom: 14px;
+}
+
+.field-box:after {
+	content: '';
+	display: block;
+	clear: left;
+}
+
+.field-box__label {
+	float: left;
+	box-sizing: border-box;
+	width: 33%;
+	padding: 5px 5px 5px 0;
+	color: #888;
+	font-size: 0.95em;
+}
+
+.field-box_disable-label .field-box__field {
+	margin-left: 0;
+}
+
+.field-box__field {
+	margin-left: 33%;
+}
+
+.field-box__input-text,
+.field-box__text-area {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.check-box,
+.radio-box {
+	display: block;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.check-box:after,
+.radio-box:after {
+	content: '';
+	display: block;
+	clear: left;
+}
+
+.check-box__input,
+.radio-box__input {
+	float: left;
+	cursor: pointer;
+	margin-top: 1px;
+}
+
+.check-box__description,
+.radio-box__description {
+	display: block;
+	margin-left: 20px;
+}
+
+.check-box__description_tiny,
+.radio-box__description_tiny {
+	font-size: 10pt;
+}
+
+.check-box__header,
+.radio-box__header {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.option-set__items {
+	margin: 15px 0 15px 15px;
+}
+
+.form {
+	padding-bottom: 50px;
+}
+
+.form__footer {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 7px 7px 7px 230px;
+	background: #f7f7f7;
+	border-top: 2px solid #EEE;
+	z-index: 101;
+}
+
+.templates-box {
+	display: none;
+}
+
+.submit-box:after {
+	content: '';
+	display: block;
+	clear: left;
+}
+
+.submit-box__button {
+	float: left;
+}
+
+.submit-box__cancel {
+	float: left;
+	margin: 10px 0 0 10px;
+}
+
+.submit-box__status {
+	float: left;
+	margin: 10px 0 0 10px;
+}
+
+.form-status_hidden {
+	display: none;
+}
+
+.select-box_ajax .select-box__status {
+	display: inline-block;
+	margin-left: 15px;
+}
+
+.field-group_extensible .field-group__fields {
+	display: none;
+}
+
+.field-group_expanded .field-group__fields {
+	display: block;
+}
+
+.select-tabs__tab {
+	display: none;
+}
+
+.select-tabs__tab_open {
+	display: block;
+}
+
+.CodeMirror {
+	border: 1px solid rgb(169, 169, 169);
+}
+
+.CodeMirror-scroll {
+	height: auto !important;
+}
+
+.redactor_editor, .redactor-editor {
+	border: 1px solid #EEE !important;
+}
+
+.redactor-toolbar {
+	overflow: hidden;
+}
+
+.redactor-box {
+	margin-bottom: 10px;
+}
+
+.form__description {
+	font-size: 10pt;
+	margin: 12px 0;
+	color: #666;
+}
+
+.file-box__input {
+	cursor: pointer;
+}
+
+.ReactModal__Body--open {
+	overflow: hidden;
+}
+
+.bsui-virtualized-select .VirtualizedSelectOption {
+	display: block;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.bsui-virtualized-select .VirtualizedSelectOption span {
+	display: inline-block;
+	word-wrap: break-word;
+}

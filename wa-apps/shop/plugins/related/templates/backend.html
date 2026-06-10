@@ -1,0 +1,62 @@
+{if isset($related_value)}
+
+<div class="field-group">
+    <div class="field">
+        <div class="name">Отобразить в виде:</div>
+        <div class="value">
+            <select id="related-view" data-product_id="{$product.id}">
+                {foreach $view.optionView as $key => $val}
+                <option value="{$key}" {if $key == $view.selectedView} selected {/if}>{$val}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+    {foreach $related_value as $type => $value}
+
+        <div class="field-group">
+            <div class="field">
+                <div class="name">
+                    Рекомендуемые товары
+                    <input type="text" name="title_related" value="{$title.$type}" data-type="{$type}" data-product_id="{$product.id}" placeholder="Введите заголовок">
+                </div>
+
+                <div class="value manually">
+                    <table class="related zebra">
+                        {if isset($value)}
+                        {foreach $value as $p}
+                        <tr class="p" data-product-id="{$p.id}">
+                            <td>{$p.name|escape}</td>
+                            <td>{shop_currency_html($p.price, true)}</td>
+                            <td class="min-width"><a class="delete" href="#"><i class="icon16 delete"></i></a></td>
+                        </tr>
+                        {/foreach}
+                        {/if}
+                        <tr>
+                            <td colspan="3">
+                                <input data-type="{$type}" class="product-autocomplete long" type="text" placeholder="[`Start typing product name or SKU`]">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    {/foreach}
+
+{/if}
+
+<div class="field-group">
+    <div class="field">
+
+        <a href="#" data-product_id="{$product.id}" class="button blue" id="add-related">Добавить группу товаров</a>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="{$wa_app_static_url}plugins/related/js/related.js?{time()}"></script>
+

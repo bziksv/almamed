@@ -1,0 +1,215 @@
+{if !$is_in_category && $category_status && !empty($categories) && count($categories) > 1 && $category_mode === 'filters'}
+	<div class="searchpro__page-filters searchpro__page-filters--categories">
+		<div class="searchpro__page-filter js-searchpro__filter">
+			<div class="searchpro__page-filter_name js-searchpro__filter-toggle-button">Уточнить категорию</div>
+			<div class="searchpro__page-filter_values searchpro__page-filter_values--categories">
+				{$value_index = 0}
+				{$hidden_count = 0}
+				{$wrapped_categories = []}
+				{foreach $categories as $category}
+					{$parent_id = $category.parent_id|default:0}
+					{if !isset($wrapped_categories[$parent_id])}
+						{$wrapped_categories[$parent_id] = []}
+					{/if}
+
+					{$wrapped_categories[$parent_id][] = $category}
+				{/foreach}
+				{foreach $wrapped_categories as $parent_category_id => $wrapped_category_group}
+					{$is_hidden_current = $value_index >= 5}
+
+					<div class="searchpro__page-filter_wrapper">
+						{if $parent_category_id != 0}
+							<div class="js-searchpro__filter-label searchpro__page-filter_label{if $is_hidden_current} js-searchpro__filter-label--hidden{/if}">
+								{$parent_category = $wa->shop->category($category.parent_id)}
+
+								{$parent_category.name}
+							</div>
+						{/if}
+
+						{foreach $wrapped_category_group as $category}
+							{if !$category.name}
+								{continue}
+							{/if}
+							<div class="js-searchpro__filter-item searchpro__page-filter_value{if $value_index >= 5} js-searchpro__filter-item--hidden{$hidden_count = $hidden_count + 1}{/if}">
+								<a href="{$category.search_url}" class="searchpro__page-filter_category">
+									{if $category.existing_name}
+										{if $category.parent_id}
+											{$parent_category = $wa->shop->category($category.parent_id)}
+											{$parent_category.name}
+										{/if}
+									{/if}
+									{$category.name}
+									<span class="searchpro__page-filter_category-hint">
+								({$category.count})
+							</span>
+								</a>
+							</div>
+							{$value_index = $value_index + 1}
+						{/foreach}
+					</div>
+				{/foreach}
+				{if $hidden_count > 0}
+					<a href="javascript: void(0);"
+					   class="searchpro__page-filter_show-more-link js-searchpro__filter-show-more-link"
+					   data-hide-caption="Показать только основные"
+					   data-show-caption="Показать еще {$hidden_count}">Показать еще {$hidden_count}</a>
+				{/if}
+			</div>
+		</div>
+	</div>
+{/if}
+
+{if !empty($filters)}
+<div class="searchpro__page-filters js-searchpro__filters-container">
+	<div class="js-searchpro__filters-helper-layout" style="display: none;">
+		<div class="searchpro__page-filters_helper js-searchpro__filters-helper-content">
+			<div class="searchpro__page-filters_helper_header">
+				<span class="searchpro__page-filters_helper_caption js-searchpro__filters-helper-caption"
+				      data-titles='["Найден", "Найдено", "Найдено"]'></span>
+				<span class="searchpro__page-filters_helper_count js-searchpro__filters-helper-count"></span>
+				<span class="searchpro__page-filters_helper_count-signature js-searchpro__filters-helper-signature"
+				      data-titles='["товар", "товара", "товаров"]'></span>
+			</div>
+			<div class="searchpro__page-filters_helper_button js-searchpro__filters-helper-button">
+				Показать
+			</div>
+		</div>
+	</div>
+	<div class="searchpro__page-filters_toggle-button">
+		<a href="javascript: void(0);" data-hide-caption="Скрыть подбор" data-show-caption="Подбор по параметрам"
+		   class="searchpro__page-filters_toggle-button-link js-searchpro__filters-toggle-button">
+			Подбор по параметрам
+		</a>
+	</div>
+	<form class="searchpro__page-filters_form js-searchpro__filters-form" method="get" action="{$wa->currentUrl(0, 1)}">
+		{foreach $filters as $filter_id => $filter}
+			<div class="searchpro__page-filter js-searchpro__filter">
+				{if $filter_id === 'price'}
+					<div class="searchpro__page-filter_name js-searchpro__filter-toggle-button">[`Price`] ({$c.sign})
+					</div>
+					<div class="searchpro__page-filter_range-container js-searchpro__filter-range-container">
+						<div class="searchpro__page-filter_range js-searchpro__filter-range">
+							<div class="searchpro__page-filter_range-item">
+								<span class="searchpro__page-filter_range-item_caption">от</span>
+								<input type="text" class="js-searchpro__filter-range-value-min" name="price_min"
+								       {if $wa->get('price_min')}value="{(int)$wa->get('price_min')}"{/if}
+								       placeholder="{$filter.min|floor}">
+							</div>
+							<div class="searchpro__page-filter_range-item">
+								<span class="searchpro__page-filter_range-item_caption">до</span>
+								<input type="text" class="js-searchpro__filter-range-value-max" name="price_max"
+								       {if $wa->get('price_max')}value="{(int)$wa->get('price_max')}"{/if}
+								       placeholder="{$filter.max|floor}">
+							</div>
+						</div>
+						<div class="searchpro__page-filter_range-slider js-searchpro__filter-slider"
+						     data-min="{$filter.min|floor}" data-max="{$filter.max|floor}"
+						     data-start-min="{$wa->get('price_min', $filter.min|floor)}"
+						     data-start-max="{$wa->get('price_max', $filter.max|floor)}"></div>
+					</div>
+				{else}
+					<div class="searchpro__page-filter_name js-searchpro__filter-toggle-button">
+						{$filter.name|escape}
+						{if !empty($filter.unit)}
+							({$filter.unit.title})
+						{/if}
+					</div>
+					{if $filter.type === 'boolean'}
+						<div class="searchpro__page-filter_values">
+							<div class="searchpro__page-filter_value">
+								<label class="searchpro__page-filter_radio">
+									<input type="radio" name="{$filter.code}"{if $wa->get($filter.code)} checked{/if}
+									       value="1" class="searchpro__page-filter_radio-field">
+									<span class="searchpro__page-filter_radio-custom-field"></span>
+									<span class="searchpro__page-filter_radio-caption">[`Yes`]</span>
+								</label>
+							</div>
+							<div class="searchpro__page-filter_value">
+								<label class="searchpro__page-filter_radio">
+									<input type="radio"
+									       name="{$filter.code}"{if $wa->get($filter.code) === '0'} checked{/if}
+									       value="0" class="searchpro__page-filter_radio-field">
+									<span class="searchpro__page-filter_radio-custom-field"></span>
+									<span class="searchpro__page-filter_radio-caption">[`No`]</span>
+								</label>
+							</div>
+							<div class="searchpro__page-filter_value">
+								<label class="searchpro__page-filter_radio">
+									<input type="radio"
+									       name="{$filter.code}"{if $wa->get($filter.code) === ''} checked{/if} value=""
+									       class="searchpro__page-filter_radio-field">
+									<span class="searchpro__page-filter_radio-custom-field"></span>
+									<span class="searchpro__page-filter_radio-caption">[`Any`]</span>
+								</label>
+							</div>
+						</div>
+					{elseif isset($filter.min)}
+						{$_v = $wa->get($filter.code)}
+						{if !empty($filter.unit)}
+							{if $filter.unit.value != $filter.base_unit.value}<input type="hidden" name="{$filter.code}[unit]" value="{$filter.unit.value}">{/if}
+						{/if}
+
+						<div class="searchpro__page-filter_range-container js-searchpro__filter-range-container">
+							<div class="searchpro__page-filter_range js-searchpro__filter-range">
+								<div class="searchpro__page-filter_range-item">
+									<span class="searchpro__page-filter_range-item_caption">от</span>
+									<input type="text" class="min js-searchpro__filter-range-value-min"
+									       name="{$filter.code}[min]" placeholder="{$filter.min|floor}"
+									       {if !empty($_v.min)}value="{$_v.min}"{/if}>
+								</div>
+								<div class="searchpro__page-filter_range-item">
+									<span class="searchpro__page-filter_range-item_caption">до</span>
+									<input type="text" class="max js-searchpro__filter-range-value-max"
+									       name="{$filter.code}[max]" placeholder="{$filter.max|floor}"
+									       {if !empty($_v.max)}value="{$_v.max}"{/if}>
+								</div>
+							</div>
+
+							{if $filter.min != $filter.max}
+							<div class="searchpro__page-filter_range-slider js-searchpro__filter-slider"
+							     data-min="{$filter.min|floor}" data-max="{$filter.max|floor}"
+							     data-start-min="{$_v.min|default:$filter.min|floor}"
+							     data-start-max="{$_v.max|default:$filter.max|floor}"></div>
+							{/if}
+						</div>
+					{else}
+						{$value_index = 0}
+						{$hidden_count = 0}
+						<div class="searchpro__page-filter_values">
+							{foreach $filter.values as $v_id => $v}
+								<div class="js-searchpro__filter-item searchpro__page-filter_value{if $value_index >= 5} js-searchpro__filter-item--hidden{$hidden_count = $hidden_count + 1}{/if}">
+									<label class="searchpro__page-filter_checkbox">
+										<input type="checkbox" name="{$filter.code}[]"
+										       {if in_array($v_id, (array)$wa->get($filter.code, array()))}checked{/if}
+										       value="{$v_id}" class="searchpro__page-filter_checkbox-field">
+										<span class="searchpro__page-filter_checkbox-custom-field"></span>
+										<span class="searchpro__page-filter_checkbox-caption">{$v}</span>
+									</label>
+								</div>
+								{$value_index = $value_index + 1}
+							{/foreach}
+						</div>
+						{if $hidden_count > 0}
+							<a href="javascript: void(0);"
+							   class="searchpro__page-filter_show-more-link js-searchpro__filter-show-more-link"
+							   data-hide-caption="Показать только основные"
+							   data-show-caption="Показать еще {$hidden_count}">Показать еще {$hidden_count}</a>
+						{/if}
+					{/if}
+				{/if}
+			</div>
+		{/foreach}
+
+		<div class="searchpro__page-filters_buttons">
+			<div>
+				<input class="searchpro__page-filters_button searchpro__page-filters_button--clear js-searchpro__filters-clear-button"
+				       type="button" value="Очистить"/>
+			</div>
+			<div>
+				<input class="searchpro__page-filters_button searchpro__page-filters_button--submit" type="submit"
+				       value="[`Filter products`]"/>
+			</div>
+		</div>
+	</form>
+</div>
+{/if}

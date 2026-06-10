@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<style>
+    .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover{
+        border: 1px solid #19A5CC;
+        background: #19A5CC;
+    }
+
+</style>
+
+<div id="accordion">
+    {foreach from=$settings.title key=k item=v}
+    <h3>{$v}</h3>
+    <div>
+        {$settings.desc[$k]}
+    </div>
+    {/foreach}
+</div>
+
+<script>
+    $( function() {
+        $( "#accordion" ).accordion({
+            heightStyle: "content",
+            collapsible: true,
+            active: false
+        });
+    } );
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+
+<div class="posts-header-select">
+
+    <div class="select">
+        Выводить самые:
+        <select>
+            <option value="new">Новые записи</option>
+        </select>
+    </div>
+
+    <div class="select">
+        <form>
+            Отображать на странице:
+            <select name="posts_count" onchange="this.form.submit()">
+                <option value="12" {if $posts_per_page == 12} selected {/if}>12</option>
+                <option value="16" {if $posts_per_page == 16} selected {/if}>16</option>
+                <option value="32" {if $posts_per_page == 32} selected {/if}>32</option>
+            </select>
+        </form>
+    </div>
+</div>
+

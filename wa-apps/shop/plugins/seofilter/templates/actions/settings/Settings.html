@@ -1,0 +1,36 @@
+<link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/js/redactor/redactor.css" />
+<script type="text/javascript" src="{$wa_url}wa-content/js/redactor/redactor.min.js"></script>
+<script type="text/javascript" src="{$wa_url}wa-content/js/redactor/ru.js"></script>
+<link rel="stylesheet" href="{$wa_static_url}wa-content/js/codemirror/lib/codemirror.css?v={$wa_plugin_version}"/>
+<script src="{$wa_static_url}wa-content/js/codemirror/lib/codemirror.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/xml/xml.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/css/css.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/javascript/javascript.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/htmlmixed/htmlmixed.js?v={$wa_plugin_version}"></script>
+<script src="{$wa_static_url}wa-content/js/codemirror/mode/smarty/smarty.js?v={$wa_plugin_version}"></script>
+<script type="text/javascript" src="{$plugin_url}js/smartymixed.js"></script>
+
+<link rel="stylesheet" href="{shopSeofilterHelper::getStaticUrl('assets/settings.css')}?v={$wa_plugin_version}"/>
+
+<script defer>
+	if (!Array.isArray)
+	{
+		Array.isArray = function (arg) {
+			return Object.prototype.toString.call(arg) === '[object Array]';
+		};
+	}
+
+	window.initSettings = {json_encode($data)};
+	window.initSettings.show_instruction = false;
+
+	window.assetsPath = {shopSeofilterProductfiltersHelper::getStaticUrl('assets/')|json_encode};
+
+	window.seofilter = {
+		cli_path: {$cli_path|json_encode},
+		sitemap_cron_is_installed: {$sitemap_cron_is_installed|json_encode},
+	};
+</script>
+
+<script type="text/javascript" src="{shopSeofilterHelper::getStaticUrl('assets/settings.js')}?v={$wa_plugin_version}" defer></script>
+
+<div id="seofilter-settings-page"></div>

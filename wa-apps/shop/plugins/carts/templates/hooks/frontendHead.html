@@ -1,0 +1,12 @@
+<script>
+{$carts_script}
+(function ($) {
+$(function(){
+    $.shop_carts_plugin.init(
+        '{$wa->getUrl('shop/frontend/save', ['plugin'=>'carts'])}',
+        '{$wa->getUrl('shop/frontend/heartbeat', ['plugin' => 'carts'])}',
+            {$carts_customer|@json_encode}
+    );
+});
+})(jQuery)
+</script>

@@ -1,0 +1,330 @@
+{strip}
+
+<div class="fill-background">
+    {shopBreadcrumbsViewHelper::getBreadcrumbs()}
+</div>
+
+<style>
+    .sub-links-2 {
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0;
+        margin-right: 120px !important;
+        list-style: none;
+        margin-bottom: 10px !important;
+        padding-left: 20px;
+        padding-right: 20px;
+        width: auto;
+        position: relative;
+        height: 31px;
+        min-height: 32px !important;
+        overflow: hidden;
+        display: block !important;
+    }
+
+    .sub-links-2.open,
+    .sub-links-2.opens {
+        height: auto;
+        margin: 0 auto 30px auto !important;
+    }
+
+    .sub-links-2 li {
+        margin: 0 5px 10px 5px;
+        display: inline-block;
+    }
+
+    .sub-links-2 a {
+        color: #0497C0;
+        border: #0497C0 solid 1px;
+        padding: 4px 20px;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    .sub-links-2 a:hover {
+        text-decoration: none;
+        color: #ffffff;
+        border: #0497C0 solid 1px;
+        background: #0497C0;
+    }
+
+    .sub-links-2 .slick-arrow {
+        margin: auto;
+    }
+
+
+    .sub-links-2 .slick-arrow:before {
+        color: #0497C0;
+        font-size: 26px;
+        vertical-align: middle;
+    }
+
+    .subcategories {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        border-bottom: 1px solid #efefef;
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .subcategories .navi {
+        position: absolute;
+        bottom: 12px;
+        right: 0;
+    }
+
+    .subcategories .navi span {
+        cursor: pointer;
+        color: #0497C0;
+        text-decoration: dotted underline;
+        font-size: 14px;
+    }
+
+    .subcategories .navi span:hover {
+        text-decoration: none;
+    }
+
+    .slick-next:before {
+        content: "\f105";
+        font-family: FontAwesome;
+        display: inline-block;
+        font-weight: 400;
+        font-style: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #0497C0;
+        font-size: 40px;
+    }
+
+    .slick-prev:before {
+        content: "\f104";
+        font-family: FontAwesome;
+        display: inline-block;
+        font-weight: 400;
+        font-style: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #0497C0;
+        font-size: 40px;
+    }
+
+    .sub-links-2 .slick-next:after {
+        display: inline-block;
+        content: '';
+        width: 30px;
+        height: 39px;
+        background: url(/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/grad-right.png) no-repeat;
+        position: absolute;
+        top: -3px;
+        left: -27px;
+    }
+
+    .sub-links-2 .slick-prev:after {
+        content: '';
+        display: inline-block;
+        width: 30px;
+        height: 39px;
+        background: url(/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/grad-left.png) no-repeat;
+        position: absolute;
+        top: -3px;
+        right: -27px;
+    }
+
+    .slick-prev,
+    .slick-next {
+        width: auto;
+        height: auto;
+        z-index: 1;
+    }
+
+    .slick-next {
+        right: 2px;
+    }
+
+    .slick-prev {
+        left: 2px;
+    }
+
+    /* Arrows */
+
+    .slick-prev,
+    .slick-next {
+        position: absolute;
+        display: block;
+        height: 30px;
+        width: 20px;
+        line-height: 0px;
+        font-size: 0px;
+        cursor: pointer;
+        background: transparent;
+        color: transparent;
+        top: 50%;
+        -webkit-transform: translate(0, -50%);
+        -ms-transform: translate(0, -50%);
+        -moz-transform: translate(0, -50%);
+        -o-transform: translate(0, -50%);
+        transform: translate(0, -50%);
+        padding: 0;
+        border: none;
+        outline: none;
+    }
+
+    .slick-prev:hover,
+    .slick-prev:focus,
+    .slick-next:hover,
+    .slick-next:focus {
+        outline: none;
+        background: transparent;
+        color: transparent;
+    }
+
+    .slick-prev:hover:before,
+    .slick-prev:focus:before,
+    .slick-next:hover:before,
+    .slick-next:focus:before {
+        opacity: 1;
+    }
+
+    .slick-prev.slick-disabled:before,
+    .slick-next.slick-disabled:before {
+        opacity: 0.25;
+    }
+
+
+
+</style>
+
+{if $field = shopCustom::getSeoField($category, 'category')}
+    {$category.seo_name = $field.h1}
+{/if}
+<div class="fill-background">
+
+	{if isset($category.params.h1) && $category.params.h1}
+	<h1 class="title_h1 category-name">
+		{$category.seo_name|escape}
+	</h1>
+    {else}
+	<div class="title_h1 category-name">
+		{$category.seo_name|escape}
+	</div>
+    {/if}
+
+    {if 1 && shopWmimageincatPlugin::getCategoryImage($category.id, 'banner')}{* PLUGIN WMIMAGEINCAT: replace 0 to 1 to enable *}
+        <div class="image">
+            {if $category.params.link_to}
+            <a href="{$category.params.link_to}" title="{$category.name}">
+            {/if}
+                <img src="{shopWmimageincatPlugin::getCategoryImage($category.id, 'banner')}" alt="{$category.name}" />
+            {if $category.params.link_to}
+            </a>
+            {/if}
+        </div>
+    {/if}
+
+    <!-- plugin hook: 'frontend_category' -->
+    {* @event frontend_category.%plugin_id% *}
+    {foreach $frontend_category as $_}{$_}{/foreach}
+
+    <!-- subcategories -->
+    {if 1 && $category.subcategories}{* PLUGIN WMIMAGEINCAT: replace 0 to 1 to enable *}
+        <ul class="piicsl">
+            {foreach $category.subcategories as $sc}
+            {$sc = shopSeoViewHelper::extendCategory($sc)}
+
+                {if waRequest::get('brend') && !shopCustom::subcategoriesFilters($sc.id) || isset($sc.params.menu) || isset($sc.params.cat)}
+                    {continue}
+                {/if}
+
+                <li class="piicsl-item">
+                    <div class="piicsl-img">
+                        <a href="{$sc.url}">
+                            <img class="lazy-fadein" data-src="{if shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="" />
+                        </a>
+                    </div>
+                    <span class="piicsl-title">
+                        <a href="{$sc.url}">{$sc.seo_name|escape}</a>
+                    </span>
+                </li>
+            {/foreach}
+        </ul>
+    {elseif $category.subcategories}
+        <ul class="sub-links">
+            {foreach $category.subcategories as $sc}
+                <li><a href="{$sc.url}">{$sc.name|escape}</a></li>
+            {/foreach}
+        </ul>
+    {/if}
+
+    {if isset($category.params.meta) && $category.params.meta}
+    <div class="subcategories">
+        <ul class="tag-slider sub-links-2">
+            {foreach shopCustom::getTagsByCategory($category.id) as $cat}
+            <li><a href="/category/{$cat.url}">{$cat.name}</a></li>
+            {/foreach}
+
+            {foreach shopCustom::array_filter($category.params, 'plitka') as $plitka}
+                {if $plitka}
+                    {$plitka = explode("@", $plitka)}
+                    <li><a href="{$plitka[1]}">{$plitka[0]}</a></li>
+                {/if}
+            {/foreach}
+        </ul>
+        <div class="navi">
+            <span class="open">Показать все</span>
+            <span hidden class="close">Свернуть</span>
+        </div>
+    </div>
+    {else}
+
+    {/if}
+
+
+
+</div>
+
+
+{if !empty($filters) && ($theme_settings.filter_pos == 'content' || empty($theme_settings.sidebar))}
+    {* optional view filters
+    {include file="filter.html" filter_controls=true}
+    *}
+    <div class="fill-background">{include file="filter.html"}</div>
+{/if}
+
+<div id="product-list" class="fill-background">
+    {if !$products}
+        {if !empty($filters)}
+            [`No products were found.`]
+        {else}
+            {if !$category.subcategories} {/if}
+        {/if}
+    {else}
+        {$select_view = waRequest::cookie('shop_select_view', '', waRequest::TYPE_STRING)}
+        {if isset($category.params.select_view)}{$select_view = $select_view|default:$category.params.select_view}{/if}
+        {$select_view = $select_view|default:$theme_settings.select_view}
+        {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting) plp=true select_view=$select_view}
+    {/if}
+
+    <!-- products list -->
+    {foreach shopCustom::array_filter($category.params, 'rec') as $rec}
+        {if $rec}
+        {$rec = explode("@", $rec)}
+            {shopCustom::getListProducts($rec[1], $rec[0], $rec[2], $rec[3])}
+        {/if}
+    {/foreach}
+
+	{if $category.params.product_additional != 'hide'}
+        {shopProductadditionalPlugin::getAdditionalProduct($category)}
+    {/if}
+
+    <!-- description -->
+    {if $category.description}
+    <div class="category-description">{$category.description}</div>
+    {/if}
+</div>
+
+{/strip}

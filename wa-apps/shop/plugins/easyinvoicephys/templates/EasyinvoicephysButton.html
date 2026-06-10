@@ -1,0 +1,87 @@
+<!--
+//Сopyright "WA-Master ©"
+//Plugin for framework "Webasyst Shop Script"
+//The author of the plugin 'Snooper'- "snooper@ylig.ru"
+-->
+<style type="text/css">
+	a.{$plugin_id} { margin-top: 5px!important;	}
+	.{$plugin_id} { padding: 0 0 0 3px !important; font-size: .85em !important; }
+	.{$plugin_id} img { width: 15px; margin-top: 3px; float: left; }
+	.{$plugin_id} { text-align: center;padding-top: 3px;height: 23px; }
+	.{$plugin_id}_menu img { width: 15px; padding: 0 5px 0 0; }	
+	.{$plugin_id}_menu { text-align: center !important; border: 2px solid #e7e7e7; border-radius: 5px; padding: 2px 0 2px 5px !important; }
+	.{$plugin_id}_menu div { width: 100%;text-align: center; }
+	#{$plugin_id}-li img { position: absolute; width: 18px; left: 3px; top: 2px; }	
+	.{$plugin_id}_menu a { margin: 0 !important;padding: 0 8px 2px !important;height: auto !important;border: 2px solid #ddd;display: inline-block !important;font-weight: 100 !important; }
+	.green { color:green !important; }
+	.blue { color:blue !important; }
+	.link.{$plugin_id} { font-size: 100% !important;text-align: left; }
+	.link.{$plugin_id} img { width: 15px;margin: -1px 5px 0 4px;float: left; }
+	.{$plugin_id} span { display:none; }
+</style>
+{if $settings.BUTTON_POSITION == '1' or $settings.BUTTON_POSITION > '2'}
+	{if $settings.BUTTON_POSITION == '1' or $settings.BUTTON_POSITION >= '5'}
+		<a href="?plugin={$plugin_id}&action=display&order_id={$order.id}" class="{if $settings.BUTTON_POSITION == '6'}link {else}button grey {/if}{$plugin_id}" target="_blank">
+			<img src="{$plugin_path}img/icon.png" />{$settings.BUTTON_NAME|escape}
+			<span class="green"> ([`current`])</span>
+		</a>
+	{/if}
+	{if $settings.BUTTON_POSITION == '1' or $settings.BUTTON_POSITION == '3' or $settings.BUTTON_POSITION == '4'}
+		<a id="{$plugin_id}-list-print" class="{if $settings.BUTTON_POSITION == '4'}link {else}button grey {/if}{$plugin_id}" href="javascript:void(0);">
+			<img class="icon" src="{$plugin_path}img/icon.png" />
+			<i style="margin-left: 0; display:none;" class="icon16 loading"></i>{$settings.BUTTON_NAME|escape}
+			<span class="blue"> ([`choice`])</span>
+		</a>
+	{/if}
+{else if $settings.BUTTON_POSITION == '2'}
+	<li class="{$plugin_id}_menu">
+		<div><img src="{$plugin_path}img/icon.png" />{$settings.BUTTON_NAME|escape}</div>
+		<a  class="button green" href="?plugin={$plugin_id}&action=display&order_id={$order.id}&print=1" target="_blank">без печати</a>
+		<a  class="button green" href="?plugin={$plugin_id}&action=display&order_id={$order.id}" target="_blank">с печатью</a>
+		<a id="{$plugin_id}-list-print" class="button blue" href="javascript:void(0);"><i style="margin-left: 0; display:none;" class="icon16 loading"></i>[`choice`]</a>
+	</li>
+{else}
+	<li id="{$plugin_id}-li">
+		<a id="{$plugin_id}-list-print" href="javascript:void(0);">
+			<img src="{$plugin_path}img/icon.png" />
+			<i style="margin-left: 0; display:none;" class="icon16 loading"></i>{$settings.BUTTON_NAME|escape}
+		</a>
+	</li>
+{/if}
+<div style="display: none;" id="{$plugin_id}-main-dialog"></div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		if ('{$settings.BUTTON_POSITION}' == '1') { $('.{$plugin_id} span').show(); }
+		$('#{$plugin_id}-list-print').on('click', function() {
+			$(this).find('i.loading').show();
+			$(this).find('img.icon').hide();
+			var url = '?plugin={$plugin_id}&action=dialog';
+			$.ajax({
+				type: 'GET',
+				url: url,
+				dataType: 'json',
+				success: function(data, textStatus, jqXHR) {
+					if (data.status == 'ok') {
+						$('#{$plugin_id}-main-dialog').html(data.data);
+						showDialog();
+					}
+				}
+			});
+		});
+		function showDialog() {
+			$('#{$plugin_id}-show-dialog').waDialog({
+				disableButtonsOnSubmit: false,
+				onLoad: function() {
+					$('#{$plugin_id}-list-print').find('i.loading').hide();
+					$('#{$plugin_id}-list-print').find('img.icon').show();
+				},
+				onSubmit: function(d) {
+					var $this = $(this);
+					$this.find('i.loading').show().hide();
+					$this.find('img.icon').hide().show();
+					$('#{$plugin_id}-show-dialog').hide();   
+				}
+			});
+		}
+	});
+</script>  

@@ -1,0 +1,231 @@
+{strip}
+
+  {$_background_color = "#eeeeee"}
+  {$_products_bg = "#ffffff"}
+  {$_bonus_background = "#ffffcc"}
+  {$_button_background = "#fcd630"}
+  {$_main_border_color = "#cccccc"}
+  {$_border_color = "#dddddd"}
+
+
+  {$_restore_button_text = "[restore_button_text]"}
+  {$_cancel_button_text = "[cancel_button_text]"}
+  {$_utm = "?utm_source=newsletter&utm_medium=email&utm_campaign=abcarts"}
+
+  {capture name="main_text"}
+    [main_text]
+  {/capture}
+
+  {capture name="before_products_text"}
+    [products_text]
+  {/capture}
+
+  {capture name="after_products_text"}{/capture}
+
+
+  <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="{$_background_color}" style="
+        font-family:Helvetica,Arial,sans-serif;
+        letter-spacing:normal;
+        text-indent:0;
+        text-transform:none;
+        word-spacing:0;
+        background-color:rgb(232,232,232);
+        border-collapse:collapse
+    ">
+    <tr>
+      <td style="padding: 20px;">
+        <table width="600" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="
+                width: 600px !important;
+                background-color:#fff;
+                border:1px solid {$_main_border_color};
+                border-radius: 4px;
+                margin:auto;
+                overflow: hidden;
+                ">
+
+          <!-- HEADER -->
+          <tr>
+            <td width="50" style="width:50px !important; border: solid {$_border_color}; border-width: 0 0 1px 0;"></td>
+            <td height="70" align="center" valign="middle" style="border: solid {$_border_color}; border-width: 0 0 1px 0;">
+              <table cellspacing="0" border="0" cellpadding="0" width="100%" style="border-collapse:collapse">
+                <tr>
+                  <td>
+                    <p style="
+                                        color:rgb(48,48,48);
+                                        font-style:normal;
+                                        font-variant:normal;
+                                        font-weight:normal;
+                                        font-size:14px;
+                                        line-height:16px;
+                                        font-family:Helvetica,Arial,sans-serif;
+                                        margin: 20px 0 0;
+                                        text-align:center;
+                                        ">{$smarty.capture.main_text}</p>
+                    <p align="center" style="margin: 20px 0;">
+                      <a href="{$carts->restoreUrl()}{$_utm}" style="
+                              text-decoration:none;
+                              font-style:normal;
+                              font-variant:normal;
+                              font-weight:normal;font-size:17px;line-height:40px;font-family:Helvetica,Arial,sans-serif;color:rgb(48,48,48);display:block;
+                              width:225px;
+                              background: {$_button_background};
+                              border-radius: 4px;
+                              " target="_blank">{$_restore_button_text}</a>
+                    </p>
+
+                      <p style="
+                            font-style:normal;
+                            font-variant:normal;
+                            font-weight:normal;
+                            font-size:14px;
+                            line-height:16px;
+                            font-family:Helvetica,Arial,sans-serif;
+                            margin: 20px 0;
+                            text-align:center
+                            ">
+                        <a href="{$carts->cancelUrl()}{$_utm}" target="_blank" style="color:color:rgb(48,48,48)">{$_cancel_button_text}</a>
+                      </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td width="50" style="width:50px !important; border: solid {$_border_color}; border-width: 0 0 1px 0;"></td>
+          </tr>
+
+
+          <tr>
+            <td bgcolor="{$_products_bg}"></td>
+            <td bgcolor="{$_products_bg}">
+              <p style="
+                  color:rgb(48,48,48);
+                  font-style:normal;
+                  font-variant:normal;
+                  font-weight:normal;
+                  font-size:14px;
+                  line-height:16px;
+                  font-family:Helvetica,Arial,sans-serif;
+                  margin: 20px 0 0;
+                  text-align: center;
+                  ">{$smarty.capture.before_products_text}</p>
+            </td>
+            <td bgcolor="{$_products_bg}"></td>
+          </tr>
+
+          <!-- LIST -->
+          <tr>
+            <td bgcolor="{$_products_bg}">
+            </td>
+            <td bgcolor="{$_products_bg}" style="">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+
+                {foreach $items as $item}
+                  {$_border_style = "border: 0;"}
+                  {if $item@index > 0}
+                    {$_border_style = "border: solid `{$_border_color}`; border-width: 1px 0  0;"}
+                  {/if}
+                  <tr>
+                    <td width="40" style="padding: 8px 4px 8px 0; {$_border_style}">
+                      <a href="{$carts->productUrl($item.product)}{$_utm}">{$carts->productImgHtml($item.product, "48x48")}</a>
+                    </td>
+                    <td style="padding: 8px 0 8px 4px; {$_border_style}">
+                      <p style="
+                              font-style:normal;
+                              font-variant:normal;
+                              font-weight:normal;
+                              font-size: 14px;
+                              line-height:16px;
+                              font-family:Helvetica,Arial,sans-serif;
+                              ">
+                          <a href="{$carts->productUrl($item.product)|default:'javascript:void(0);'}{$_utm}">
+                            <font style="text-decoration: underline;">{$item.product.name|escape} {$item.sku_name}</font>
+                            {if !empty($item.sku_code)} <font style="color: #aaaaaa; font-size: 0.8em;">{$item.sku_code|escape}</font>{/if}
+                          </a>
+                      </p>
+                    </td>
+                    <td style="padding: 8px 4px 8px 4px; white-space: nowrap; text-align: right; {$_border_style}">
+                      <font style="color:#aaa;">{shop_currency($item.full_price)} ×</font> {$item.quantity}
+                    </td>
+                    <td style="padding: 8px 0 8px 8px; white-space: nowrap; text-align: right; {$_border_style}">
+                      <font style="font-weight: bold;">{shop_currency($item.full_price * $item.quantity)}</font>
+                    </td>
+                  </tr>
+                {foreach $item.services as $service}
+                  <tr>
+                    <td style="{$_border_style}"></td>
+                    <td style="padding: 8px 0 8px 4px; {$_border_style}">
+                      <p style="
+                              font-style:normal;
+                              font-variant:normal;
+                              font-weight:normal;
+                              font-size: 12px;
+                              line-height:16px;
+                              font-family:Helvetica,Arial,sans-serif;
+                              ">
+                        + {$service.name}{if $service.variants && $service.variant_id && !empty($service.variants[$service.variant_id]) && !empty($service.variants[$service.variant_id].name)} ({$service.variants[$service.variant_id].name}){/if}
+                      </p>
+                    </td>
+                    <td style="{$_border_style}"></td>
+                    <td style="{$_border_style}"></td>
+                  </tr>
+                {/foreach}
+                {/foreach}
+              </table>
+            </td>
+            <td bgcolor="{$_products_bg}"></td>
+          </tr>
+          <tr>
+            <td bgcolor="{$_products_bg}"></td>
+            <td bgcolor="{$_products_bg}">&nbsp;</td>
+            <td bgcolor="{$_products_bg}"></td>
+          </tr>
+
+          {if $smarty.capture.after_products_text}
+          <tr>
+            <td bgcolor="{$_products_bg}"></td>
+            <td bgcolor="{$_products_bg}">
+              <p style="
+                  color:rgb(48,48,48);
+                  font-style:normal;
+                  font-variant:normal;
+                  font-weight:normal;
+                  font-size:14px;
+                  line-height:16px;
+                  font-family:Helvetica,Arial,sans-serif;
+                  margin: 20px 0 0;
+                  text-align: center;
+                  ">{$smarty.capture.after_products_text}</p>
+            </td>
+            <td bgcolor="{$_products_bg}"></td>
+          </tr>
+          {/if}
+
+        </table>
+
+        <!-- BOTTOM SITE INFORMATION -->
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+          <tr>
+            <td valign="middle" align="center" height="45">
+              <p style="
+                            font-style:normal;
+                            font-variant:normal;
+                            font-weight:normal;
+                            font-size:13px;
+                            line-height:16px;
+                            font-family:Arial,sans-serif,Helvetica;
+                            color:rgb(147,154,164);
+                            margin: 20px 0 0;
+                            ">
+                © {date("Y")} {$wa->shop->settings("name")}<br>
+                <a href="{$carts->waUrl()}{$_utm}">{$carts->domain()}</a><br>
+                {if $wa->shop->settings("email")}<a href="mailto:{$wa->shop->settings("email")}">{$wa->shop->settings("email")}</a><br>{/if}
+                {$wa->shop->settings("phone")}<br>
+              </p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+{/strip}

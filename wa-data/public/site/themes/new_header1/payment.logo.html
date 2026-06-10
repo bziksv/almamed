@@ -1,0 +1,69 @@
+{strip}
+
+{if $wa->shop}
+    {$count = $theme_settings.show_payments_count|default:5}
+    {if !empty($theme_settings.show_payment)}
+        <div class="payments-wrapper">
+            {$availabe_options = $wa->shop->payment()}
+            {if 1 && count($availabe_options)}{* SHOP PAYMENT: replace 0 to 1 to enable *}
+                {$_cnt = 0}
+                {foreach $availabe_options as $option name=options}
+                    {if $_cnt == $count}{break}{/if}
+                    {if $option.logo}
+                        <i class="payments-logo" style="background-image: url('{$option.logo}'); width: 60px;"></i>
+                        {*<img src="{$option.logo}" alt="{$option.name}">*}
+                        {$_cnt = $_cnt + 1}
+                    {/if}
+                {/foreach}
+            {/if}
+            {if 0}{* USER PAYMENT: replace 0 to 1 to enable *}
+                <i class="payments-logo yandex-money"></i>
+                <i class="payments-logo webmoney"></i>
+                {*<i class="payments-logo mail"></i>*}
+                {*<i class="payments-logo contact"></i>*}
+                {*<i class="payments-logo IntellectMoney"></i>*}
+                {*x<i class="payments-logo rbk-money"></i>*}
+                {*<i class="payments-logo JCB"></i>*}
+                {*<i class="payments-logo cirrus"></i>*}
+                {*<i class="payments-logo maestro"></i>*}
+                <i class="payments-logo mastercard"></i>
+                {*<i class="payments-logo visa"></i>*}
+                {*<i class="payments-logo amex"></i>*}
+                {*<i class="payments-logo a_bank"></i>*}
+                <i class="payments-logo sberbank"></i>
+                <i class="payments-logo qiwi"></i>
+                {*<i class="payments-logo mts"></i>*}
+                {*<i class="payments-logo elexnet"></i>*}
+                {*<i class="payments-logo migom"></i>*}
+                {*<i class="payments-logo paypal"></i>*}
+                {*<i class="payments-logo payu"></i>*}
+                {*<i class="payments-logo skrill"></i>*}
+                {*<i class="payments-logo westernunion"></i>*}
+                {*<i class="payments-logo unistream"></i>*}
+                {*<i class="payments-logo robokassa"></i>*}
+                {*<i class="payments-logo kupivkredit"></i>*}
+                {*<i class="payments-logo privat"></i>*}
+                {*<i class="payments-logo liqpay"></i>*}
+                {*<i class="payments-logo platron"></i>*}
+            {/if}
+        </div>
+    {/if}
+    {if !empty($theme_settings.show_shipping)}
+        {$availabe_options = $wa->shop->shipping()}
+        {if count($availabe_options)}
+            <div class="payments-wrapper">
+                {$_cnt = 0}
+                {foreach $availabe_options as $option name=options}
+                    {if $_cnt == $count}{break}{/if}
+                    {if $option.logo}
+                        <i class="payments-logo" style="background-image: url('{$option.logo}'); width: 60px;"></i>
+                        {*<img src="{$option.logo}" alt="{$option.name}">*}
+                        {$_cnt = $_cnt + 1}
+                    {/if}
+                {/foreach}
+            </div>
+        {/if}
+    {/if}
+{/if}
+
+{/strip}
