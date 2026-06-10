@@ -15,6 +15,7 @@
             Мы используем cookie-файлы для персонализации рекламы и анализа посещаемости. Продолжая пользоваться сайтом, вы подтверждаете согласие на обработку персональных данных согласно <a target="_blank" rel="noopener" href="/rules/cookies-almamed.jpg">нашей политике cookies</a>.
         </p>
         <button type="button" class="cookie-consent__accept" id="almamed-cookie-consent-accept">Принять</button>
+        <div class="cookie-consent__talkme" id="talkme-cookie-slot"></div>
     </div>
 </div>
 
@@ -112,6 +113,12 @@
         outline-offset: 2px;
     }
 
+    #almamed-cookie-consent .cookie-consent__talkme {
+        flex-shrink: 0;
+        width: 168px;
+        height: 40px;
+    }
+
     body.cookie-consent-pending #footer-pane {
         display: none !important;
     }
@@ -149,6 +156,11 @@
 
         #almamed-cookie-consent .cookie-consent__accept {
             width: 100%;
+            margin-left: 48px;
+        }
+
+        #almamed-cookie-consent .cookie-consent__talkme {
+            width: calc(100% - 48px);
             margin-left: 48px;
         }
     }
