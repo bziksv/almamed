@@ -7,7 +7,6 @@
     {$selected = $at['shop']['selected_category']|default:null}
     {$type = $theme_settings.category_tree_sidebar_type|default:'type1'}
     
-    <link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
     {* Inline sprite — external .svg#id in <use> breaks in Chrome *}
     {include file="./img/category-icons.svg"}
 

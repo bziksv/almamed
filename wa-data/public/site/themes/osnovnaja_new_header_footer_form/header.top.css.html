@@ -10,6 +10,7 @@
         min-height: 56px;
         line-height: normal !important;
         background-color: #fff !important;
+        overflow: visible;
     }
 
     .nav-wrapper .col-grid {
@@ -166,16 +167,45 @@
         flex: 0 0 118px;
         padding: 0 !important;
         justify-content: center;
+        overflow: visible;
+        position: relative;
+    }
+
+    .nav-wrapper .header-top-bar,
+    .nav-wrapper .header-top-bar__inner {
+        overflow: visible;
     }
 
     .nav-wrapper .header-top-bar__inner #cart {
         line-height: normal;
         height: 56px;
-        display: flex;
-        align-items: center;
+        display: block;
+        width: 100%;
+        overflow: visible;
+    }
+
+    /* Корзина в шапке: выпадает вниз под кнопку */
+    .nav-wrapper .header-top-bar__inner #cart .flying-cart-wrapper {
+        top: 100% !important;
+        bottom: auto !important;
+        right: 0;
+        left: auto;
+        margin: 0;
+        min-width: 440px;
+        max-width: min(440px, calc(100vw - 24px));
+        box-sizing: border-box;
+        z-index: 1100;
+    }
+
+    .nav-wrapper .header-top-bar__inner #cart .flying-cart-wrapper:after {
+        top: -12px;
+        bottom: auto;
+        height: 12px;
     }
 
     .nav-wrapper .header-top-bar__inner #cart a.link-to-cart {
+        position: relative;
+        z-index: 1101;
         display: inline-flex !important;
         align-items: center;
         gap: 8px;
@@ -185,6 +215,115 @@
         box-sizing: border-box;
         border: none;
         text-align: left;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart ul {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart ul li {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid #ebebeb;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart ul li > div {
+        display: block;
+        flex: 0 0 auto;
+        border-bottom: none;
+        padding: 10px 8px;
+        box-sizing: border-box;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-img {
+        flex: 0 0 76px;
+        padding-left: 12px;
+        text-align: center;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-img img {
+        display: block;
+        margin: 0 auto;
+        max-width: 56px;
+        max-height: 56px;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-offer {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-offer a {
+        display: block;
+        font-size: 13px;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-price {
+        margin-top: 4px;
+        font-size: 13px;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-quantity {
+        flex: 0 0 68px;
+        white-space: nowrap;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-qty {
+        width: 36px;
+        max-width: 36px;
+        padding: 2px 4px;
+        font-size: 12px;
+        box-sizing: border-box;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-delete {
+        flex: 0 0 44px;
+        padding-right: 12px;
+        text-align: center;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-delete a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        margin: 0 auto;
+        color: #bbb;
+    }
+
+    .nav-wrapper .header-top-bar__inner #flying-cart .flying-cart-delete a .material-icons {
+        font-size: 20px !important;
+        line-height: 1;
+    }
+
+    .nav-wrapper .header-top-bar__inner #cart .flying-cart-block {
+        padding: 0 12px;
+        line-height: 3.2em;
+        box-sizing: border-box;
+    }
+
+    .nav-wrapper .header-top-bar__inner #cart .flying-cart-block .cart-total {
+        float: right;
+        font-size: 1.25em;
     }
 
     .nav-wrapper .header-top-bar__inner #cart a.link-to-cart .material-icons {

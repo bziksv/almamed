@@ -56,21 +56,36 @@ class shopSignupEmailPolicy
         return false;
     }
 
+    public static function getNoticeHtml()
+    {
+        $email = htmlspecialchars(self::SUPPORT_EMAIL, ENT_QUOTES, 'UTF-8');
+        $phone = htmlspecialchars(self::SUPPORT_PHONE, ENT_QUOTES, 'UTF-8');
+
+        return '<div class="almamed-notice-block signup-email-policy-notice">'
+            . '<div class="almamed-notice-block__inner">'
+            . '<div class="almamed-notice-block__icon" aria-hidden="true">!</div>'
+            . '<div class="almamed-notice-block__content">'
+            . '<div class="almamed-notice-block__title">Регистрация: требования к e-mail</div>'
+            . '<div class="almamed-notice-block__text">'
+            . '<p>Регистрация на сайте доступна только с адресом электронной почты в доменных зонах <strong>.ru</strong> или <strong>.su</strong>, '
+            . 'либо на российском почтовом сервисе (например, '
+            . '<a href="https://360.yandex.ru/mail/" target="_blank" rel="noopener">Яндекс</a> или '
+            . '<a href="https://mail.ru/" target="_blank" rel="noopener">Mail.ru</a>). '
+            . 'Адреса зарубежных почтовых сервисов и доменов других зон не принимаются.</p>'
+            . '<p>Вы можете отправить нам заявку с любого почтового ящика на '
+            . '<a href="mailto:' . $email . '">' . $email . '</a>.</p>'
+            . '<p class="almamed-notice-block__legal">Данная мера применяется в соответствии с Федеральным законом от 31.07.2023 № 406-ФЗ, '
+            . 'а также в связи с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» '
+            . '(в том числе в части локализации баз данных на территории Российской Федерации).</p>'
+            . '<p>Если вы считаете, что это ошибка, позвоните нам: '
+            . '<a href="tel:88001003797">' . $phone . '</a>.</p>'
+            . '</div></div></div></div>';
+    }
+
     public static function getErrorMessage($email = '')
     {
         unset($email);
 
-        return 'Регистрация на сайте доступна только с адресом электронной почты в доменных зонах .ru или .su '
-            . 'либо на российском почтовом сервисе (например, '
-            . '<a href="https://360.yandex.ru/mail/" target="_blank" rel="noopener">Яндекс</a> или '
-            . '<a href="https://mail.ru/" target="_blank" rel="noopener">Mail.ru</a>). '
-            . 'Адреса зарубежных почтовых сервисов и доменов других зон не принимаются.<br><br>'
-            . 'Вы можете отправить нам заявку с любого почтового ящика на '
-            . '<a href="mailto:' . self::SUPPORT_EMAIL . '">' . self::SUPPORT_EMAIL . '</a>.<br><br>'
-            . 'Данная мера применяется в соответствии с Федеральным законом от 31.07.2023 № 406-ФЗ, '
-            . 'а также в связи с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» '
-            . '(в том числе в части локализации баз данных на территории Российской Федерации).<br><br>'
-            . 'Если вы считаете, что это ошибка, позвоните нам: '
-            . '<a href="tel:88001003797">' . self::SUPPORT_PHONE . '</a>.';
+        return self::getNoticeHtml();
     }
 }

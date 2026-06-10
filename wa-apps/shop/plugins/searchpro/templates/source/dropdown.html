@@ -34,9 +34,13 @@
 							</div>
 							{if $products_price_status}
 								<div class="searchpro__dropdown-entity_price-container">
-									<span class="searchpro__dropdown-entity_price">{$entity.price|shop_currency_html:$c.code}</span>
-									{if $entity.compare_price > 0 && abs($entity.compare_price - $entity.price) > 0}
-										<span class="searchpro__dropdown-entity_compare-price">{$entity.compare_price|shop_currency_html:$c.code}</span>
+									{if empty($entity.price) || $entity.price <= 0}
+										<span class="searchpro__dropdown-entity_price">Цена по запросу</span>
+									{else}
+										<span class="searchpro__dropdown-entity_price">{$entity.price|shop_currency_html:$c.code}</span>
+										{if $entity.compare_price > 0 && abs($entity.compare_price - $entity.price) > 0}
+											<span class="searchpro__dropdown-entity_compare-price">{$entity.compare_price|shop_currency_html:$c.code}</span>
+										{/if}
 									{/if}
 								</div>
 							{/if}

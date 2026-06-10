@@ -29,8 +29,12 @@
         {include file="head.layout.html" assign="html" inline}
         {if $at.speedup}
             {if preg_match_all($at.regex.l, $html, $matches) !== false && count($matches[0])}
-                {$html = str_replace($matches[0], "", $html)}
-                {$at.links = array_merge($at.links, $matches[0])}
+                {foreach $matches[0] as $link_tag}
+                    {if !preg_match($at.css_sync_pattern, $link_tag)}
+                        {$html = str_replace($link_tag, "", $html)}
+                        {$at.links[] = $link_tag}
+                    {/if}
+                {/foreach}
             {/if}
             {if preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
                 {foreach $matches[0] as $script}
@@ -148,8 +152,12 @@
             {include file="`$wa_active_theme_path`/main.html" assign="html" inline}
             {if $at.speedup}
                 {if preg_match_all($at.regex.l, $html, $matches) !== false && count($matches[0])}
-                    {$html = str_replace($matches[0], "", $html)}
-                    {$at.links = array_merge($at.links, $matches[0])}
+                    {foreach $matches[0] as $link_tag}
+                        {if !preg_match($at.css_sync_pattern, $link_tag)}
+                            {$html = str_replace($link_tag, "", $html)}
+                            {$at.links[] = $link_tag}
+                        {/if}
+                    {/foreach}
                 {/if}
                 {if preg_match_all($at.regex.s, $html, $matches) !== false && count($matches[0])}
                     {foreach $matches[0] as $script}
@@ -160,6 +168,25 @@
                     {/foreach}
                 {/if}
             {/if}{$html}
+
+{if $at.speedup && !empty($at.links)}
+        <script type="text/javascript">
+            ;(function(d){
+                var t = {json_encode($at.links)},
+                    df = d.createDocumentFragment();
+                t.forEach(function(e) {
+                    var n = d.createElement('div');
+                    n.innerHTML = e;
+                    e = n.firstChild;
+                    if (e) {
+                        df.appendChild(e);
+                    }
+                });
+                d.getElementsByTagName('head')[0].appendChild(df);
+            })(document);
+        </script>
+        {$at.links = []}
+{/if}
         </div>
     </main>
 
@@ -360,24 +387,7 @@
         </div>
     </div>
 
-{if $at.speedup}
-        <script type="text/javascript">
-            ;(function(d){
-
-                var t = {json_encode($at.links)},
-                    df = d.createDocumentFragment();
-
-                t.forEach(function(e) {
-                    var t = d.createElement('div');
-                    t.innerHTML = e;
-                    e = t.firstChild;
-                    df.appendChild(e);
-                });
-
-                d.getElementsByTagName('head')[0].appendChild(df);
-
-            })(document);
-        </script>
+    {if $at.speedup && !empty($at.scripts)}
         {foreach $at.scripts as $script}{$script}{/foreach}
     {/if}
 	{*$html = null}{$at.links = null}{$at.scripts = null*}

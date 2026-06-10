@@ -19,10 +19,89 @@
     {else}
 
         <h1>[s`Sign up`]</h1>
+
         {$wa->authAdapters()}
         {$wa->signupForm($errors)}
 
     <style>
+        .almamed-notice-block {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3d6 100%);
+            border-left: 4px solid #ff9800;
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .wa-signup-form-wrapper .wa-field-email .signup-email-policy-notice {
+            margin-top: 10px;
+        }
+
+        .almamed-notice-block__inner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .almamed-notice-block__icon {
+            flex-shrink: 0;
+            background: #ff9800;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .almamed-notice-block__content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .almamed-notice-block__title {
+            font-weight: 600;
+            color: #e65100;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .almamed-notice-block__text {
+            color: #5a5a5a;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .almamed-notice-block__text p {
+            margin: 0 0 10px;
+        }
+
+        .almamed-notice-block__text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .almamed-notice-block__text strong {
+            color: #e65100;
+        }
+
+        .almamed-notice-block__legal {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .almamed-notice-block__text a {
+            color: #006bd8;
+            text-decoration: none;
+        }
+
+        .almamed-notice-block__text a:hover {
+            text-decoration: underline;
+        }
+
         #page.wa-signup-form {
             margin-top: 1rem !important;
             margin-bottom: 1.25rem !important;
@@ -117,11 +196,11 @@
         }
 
         .wa-signup-form-wrapper .wa-field-terms-accepted a,
-        .wa-signup-form-wrapper .wa-field-email .wa-error-msg a {
+        .almamed-notice-block__text a {
             color: #006bd8;
         }
 
-        .wa-signup-form-wrapper .wa-field-email .wa-error-msg {
+        .wa-signup-form-wrapper .wa-field-email .wa-error-msg:not(.signup-email-policy-notice) {
             display: block;
             max-width: 100%;
             margin-top: 8px;
@@ -178,19 +257,49 @@
                 return isRuProviderDomain(domain);
             }
 
-            function getEmailPolicyError() {
-                return 'Регистрация на сайте доступна только с адресом электронной почты в доменных зонах .ru или .su '
+            function buildEmailPolicyNotice() {
+                return '<div class="almamed-notice-block signup-email-policy-notice">'
+                    + '<div class="almamed-notice-block__inner">'
+                    + '<div class="almamed-notice-block__icon" aria-hidden="true">!</div>'
+                    + '<div class="almamed-notice-block__content">'
+                    + '<div class="almamed-notice-block__title">Регистрация: требования к e-mail</div>'
+                    + '<div class="almamed-notice-block__text">'
+                    + '<p>Регистрация на сайте доступна только с адресом электронной почты в доменных зонах <strong>.ru</strong> или <strong>.su</strong>, '
                     + 'либо на российском почтовом сервисе (например, '
                     + '<a href="https://360.yandex.ru/mail/" target="_blank" rel="noopener">Яндекс</a> или '
                     + '<a href="https://mail.ru/" target="_blank" rel="noopener">Mail.ru</a>). '
-                    + 'Адреса зарубежных почтовых сервисов и доменов других зон не принимаются.<br><br>'
-                    + 'Вы можете отправить нам заявку с любого почтового ящика на '
-                    + '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.<br><br>'
-                    + 'Данная мера применяется в соответствии с Федеральным законом от 31.07.2023 № 406-ФЗ, '
+                    + 'Адреса зарубежных почтовых сервисов и доменов других зон не принимаются.</p>'
+                    + '<p>Вы можете отправить нам заявку с любого почтового ящика на '
+                    + '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.</p>'
+                    + '<p class="almamed-notice-block__legal">Данная мера применяется в соответствии с Федеральным законом от 31.07.2023 № 406-ФЗ, '
                     + 'а также в связи с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» '
-                    + '(в том числе в части локализации баз данных на территории Российской Федерации).<br><br>'
-                    + 'Если вы считаете, что это ошибка, позвоните нам: '
-                    + '<a href="tel:88001003797">' + SUPPORT_PHONE + '</a>.';
+                    + '(в том числе в части локализации баз данных на территории Российской Федерации).</p>'
+                    + '<p>Если вы считаете, что это ошибка, позвоните нам: '
+                    + '<a href="tel:88001003797">' + SUPPORT_PHONE + '</a>.</p>'
+                    + '</div></div></div></div>';
+            }
+
+            function getEmailPolicyError() {
+                return buildEmailPolicyNotice();
+            }
+
+            function isEmailPolicyErrorMessage(message) {
+                if (typeof message !== 'string') {
+                    return false;
+                }
+                return message.indexOf('406-ФЗ') !== -1
+                    || message.indexOf('152-ФЗ') !== -1
+                    || message.indexOf('зарубежных') !== -1
+                    || message.indexOf('signup-email-policy-notice') !== -1;
+            }
+
+            function showEmailPolicyNotice($input, html) {
+                if (!$input || !$input.length) {
+                    return;
+                }
+                $input.addClass('wa-error');
+                $input.parent().find('.wa-error-msg, .signup-email-policy-notice').remove();
+                $input.after($(html || buildEmailPolicyNotice()));
             }
 
             function wrapAgreementText() {
@@ -243,12 +352,16 @@
                     var emailHtml = null;
 
                     if (all_errors && all_errors.email) {
-                        if (typeof all_errors.email === 'string' && all_errors.email.indexOf('<a ') !== -1) {
-                            emailHtml = all_errors.email;
+                        if (typeof all_errors.email === 'string' && isEmailPolicyErrorMessage(all_errors.email)) {
+                            emailHtml = all_errors.email.indexOf('signup-email-policy-notice') !== -1
+                                ? all_errors.email
+                                : buildEmailPolicyNotice();
                         } else if ($.isPlainObject(all_errors.email)) {
                             $.each(all_errors.email, function(_, message) {
-                                if (typeof message === 'string' && message.indexOf('<a ') !== -1) {
-                                    emailHtml = message;
+                                if (isEmailPolicyErrorMessage(message)) {
+                                    emailHtml = (typeof message === 'string' && message.indexOf('signup-email-policy-notice') !== -1)
+                                        ? message
+                                        : buildEmailPolicyNotice();
                                     return false;
                                 }
                             });
@@ -261,8 +374,7 @@
                         var $input = this.getFormInput('email');
                         if ($input.length) {
                             $input.addClass(this.classes.error_input);
-                            $input.parent().find('.' + this.classes.error_msg).remove();
-                            $input.after($('<em class="wa-error-msg signup-email-policy-error"></em>').html(emailHtml));
+                            showEmailPolicyNotice($input, emailHtml);
                         }
                     }
                 };
@@ -292,9 +404,23 @@
                 }, 50);
             }
 
+            function upgradeServerEmailPolicyError() {
+                var $field = $('.wa-field-email');
+                var $input = $field.find('input[name="data[email]"]');
+                var $msg = $field.find('.wa-error-msg').not('.signup-email-policy-notice');
+                if (!$msg.length || $field.find('.signup-email-policy-notice').length) {
+                    return;
+                }
+                var content = ($msg.html() || '') + ($msg.text() || '');
+                if (isEmailPolicyErrorMessage(content)) {
+                    showEmailPolicyNotice($input, buildEmailPolicyNotice());
+                }
+            }
+
             wrapAgreementText();
             $(document).on('wa_auth_form_loaded', '.wa-signup-form-wrapper', wrapAgreementText);
             setTimeout(wrapAgreementText, 100);
+            upgradeServerEmailPolicyError();
 
         })(jQuery);
     </script>

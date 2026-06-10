@@ -8,6 +8,7 @@
 
 {* css *}
 <link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
+{if $wa->shop}<link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>{/if}
 {$wa->css()} {* links active plugins CSS *}
 
 {* js *}
@@ -23,29 +24,8 @@
 
 {$wa->head()} {* links Google Analytics tracking code, site's custom JS (defined in Site app settings), and meta data such as Open Graph data *}
 
-{* theme & user CSS *}
+{* theme & user CSS — всегда inline в head, иначе speedup уносит в footer и FOUC *}
 {include file="theme.css.html" assign="theme_css" inline}
-{if $at.speedup}
-<script id="at-theme-css">
-;( function (d) {
-    
-    var t = d.createElement('div'),
-        df = d.createDocumentFragment();
-    
-    t.innerHTML = {json_encode($theme_css)};
-    t = t.childNodes;
-    t = Array.prototype.slice.call(t);
-
-    t.forEach( function (e) {
-        df.appendChild(e);
-    });
-    
-    d.getElementsByTagName('head')[0].appendChild(df);
-    var s = d.getElementById('at-theme-css');
-    s.parentNode.removeChild(s);
-    
-})(document);
-</script>
-{else}{$theme_css}{/if}
+{$theme_css}
 
 {/strip}
