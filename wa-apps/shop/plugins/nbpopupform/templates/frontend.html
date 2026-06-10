@@ -1,6 +1,6 @@
 <input type="submit" class="nb-open-form" value="{$form.name}" />
 
-<script type="text/javascript" src="/wa-data/public/shop/themes/profitbuy/jquery.maskinput.js"></script>
+<script type="text/javascript" src="{$wa_active_theme_url}jquery.maskinput.js"></script>
 
 <div class="nb-popup-form">
 
@@ -12,7 +12,7 @@
             <textarea name="{$field.names}" {if $field.required}required{/if}></textarea>
         {elseif $field.type == "checkbox"}
             <input type="{$field.type}" name="{$field.names}" checked {if $field.required}required{/if}>
-            <span>Нажимая на эту кнопку , я даю свое согласие на <a href="/rules/personal.pdf">обработку персональных данных</a> и соглашаюсь с условиями <a href="/rules/user_yes.pdf">политики конфиденциальности</a></span>
+            <span>Нажимая на эту кнопку , я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.</span>
         {else}
             <label>{$field.names}</label>
             <input type="{$field.type}" {if $key == 1}id="phone-mask"{/if} name="{$field.names}" {if $field.required}required{/if}>

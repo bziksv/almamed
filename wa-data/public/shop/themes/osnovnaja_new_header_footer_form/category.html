@@ -1,10 +1,25 @@
 {strip}
 
-<div class="fill-background">
-    {shopBreadcrumbsViewHelper::getBreadcrumbs()}
-</div>
-
 <style>
+    .category-page-header .breadcrumbs {
+        margin-bottom: 0.5rem;
+        padding: 0;
+    }
+
+    .category-page-header .title_h1.category-name {
+        margin: 0 0 1rem;
+        font-size: 1.75em;
+        line-height: 1.25;
+    }
+
+    .category-page-header .piicsl {
+        margin-bottom: 0;
+    }
+
+    .category-page-header > :last-child {
+        margin-bottom: 0;
+    }
+
     .sub-links-2 {
         font-size: 14px;
         font-weight: 500;
@@ -202,7 +217,9 @@
 {if $field = shopCustom::getSeoField($category, 'category')}
     {$category.seo_name = $field.h1}
 {/if}
-<div class="fill-background">
+<div class="fill-background category-page-header">
+    {shopBreadcrumbsViewHelper::getBreadcrumbs()}
+
 	{if isset($category.params.h1) && $category.params.h1}
 	<h1 class="title_h1 category-name">
 		{if $category.seo_name}
@@ -235,12 +252,27 @@
 
     <!-- subcategories -->
     {if 1 && $category.subcategories}{* PLUGIN WMIMAGEINCAT: replace 0 to 1 to enable *}
+        {if class_exists('shopSeoViewHelper')}
+            {$_subcat_seo_names = shopSeoViewHelper::getCategorySeoNamesByIds(array_keys($category.subcategories))}
+        {else}
+            {$_subcat_seo_names = []}
+        {/if}
+        {if waRequest::get('brend')}
+            {$_subcat_filter_map = shopCustom::subcategoriesFiltersByIds(array_keys($category.subcategories))}
+        {else}
+            {$_subcat_filter_map = []}
+        {/if}
         <ul class="piicsl">
             {foreach $category.subcategories as $sc}
-            {$sc = shopSeoViewHelper::extendCategory($sc)}
 
-                {if waRequest::get('brend') && !shopCustom::subcategoriesFilters($sc.id) || isset($sc.params.menu) || isset($sc.params.cat)}
+                {if waRequest::get('brend') && empty($_subcat_filter_map[$sc.id]) || isset($sc.params.menu) || isset($sc.params.cat)}
                     {continue}
+                {/if}
+
+                {if isset($_subcat_seo_names[$sc.id])}
+                    {$sc.seo_name = $_subcat_seo_names[$sc.id]}
+                {else}
+                    {$sc.seo_name = $sc.name}
                 {/if}
 
                 <li class="piicsl-item">

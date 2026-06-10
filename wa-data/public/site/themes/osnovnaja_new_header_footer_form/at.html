@@ -60,19 +60,26 @@
 
 {* MENU *}
 {*$selected = ( strlen($menu.url) > 1 && $wa->currentUrl()|strstr:$menu.url )*}
-{function renderMenuItem menu=[] icon=[] selected=null exclude=null}
-    {if !$exclude || empty($menu[$exclude]) && empty($menu['params'][$exclude])}
+{function renderMenuItem menu=[] icon=[] selected=null exclude=null show_cat_icons=false depth=0}
+    {if !$exclude || empty($menu[$exclude]) && empty($menu['params'][$exclude]) && empty($menu.params.bm)}
         <li class="{if $selected == $menu.id}selected{/if} {if !empty($menu.childs)}parent{/if}">
             <a href="{$menu.url}">
-                {if !empty($icon[$menu.id]) && !empty($icon[$menu.id].icon)}
+                {if $show_cat_icons && $depth == 0}
+                    {$cat_slug = shopCustom::getCategoryUrlSlug($menu.url)}
+                    <span class="cat-menu-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false">
+                            <use href="#cat-{$cat_slug}" xlink:href="#cat-{$cat_slug}"></use>
+                        </svg>
+                    </span>
+                {elseif !empty($icon[$menu.id]) && !empty($icon[$menu.id].icon)}
                     <img class="plugin-imageincat-img" src="{$icon[$menu.id].icon}" alt="" />
                 {/if}
                 {$menu.name}
             </a>
-            {if !empty($menu.childs)}
+            {if !empty($menu.childs) && empty($menu.params.bm)}
                 <ul>
                     {foreach $menu.childs as $submenu}
-                        {renderMenuItem menu=$submenu icon=$icon selected=$selected exclude=$exclude}
+                        {renderMenuItem menu=$submenu icon=$icon selected=$selected exclude=$exclude show_cat_icons=$show_cat_icons depth=$depth+1}
                     {/foreach}
                 </ul>
             {/if}

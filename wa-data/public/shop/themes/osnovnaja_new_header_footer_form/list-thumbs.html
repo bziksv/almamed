@@ -97,19 +97,34 @@
 {if !empty($theme_settings.scroll_image)}
     {$_images = $wa->shop->images(array_keys($products), '200')}
 {/if}
+{if !empty($products)}
+    {$_list_product_params = shopCustom::getProductParamsByIds(array_keys($products))}
+    {$_seo_list_url = $wa->currentUrl()}
+    {if class_exists('shopSeoViewHelper')}
+        {$_list_seo_names = shopSeoViewHelper::getProductSeoNamesByIds(array_keys($products))}
+    {else}
+        {$_list_seo_names = []}
+    {/if}
+{else}
+    {$_list_product_params = []}
+    {$_list_seo_names = []}
+{/if}
 
 {foreach from=$products item=p name=products}
 	{$index = $smarty.foreach.products.index}
-    {$p = shopSeoViewHelper::extendProduct($p)}
+	
+	{if isset($_list_seo_names[$p.id])}
+		{$p.seo_name = $_list_seo_names[$p.id]}
+	{else}
+		{$p.seo_name = $p.name}
+	{/if}
 	
 	{if !empty($p.list_name)}
 		{$p.seo_name = $p.list_name}
 	{/if}
 	
-	{$prod = $wa->shop->product($p.id)}
-	
-	{if array_key_exists($wa->currentUrl(), $prod.params)}
-		{$p.seo_name = $prod.params[$wa->currentUrl()]}
+	{if isset($_list_product_params[$p.id][$_seo_list_url])}
+		{$p.seo_name = $_list_product_params[$p.id][$_seo_list_url]}
 	{/if}
 	
     {$available = $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}

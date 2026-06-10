@@ -455,9 +455,82 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 		$this->categories = $categories;
 	}
 
+	protected function getSearchGetParamsForCache()
+	{
+		$params = waRequest::get();
+		foreach(array('query', 'page', 'sort', 'order') as $k) {
+			unset($params[$k]);
+		}
+
+		return $params;
+	}
+
+	protected function hasSearchGetFilters()
+	{
+		return count($this->getSearchGetParamsForCache()) > 0;
+	}
+
+	protected function getPageCacheTtl()
+	{
+		return (int) $this->getSettings('page_results_cache');
+	}
+
+	protected function getPageSerializeCache($key)
+	{
+		return new waSerializeCache($key, $this->getPageCacheTtl(), 'shop/searchpro');
+	}
+
+	protected function getCategoriesCacheKey()
+	{
+		if(!$this->getCategoryStatus() || $this->getPageCacheTtl() <= 0) {
+			return null;
+		}
+
+		$parts = array(
+			$this->query,
+			$this->category_id,
+			$this->getEnv()->getCurrentStorefront(),
+			md5(json_encode($this->getSearchGetParamsForCache())),
+			(string) $this->getCategoryInlineModeStyle(),
+			(string) $this->getCategoryImage(),
+		);
+
+		return md5(implode('|', $parts));
+	}
+
+	protected function getPageHtmlCacheKey()
+	{
+		if($this->isEmpty() || $this->getPageCacheTtl() <= 0) {
+			return null;
+		}
+
+		if(waRequest::get('page', 1, 'int') > 1 || $this->hasSearchGetFilters()) {
+			return null;
+		}
+
+		$parts = array(
+			$this->query,
+			$this->category_id,
+			(string) waRequest::get('sort', ''),
+			(string) waRequest::get('order', ''),
+		);
+
+		return md5(implode('|', $parts));
+	}
+
 	protected function getCategories()
 	{
 		if(!isset($this->categories)) {
+			$cache_key = $this->getCategoriesCacheKey();
+			if($cache_key) {
+				$cache = $this->getPageSerializeCache('page_cats_' . $cache_key);
+				if($cache->isCached()) {
+					$this->categories = $cache->get();
+
+					return $this->categories;
+				}
+			}
+
 			$collection = $this->getAction()->getFilteredCollection();
 
 			$hash_params = $collection->getHash();
@@ -490,28 +563,52 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 			if ($categories_search_collection)
 			{
-				// todo поправить: если товаров очень много, то getCollectionCategories может базу положить
-				$categories = $this->getUtil()->getCollectionCategories($categories_search_collection);
+				$category_product_ids = null;
+				if(is_array($product_ids) && $product_ids && !$this->hasSearchGetFilters()) {
+					$category_product_ids = array_slice($product_ids, 0, 600);
+				}
+
+				if($category_product_ids) {
+					$categories = $this->getUtil()->getCategoriesByProductIds($category_product_ids);
+				} else {
+					// todo поправить: если товаров очень много, то getCollectionCategories может базу положить
+					$categories = $this->getUtil()->getCollectionCategories($categories_search_collection);
+				}
 			}
 
 			$is_category_image = false;
+			$category_image_view = null;
+			$category_image = '';
 			$category_inline_mode_style = $this->getCategoryInlineModeStyle();
 			if($category_inline_mode_style) {
 				$category_image = $this->getCategoryImage();
-				$category_image_view = $this->getFrontend()->createView();
-
-				$is_category_image = true;
+				if($category_image) {
+					$category_image_view = $this->getFrontend()->createView();
+					$is_category_image = true;
+				}
 			}
 
 			$current_storefront = $this->getEnv()->getCurrentStorefront();
 			$existing_category_names = array();
+			$category_ids = array();
+			foreach($categories as $category) {
+				if($category && !empty($category['id'])) {
+					$category_ids[] = (int) $category['id'];
+				}
+			}
+			$routes_by_category = $category_ids
+				? $this->getCategoryRoutesModel()->getRoutes($category_ids)
+				: array();
+
 			foreach($categories as $key => &$category) {
 				if(!$category) {
 					unset($categories[$key]);
 					continue;
 				}
 
-				$routes = $this->getCategoryRoutesModel()->getRoutes($category['id']);
+				$routes = isset($routes_by_category[$category['id']])
+					? $routes_by_category[$category['id']]
+					: array();
 
 				if(!empty($routes) && !in_array($current_storefront, $routes)) {
 					unset($categories[$key]);
@@ -533,14 +630,38 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 					$category['image'] = @$category_image_view->fetch("string:$category_image");
 				}
 			}
+			unset($category);
 
 			foreach($existing_category_names as $name => $ids) {
-				if(count($ids) > 1)
-					foreach($ids as $id)
+				if(count($ids) > 1) {
+					foreach($ids as $id) {
 						$categories[$id]['existing_name'] = true;
+					}
+				}
+			}
+
+			$parent_ids = array();
+			foreach($categories as $category) {
+				if(!empty($category['parent_id'])) {
+					$parent_ids[(int) $category['parent_id']] = true;
+				}
+			}
+			if($parent_ids) {
+				$parent_categories = (new shopCategoryModel())->getById(array_keys($parent_ids));
+				foreach($categories as &$category) {
+					$parent_id = (int) ifset($category, 'parent_id', 0);
+					if($parent_id && isset($parent_categories[$parent_id])) {
+						$category['parent_name'] = $parent_categories[$parent_id]['name'];
+					}
+				}
+				unset($category);
 			}
 
 			sort($categories);
+
+			if($cache_key) {
+				$this->getPageSerializeCache('page_cats_' . $cache_key)->set($categories);
+			}
 
 			$this->categories = $categories;
 		}
@@ -758,7 +879,19 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 	 */
 	protected function getInitialContent()
 	{
+		$cache_key = $this->getPageHtmlCacheKey();
+		if($cache_key) {
+			$cache = $this->getPageSerializeCache('page_html_' . $cache_key);
+			if($cache->isCached()) {
+				return $cache->get();
+			}
+		}
+
 		$initial_content = $this->getAction()->display(false);
+
+		if($cache_key && $initial_content !== '') {
+			$this->getPageSerializeCache('page_html_' . $cache_key)->set($initial_content);
+		}
 
 		return $initial_content;
 	}

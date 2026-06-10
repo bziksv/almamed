@@ -164,6 +164,10 @@
 	user-select: none;
 	position: relative;
 	z-index: 1100;
+	color: #fff;
+}
+.searchpro__field .searchpro__field-button-container .searchpro__field-button .material-icons {
+	color: #fff;
 }
 .searchpro__field
 	.searchpro__field-container.js-searchpro__field-container--focus

@@ -1,0 +1,58 @@
+/* Sidebar category menu — themed SVG icons */
+
+.sidebar-group .sidebar-box > .base-menu > li > a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    white-space: normal;
+    line-height: 1.35;
+    text-overflow: unset;
+    overflow: visible;
+}
+
+.cat-menu-icon {
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 11px;
+    background: rgba(25, 167, 204, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cat-menu-icon svg {
+    width: 34px;
+    height: 34px;
+    display: block;
+    color: #19A7CC;
+}
+
+.cat-menu-icon svg [stroke] {
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.cat-menu-icon svg [fill]:not([fill="none"]) {
+    fill: currentColor;
+}
+
+.sidebar-group .sidebar-box > .base-menu > li > a:hover .cat-menu-icon,
+.sidebar-group .sidebar-box > .base-menu > li.selected > a .cat-menu-icon {
+    background: #19A7CC;
+    box-shadow: 0 2px 8px rgba(25, 167, 204, 0.35);
+    color: #fff;
+}
+
+.sidebar-group .sidebar-box > .base-menu > li > a:hover .cat-menu-icon svg,
+.sidebar-group .sidebar-box > .base-menu > li.selected > a .cat-menu-icon svg {
+    color: #fff;
+}
+
+.sidebar-group .sidebar-box > .base-menu > li > a:hover .cat-menu-icon svg [fill="#19A7CC"],
+.sidebar-group .sidebar-box > .base-menu > li.selected > a .cat-menu-icon svg [fill="#19A7CC"] {
+    fill: rgba(255, 255, 255, 0.25);
+}

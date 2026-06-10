@@ -190,6 +190,16 @@ class shopFormPlugin extends shopPlugin
                     margin-left: 0;
                 }
             }
+
+            .wa-form .wa-field .at-stylize-label {
+                float: left;
+            }
+
+            .wa-form .wa-field span.obr {
+                display: block;
+                margin-left: 35px;
+                overflow: hidden;
+            }
         </style>
 
     <?
@@ -257,13 +267,11 @@ class shopFormPlugin extends shopPlugin
                         <div class="wa-field <?=($val['required']) ? "wa-required" : ""?>">
 
                             <label class="at-stylize-label">
-                                <input id="tm-license-agreement" name="<?=$val['name']?>" value="Y" class="agreement at-stylize-input" type="checkbox" checked="ckecked"/>
+                                <input id="form-app-license-agreement" name="<?=$val['name']?>" value="Y" class="agreement at-stylize-input" type="checkbox" autocomplete="off"/>
                                 <span class="at-stylize-box"></span>
                             </label>
                             <span class="obr wa-required">
-                                Нажимая на эту кнопку , я даю свое согласие на
-                                <a href="/rules/personal.pdf">обработку персональных данных</a>
-                                и соглашаюсь с условиями <a href="/rules/user_yes.pdf">политики конфиденциальности</a>
+                                Нажимая на эту кнопку , я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.
                             </span>
 
                         </div>
@@ -281,6 +289,16 @@ class shopFormPlugin extends shopPlugin
             </form>
         </div>
 
+        <script type="text/javascript">
+            ;(function($) { 'use strict';
+                var $checkbox = $('#form-app-license-agreement');
+                var $submit = $('input[name="send_app"]');
+                $checkbox.prop('checked', false);
+                $checkbox.on('change', function() {
+                    $submit.prop('disabled', !$checkbox.prop('checked'));
+                }).trigger('change');
+            })(jQuery);
+        </script>
 
         <?
 

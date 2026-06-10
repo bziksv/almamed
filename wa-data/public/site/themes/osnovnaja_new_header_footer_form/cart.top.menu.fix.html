@@ -3,16 +3,13 @@
 {if $wa->shop && strpos($wa->currentUrl(), '/cart/') === false && strpos($wa->currentUrl(), '/checkout/') === false}
 {$cart_total = $wa->shop->cart->total()}
 {$cart_count = $wa->shop->cart->count()}
-<div class="col-grid">
+<div class="header-top-bar__item header-cart-col">
 
     <div id="cart"{if !$cart_total && !$cart_count} class="empty"{/if}>
     <a href="{$wa->getUrl('shop/frontend/cart')}" class="link-to-cart">
-        {*<i class="mdi-shopping_cart mdi-3x cart-count" data-count="{$cart_count}"></i>*}
-        {*Временно пока не решим вопросы с кешем <i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>*}
-		{* Эту студалить, разкоментировать выше, когда вопрос с кешем решим*}<i class="material-icons mi-3x cart-count" data-count="">&#xE8CC;</i>
+        <i class="material-icons mi-2x cart-count" data-count="{if $cart_count}{$cart_count}{/if}">&#xE8CC;</i>
                             <span class="cart-text">
                                 <strong>[`Cart`]</strong>
-                            {*Временно пока не решим вопросы с кешем    <span class="cart-total">{wa_currency_html($cart_total, $wa->shop->currency())}</span>*}
                             </span>
     </a>
     {if !empty($theme_settings.flying_cart_item)}

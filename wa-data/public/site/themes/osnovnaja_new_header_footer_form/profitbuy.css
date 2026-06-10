@@ -857,6 +857,23 @@ ul.phones-wrapper li .hint { display: none; }
     .col-grid ul.phones-wrapper li .hint { display: initial; }
 }
 @media only screen and (min-width: 993px) { .col-grid.align-center ul.phones-wrapper { padding-right: 30px; } }
+@media only screen and (min-width: 993px) {
+    .footer-line .col-grid ul.phones-wrapper li {
+        padding-left: 0;
+        white-space: nowrap;
+    }
+    .footer-line .col-grid ul.phones-wrapper li > a {
+        white-space: nowrap;
+        font-weight: 500;
+    }
+    .footer-line .col-grid ul.phones-wrapper li .hint {
+        display: block;
+        margin-top: 4px;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        color: #aaa;
+    }
+}
 /* Offline
    ------- */
 ul.offline-wrapper { margin: 0; padding: 0; }
@@ -924,6 +941,7 @@ main.maincontent {
 .paging-nav ul li { list-style: none; display: inline-block; }
 .paging-nav ul li a { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; padding: 0 10px; display: block; line-height: 38px; min-width: 38px; border-radius: 4px; border: 1px solid rgba(51, 51, 51, 0.12); margin: 0 2px; }
 .paging-nav ul li.selected a { background-color: #eee; }
+.paging-nav .brands-pagination__dots { display: inline-block; padding: 0 8px; line-height: 38px; color: rgba(0, 0, 0, 0.45); }
 @media only screen and (min-width : 993px) { .paging-nav ul li a { border: none; margin: 0; } }
 /* Base menu
    --------- */
@@ -1406,20 +1424,25 @@ i.cart-count:after {
     content: attr(data-count);
     display: block;
     position: absolute;
-    border-radius: 50%;
-    /*background-color: #f44336;*/
+    border-radius: 999px;
     color: #fff;
     top: -0.2em;
-    right: -0.2em;
-    padding: 0px 3px;
+    right: -0.35em;
+    padding: 0 5px;
     text-indent: 0;
     font-style: normal;
-    font-size: 0.875rem !important;
-    line-height: 1.5em;
+    font-size: 0.75rem !important;
+    font-weight: 700;
+    line-height: 1.45em;
     font-family: Roboto, sans-serif;
-    min-width: 1.5em;
+    min-width: 1.45em;
     text-align: center;
     box-sizing: border-box;
+}
+i.cart-count[data-count=""]:after,
+i.cart-count[data-count="0"]:after {
+    content: none;
+    display: none;
 }
 
 #cart a.link-to-cart {

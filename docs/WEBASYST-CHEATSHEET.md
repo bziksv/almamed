@@ -75,6 +75,9 @@ URL: `http://localhost:8080/webasyst/` (или prod домен).
 ## Типичные грабли (наш проект)
 
 1. **Дочерняя тема shop без index.html** — layout из site-темы; если site domain не настроен, шапка ломается.
-2. **short_open_tag** — PHP 7.2 local: Off; файлы только `<?php`.
-3. **Удалённая БД** — каждый `$wa->shop->product()` = несколько round-trip × 30ms.
-4. **rsync** — затирает local-only конфиги.
+2. **Routing alias** — `$routes['localhost:8080'] = 'almamed.su'` (строка!), не `$routes['almamed.su']` (массив).
+3. **short_open_tag** — PHP 7.2: Off; файлы только `<?php`.
+4. **Удалённая БД** — N+1 + RTT ~1s → главная 112s. Local MySQL ~1.3s.
+5. **rsync** — затирает local-only конфиги (`db.php`, routing aliases).
+6. **Prod curl** — не `127.0.0.1`, а `213.139.209.184` + `Host: almamed.su`.
+7. **git pull от root** — после `chown -R almamed.su:almamed.su`.

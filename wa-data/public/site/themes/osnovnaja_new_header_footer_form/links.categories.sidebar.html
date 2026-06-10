@@ -7,6 +7,10 @@
     {$selected = $at['shop']['selected_category']|default:null}
     {$type = $theme_settings.category_tree_sidebar_type|default:'type1'}
     
+    <link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
+    {* Inline sprite — external .svg#id in <use> breaks in Chrome *}
+    {include file="./img/category-icons.svg"}
+
     <div class="sidebar-group fill-background hide-on-med-and-down">
         <div class="sidebar-title">
             [`Categories`]
@@ -17,7 +21,7 @@
         <div class="sidebar-box">
             <ul class="base-menu {$type}">
                 {foreach $menu as $branch}
-                    {renderMenuItem menu=$branch icon=$icon selected=$selected exclude='not_sidebar'}
+                    {renderMenuItem menu=$branch icon=$icon selected=$selected exclude='not_sidebar' show_cat_icons=true depth=0}
                 {/foreach}
             </ul>
         </div>

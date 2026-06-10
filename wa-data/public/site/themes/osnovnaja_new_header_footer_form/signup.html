@@ -23,29 +23,278 @@
         {$wa->signupForm($errors)}
 
     <style>
-        .wa-field .wa-value label.at-stylize-label{
-            width: 5%;
-            float: left;
+        #page.wa-signup-form {
+            margin-top: 1rem !important;
+            margin-bottom: 1.25rem !important;
+            padding: 1.25rem 1.5rem 0.875rem !important;
+            overflow: visible;
         }
 
-        .wa-field .wa-value span.obr{
-            width: 95%;
-            float: left;
+        #page.wa-signup-form > h1 {
+            margin: 0 0 1rem !important;
+            font-size: 1.5rem !important;
+            font-weight: 500;
+            line-height: 1.3;
         }
 
+        .wa-signup-form-wrapper {
+            max-width: 100%;
+        }
+
+        .wa-signup-form-wrapper .wa-signup-form-fields .wa-field {
+            margin-top: 0.875rem;
+        }
+
+        .wa-signup-form-wrapper .wa-signup-form-fields .wa-field:first-child {
+            margin-top: 0;
+        }
+
+        .wa-signup-form-wrapper .wa-field .wa-name {
+            display: block;
+            margin: 0 0 6px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .wa-signup-form-wrapper .wa-field .wa-value {
+            margin: 0;
+        }
+
+        .wa-signup-form-wrapper input[type="text"],
+        .wa-signup-form-wrapper input[type="email"],
+        .wa-signup-form-wrapper input[type="password"] {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin-right: 0;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted {
+            max-width: none !important;
+            margin-top: 1rem;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted .wa-value {
+            overflow: visible;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted label.at-stylize-label {
+            display: grid;
+            grid-template-columns: 22px 1fr;
+            column-gap: 10px;
+            align-items: start;
+            line-height: 1.55;
+            cursor: pointer;
+            font-size: 13px;
+            color: rgba(0, 0, 0, .87);
+            overflow: visible;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted .at-stylize-input + .at-stylize-box {
+            float: none;
+            margin: 1px 0 0;
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted .signup-agreement-text {
+            grid-column: 2;
+            grid-row: 1;
+            display: block;
+            line-height: 1.55;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted input.wa-error + .at-stylize-box {
+            box-shadow: 0 0 0 2px #f44336;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted .wa-error-msg {
+            display: block;
+            margin: 8px 0 0;
+            padding-left: 32px;
+            font-size: 13px;
+        }
+
+        .wa-signup-form-wrapper .wa-field-terms-accepted a,
+        .wa-signup-form-wrapper .wa-field-email .wa-error-msg a {
+            color: #006bd8;
+        }
+
+        .wa-signup-form-wrapper .wa-field-email .wa-error-msg {
+            display: block;
+            max-width: 100%;
+            margin-top: 8px;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+
+        .wa-signup-form-wrapper .wa-signup-form-actions {
+            margin-top: 1rem;
+        }
+
+        .wa-signup-form-wrapper .wa-signup-form-actions .wa-login-url {
+            margin-top: 0.875rem !important;
+            margin-bottom: 0 !important;
+            font-size: 13px;
+        }
     </style>
 
     <script type="text/javascript">
         ;(function($) { 'use strict';
 
-            var text = '<div class="wa-field"><div class="wa-value"><input id="tm-license-agreement" class="agreement" type="checkbox" checked="ckecked" /><span class="obr">Нажимая на эту кнопку , я даю свое согласие на <a href="/rules/personal.pdf">обработку персональных данных</a> и соглашаюсь с условиями <a href="/rules/user_yes.pdf">политики конфиденциальности</a></span></div></div>';
-            $('.wa-field-password_confirm').after(text);
-            var $checkbox = $('.agreement');
-            var $submit = $('.wa-field .wa-submit input');
-            $checkbox.on('change', function() {
-                $submit.attr('disabled', $checkbox.prop('checked') ? false : true);
-                    }).trigger('change');
+            var SUPPORT_PHONE = '8-800-100-37-97';
+            var SUPPORT_EMAIL = 'info@almamed.su';
+            var RU_PROVIDERS = [
+                'mail.ru', 'inbox.ru', 'list.ru', 'bk.ru', 'internet.ru',
+                'yandex.ru', 'ya.ru', 'yandex.com', 'yandex.by', 'yandex.kz', 'yandex.ua',
+                'rambler.ru', 'lenta.ru', 'autorambler.ru', 'ro.ru', 'pochta.ru', 'e-mail.ru', 'qip.ru', 'live.ru'
+            ];
 
+            function getEmailDomain(email) {
+                email = $.trim(email || '').toLowerCase();
+                var parts = email.split('@');
+                return parts.length > 1 ? parts.pop() : '';
+            }
+
+            function isRuProviderDomain(domain) {
+                for (var i = 0; i < RU_PROVIDERS.length; i++) {
+                    var provider = RU_PROVIDERS[i];
+                    if (domain === provider || domain.slice(-('.' + provider).length) === '.' + provider) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function isAllowedSignupEmail(email) {
+                var domain = getEmailDomain(email);
+                if (!domain) {
+                    return false;
+                }
+                if (/\.(ru|su)$/i.test(domain)) {
+                    return true;
+                }
+                return isRuProviderDomain(domain);
+            }
+
+            function getEmailPolicyError() {
+                return 'Регистрация на сайте доступна только с адресом электронной почты в доменных зонах .ru или .su '
+                    + 'либо на российском почтовом сервисе (например, '
+                    + '<a href="https://360.yandex.ru/mail/" target="_blank" rel="noopener">Яндекс</a> или '
+                    + '<a href="https://mail.ru/" target="_blank" rel="noopener">Mail.ru</a>). '
+                    + 'Адреса зарубежных почтовых сервисов и доменов других зон не принимаются.<br><br>'
+                    + 'Вы можете отправить нам заявку с любого почтового ящика на '
+                    + '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.<br><br>'
+                    + 'Данная мера применяется в соответствии с Федеральным законом от 31.07.2023 № 406-ФЗ, '
+                    + 'а также в связи с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» '
+                    + '(в том числе в части локализации баз данных на территории Российской Федерации).<br><br>'
+                    + 'Если вы считаете, что это ошибка, позвоните нам: '
+                    + '<a href="tel:88001003797">' + SUPPORT_PHONE + '</a>.';
+            }
+
+            function wrapAgreementText() {
+                $('.wa-signup-form-wrapper .wa-field-terms-accepted label').each(function() {
+                    var $label = $(this);
+                    if ($label.find('.signup-agreement-text').length) {
+                        return;
+                    }
+                    var $checkbox = $label.children('input[type="checkbox"]').first();
+                    if (!$checkbox.length) {
+                        return;
+                    }
+                    var $box = $checkbox.next('.at-stylize-box');
+                    var $keep = $checkbox.add($box);
+                    var $nodes = $label.contents().filter(function() {
+                        return $keep.index(this) === -1;
+                    });
+                    if (!$nodes.length) {
+                        return;
+                    }
+                    $nodes.wrapAll('<span class="signup-agreement-text"></span>');
+                });
+            }
+
+            function patchSignupValidate() {
+                if (!window.WaSignup || WaSignup.__signupPolicyPatched) {
+                    return !!window.WaSignup;
+                }
+                WaSignup.__signupPolicyPatched = true;
+
+                var origValidate = WaSignup.prototype.validate;
+                WaSignup.prototype.validate = function() {
+                    var errors = origValidate.call(this);
+                    var $checkbox = this.$form.find('[name="data[terms_accepted]"]');
+                    if ($checkbox.length && !$checkbox.prop('checked')) {
+                        errors.terms_accepted = this.locale.required || 'Поле обязательное';
+                    }
+
+                    var $email = this.$form.find('[name="data[email]"]');
+                    var email = $.trim($email.val() || '');
+                    if ($email.length && email && !errors.email && !isAllowedSignupEmail(email)) {
+                        errors.email = getEmailPolicyError();
+                    }
+
+                    return errors;
+                };
+
+                var origShowErrors = WaSignup.prototype.showErrors;
+                WaSignup.prototype.showErrors = function(all_errors) {
+                    var emailHtml = null;
+
+                    if (all_errors && all_errors.email) {
+                        if (typeof all_errors.email === 'string' && all_errors.email.indexOf('<a ') !== -1) {
+                            emailHtml = all_errors.email;
+                        } else if ($.isPlainObject(all_errors.email)) {
+                            $.each(all_errors.email, function(_, message) {
+                                if (typeof message === 'string' && message.indexOf('<a ') !== -1) {
+                                    emailHtml = message;
+                                    return false;
+                                }
+                            });
+                        }
+                    }
+
+                    origShowErrors.call(this, all_errors);
+
+                    if (emailHtml) {
+                        var $input = this.getFormInput('email');
+                        if ($input.length) {
+                            $input.addClass(this.classes.error_input);
+                            $input.parent().find('.' + this.classes.error_msg).remove();
+                            $input.after($('<em class="wa-error-msg signup-email-policy-error"></em>').html(emailHtml));
+                        }
+                    }
+                };
+
+                var origSubmit = WaSignup.prototype.submit;
+                WaSignup.prototype.submit = function() {
+                    var that = this,
+                        $loading = that.$wrapper.find('.wa-loading'),
+                        result = origSubmit.apply(this, arguments);
+                    if (result && typeof result.fail === 'function') {
+                        result.fail(function() {
+                            $loading.hide();
+                        });
+                    }
+                    return result;
+                };
+
+                return true;
+            }
+
+            if (!patchSignupValidate()) {
+                var attempts = 0;
+                var timer = setInterval(function() {
+                    if (patchSignupValidate() || ++attempts > 40) {
+                        clearInterval(timer);
+                    }
+                }, 50);
+            }
+
+            wrapAgreementText();
+            $(document).on('wa_auth_form_loaded', '.wa-signup-form-wrapper', wrapAgreementText);
+            setTimeout(wrapAgreementText, 100);
 
         })(jQuery);
     </script>

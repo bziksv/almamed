@@ -1,0 +1,190 @@
+/* /brands/ — productbrands grid (overrides inline template styles via #page specificity) */
+
+#page .brands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0 0 2rem;
+    padding: 4px 2px 8px;
+}
+
+#page .brands:after {
+    display: none;
+}
+
+#page .brands .item-brand {
+    box-sizing: border-box;
+    width: calc(20% - 13px);
+    min-width: 150px;
+    height: auto;
+    margin: 0;
+    display: block;
+    overflow: visible;
+    border: none;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow;
+}
+
+#page .brands .item-brand > a {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 210px;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: border-color 0.28s ease;
+}
+
+#page .brands .item-brand .img-brand {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    min-height: 130px;
+    line-height: normal;
+    padding: 18px 14px 12px;
+    background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);
+    transition: background 0.28s ease;
+}
+
+#page .brands .item-brand .img-brand img {
+    max-width: 100%;
+    max-height: 110px;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: grayscale(0.08);
+}
+
+#page .brands .item-brand .name-brand {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    height: 3.75em;
+    min-height: 3.75em;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f3f5f7;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    transition: background 0.28s ease, color 0.28s ease;
+}
+
+#page .brands .item-brand .name-brand__text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    width: 100%;
+    line-height: 1.25;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: rgba(0, 0, 0, 0.78);
+    word-break: break-word;
+    transition: color 0.28s ease;
+}
+
+#page .brands .item-brand:hover .name-brand__text {
+    color: #fff;
+}
+
+#page .brands .item-brand:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(25, 167, 204, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+#page .brands .item-brand:hover > a {
+    border-color: rgba(25, 167, 204, 0.45);
+}
+
+#page .brands .item-brand:hover .img-brand {
+    background: linear-gradient(180deg, #f0f9fc 0%, #fff 100%);
+}
+
+#page .brands .item-brand:hover .img-brand img {
+    transform: scale(1.06);
+    filter: grayscale(0);
+}
+
+#page .brands .item-brand:hover .name-brand {
+    background: #19A7CC;
+    color: #fff;
+    border-top-color: transparent;
+}
+
+#page .brands .item-brand > a:focus-visible {
+    outline: 2px solid #19A7CC;
+    outline-offset: 2px;
+}
+
+#page .brands-pagination.block.paging-nav {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+@media only screen and (max-width: 1280px) {
+    #page .brands .item-brand {
+        width: calc(25% - 12px);
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    #page .brands .item-brand {
+        width: calc(33.333% - 11px);
+    }
+}
+
+@media only screen and (max-width: 740px) {
+    #page .brands {
+        gap: 12px;
+    }
+
+    #page .brands .item-brand {
+        width: calc(50% - 6px);
+        min-width: 0;
+    }
+
+    #page .brands .item-brand:hover {
+        transform: translateY(-3px);
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    #page .brands .item-brand {
+        width: 100%;
+    }
+
+    #page .brands .item-brand > a {
+        min-height: 168px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #page .brands .item-brand,
+    #page .brands .item-brand > a,
+    #page .brands .item-brand .img-brand,
+    #page .brands .item-brand .img-brand img,
+    #page .brands .item-brand .name-brand {
+        transition: none;
+    }
+
+    #page .brands .item-brand:hover {
+        transform: none;
+    }
+
+    #page .brands .item-brand:hover .img-brand img {
+        transform: none;
+    }
+}

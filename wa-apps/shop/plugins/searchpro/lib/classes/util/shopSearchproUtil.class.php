@@ -65,25 +65,14 @@ class shopSearchproUtil
 	{
 		$from_and_where = $collection->getSQL();
 
-		$count_sql = "SELECT p.category_id, COUNT(p.id) AS count ";
-		$count_sql .= $from_and_where;
-		$count_sql .= "\nGROUP BY p.category_id";
-
-		$alias = $collection->addJoin(array(
-			'table' => 'shop_category',
-			'on' => 'p.category_id = :table.id',
-		));
-
-		$count_alias = $collection->addJoin(array(
-			'table' => " ({$count_sql} )",
-			'on' => 'p.category_id = :table.category_id',
-		));
-
-		$from_and_where = $collection->getSQL();
-
-		$sql = "SELECT {$alias}.*, {$count_alias}.count \n";
+		$sql = "SELECT c.*, cnt.cnt AS count\n";
+		$sql .= "FROM (\n";
+		$sql .= "  SELECT p.category_id, COUNT(DISTINCT p.id) AS cnt\n";
 		$sql .= $from_and_where;
-		$sql .= "\nGROUP BY p.category_id";
+		$sql .= "\n  GROUP BY p.category_id\n";
+		$sql .= ") cnt\n";
+		$sql .= "INNER JOIN shop_category c ON c.id = cnt.category_id\n";
+		$sql .= "WHERE c.status = 1";
 
 		$data = $this->getShopProductModel()->query($sql)->fetchAll('id');
 		if(!$data) {
@@ -91,6 +80,23 @@ class shopSearchproUtil
 		}
 
 		return $data;
+	}
+
+	public function getCategoriesByProductIds(array $product_ids)
+	{
+		$product_ids = array_values(array_unique(array_map('intval', $product_ids)));
+		$product_ids = array_filter($product_ids);
+		if(!$product_ids) {
+			return array();
+		}
+
+		$sql = "SELECT c.*, COUNT(DISTINCT p.id) AS count\n";
+		$sql .= "FROM shop_product p\n";
+		$sql .= "INNER JOIN shop_category c ON c.id = p.category_id\n";
+		$sql .= "WHERE p.id IN (i:ids) AND p.status = 1 AND c.status = 1\n";
+		$sql .= "GROUP BY c.id";
+
+		return $this->getShopProductModel()->query($sql, array('ids' => $product_ids))->fetchAll('id');
 	}
 
 	public function getProductsCategories($products, $params = array())
@@ -109,21 +115,18 @@ class shopSearchproUtil
 		);
 		$params = array_merge($default_params, $params);
 
+		if(empty($products)) {
+			return array();
+		}
+
+		if($params['all']) {
+			return $this->getProductsCategoriesBatch($products, $params);
+		}
+
 		if(!empty($products)) {
 			$categories = array();
 
-			if($params['all']) {
-				$sql = <<<SQL
-SELECT c.*
-	FROM {$this->getShopCategoryProductsModel()->getTableName()} AS cp
-	LEFT JOIN {$this->getShopCategoryModel()->getTableName()} AS c
-		ON cp.category_id = c.id
-	WHERE
-		cp.product_id = ?
-		AND c.status = 1
-GROUP BY c.id
-SQL;
-			} else {
+			{
 				if($params['ids']) {
 					$sql = false;
 					$product_ids = $products;
@@ -193,6 +196,58 @@ SQL;
 		}
 
 		return array();
+	}
+
+	/**
+	 * One query for all product→category links (dropdown / all=true mode).
+	 */
+	private function getProductsCategoriesBatch($products, array $params)
+	{
+		$product_ids = array();
+		foreach($products as $product) {
+			$product_ids[] = (int) $product['id'];
+		}
+		$product_ids = array_values(array_unique(array_filter($product_ids)));
+
+		if(!$product_ids) {
+			return array();
+		}
+
+		$sql = <<<SQL
+SELECT cp.product_id, c.*
+	FROM {$this->getShopCategoryProductsModel()->getTableName()} AS cp
+	LEFT JOIN {$this->getShopCategoryModel()->getTableName()} AS c
+		ON cp.category_id = c.id
+	WHERE
+		cp.product_id IN (i:ids)
+		AND c.status = 1
+SQL;
+
+		$rows = $this->getShopCategoryProductsModel()->query($sql, array('ids' => $product_ids))->fetchAll();
+		$categories = array();
+
+		foreach($rows as $row) {
+			$cat_id = (int) $row['id'];
+			if(!$cat_id) {
+				continue;
+			}
+
+			unset($row['product_id']);
+
+			if($params['workup']) {
+				if(isset($categories[$cat_id])) {
+					$categories[$cat_id]['count']++;
+					continue;
+				}
+
+				$row['relevancy'] = 1;
+				$row['count'] = 1;
+			}
+
+			$categories[$cat_id] = $row;
+		}
+
+		return $categories;
 	}
 
 	public function buildQuery($params)

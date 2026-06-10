@@ -1,16 +1,25 @@
 {strip}
 
 {if $wa->isAuthEnabled()}
-    <ul class="base-menu">
+    <ul class="base-menu header-auth-menu">
         <li{if $wa->globals('isMyAccount')} class="selected"{/if}>
             {if $wa->user()->isAuth()}
                 {if $wa->myUrl()}
-                    <a href="{$wa->myUrl()}"><i class="icon16 userpic20" style="background-image: url('{$wa->user()->getPhoto2x(20)}');"></i>[s`My account`]</a>
+                    <a href="{$wa->myUrl()}" class="header-auth-user">
+                        <img src="{$wa->user()->getPhoto2x(20)}" class="header-auth-userpic" alt="">
+                        <span class="header-auth-name">{$wa->user('firstname')|default:$wa->user('name')|escape}</span>
+                    </a>
                 {else}
-                    <span>{$wa->user('firstname')}</span>
+                    <span class="header-auth-user">
+                        <img src="{$wa->user()->getPhoto2x(20)}" class="header-auth-userpic" alt="">
+                        <span class="header-auth-name">{$wa->user('firstname')|default:$wa->user('name')|escape}</span>
+                    </span>
                 {/if}
             {else}
-                <a href="{$wa->loginUrl()}"{if !empty($theme_settings.authpopup)} class="authpopup"{/if}><i class="material-icons mi-lg">&#xE7FD;</i>[s`Log in`]</a>
+                <a href="{$wa->loginUrl()}" class="header-auth-user{if !empty($theme_settings.authpopup)} authpopup{/if}">
+                    <i class="material-icons header-auth-userpic header-auth-guest-icon">&#xE7FD;</i>
+                    <span class="header-auth-name">[s`Log in`]</span>
+                </a>
             {/if}
         </li>
     </ul>

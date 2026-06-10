@@ -58,6 +58,8 @@
 
     {/if}
 
+    {include file="header.top.css.html" inline}
+
 </head>
 <body class="{if !empty($theme_settings.show_background)}is-background{/if}{if !empty($theme_settings.volumetric)} is-volumetric{/if}">
 {if !$at.ie || $at.ie >= 9}
@@ -81,7 +83,7 @@
                         <div class="mobile-nav-button-wrapper float-right" id="cart-mobile">
                             {$cart_count = $wa->shop->cart->count()}
                             <a href="{$wa->getUrl('shop/frontend/cart')}" class="mobile-nav-button{if !$cart_count} empty{/if}">
-                            	<i class="material-icons mi-3x cart-count" data-count="{$cart_count}">&#xE8CC;</i>
+                            	<i class="material-icons mi-3x cart-count" data-count="{if $cart_count}{$cart_count}{/if}">&#xE8CC;</i>
            	     			</a>
                         </div>
                     {/if}
@@ -89,21 +91,19 @@
                 </div>
 
                 <!-- DESKTOP NAV -->
-                {include file="logo.no.text.html" assign="header0" inline}
-                {include file="links.pages.top.html" assign="header1" inline}
+                {include file="logo.no.text.html" assign="header_logo" inline}
+                {include file="links.pages.top.fix.html" assign="header1" inline}
+                {include file="links.auth.html" assign="header_auth" inline}
+                {include file="top.phone.head.html" assign="header_phone" inline}
 
-                {include file="links.auth.html" assign="header3" inline}
-                {include file="top.phone.head.html" assign="header4" inline}
-
-
-                <div class="row-grid hide-on-med-and-down header-fix-top-menu-hidden">
-                    <div class="table-grid">
-                        {if !empty($header0)}<div class="col-grid logo-menu-top-fix" style="display: none">{$header0}</div>{/if}
-                        {if !empty($header1)}<div class="col-grid link-top-not-fix">{$header1}</div>{/if}
-
+                <div class="row-grid hide-on-med-and-down header-top-bar">
+                    <div class="header-top-bar__inner">
+                        {if !empty($header_logo)}<div class="header-top-bar__item header-logo-col header-logo-col--scroll">{$header_logo}</div>{/if}
+                        {if !empty($header1)}<div class="header-top-bar__item header-links-col link-top-not-fix">{$header1}</div>{/if}
+                        {if $wa->shop}<div class="header-top-bar__item header-search-col">{include file="`$wa_active_theme_path`/searchform.html" inline}</div>{/if}
                         {include file="cart.top.menu.fix.html" inline}
-                        {if !empty($header3)}<div class="col-grid">{$header3}</div>{/if}
-                        {if !empty($header4)}<div class="col-grid h-p-grid">{$header4}</div>{/if}
+                        {if !empty($header_auth)}<div class="header-top-bar__item header-auth-col">{$header_auth}</div>{/if}
+                        {if !empty($header_phone)}<div class="header-top-bar__item header-phone-col">{$header_phone}</div>{/if}
                     </div>
                 </div>
 
@@ -326,9 +326,9 @@
 
 
 			<div class="row-grid"><div class="table-grid">
-                {if !empty($footer5)}<div class="col-grid s12" style="padding-top: 1.6rem;padding-bottom: 1.6rem;">{$footer5}</div>{/if}
-                {if !empty($footer6)}<div class="col-grid hide-on-med-and-down align-{if !empty($footer7)}center{else}right{/if}">{$footer6}</div>{/if}
-                {if !empty($footer7)}<div class="col-grid hide-on-med-and-down align-{if $footer8}center{else}right{/if}">{$footer7}</div>{/if}
+                {if !empty($footer5)}<div class="col-grid s12 max-width" style="padding-top: 1.6rem;padding-bottom: 1.6rem;">{$footer5}</div>{/if}
+                {if !empty($footer6)}<div class="col-grid min-width hide-on-med-and-down align-{if !empty($footer7)}center{else}right{/if}">{$footer6}</div>{/if}
+                {if !empty($footer7)}<div class="col-grid min-width hide-on-med-and-down align-{if $footer8}center{else}right{/if}">{$footer7}</div>{/if}
                 {if !empty($footer8)}<div class="col-grid hide-on-med-and-down align-right">{$footer8}</div>{/if}
             </div></div></div>
         </div>
@@ -346,6 +346,8 @@
 
 
     {if !empty($theme_settings.desktop_pane)}{include file="desktop.pane.html" inline}{/if}
+
+    {include file="cookie.consent.html" inline}
 
     {include file="mobile.pane.html" inline}
 

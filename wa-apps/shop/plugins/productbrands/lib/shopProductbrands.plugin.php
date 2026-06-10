@@ -14,7 +14,22 @@ class shopProductbrandsPlugin extends shopPlugin
     protected static $feature;
 
     /**
-     * @var array
+     * @var array|null Sorted brand IDs for current request (frontend list).
+     */
+    protected static $sorted_brand_ids;
+
+    /**
+     * @var array|null
+     */
+    protected static $brand_list_meta;
+
+    /**
+     * @var array|null
+     */
+    protected static $brand_counts_cache;
+
+    /**
+     * @var array|null
      */
     protected static $brands;
 
@@ -195,107 +210,280 @@ class shopProductbrandsPlugin extends shopPlugin
     public static function getBrands($with_count = null)
     {
         if (self::$brands === null) {
-            $feature = self::getFeature();
-            $products_settings = wa('shop')->getPlugin('productbrands')->getSettings('products');
-            if ($feature) {
-                $feature_model = new shopFeatureModel();
-                $brands = $feature_model->getFeatureValues($feature);
-                $product_features_model = new shopProductFeaturesModel();
-                $types = array();
-                if (wa()->getEnv() == 'frontend' && waRequest::param('type_id') && is_array(waRequest::param('type_id'))) {
-                    $types = waRequest::param('type_id');
-                }
-                if ($products_settings == 'all' || wa()->getEnv() != 'frontend') {
-                    if ($with_count) {
-                        $sql = "SELECT feature_value_id, COUNT(*) FROM " . $product_features_model->getTableName(). "
-                            WHERE feature_id = i:0 AND sku_id IS NULL
-                            GROUP BY feature_value_id";
-                        $counts = $product_features_model->query($sql, $feature['id'])->fetchAll('feature_value_id', true);
-                    } else {
-                        $counts = array();
-                    }
-                } else {
-                    $sql = "SELECT feature_value_id, COUNT(*) FROM " . $product_features_model->getTableName() . " pf
-                        JOIN shop_product p ON pf.product_id = p.id
-                        WHERE pf.feature_id = i:0 AND pf.sku_id IS NULL " . (wa()->getEnv() == 'frontend' && $products_settings == 'published' ? "AND p.status = 1 " : '') .
-                        ($types ? 'AND p.type_id IN (i:1) ' : '') .
-                        "GROUP BY pf.feature_value_id";
-                    $counts = $product_features_model->query($sql, $feature['id'], $types)->fetchAll('feature_value_id', true);
-                }
-            } else {
-                $brands = array();
-                $counts = array();
-            }
-
-            if ($brands) {
-                $brands_model = new shopProductbrandsModel();
-                $rows = $brands_model->getById(array_keys($brands));
-                if (wa()->getEnv() == 'frontend') {
-                    $brand_path = wa('shop')->getPlugin('productbrands')->getSettings('url');
-                    if ($brand_path) {
-                        $url = wa()->getRouteUrl('shop/frontend') . $brand_path. '/%BRAND%/';
-                    } else {
-                        $routing_path = wa()->getAppPath('plugins/productbrands/lib/config/routing.php', 'shop');
-                        $routing = include($routing_path);
-                        $url = wa()->getRouteUrl('shop/frontend') . 'brand/%BRAND%/';
-                        foreach ($routing as $k => $v) {
-                            if ($v == 'frontend/brand') {
-                                $url = wa()->getRouteUrl('shop/frontend') . str_replace('<brand>', '%BRAND%', $k);
-                                break;
-                            }
-                        }
-                    }
-                }
-                foreach ($brands as $id => $name) {
-                    if (wa()->getEnv() == 'frontend' && $products_settings !== 'all' && !isset($counts[$id])) {
-                        unset($brands[$id]);
-                        continue;
-                    }
-                    if (isset($rows[$id])) {
-                        $brands[$id] = $rows[$id];
-                        $brands[$id]['name'] = $name;
-                        $brands[$id]['params'] = shopProductbrandsModel::getParams($brands[$id]['params']);
-                    } else {
-                        $brands[$id] = array(
-                            'id' => $id,
-                            'name' => $name,
-                            'summary' => '',
-                            'description' => '',
-                            'image' => null,
-                            'url' => null,
-                            'filter' => '',
-                            'hidden' => 0,
-                            'params' => array()
-                        );
-                    }
-                    if (wa()->getEnv() == 'frontend') {
-                        if ($brands[$id]['hidden']) {
-                            unset($brands[$id]);
-                            continue;
-                        }
-                        $brand_url = $brands[$id]['url'] ? $brands[$id]['url'] : urlencode($name);
-                        $brands[$id]['url'] = str_replace('%BRAND%', $brand_url, $url);
-                    }
-                    $brands[$id]['count'] = isset($counts[$id]) ? $counts[$id] : 0;
-                }
-                if (wa()->appExists('mylang') && wa()->getEnv() == 'frontend') {
-                    $mylang_params = ['appId' => 'shop', 'type' => 'feature_value', 'ids' => array_keys($brands), 'format' => true];
-                    $mylang_translates = wa()->event(array('mylang', 'external_plugin_getdata'), $mylang_params);
-                    if ($mylang_translates && !empty($mylang_translates['mylang'])) {
-                        foreach ($mylang_translates['mylang'] as $t_id => $t) {
-                            if (!empty($brands[$t_id]) && !empty($t[$feature['type']])) {
-                                $brands[$t_id]['name'] = $t[$feature['type']];
-                            }
-                        }
-                    }
-                }
-            }
-            if ($brands && wa()->getSetting('sort', null, array('shop', 'productbrands'))) {
-                uasort($brands, array('shopProductbrandsPlugin', 'sortBrands'));
-            }
-            self::$brands = $brands;
+            self::$brands = self::getBrandsPage(0, null, $with_count);
         }
         return self::$brands;
+    }
+
+    /**
+     * Total number of visible brands (same filters as getBrands()).
+     *
+     * @param boolean $with_count
+     * @return int
+     */
+    public static function getBrandsCount($with_count = null)
+    {
+        return count(self::getSortedBrandIds($with_count));
+    }
+
+    /**
+     * Load one page of brands without building full in-memory list.
+     *
+     * @param int $offset
+     * @param int|null $limit null = all
+     * @param boolean $with_count
+     * @return array
+     */
+    public static function getBrandsPage($offset, $limit = null, $with_count = null)
+    {
+        $ids = self::getSortedBrandIds($with_count);
+        if ($limit !== null) {
+            $ids = array_slice($ids, $offset, $limit);
+        } elseif ($offset) {
+            $ids = array_slice($ids, $offset);
+        }
+        return self::loadBrandsByIds($ids, $with_count);
+    }
+
+    protected static function getBrandListCacheKey()
+    {
+        $parts = array(
+            wa()->getSetting('sort', null, array('shop', 'productbrands')),
+            wa('shop')->getPlugin('productbrands')->getSettings('products'),
+            wa()->getEnv(),
+        );
+        if (wa()->getEnv() == 'frontend' && waRequest::param('type_id')) {
+            $parts[] = waRequest::param('type_id');
+        }
+        $feature = self::getFeature();
+        $parts[] = $feature ? $feature['id'] : 0;
+
+        return md5(serialize($parts));
+    }
+
+    /**
+     * @param boolean $with_count
+     * @return int[]
+     */
+    protected static function getSortedBrandIds($with_count = null)
+    {
+        if (self::$sorted_brand_ids !== null) {
+            return self::$sorted_brand_ids;
+        }
+
+        if (wa()->getEnv() == 'frontend') {
+            $cache = new waSerializeCache(
+                'sorted_ids_' . self::getBrandListCacheKey(),
+                3600,
+                'shop/productbrands'
+            );
+            if ($cache->isCached()) {
+                $cached = $cache->get();
+                self::$sorted_brand_ids = $cached['ids'];
+                self::$brand_counts_cache = $cached['counts'];
+                self::$brand_list_meta = array(
+                    'names' => $cached['names'],
+                    'counts' => $cached['counts'],
+                    'feature' => self::getFeature(),
+                    'products_settings' => wa('shop')->getPlugin('productbrands')->getSettings('products'),
+                );
+                return self::$sorted_brand_ids;
+            }
+        }
+
+        $meta = self::fetchBrandListMeta($with_count);
+        $brand_names = $meta['names'];
+        $counts = $meta['counts'];
+        $products_settings = $meta['products_settings'];
+
+        self::$brand_counts_cache = $counts;
+
+        if (!$brand_names) {
+            self::$sorted_brand_ids = array();
+            return self::$sorted_brand_ids;
+        }
+
+        $hidden_ids = array();
+        if (wa()->getEnv() == 'frontend') {
+            $brands_model = new shopProductbrandsModel();
+            $hidden_ids = $brands_model->query(
+                'SELECT id FROM ' . $brands_model->getTableName() . ' WHERE hidden = 1 AND id IN (i:ids)',
+                array('ids' => array_keys($brand_names))
+            )->fetchAll(null, true);
+            $hidden_ids = array_flip($hidden_ids);
+        }
+
+        $ids = array();
+        foreach ($brand_names as $id => $name) {
+            if (wa()->getEnv() == 'frontend' && $products_settings !== 'all' && !isset($counts[$id])) {
+                continue;
+            }
+            if (wa()->getEnv() == 'frontend' && isset($hidden_ids[$id])) {
+                continue;
+            }
+            $ids[] = $id;
+        }
+
+        if ($ids && wa()->getSetting('sort', null, array('shop', 'productbrands'))) {
+            $sort_names = array();
+            foreach ($ids as $id) {
+                $sort_names[$id] = $brand_names[$id];
+            }
+            natcasesort($sort_names);
+            $ids = array_keys($sort_names);
+        }
+
+        self::$sorted_brand_ids = $ids;
+
+        if (wa()->getEnv() == 'frontend') {
+            $cache = new waSerializeCache(
+                'sorted_ids_' . self::getBrandListCacheKey(),
+                3600,
+                'shop/productbrands'
+            );
+            $cache->set(array(
+                'ids' => $ids,
+                'names' => $brand_names,
+                'counts' => $counts,
+            ));
+        }
+
+        return self::$sorted_brand_ids;
+    }
+
+    /**
+     * @param boolean $with_count
+     * @return array{names: array, counts: array, feature: array, products_settings: string}
+     */
+    protected static function fetchBrandListMeta($with_count = null)
+    {
+        if (self::$brand_list_meta !== null) {
+            return self::$brand_list_meta;
+        }
+
+        $feature = self::getFeature();
+        $products_settings = wa('shop')->getPlugin('productbrands')->getSettings('products');
+        $brand_names = array();
+        $counts = array();
+
+        if ($feature) {
+            $feature_model = new shopFeatureModel();
+            $brand_names = $feature_model->getFeatureValues($feature);
+            $product_features_model = new shopProductFeaturesModel();
+            $types = array();
+            if (wa()->getEnv() == 'frontend' && waRequest::param('type_id') && is_array(waRequest::param('type_id'))) {
+                $types = waRequest::param('type_id');
+            }
+            if ($products_settings == 'all' || wa()->getEnv() != 'frontend') {
+                if ($with_count) {
+                    $sql = "SELECT feature_value_id, COUNT(*) FROM " . $product_features_model->getTableName(). "
+                        WHERE feature_id = i:0 AND sku_id IS NULL
+                        GROUP BY feature_value_id";
+                    $counts = $product_features_model->query($sql, $feature['id'])->fetchAll('feature_value_id', true);
+                }
+            } else {
+                $sql = "SELECT feature_value_id, COUNT(*) FROM " . $product_features_model->getTableName() . " pf
+                    JOIN shop_product p ON pf.product_id = p.id
+                    WHERE pf.feature_id = i:0 AND pf.sku_id IS NULL " . (wa()->getEnv() == 'frontend' && $products_settings == 'published' ? "AND p.status = 1 " : '') .
+                    ($types ? 'AND p.type_id IN (i:1) ' : '') .
+                    "GROUP BY pf.feature_value_id";
+                $counts = $product_features_model->query($sql, $feature['id'], $types)->fetchAll('feature_value_id', true);
+            }
+        }
+
+        self::$brand_list_meta = array(
+            'names' => $brand_names,
+            'counts' => $counts,
+            'feature' => $feature,
+            'products_settings' => $products_settings,
+        );
+
+        return self::$brand_list_meta;
+    }
+
+    /**
+     * @param int[] $ids
+     * @param boolean $with_count
+     * @return array
+     */
+    protected static function loadBrandsByIds(array $ids, $with_count = null)
+    {
+        if (!$ids) {
+            return array();
+        }
+
+        $meta = self::fetchBrandListMeta($with_count);
+        $brand_names = $meta['names'];
+        $counts = self::$brand_counts_cache !== null ? self::$brand_counts_cache : $meta['counts'];
+        $feature = $meta['feature'];
+
+        if (!$feature) {
+            return array();
+        }
+
+        $brands_model = new shopProductbrandsModel();
+        $rows = $brands_model->getById($ids);
+        $brands = array();
+
+        if (wa()->getEnv() == 'frontend') {
+            $brand_path = wa('shop')->getPlugin('productbrands')->getSettings('url');
+            if ($brand_path) {
+                $url = wa()->getRouteUrl('shop/frontend') . $brand_path. '/%BRAND%/';
+            } else {
+                $routing_path = wa()->getAppPath('plugins/productbrands/lib/config/routing.php', 'shop');
+                $routing = include($routing_path);
+                $url = wa()->getRouteUrl('shop/frontend') . 'brand/%BRAND%/';
+                foreach ($routing as $k => $v) {
+                    if ($v == 'frontend/brand') {
+                        $url = wa()->getRouteUrl('shop/frontend') . str_replace('<brand>', '%BRAND%', $k);
+                        break;
+                    }
+                }
+            }
+        }
+
+        foreach ($ids as $id) {
+            if (!isset($brand_names[$id])) {
+                continue;
+            }
+            $name = $brand_names[$id];
+            if (isset($rows[$id])) {
+                $brands[$id] = $rows[$id];
+                $brands[$id]['name'] = $name;
+                $brands[$id]['params'] = shopProductbrandsModel::getParams($brands[$id]['params']);
+            } else {
+                $brands[$id] = array(
+                    'id' => $id,
+                    'name' => $name,
+                    'summary' => '',
+                    'description' => '',
+                    'image' => null,
+                    'url' => null,
+                    'filter' => '',
+                    'hidden' => 0,
+                    'params' => array()
+                );
+            }
+            if (wa()->getEnv() == 'frontend') {
+                $brand_url = $brands[$id]['url'] ? $brands[$id]['url'] : urlencode($name);
+                $brands[$id]['url'] = str_replace('%BRAND%', $brand_url, $url);
+            }
+            $brands[$id]['count'] = isset($counts[$id]) ? $counts[$id] : 0;
+        }
+
+        if ($brands && wa()->appExists('mylang') && wa()->getEnv() == 'frontend') {
+            $mylang_params = array('appId' => 'shop', 'type' => 'feature_value', 'ids' => array_keys($brands), 'format' => true);
+            $mylang_translates = wa()->event(array('mylang', 'external_plugin_getdata'), $mylang_params);
+            if ($mylang_translates && !empty($mylang_translates['mylang'])) {
+                foreach ($mylang_translates['mylang'] as $t_id => $t) {
+                    if (!empty($brands[$t_id]) && !empty($t[$feature['type']])) {
+                        $brands[$t_id]['name'] = $t[$feature['type']];
+                    }
+                }
+            }
+        }
+
+        return $brands;
     }
 
     /**

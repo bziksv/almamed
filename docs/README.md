@@ -75,7 +75,13 @@ echo wa()->getVersion('shop'), PHP_EOL;
 **almamed.su** (prod): правило `*` → **shop**, тема `osnovnaja_new_header_footer_form`.  
 Блог: `novosti/*`, `doctors/*`, `bolezn/*`, `company-news/*`, `punkty-vydachi/*`.
 
-**Локально:** alias `$routes['localhost:8080'] = $routes['almamed.su'];` в конце `routing.php`.
+**Локально:** в конце `wa-config/routing.php` — **строковые** alias (не копия массива!):
+
+```php
+$routes['localhost:8080'] = 'almamed.su';
+$routes['127.0.0.1:8080'] = 'almamed.su';
+$routes['almamed.su:8080'] = 'almamed.su';
+```
 
 Псевдонимы доменов: `'alias.ru' => 'main.ru'` — alias использует правила основного домена.
 
@@ -191,9 +197,46 @@ Local → **MySQL 8.0** на `127.0.0.1:3306`, БД `almamed_su_db`, user `almam
 ### Очистка кеша
 
 ```bash
-rm -rf wa-cache/*
-# + перезапуск start-dev.sh
+find wa-cache -mindepth 1 -delete
+# + перезапуск start-dev.sh (local) или после git pull (prod)
 ```
+
+---
+
+## Git и деплой
+
+Репозиторий: **https://github.com/bziksv/almamed** (private), ветка `main`.
+
+Подробно: **[GIT-WORKFLOW.md](GIT-WORKFLOW.md)**, prod-сервер: **[PRODUCTION.md](PRODUCTION.md)**.
+
+**Local:**
+```bash
+git add -A && git commit -m "описание" && git push origin main
+```
+
+**Prod:**
+```bash
+git pull origin main
+chown -R almamed.su:almamed.su .
+find wa-cache -mindepth 1 -delete
+```
+
+`.gitignore` пересмотрен 2026-06-10 — `wa-config/`, uploads, `.db-dump/` вне git; темы в git.
+
+---
+
+## Документация
+
+| Файл | Для кого | Содержание |
+|------|----------|------------|
+| [README.md](README.md) | все | этот файл — обзор проекта |
+| [AGENT.md](AGENT.md) | **агент Cursor** | шпаргалка, чеклисты, пути, грабли |
+| [GIT-WORKFLOW.md](GIT-WORKFLOW.md) | деплой | git local ↔ GitHub ↔ prod |
+| [PRODUCTION.md](PRODUCTION.md) | ops | IP, FastPanel, nginx, диагностика |
+| [WEBASYST-CHEATSHEET.md](WEBASYST-CHEATSHEET.md) | разработка | Webasyst API, Smarty, routing |
+| [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) | **контент/SEO** | доп. параметры категорий (plitka, rec, h1, …) |
+| [OPTIMIZATION-CHECKLIST.md](OPTIMIZATION-CHECKLIST.md) | **оптимизация** | чеклист perf, находки, статус задач |
+| `.cursor/rules/category-params.mdc` | агент | защита params категорий (always apply) |
 
 ---
 
@@ -202,6 +245,7 @@ rm -rf wa-cache/*
 | Что | Где |
 |-----|-----|
 | Кастомная логика магазина | `wa-apps/shop/lib/classes/shopCustom.class.php` |
+| Params категорий (plitka, rec, …) | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) |
 | Шаблон списка товаров (N+1) | `wa-data/public/shop/themes/.../list-thumbs.html:109` |
 | Главная витрины | `wa-data/public/shop/themes/.../home.html` |
 | Шапка (site parent) | `wa-data/public/site/themes/.../index.html` |
@@ -217,13 +261,7 @@ rm -rf wa-cache/*
   ~/Documents/projects/almamed/
 ```
 
-После rsync: восстановить `db.php`, `routing.php` alias, `router.php`, `start-dev.sh`.
-
----
-
-## Git
-
-Репозиторий инициализирован, коммитов нет. `.gitignore` — доработать (исключить `wa-cache`, `wa-log`, `wa-config/db.php`, uploads).
+После rsync: восстановить `db.php` (`cp wa-config/db.php.local wa-config/db.php`), routing aliases, `./start-dev.sh`.
 
 ---
 
@@ -240,4 +278,7 @@ rm -rf wa-cache/*
 
 | Дата | Что |
 |------|-----|
-| 2026-06-10 | Первая версия: версии, структура, routing, темы, local dev, плагины |
+| 2026-06-10 | Git: github.com/bziksv/almamed, .gitignore, prod git init |
+| 2026-06-10 | Local: nginx+php-fpm+OPcache, MySQL 8.0 local, routing fix |
+| 2026-06-10 | Дока: AGENT.md, GIT-WORKFLOW.md, PRODUCTION.md |
+| 2026-06-10 | Первая версия README: версии, структура, routing, темы, плагины |

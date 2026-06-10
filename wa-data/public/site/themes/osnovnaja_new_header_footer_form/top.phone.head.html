@@ -1,28 +1,6 @@
 <div class="head-phone">
-    <div class="phone-h"><a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}">{$theme_settings.phone_1}</a></div>
-    <div class="text-h">Многоканальная линия по РФ</div>
+    <a class="head-phone-link" href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}">
+        <div class="phone-h">{$theme_settings.phone_1}</div>
+        <div class="text-h">Многоканальная линия по РФ</div>
+    </a>
 </div>
-<style>
-
-    .h-p-grid{
-        background: #19A5CC;
-    }
-    .head-phone,
-    .head-phone .phone-h a
-    {
-        color: #FFFFFF;
-    }
-    .head-phone div{
-        white-space: nowrap;
-    }
-    .head-phone .phone-h{
-        font-size: 22px;
-        line-height: 22px;
-        margin-bottom: 5px;
-    }
-    .head-phone .text-h{
-        font-size: 13px;
-        line-height: 13px;
-    }
-
-</style>

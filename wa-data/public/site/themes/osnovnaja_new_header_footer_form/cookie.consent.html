@@ -1,0 +1,210 @@
+{strip}
+{if !waRequest::cookie('almamed_cookie_consent')}
+<div id="almamed-cookie-consent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Уведомление об использовании cookies">
+    <div class="cookie-consent__inner container">
+        <div class="cookie-consent__icon" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="9" cy="10" r="1.2" fill="currentColor"/>
+                <circle cx="14" cy="8" r="1" fill="currentColor"/>
+                <circle cx="15.5" cy="13" r="1.1" fill="currentColor"/>
+                <circle cx="10.5" cy="14.5" r="0.9" fill="currentColor"/>
+            </svg>
+        </div>
+        <p class="cookie-consent__text">
+            Мы используем cookie-файлы для персонализации рекламы и анализа посещаемости. Продолжая пользоваться сайтом, вы подтверждаете согласие на обработку персональных данных согласно <a target="_blank" rel="noopener" href="/rules/cookies-almamed.jpg">нашей политике cookies</a>.
+        </p>
+        <button type="button" class="cookie-consent__accept" id="almamed-cookie-consent-accept">Принять</button>
+    </div>
+</div>
+
+<style>
+    #almamed-cookie-consent.cookie-consent {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1002;
+        padding: 0;
+        background: rgba(255, 255, 255, 0.98);
+        border-top: 1px solid rgba(4, 151, 192, 0.18);
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+        transform: translateY(110%);
+        opacity: 0;
+        transition: transform 0.35s ease, opacity 0.35s ease;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    #almamed-cookie-consent.cookie-consent.is-visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    #almamed-cookie-consent.cookie-consent.is-hidden {
+        transform: translateY(110%);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    #almamed-cookie-consent .cookie-consent__inner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 12px;
+        box-sizing: border-box;
+    }
+
+    #almamed-cookie-consent .cookie-consent__icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(4, 151, 192, 0.1);
+        color: #0497C0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #almamed-cookie-consent .cookie-consent__text {
+        flex: 1 1 auto;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        color: rgba(0, 0, 0, 0.78);
+    }
+
+    #almamed-cookie-consent .cookie-consent__text a {
+        color: #0497C0;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    #almamed-cookie-consent .cookie-consent__text a:hover {
+        color: #036884;
+    }
+
+    #almamed-cookie-consent .cookie-consent__accept {
+        flex-shrink: 0;
+        border: none;
+        border-radius: 6px;
+        padding: 0 22px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: #fff;
+        background: #0497C0;
+        cursor: pointer;
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 2px 8px rgba(4, 151, 192, 0.35);
+    }
+
+    #almamed-cookie-consent .cookie-consent__accept:hover {
+        background: #036884;
+        box-shadow: 0 4px 12px rgba(4, 151, 192, 0.4);
+    }
+
+    #almamed-cookie-consent .cookie-consent__accept:focus {
+        outline: 2px solid rgba(4, 151, 192, 0.45);
+        outline-offset: 2px;
+    }
+
+    body.cookie-consent-pending #footer-pane {
+        display: none !important;
+    }
+
+    @media only screen and (min-width: 1201px) {
+        body.cookie-consent-pending {
+            padding-bottom: 0 !important;
+        }
+
+        body.dialog-margin #almamed-cookie-consent.cookie-consent {
+            display: none;
+        }
+    }
+
+    @media only screen and (max-width: 768px) {
+        #almamed-cookie-consent .cookie-consent__inner {
+            flex-wrap: wrap;
+            padding: 14px 12px 16px;
+        }
+
+        #almamed-cookie-consent .cookie-consent__icon {
+            width: 34px;
+            height: 34px;
+        }
+
+        #almamed-cookie-consent .cookie-consent__icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        #almamed-cookie-consent .cookie-consent__text {
+            flex: 1 1 calc(100% - 48px);
+            font-size: 12.5px;
+        }
+
+        #almamed-cookie-consent .cookie-consent__accept {
+            width: 100%;
+            margin-left: 48px;
+        }
+    }
+</style>
+
+<script>
+;(function() {
+    'use strict';
+
+    var COOKIE_NAME = 'almamed_cookie_consent';
+    var COOKIE_DAYS = 365;
+    var banner = document.getElementById('almamed-cookie-consent');
+    var button = document.getElementById('almamed-cookie-consent-accept');
+
+    if (!banner || !button) {
+        return;
+    }
+
+    function readCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    function writeCookie(name, value, days) {
+        var expires = '';
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + days * 86400000);
+            expires = '; expires=' + date.toUTCString();
+        }
+        document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/; SameSite=Lax';
+    }
+
+    if (readCookie(COOKIE_NAME) === '1') {
+        banner.parentNode && banner.parentNode.removeChild(banner);
+        return;
+    }
+
+    document.body.classList.add('cookie-consent-pending');
+
+    window.requestAnimationFrame(function() {
+        banner.classList.add('is-visible');
+    });
+
+    button.addEventListener('click', function() {
+        writeCookie(COOKIE_NAME, '1', COOKIE_DAYS);
+        document.body.classList.remove('cookie-consent-pending');
+        banner.classList.remove('is-visible');
+        banner.classList.add('is-hidden');
+        window.setTimeout(function() {
+            if (banner.parentNode) {
+                banner.parentNode.removeChild(banner);
+            }
+        }, 380);
+    });
+})();
+</script>
+{/if}
+{/strip}

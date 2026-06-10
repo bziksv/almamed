@@ -1,8 +1,16 @@
-{foreach $brands as $b}
-<div class="brand">
-    <a href="{$b.url}">{if $b.image}<img src="{$wa_url}wa-data/public/shop/brands/{$b.id}/{$b.id}{$b.image}">{else}{$b.name}{/if}</a>
-    <br>
-    {$b.summary}
+<div class="brands">
+    {foreach $brands as $b}
+    <div class="item-brand">
+        <a href="{$b.url}" title="{$b.name|escape}">
+            <div class="img-brand">
+                {if $b.image}
+                    <img src="{$wa_url}wa-data/public/shop/brands/{$b.id}/{$b.id}{$b.image}" alt="{$b.name|escape}">
+                {else}
+                    <span class="name-brand name-brand--placeholder">{$b.name|escape}</span>
+                {/if}
+            </div>
+            <div class="name-brand"><span class="name-brand__text">{$b.name|escape}</span></div>
+        </a>
+    </div>
+    {/foreach}
 </div>
-<br clear="left">
-{/foreach}

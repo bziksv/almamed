@@ -1,5 +1,7 @@
 <?php
 
+require_once wa()->getAppPath('lib/classes/shopSignupEmailPolicy.class.php', 'shop');
+
 class shopSignupAction extends waSignupAction
 {
     public function execute()
@@ -64,5 +66,17 @@ class shopSignupAction extends waSignupAction
     public function afterSignup(waContact $contact)
     {
         $contact->addToCategory($this->getAppId());
+    }
+
+    protected function validate(&$data)
+    {
+        $errors = parent::validate($data);
+
+        if (!empty($data['email']) && empty($errors['email']) && !shopSignupEmailPolicy::isAllowed($data['email'])) {
+            $errors['email'] = (array) ifset($errors['email']);
+            $errors['email']['ru_only'] = shopSignupEmailPolicy::getErrorMessage($data['email']);
+        }
+
+        return $errors;
     }
 }

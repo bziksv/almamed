@@ -272,9 +272,20 @@ class shopSearchproPluginFrontendDropdownController extends waController
 
 		$current_storefront = $env->getCurrentStorefront();
 		$category_routes_model = new shopCategoryRoutesModel();
+		$category_ids = array();
+		foreach($categories as $category) {
+			if(!empty($category['id'])) {
+				$category_ids[] = (int) $category['id'];
+			}
+		}
+		$routes_by_category = $category_ids
+			? $category_routes_model->getRoutes($category_ids)
+			: array();
 
 		foreach($categories as $key => &$category) {
-			$routes = $category_routes_model->getRoutes($category['id']);
+			$routes = isset($routes_by_category[$category['id']])
+				? $routes_by_category[$category['id']]
+				: array();
 
 			if(!empty($routes) && !in_array($current_storefront, $routes)) {
 				unset($categories[$key]);
@@ -287,6 +298,7 @@ class shopSearchproPluginFrontendDropdownController extends waController
 				}
 			}
 		}
+		unset($category);
 
 		return $categories;
 	}

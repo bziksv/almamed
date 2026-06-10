@@ -6,12 +6,6 @@
 {* flag sidebar product *}
 {$is_sidebar_product = !empty($theme_settings.sidebar_product) && !empty($theme_settings.sidebar)}
 
-<div class="fill-background">
-
- {shopBreadcrumbsViewHelper::getBreadcrumbs()}
-
-</div>
-
 {if $field = shopCustom::getSeoField($product, 'product')}
     {$product.seo_name = $field.h1}
 {/if}
@@ -22,24 +16,28 @@
 
     <div class="col-grid s12">
 
-        <div class="fill-background">
+        <div class="fill-background product-page-header">
 
-            <div class="addition-wrapper float-right">
-                <a id="product-print" href="#" class="addition-button print-add" title="[`Print`]" rel="nofollow">
-                    <i class="material-icons mi-2x">&#xE8AD;</i>
-                </a>
-                <a data-product="{$product.id}" href="#" class="addition-button compare-add{if in_array($product.id, $compare_p)} added{/if}" title="[`In comparison`]" rel="nofollow">
-                    <i class="material-icons mi-2x">&#xE01D;</i>
-                </a>
-                <a data-product="{$product.id}" href="#" class="addition-button bookmark-add{if in_array($product.id, $bookmark_p)} added{/if}" title="[`In bookmarks`]" rel="nofollow">
-                    <i class="material-icons mi-2x">&#xE838;</i>
-                </a>
+            {shopBreadcrumbsViewHelper::getBreadcrumbs()}
+
+            <div class="product-page-title-row">
+                <h1 class="product-page-title">
+                    <span itemprop="name">{$product.seo_name|escape}</span>
+                </h1>
+
+                <div class="addition-wrapper">
+                    <a id="product-print" href="#" class="addition-button print-add" title="[`Print`]" rel="nofollow">
+                        <i class="material-icons mi-2x">&#xE8AD;</i>
+                    </a>
+                    <a data-product="{$product.id}" href="#" class="addition-button compare-add{if in_array($product.id, $compare_p)} added{/if}" title="[`In comparison`]" rel="nofollow">
+                        <i class="material-icons mi-2x">&#xE01D;</i>
+                    </a>
+                    <a data-product="{$product.id}" href="#" class="addition-button bookmark-add{if in_array($product.id, $bookmark_p)} added{/if}" title="[`In bookmarks`]" rel="nofollow">
+                        <i class="material-icons mi-2x">&#xE838;</i>
+                    </a>
+                </div>
             </div>
             <a id="productheader"></a>
-
-            <h1>
-                <span itemprop="name">{$product.seo_name|escape}</span>
-            </h1>
 
         </div>
 
