@@ -1,0 +1,187 @@
+{strip}
+<style>
+@media only screen and (min-width: 993px) {
+    body.almamed-talkme-footer-mode .online-chat-root {
+        z-index: 1001 !important;
+    }
+
+    body.almamed-talkme-cookie-mode .online-chat-root {
+        z-index: 1003 !important;
+    }
+
+    body.almamed-talkme-footer-mode .online-chat-root .online-chat-trigger,
+    body.almamed-talkme-footer-mode .online-chat-root .trigger-classic,
+    body.almamed-talkme-footer-mode .online-chat-root .trigger-background {
+        height: var(--almamed-talkme-pane-height, 56px) !important;
+        min-height: var(--almamed-talkme-pane-height, 56px) !important;
+        max-height: var(--almamed-talkme-pane-height, 56px) !important;
+        box-sizing: border-box !important;
+    }
+
+    body.almamed-talkme-footer-mode .online-chat-root .trigger-classic {
+        border-radius: 0 !important;
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+    }
+}
+</style>
+
+<script>
+;(function(window, document) {
+    'use strict';
+
+    var DESKTOP_MIN = 993;
+    var FOOTER_PANE_HEIGHT = 56;
+
+    function isDesktop() {
+        return window.matchMedia('(min-width: ' + DESKTOP_MIN + 'px)').matches;
+    }
+
+    function isVisible(el) {
+        if (!el) {
+            return false;
+        }
+        var style = window.getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden';
+    }
+
+    function isCookieBannerVisible() {
+        var banner = document.getElementById('almamed-cookie-consent');
+        return !!(banner && banner.classList.contains('is-visible'));
+    }
+
+    function isFooterPaneVisible() {
+        return isVisible(document.getElementById('footer-pane'));
+    }
+
+    function getTriggerElement() {
+        var root = document.querySelector('.online-chat-root');
+        if (!root) {
+            return null;
+        }
+        return root.querySelector('.online-chat-trigger')
+            || root.querySelector('.trigger-classic')
+            || root.querySelector('[class*="trigger"]');
+    }
+
+    function getTriggerHeight() {
+        var trigger = getTriggerElement();
+        if (!trigger) {
+            return FOOTER_PANE_HEIGHT;
+        }
+        return trigger.getBoundingClientRect().height || FOOTER_PANE_HEIGHT;
+    }
+
+    function getFooterPaneHeight() {
+        var pane = document.getElementById('footer-pane');
+        if (!pane || !isFooterPaneVisible()) {
+            return FOOTER_PANE_HEIGHT;
+        }
+        return pane.offsetHeight || FOOTER_PANE_HEIGHT;
+    }
+
+    function getBottomOffset() {
+        if (!isDesktop()) {
+            return 0;
+        }
+
+        if (isCookieBannerVisible()) {
+            var accept = document.getElementById('almamed-cookie-consent-accept');
+            if (accept) {
+                var acceptRect = accept.getBoundingClientRect();
+                var triggerHeight = getTriggerHeight();
+                var acceptCenter = acceptRect.top + acceptRect.height / 2;
+                return Math.max(0, Math.round(window.innerHeight - acceptCenter - triggerHeight / 2));
+            }
+
+            var banner = document.getElementById('almamed-cookie-consent');
+            return banner ? banner.offsetHeight : 0;
+        }
+
+        if (isFooterPaneVisible()) {
+            return 0;
+        }
+
+        return 0;
+    }
+
+    function applyModes() {
+        document.body.classList.toggle('almamed-talkme-footer-mode', isDesktop() && isFooterPaneVisible() && !isCookieBannerVisible());
+        document.body.classList.toggle('almamed-talkme-cookie-mode', isDesktop() && isCookieBannerVisible());
+        document.documentElement.style.setProperty('--almamed-talkme-pane-height', getFooterPaneHeight() + 'px');
+    }
+
+    function applyTalkMePosition() {
+        if (!isDesktop()) {
+            document.body.classList.remove('almamed-talkme-footer-mode', 'almamed-talkme-cookie-mode');
+            return;
+        }
+
+        applyModes();
+
+        var offset = getBottomOffset();
+        document.documentElement.style.setProperty('--almamed-talkme-bottom', offset + 'px');
+
+        if (typeof window.TalkMe === 'function') {
+            try {
+                window.TalkMe('setTriggerPosition', 'bottom', offset);
+                window.TalkMe('setTriggerPosition', 'right', 0, true);
+            } catch (e) {}
+        }
+
+        var root = document.querySelector('.online-chat-root');
+        if (root) {
+            var container = root.querySelector('.online-chat-widget-container') || root;
+            container.style.setProperty('bottom', offset + 'px', 'important');
+        }
+    }
+
+    var scheduled = false;
+    function scheduleUpdate() {
+        if (scheduled) {
+            return;
+        }
+        scheduled = true;
+        window.requestAnimationFrame(function() {
+            scheduled = false;
+            applyTalkMePosition();
+        });
+    }
+
+    var attempts = 0;
+    var poll = window.setInterval(function() {
+        attempts += 1;
+        scheduleUpdate();
+        if (document.querySelector('.online-chat-root') || attempts > 120) {
+            window.clearInterval(poll);
+        }
+    }, 250);
+
+    window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('load', scheduleUpdate);
+
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'almamed-cookie-consent-accept') {
+            window.setTimeout(scheduleUpdate, 50);
+            window.setTimeout(scheduleUpdate, 400);
+        }
+    });
+
+    if (window.MutationObserver) {
+        var observer = new MutationObserver(scheduleUpdate);
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['class'],
+            childList: true,
+            subtree: true
+        });
+    }
+
+    var footerPane = document.getElementById('footer-pane');
+    if (footerPane) {
+        footerPane.addEventListener('mouseenter', scheduleUpdate);
+        footerPane.addEventListener('mouseleave', scheduleUpdate);
+    }
+})(window, document);
+</script>
+{/strip}
