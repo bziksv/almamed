@@ -8,36 +8,87 @@
         vertical-align: middle;
     }
 
-    #talkme-slot {
+    #footer-pane .stay-chat .almamed-chat-open {
+        display: block;
+        width: 100%;
         height: 56px;
+        margin: 0;
+        padding: 0 12px;
+        border: none;
+        background-color: #1e3a6e;
+        color: #fff;
+        font: inherit;
+        line-height: 56px;
+        text-align: center;
+        white-space: nowrap;
+        cursor: pointer;
+        box-sizing: border-box;
+        text-decoration: none;
     }
 
-    #talkme-cookie-slot {
+    #footer-pane .stay-chat .almamed-chat-open .material-icons {
+        color: #fff;
+        vertical-align: middle;
+        margin-top: -0.25em;
+        margin-right: 0.25em;
+    }
+
+    #footer-pane .stay-chat .almamed-chat-open span {
+        border-bottom: 1px solid #fff;
+    }
+
+    #footer-pane .stay-chat .almamed-chat-open:hover {
+        background-color: #162d57;
+    }
+
+    #footer-pane:hover .stay-chat .almamed-chat-open {
+        height: 64px;
+        line-height: 64px;
+    }
+
+    #almamed-cookie-consent .cookie-consent__chat {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
         height: 40px;
+        padding: 0 16px;
+        border: none;
+        border-radius: 6px;
+        background: #1e3a6e;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        box-sizing: border-box;
     }
 
-    .online-chat-root .online-chat-widget-container.almamed-talkme-docked {
-        position: fixed !important;
-        z-index: 1003 !important;
-        margin: 0 !important;
-        transform: none !important;
-        overflow: visible !important;
+    #almamed-cookie-consent .cookie-consent__chat .material-icons {
+        font-size: 18px;
+        line-height: 1;
     }
 
-    .online-chat-root .online-chat-widget-container.almamed-talkme-docked .online-chat-trigger,
-    .online-chat-root .online-chat-widget-container.almamed-talkme-docked .trigger-classic,
-    .online-chat-root .online-chat-widget-container.almamed-talkme-docked .trigger-background {
-        width: 100% !important;
-        height: 100% !important;
-        min-height: 0 !important;
-        max-height: none !important;
-        border-radius: 0 !important;
-        box-sizing: border-box !important;
+    #almamed-cookie-consent .cookie-consent__chat:hover {
+        background: #162d57;
     }
 
-    body.almamed-talkme-docked .online-chat-root .online-chat-widget-container:not(.almamed-talkme-docked) {
+    body.almamed-custom-chat .online-chat-root .online-chat-trigger,
+    body.almamed-custom-chat .online-chat-root .trigger-classic,
+    body.almamed-custom-chat .online-chat-root .trigger-round,
+    body.almamed-custom-chat .online-chat-root .trigger-background {
+        display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
+        opacity: 0 !important;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    #almamed-cookie-consent .cookie-consent__chat {
+        width: calc(100% - 48px);
+        margin-left: 48px;
     }
 }
 </style>
@@ -52,143 +103,69 @@
         return window.matchMedia('(min-width: ' + DESKTOP_MIN + 'px)').matches;
     }
 
-    function isVisible(el) {
-        if (!el) {
+    function openTalkMe() {
+        if (typeof window.TalkMe !== 'function') {
+            return;
+        }
+        try {
+            window.TalkMe('openSupport');
+            return;
+        } catch (e) {}
+        try {
+            window.TalkMe('openChatTab');
+        } catch (e2) {}
+    }
+
+    function hideNativeTrigger() {
+        if (typeof window.TalkMe !== 'function') {
             return false;
         }
-        var style = window.getComputedStyle(el);
-        return style.display !== 'none' && style.visibility !== 'hidden';
+        try {
+            window.TalkMe('hideTrigger');
+            return true;
+        } catch (e) {}
+        return false;
     }
 
-    function isCookieBannerVisible() {
-        var banner = document.getElementById('almamed-cookie-consent');
-        return !!(banner && banner.classList.contains('is-visible'));
-    }
-
-    function isFooterPaneVisible() {
-        return isVisible(document.getElementById('footer-pane'));
-    }
-
-    function getActiveSlot() {
-        if (!isDesktop()) {
-            return null;
-        }
-        if (isCookieBannerVisible()) {
-            return document.getElementById('talkme-cookie-slot');
-        }
-        if (isFooterPaneVisible()) {
-            return document.getElementById('talkme-slot');
-        }
-        return null;
-    }
-
-    function getWidgetContainer() {
-        var root = document.querySelector('.online-chat-root');
-        if (!root) {
-            return null;
-        }
-        return root.querySelector('.online-chat-widget-container') || root;
-    }
-
-    function resetDockStyles(container) {
-        container.classList.remove('almamed-talkme-docked');
-        container.style.removeProperty('left');
-        container.style.removeProperty('bottom');
-        container.style.removeProperty('width');
-        container.style.removeProperty('height');
-        container.style.removeProperty('right');
-        container.style.removeProperty('top');
-    }
-
-    function dockTalkMe() {
-        var slot = getActiveSlot();
-        var container = getWidgetContainer();
-
-        if (!container) {
+    function showNativeTrigger() {
+        if (typeof window.TalkMe !== 'function') {
             return;
         }
-
-        if (!slot) {
-            document.body.classList.remove('almamed-talkme-docked');
-            resetDockStyles(container);
-            if (typeof window.TalkMe === 'function') {
-                try {
-                    window.TalkMe('showTrigger');
-                    window.TalkMe('setTriggerPosition', 'bottom', 0);
-                    window.TalkMe('setTriggerPosition', 'right', 0, true);
-                } catch (e) {}
-            }
-            return;
-        }
-
-        if (typeof window.TalkMe === 'function') {
-            try {
-                window.TalkMe('showTrigger');
-            } catch (e) {}
-        }
-
-        document.body.classList.add('almamed-talkme-docked');
-        container.classList.add('almamed-talkme-docked');
-
-        var rect = slot.getBoundingClientRect();
-        var width = Math.max(rect.width, slot.offsetWidth || 168);
-        var height = Math.max(rect.height, slot.offsetHeight || 56);
-
-        container.style.setProperty('left', rect.left + 'px', 'important');
-        container.style.setProperty('bottom', (window.innerHeight - rect.bottom) + 'px', 'important');
-        container.style.setProperty('width', width + 'px', 'important');
-        container.style.setProperty('height', height + 'px', 'important');
-        container.style.setProperty('right', 'auto', 'important');
-        container.style.setProperty('top', 'auto', 'important');
+        try {
+            window.TalkMe('showTrigger');
+        } catch (e) {}
     }
 
-    var scheduled = false;
-    function scheduleUpdate() {
-        if (scheduled) {
+    function syncTriggerMode() {
+        if (isDesktop()) {
+            document.body.classList.add('almamed-custom-chat');
+            hideNativeTrigger();
+        } else {
+            document.body.classList.remove('almamed-custom-chat');
+            showNativeTrigger();
+        }
+    }
+
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.almamed-chat-open');
+        if (!btn) {
             return;
         }
-        scheduled = true;
-        window.requestAnimationFrame(function() {
-            scheduled = false;
-            dockTalkMe();
-        });
-    }
+        e.preventDefault();
+        openTalkMe();
+    });
 
     var attempts = 0;
     var poll = window.setInterval(function() {
         attempts += 1;
-        scheduleUpdate();
-        if (document.querySelector('.online-chat-root') || attempts > 120) {
+        syncTriggerMode();
+        if (typeof window.TalkMe === 'function' || attempts > 120) {
             window.clearInterval(poll);
         }
     }, 250);
 
-    window.addEventListener('resize', scheduleUpdate);
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('load', scheduleUpdate);
-
-    document.addEventListener('click', function(e) {
-        if (e.target && e.target.id === 'almamed-cookie-consent-accept') {
-            window.setTimeout(scheduleUpdate, 50);
-            window.setTimeout(scheduleUpdate, 450);
-        }
-    });
-
-    if (window.MutationObserver) {
-        var observer = new MutationObserver(scheduleUpdate);
-        observer.observe(document.body, {
-            attributes: true,
-            attributeFilter: ['class'],
-            childList: true,
-            subtree: true
-        });
-    }
-
-    var footerPane = document.getElementById('footer-pane');
-    if (footerPane) {
-        footerPane.addEventListener('mouseenter', scheduleUpdate);
-        footerPane.addEventListener('mouseleave', scheduleUpdate);
-    }
+    window.addEventListener('resize', syncTriggerMode);
+    window.addEventListener('load', syncTriggerMode);
 })(window, document);
 </script>
 {/strip}

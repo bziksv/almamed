@@ -29,7 +29,12 @@ $viewed_p = waRequest::cookie('shop_viewed', array(), waRequest::TYPE_ARRAY_INT)
                         <span>Оставить заявку</span>
                     </a>
                 </div>
-                <div class="col-grid min-width stay-chat" id="talkme-slot"></div>
+                <div class="col-grid min-width stay-chat">
+                    <button type="button" class="addition-link almamed-chat-open" id="almamed-chat-open">
+                        <i class="material-icons mi-2x">&#xe0b7;</i>&nbsp;
+                        <span>Напишите нам</span>
+                    </button>
+                </div>
             </div></div>
     </div>
 </aside>
