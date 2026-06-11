@@ -63,7 +63,7 @@
 	$wrapper.find('.js-searchpro__field-input').one('focus', boot_field);
 
 	if (window.requestIdleCallback) {
-		requestIdleCallback(boot_field, { timeout: 4000 });
+		requestIdleCallback(boot_field, {/literal}{ldelim}timeout: 4000{rdelim}{literal});
 	} else {
 		setTimeout(boot_field, 2500);
 	}

@@ -37,7 +37,7 @@
 {* SHOP *}
 {if $wa->shop}
     {* CATEGORIES / >categories(0, 3 - это отвечает за количество подкатегорий 0 родители и далее *}
-    {$at['shop']['categories'] = $wa->shop->categories(0, 0, true, true)}
+    {$at['shop']['categories'] = shopCustom::getCachedShopCategoriesTree()}
     {if isset($category) && $wa_app == 'shop'}{$at['shop']['selected_category'] = $category.id|default:null}{/if}
     {if isset($product) && $product.categories}{$at['shop']['selected_category'] = $product.category_id|default:null}{/if}
     {$at['shop']['pages'] = $wa->shop->pages()}

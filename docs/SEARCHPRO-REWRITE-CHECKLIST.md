@@ -156,7 +156,15 @@ lib/
 
 - [x] **3.6** Cache-Control на suggest: private, max-age=120; waSerializeCache на backend (ResultCache)
 
-**Замер local (2026-06-11):** suggest cached ~10 ms; cold ~2.3 s (было ~4 s после отказа от SQL LIKE popular); warm cache ~11 ms.
+**Замер local (2026-06-11, после cold-path оптимизаций):**
+
+| Метрика | До | После |
+|---------|-----|-------|
+| suggest cold «стетоскоп» | ~1.5 s | **~0.62 s** |
+| suggest cold garbage query | ~3.6 s | **~0.56 s** |
+| suggest warm | ~10 ms | **~10 ms** |
+
+Изменения: dropdown без grams/combine, `getProductsSuggest()`, категории из товаров, skip brands если пусто, cache v8.
 
 **Критерий:** suggest warm <150 ms local ✅ (cache); cold — products finder, дальше только профайл SQL.
 

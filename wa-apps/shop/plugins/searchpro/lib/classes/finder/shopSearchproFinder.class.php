@@ -378,6 +378,32 @@ class shopSearchproFinder
 		$results = $key_filled_results;*/
 	}
 
+	private function isDropdownContext()
+	{
+		return $this->getParam('cache_type') === 'dropdown';
+	}
+
+	private function isDropdownResultsSufficient($type, $results)
+	{
+		if (!$this->isDropdownContext() || !$results) {
+			return false;
+		}
+
+		$max = $this->getMaxCount($type);
+		if ($max !== null && $max > 0 && count($results) >= $max) {
+			return true;
+		}
+
+		if ($this->getParam('corrector_status') === 'logical') {
+			$min = $this->getResultsCount($type, 'min');
+			if ($min > 0 && count($results) >= $min) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Проверяет, нужно ли продолжить поиск с корректором
 	 * @param string $type
@@ -815,6 +841,10 @@ class shopSearchproFinder
 			$this->pushResultsWithinQuery($fixed_query, $type, $results);
 		}
 
+		if ($this->isDropdownResultsSufficient($type, $results)) {
+			return $results;
+		}
+
 		if($this->isContinueWithinCorrector($type, $results) && $this->getParam('keyboard_layout_status')) {
 			try {
 				$corrector = $this->getKeyboardLayoutCorrector();
@@ -829,6 +859,15 @@ class shopSearchproFinder
 			} catch(shopSearchproException $e) {
 				// @todo: catch exception
 			}
+		}
+
+		if ($this->isDropdownResultsSufficient($type, $results)) {
+			return $results;
+		}
+
+		// Grams/combine — только для page search; в live suggest слишком дорого.
+		if ($this->isDropdownContext()) {
+			return $results;
 		}
 
 		if($this->isContinueWithinCorrector($type, $results) && $this->getParam('grams_status')) {

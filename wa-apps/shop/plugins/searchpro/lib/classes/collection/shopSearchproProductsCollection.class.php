@@ -549,7 +549,45 @@ class shopSearchproProductsCollection extends shopProductsCollection
 	{
 		$this->is_frontend = true;
 
-		$joins = array(
+		$joins = $this->getSuggestProductJoins();
+
+		$products = $this->getProducts('*,skus_filtered', 0, $limit, array(
+			'escape' => true,
+			'joins' => $joins
+		));
+
+		if($is_event_frontend_products) {
+			wa('shop')->event('frontend_products', ref(array(
+				'products' => &$products,
+			)));
+		}
+
+		return $products;
+	}
+
+	/**
+	 * Минимальный набор полей для suggest dropdown (без skus_filtered).
+	 */
+	public function getProductsSuggest($limit = null)
+	{
+		$this->is_frontend = true;
+
+		$joins = $this->getSuggestProductJoins();
+
+		return $this->getProducts(
+			'id,name,url,category_id,currency,price,compare_price,image_id,image_filename,ext',
+			0,
+			$limit,
+			array(
+				'escape' => true,
+				'joins' => $joins,
+			)
+		);
+	}
+
+	private function getSuggestProductJoins()
+	{
+		return array(
 			array(
 				'type' => 'LEFT',
 				'table' => 'shop_product_skus',
@@ -565,19 +603,6 @@ class shopSearchproProductsCollection extends shopProductsCollection
 				'fields' => ':table.name AS category_name,:table.url AS category_url,:table.full_url AS category_full_url'
 			)
 		);
-
-		$products = $this->getProducts('*,skus_filtered', 0, $limit, array(
-			'escape' => true,
-			'joins' => $joins
-		));
-
-		if($is_event_frontend_products) {
-			wa('shop')->event('frontend_products', ref(array(
-				'products' => &$products,
-			)));
-		}
-
-		return $products;
 	}
 
 	public function getProductsInitial($fields = '*', $offset = 0, $limit = null, $escape = true)

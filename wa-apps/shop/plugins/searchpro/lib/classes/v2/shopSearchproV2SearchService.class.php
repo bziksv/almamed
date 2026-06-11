@@ -46,18 +46,34 @@ class shopSearchproV2SearchService
 
 		$this->initFinder($category_id);
 
-		$products = $this->hydrateProductEntities($this->findType('products'));
-		$categories = $this->findType('categories', array(
-			shopSearchproPluginFrontendDropdownController::class,
-			'workupCategories',
-		), array(
-			'status' => (bool) $this->settings->get('dropdown_categories_products_status'),
-			'seo_names' => $this->isCategoriesUseSeoNames(),
-			'finder' => $this->finder,
-			'products' => $products,
-			'env' => $this->env,
-		));
-		$brands = $this->findType('brands');
+		$product_entities = $this->findType('products');
+		$products = $this->hydrateProductEntities($product_entities);
+
+		$categories_from_products = (bool) $this->settings->get('dropdown_categories_products_status') && $products;
+		if ($categories_from_products) {
+			$categories = shopSearchproPluginFrontendDropdownController::workupCategories(array(), array(
+				'status' => true,
+				'seo_names' => $this->isCategoriesUseSeoNames(),
+				'finder' => $this->finder,
+				'products' => $products,
+				'env' => $this->env,
+			));
+		} else {
+			$categories = $this->findType('categories', array(
+				shopSearchproPluginFrontendDropdownController::class,
+				'workupCategories',
+			), array(
+				'status' => (bool) $this->settings->get('dropdown_categories_products_status'),
+				'seo_names' => $this->isCategoriesUseSeoNames(),
+				'finder' => $this->finder,
+				'products' => $products,
+				'env' => $this->env,
+			));
+		}
+
+		$brands = ($products || $categories)
+			? $this->findType('brands')
+			: array();
 		$popular = $this->findPopularFromCache();
 
 		$data = array(
@@ -113,7 +129,7 @@ class shopSearchproV2SearchService
 
 		$collection = new shopSearchproProductsCollection($product_ids);
 
-		$filled = $collection->getProductsFilled(count($product_ids), false);
+		$filled = $collection->getProductsSuggest(count($product_ids));
 		if (!$filled) {
 			return $entities;
 		}

@@ -37,12 +37,44 @@ class shopCustom
 
     }
 
-    public static function get_root_config($config){
+	public static function get_root_config($config){
         if(!$config)
             return false;
 
         return (wa()->getConfig()->getConfigFile('config')[$config]) ?: false;
     }
+
+	/**
+	 * Дерево категорий для sidebar — кэш 1 ч (getTree + params + tree build).
+	 */
+	public static function getCachedShopCategoriesTree()
+	{
+		static $tree = null;
+		if ($tree !== null) {
+			return $tree;
+		}
+
+		if (!wa()->appExists('shop')) {
+			return array();
+		}
+
+		$routing = wa()->getRouting();
+		$route = $routing->getRoute();
+		$domain = $routing->getDomain(null, true);
+		$cache_key = 'sidebar_tree_' . md5($domain . '/' . ifset($route, 'url', ''));
+		$cache = new waSerializeCache($cache_key, 3600, 'shop/sidebar_categories');
+
+		if ($cache->isCached()) {
+			$tree = $cache->get();
+			return is_array($tree) ? $tree : array();
+		}
+
+		wa('shop', 1);
+		$tree = (new shopViewHelper(wa('shop')))->categories(0, 0, true, true);
+		$cache->set($tree);
+
+		return is_array($tree) ? $tree : array();
+	 }
 
 	public static function roistat_cookie($id = 'roistat_visit'){
         if(waRequest::cookie($id))

@@ -48,7 +48,7 @@ class shopSearchproV2ResultCache
 			'category_id' => (int) $category_id,
 			'storefront' => $storefront,
 			'extra' => $extra,
-			'version' => 6,
+			'version' => 8,
 		)));
 
 		return $context . '_' . $hash;
