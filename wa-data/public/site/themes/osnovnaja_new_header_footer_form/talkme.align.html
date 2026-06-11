@@ -111,7 +111,14 @@ body.cookie-consent-pending .online-chat-root .trigger-background {
         } catch (e) {}
     }
 
+    function ensureTalkMeLoaded() {
+        if (typeof window.almamedLoadTalkMe === 'function') {
+            window.almamedLoadTalkMe();
+        }
+    }
+
     function openTalkMeMenu() {
+        ensureTalkMeLoaded();
         var api = talkMe();
         if (!api) {
             return false;
@@ -171,6 +178,7 @@ body.cookie-consent-pending .online-chat-root .trigger-background {
         cancelCloseMenu();
         closeTalkMeMenu();
 
+        ensureTalkMeLoaded();
         var api = talkMe();
         if (!api) {
             return;

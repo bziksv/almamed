@@ -17,12 +17,12 @@ window.addEventListener('load', function() {
 <!-- Виджет подписки Sendpulse  -->
 <!-- <script src="//web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="efb28995705c90d2ff723b7182e24071cc21cda39d619b0c0bdbb51e0118559d"></script>  -->
 
-<!-- Виджет talk-me.ru — только после load; без mousemove (DevTools двигает мышь → ранний load) -->
+<!-- Виджет talk-me.ru — грузим только по действию пользователя (клик «Напишите нам», touch на мобилке) -->
 <!-- Begin Talk-Me -->
 <script>
 (function() {
   var loaded = false;
-  function loadTalkMe() {
+  window.almamedLoadTalkMe = function() {
     if (loaded) { return; }
     loaded = true;
     (function(){(function c(d,w,m,i) {
@@ -36,12 +36,9 @@ window.addEventListener('load', function() {
       w[m] = w[m] ? w[m] : function(){(w[m].q = w[m].q ? w[m].q : []).push(arguments);};
       (d.head ? d.head : d.body).appendChild(s);
     })(document,window,'TalkMe')})();
-  }
+  };
   window.addEventListener('load', function() {
-    ['scroll', 'touchstart', 'keydown'].forEach(function(ev) {
-      window.addEventListener(ev, loadTalkMe, { once: true, passive: true });
-    });
-    setTimeout(loadTalkMe, 10000);
+    window.addEventListener('touchstart', window.almamedLoadTalkMe, { once: true, passive: true });
   }, { once: true });
 })();
 </script>

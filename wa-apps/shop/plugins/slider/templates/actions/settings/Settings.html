@@ -1,274 +1,724 @@
-<h1>Слайдер</h1>
-<p class="hint">
-    Для каждого слайда можно загрузить три версии баннера: для компьютера, планшета и телефона.
-    Если планшет или телефон не загружены — они создаются автоматически из десктопного баннера.
-    При загрузке изображения автоматически сжимаются до рекомендуемых размеров.
-</p>
-{if $active_count > $max_visible_slides}
-<p class="hint slider-rotation-hint">
-    Активных слайдов: {$active_count|escape}. На сайте одновременно показывается не более {$max_visible_slides|escape}.
-    Остальные участвуют в ротации: чем меньше показов у слайда, тем чаще он попадает в карусель.
-</p>
-{/if}
+<div class="slider-admin">
+    <h1>Слайдер</h1>
 
-<div class="fields form">
-    <form id="brand-edit-form" enctype="multipart/form-data" method="post" action="?plugin=slider&action=save">
+    <div class="slider-admin__intro">
+        <p>Загрузите баннеры для компьютера, планшета и телефона. Планшет и телефон можно не загружать — они создадутся из десктопного. При загрузке изображения сжимаются автоматически.</p>
+        <ul class="slider-admin__sizes">
+            <li><strong>Компьютер</strong> — 1300×220 px</li>
+            <li><strong>Планшет</strong> — 992×660 px (до 1200 px)</li>
+            <li><strong>Телефон</strong> — 576×870 px (до 480 px)</li>
+        </ul>
+    </div>
+
+    <div class="slider-admin__summary">
+        <div class="slider-admin__stat">
+            <span class="slider-admin__stat-value">{$forms|@count|escape}</span>
+            <span class="slider-admin__stat-label">всего слайдов</span>
+        </div>
+        <div class="slider-admin__stat">
+            <span class="slider-admin__stat-value">{$active_count|escape}</span>
+            <span class="slider-admin__stat-label">активных</span>
+        </div>
+        <div class="slider-admin__stat">
+            <span class="slider-admin__stat-value">{$max_visible_slides|escape}</span>
+            <span class="slider-admin__stat-label">на сайте одновременно</span>
+        </div>
+        {if $active_count > $max_visible_slides}
+        <div class="slider-admin__notice">
+            Активных больше лимита — на сайте ротируются слайды с наименьшим числом показов.
+        </div>
+        {/if}
+    </div>
+
+    <form id="slider-admin-form" class="fields form" enctype="multipart/form-data" method="post" action="?plugin=slider&action=save">
         {$wa->csrf()}
 
-        <div class="add-field">
-            {foreach $forms as $form}
+        <div class="slider-admin__list add-field">
+            {foreach $forms as $form name=slides}
             {assign var="slide_enabled" value=$form.enabled|default:1}
             {assign var="slide_visible" value=$form.is_visible|default:1}
-            <div class="field-group slider-slide-row">
+            {assign var="slide_num" value=$smarty.foreach.slides.iteration}
+            <article class="slider-card{if !$slide_visible} slider-card--hidden{/if}">
                 <input type="hidden" name="id[]" value="{$form.id|default:''|escape}">
-                <div class="slider-slide-row__meta">
-                    <input type="text" placeholder="Сортировка" size="8" name="sort[]" value="{$form.sort|escape}">
-                    <input type="text" placeholder="Ссылка" name="link[]" size="30" value="{$form.link|escape}">
-                    <input type="text" placeholder="Alt" name="alt[]" size="30" value="{$form.alt|escape}">
-                    <label class="slider-toggle">
-                        <input type="hidden" name="enabled[]" value="{$slide_enabled|escape}" class="slider-enabled-value">
-                        <input type="checkbox" class="slider-enabled-cb"{if $slide_enabled} checked="checked"{/if}>
-                        <span>Включён</span>
-                    </label>
-                    <span class="slider-status{if $slide_visible} slider-status--active{else} slider-status--inactive{/if}">
-                        {if $slide_visible}Показывается на сайте{else}Скрыт на сайте{/if}
-                    </span>
-                    <a href="#" class="button red remove">Удалить</a>
+
+                <header class="slider-card__header">
+                    <button type="button" class="slider-card__toggle" title="Развернуть / свернуть" aria-expanded="true">
+                        <i class="icon16 darr"></i>
+                    </button>
+                    <div class="slider-card__title">
+                        <span class="slider-card__num">Слайд {$slide_num|escape}</span>
+                        {if !empty($form.img)}
+                        <img class="slider-card__thumb" src="{$form.img|escape}" alt="">
+                        {/if}
+                        <span class="slider-card__link-preview">{if $form.link}{$form.link|escape|truncate:48}{else}<em>без ссылки</em>{/if}</span>
+                    </div>
+                    <div class="slider-card__badges">
+                        <span class="slider-badge{if $slide_visible} slider-badge--ok{else} slider-badge--off{/if}">
+                            {if $slide_visible}На сайте{else}Скрыт{/if}
+                        </span>
+                        {if !$slide_enabled}
+                        <span class="slider-badge slider-badge--off">Выключен</span>
+                        {/if}
+                    </div>
+                    <div class="slider-card__header-actions">
+                        <label class="slider-switch" title="Включить слайд">
+                            <input type="hidden" name="enabled[]" value="{$slide_enabled|escape}" class="slider-enabled-value">
+                            <input type="checkbox" class="slider-enabled-cb"{if $slide_enabled} checked="checked"{/if}>
+                            <span>Вкл.</span>
+                        </label>
+                        <a href="#" class="slider-card__remove" title="Удалить слайд"><i class="icon16 delete"></i></a>
+                    </div>
+                </header>
+
+                <div class="slider-card__body">
+                    <section class="slider-section">
+                        <h3 class="slider-section__title">Основное</h3>
+                        <div class="slider-fields">
+                            <div class="field">
+                                <div class="name">Сортировка</div>
+                                <div class="value">
+                                    <input type="number" class="short" name="sort[]" value="{$form.sort|escape}" min="0" step="1">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="name">Ссылка</div>
+                                <div class="value">
+                                    <input type="text" class="long" name="link[]" value="{$form.link|escape}" placeholder="/category/... или https://">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="name">Alt-текст</div>
+                                <div class="value">
+                                    <input type="text" class="long" name="alt[]" value="{$form.alt|escape}" placeholder="Описание для SEO и доступности">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="slider-section">
+                        <h3 class="slider-section__title">Срок показа</h3>
+                        <div class="slider-fields slider-fields--inline">
+                            <div class="field">
+                                <div class="name">С</div>
+                                <div class="value">
+                                    <input type="date" name="date_from[]" value="{$form.date_from|default:''|escape}">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="name">По</div>
+                                <div class="value">
+                                    <input type="date" name="date_to[]" value="{$form.date_to|default:''|escape}">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="hint">Пустые даты — без ограничения по сроку.</p>
+                    </section>
+
+                    <section class="slider-section">
+                        <h3 class="slider-section__title">Ответственные</h3>
+                        <div class="slider-fields">
+                            <div class="field">
+                                <div class="name">Менеджер по продажам</div>
+                                <div class="value">
+                                    <input type="text" name="sales_manager[]" value="{$form.sales_manager|default:''|escape}" placeholder="Кто подготовил информацию">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="name">Контент-менеджер</div>
+                                <div class="value">
+                                    <input type="text" name="content_manager[]" value="{$form.content_manager|default:''|escape}" placeholder="Кто разместил баннер">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="slider-section slider-section--stats">
+                        <h3 class="slider-section__title">Статистика</h3>
+                        <div class="slider-metrics">
+                            <div class="slider-metric">
+                                <span class="slider-metric__val">{$form.views_count|default:0|escape}</span>
+                                <span class="slider-metric__lbl">показы</span>
+                            </div>
+                            <div class="slider-metric">
+                                <span class="slider-metric__val">{$form.clicks_count|default:0|escape}</span>
+                                <span class="slider-metric__lbl">клики</span>
+                            </div>
+                            <div class="slider-metric">
+                                <span class="slider-metric__val">{if $form.ctr !== null}{$form.ctr|escape}%{else}—{/if}</span>
+                                <span class="slider-metric__lbl">CTR</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="slider-section slider-section--banners">
+                        <h3 class="slider-section__title">Изображения</h3>
+                        <div class="slider-banners">
+                            <div class="slider-banner">
+                                <div class="slider-banner__head">
+                                    <span class="slider-banner__device">Компьютер</span>
+                                    <span class="slider-banner__size">1300×220</span>
+                                </div>
+                                <div class="slider-banner__preview">
+                                    {if !empty($form.img)}
+                                    <img src="{$form.img|escape}" alt="">
+                                    {else}
+                                    <span class="slider-banner__empty">Нет файла</span>
+                                    {/if}
+                                </div>
+                                <label class="slider-banner__upload button light-gray">
+                                    <span>Выбрать файл</span>
+                                    <input type="file" name="img[]" accept="image/png,image/jpeg">
+                                </label>
+                                <input type="hidden" name="img_path[]" value="{$form.img|escape}">
+                            </div>
+                            <div class="slider-banner">
+                                <div class="slider-banner__head">
+                                    <span class="slider-banner__device">Планшет</span>
+                                    <span class="slider-banner__size">992×660</span>
+                                </div>
+                                <div class="slider-banner__preview">
+                                    {if !empty($form.img_tablet)}
+                                    <img src="{$form.img_tablet|escape}" alt="">
+                                    {else}
+                                    <span class="slider-banner__empty">Авто из десктопа</span>
+                                    {/if}
+                                </div>
+                                <label class="slider-banner__upload button light-gray">
+                                    <span>Выбрать файл</span>
+                                    <input type="file" name="img_tablet[]" accept="image/png,image/jpeg">
+                                </label>
+                                <input type="hidden" name="img_tablet_path[]" value="{$form.img_tablet|default:''|escape}">
+                            </div>
+                            <div class="slider-banner">
+                                <div class="slider-banner__head">
+                                    <span class="slider-banner__device">Телефон</span>
+                                    <span class="slider-banner__size">576×870</span>
+                                </div>
+                                <div class="slider-banner__preview">
+                                    {if !empty($form.img_mobile)}
+                                    <img src="{$form.img_mobile|escape}" alt="">
+                                    {else}
+                                    <span class="slider-banner__empty">Авто из десктопа</span>
+                                    {/if}
+                                </div>
+                                <label class="slider-banner__upload button light-gray">
+                                    <span>Выбрать файл</span>
+                                    <input type="file" name="img_mobile[]" accept="image/png,image/jpeg">
+                                </label>
+                                <input type="hidden" name="img_mobile_path[]" value="{$form.img_mobile|default:''|escape}">
+                            </div>
+                        </div>
+                    </section>
                 </div>
-                <div class="slider-slide-row__staff">
-                    <label>
-                        <span>Менеджер по продажам</span>
-                        <input type="text" name="sales_manager[]" value="{$form.sales_manager|default:''|escape}" placeholder="Кто подготовил информацию">
-                    </label>
-                    <label>
-                        <span>Контент-менеджер</span>
-                        <input type="text" name="content_manager[]" value="{$form.content_manager|default:''|escape}" placeholder="Кто разместил баннер">
-                    </label>
-                </div>
-                <div class="slider-slide-row__stats">
-                    <span>Показы: <strong>{$form.views_count|default:0|escape}</strong></span>
-                    <span>Клики: <strong>{$form.clicks_count|default:0|escape}</strong></span>
-                    <span>CTR: <strong>{if $form.ctr !== null}{$form.ctr|escape}%{else}—{/if}</strong></span>
-                </div>
-                <div class="slider-slide-row__dates">
-                    <label>
-                        <span>Показывать с</span>
-                        <input type="date" name="date_from[]" value="{$form.date_from|default:''|escape}">
-                    </label>
-                    <label>
-                        <span>Показывать по</span>
-                        <input type="date" name="date_to[]" value="{$form.date_to|default:''|escape}">
-                    </label>
-                    <span class="hint">Оставьте пустым, если срок не ограничен. После даты окончания слайд скрывается автоматически.</span>
-                </div>
-                <div class="slider-slide-row__images">
-                    <label class="slider-upload">
-                        <span>Компьютер</span>
-                        <em class="slider-size-hint">Рекомендуемый размер: 1300×220 px (JPG/PNG). Широкая полоса, высота на сайте до 220 px.</em>
-                        <input type="file" name="img[]" accept="image/png,image/jpeg">
-                        <input type="hidden" name="img_path[]" value="{$form.img|escape}">
-                        {if !empty($form.img)}<img src="{$form.img|escape}" alt="">{/if}
-                    </label>
-                    <label class="slider-upload">
-                        <span>Планшет</span>
-                        <em class="slider-size-hint">Рекомендуемый размер: 992×660 px. Для экранов до 1200 px. Можно не загружать — создастся из десктопного.</em>
-                        <input type="file" name="img_tablet[]" accept="image/png,image/jpeg">
-                        <input type="hidden" name="img_tablet_path[]" value="{$form.img_tablet|default:''|escape}">
-                        {if !empty($form.img_tablet)}<img src="{$form.img_tablet|escape}" alt="">{/if}
-                    </label>
-                    <label class="slider-upload">
-                        <span>Телефон</span>
-                        <em class="slider-size-hint">Рекомендуемый размер: 576×870 px. Для экранов до 480 px. Можно не загружать — создастся из десктопного.</em>
-                        <input type="file" name="img_mobile[]" accept="image/png,image/jpeg">
-                        <input type="hidden" name="img_mobile_path[]" value="{$form.img_mobile|default:''|escape}">
-                        {if !empty($form.img_mobile)}<img src="{$form.img_mobile|escape}" alt="">{/if}
-                    </label>
-                </div>
-            </div>
+            </article>
             {/foreach}
         </div>
 
-        <div class="field-group">
-            <a href="#" class="button green" id="add">Добавить</a>
-        </div>
-
-        <div class="field">
-            <div class="submit">
-                <input type="submit" class="button green" value="[s`Save`]">
-            </div>
+        <div class="slider-admin__toolbar">
+            <a href="#" class="button" id="slider-add"><i class="icon16 add"></i> Добавить слайд</a>
+            <input type="submit" class="button green" value="Сохранить">
         </div>
     </form>
 </div>
 
 <style>
-    .slider-rotation-hint {
-        background: #fff8e1;
-        border-left: 3px solid #ffb300;
-        padding: 0.5rem 0.75rem;
+.slider-admin {
+    max-width: 1100px;
+}
+.slider-admin h1 {
+    margin-bottom: 16px;
+}
+.slider-admin__intro {
+    background: #f7f9fc;
+    border: 1px solid #dfe8f3;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+.slider-admin__intro p {
+    margin: 0 0 10px;
+    color: #444;
+}
+.slider-admin__sizes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    font-size: 13px;
+    color: #666;
+}
+.slider-admin__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+.slider-admin__stat {
+    display: flex;
+    flex-direction: column;
+    min-width: 90px;
+}
+.slider-admin__stat-value {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: #222;
+}
+.slider-admin__stat-label {
+    font-size: 12px;
+    color: #888;
+}
+.slider-admin__notice {
+    flex: 1 1 220px;
+    font-size: 13px;
+    color: #8a6d00;
+    background: #fffbe6;
+    border: 1px solid #ffe58f;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+.slider-admin__list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.slider-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+}
+.slider-card--hidden {
+    border-color: #e8c4c4;
+    background: #fffafa;
+}
+.slider-card--collapsed .slider-card__body {
+    display: none;
+}
+.slider-card--collapsed .slider-card__toggle .icon16 {
+    transform: rotate(-90deg);
+}
+.slider-card__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    min-height: 48px;
+}
+.slider-card__toggle {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    padding: 4px;
+    cursor: pointer;
+    opacity: .7;
+}
+.slider-card__toggle:hover {
+    opacity: 1;
+}
+.slider-card__toggle .icon16 {
+    transition: transform .15s ease;
+}
+.slider-card__title {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+.slider-card__num {
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+}
+.slider-card__thumb {
+    width: 64px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+.slider-card__link-preview {
+    font-size: 12px;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.slider-card__badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.slider-badge {
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+.slider-badge--ok {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+.slider-badge--off {
+    background: #fce8e8;
+    color: #c0392b;
+}
+.slider-card__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.slider-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.slider-card__remove {
+    opacity: .6;
+    line-height: 0;
+}
+.slider-card__remove:hover {
+    opacity: 1;
+}
+.slider-card__body {
+    padding: 16px 18px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+}
+.slider-section {
+    min-width: 0;
+}
+.slider-section--stats {
+    grid-column: 1 / -1;
+}
+.slider-section--banners {
+    grid-column: 1 / -1;
+}
+.slider-section__title {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #888;
+}
+.slider-fields .field {
+    margin-bottom: 8px;
+}
+.slider-fields .field:last-child {
+    margin-bottom: 0;
+}
+.slider-fields .field .name {
+    width: 140px;
+    font-size: 13px;
+}
+.slider-fields--inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+}
+.slider-fields--inline .field {
+    margin-bottom: 0;
+}
+.slider-fields--inline .field .name {
+    width: auto;
+    min-width: 24px;
+}
+.slider-metrics {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.slider-metric {
+    min-width: 100px;
+    padding: 10px 14px;
+    background: #f5f7fa;
+    border: 1px solid #e8ecf1;
+    border-radius: 6px;
+    text-align: center;
+}
+.slider-metric__val {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+}
+.slider-metric__lbl {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+}
+.slider-banners {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+.slider-banner {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 12px;
+    background: #fafbfc;
+}
+.slider-banner__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+.slider-banner__device {
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+}
+.slider-banner__size {
+    font-size: 11px;
+    color: #999;
+}
+.slider-banner__preview {
+    height: 72px;
+    margin-bottom: 10px;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.slider-banner__preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+.slider-banner__empty {
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    padding: 0 8px;
+}
+.slider-banner__upload {
+    display: block;
+    text-align: center;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.slider-banner__upload input[type=file] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+.slider-admin__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+@media (max-width: 900px) {
+    .slider-card__body {
+        grid-template-columns: 1fr;
     }
-    .slider-slide-row {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #ddd;
+    .slider-banners {
+        grid-template-columns: 1fr;
     }
-    .slider-slide-row__meta {
-        display: flex;
+    .slider-card__header {
         flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem 0.75rem;
-        margin-bottom: 0.75rem;
     }
-    .slider-slide-row__staff {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem 1rem;
-        margin-bottom: 0.75rem;
-    }
-    .slider-slide-row__staff label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        min-width: 220px;
-        font-size: 12px;
-        color: #666;
-    }
-    .slider-slide-row__stats {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 0.75rem;
-        font-size: 12px;
-        color: #555;
-    }
-    .slider-slide-row__dates {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.75rem 1rem;
-        margin-bottom: 0.75rem;
-    }
-    .slider-slide-row__dates label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        font-size: 12px;
-        color: #666;
-    }
-    .slider-slide-row__dates .hint {
-        flex: 1 1 220px;
-        margin: 0;
-        font-size: 11px;
-        color: #888;
-    }
-    .slider-slide-row__images {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-    .slider-upload {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        min-width: 220px;
-        max-width: 280px;
-    }
-    .slider-upload span {
-        font-weight: bold;
-        font-size: 12px;
-        color: #666;
-    }
-    .slider-size-hint {
-        font-style: normal;
-        font-size: 11px;
-        line-height: 1.35;
-        color: #888;
-    }
-    .slider-upload img {
-        max-width: 120px;
-        max-height: 60px;
-        border: 1px solid #eee;
-    }
-    .slider-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        font-size: 12px;
-        white-space: nowrap;
-    }
-    .slider-status {
-        font-size: 11px;
-        padding: 0.15rem 0.45rem;
-        border-radius: 3px;
-    }
-    .slider-status--active {
-        background: #e8f5e9;
-        color: #2e7d32;
-    }
-    .slider-status--inactive {
-        background: #ffebee;
-        color: #c62828;
-    }
+}
 </style>
 
+<script type="text/template" id="slider-slide-template">
+<article class="slider-card">
+    <input type="hidden" name="id[]" value="">
+    <header class="slider-card__header">
+        <button type="button" class="slider-card__toggle" title="Развернуть / свернуть" aria-expanded="true"><i class="icon16 darr"></i></button>
+        <div class="slider-card__title">
+            <span class="slider-card__num">Новый слайд</span>
+            <span class="slider-card__link-preview"><em>без ссылки</em></span>
+        </div>
+        <div class="slider-card__badges">
+            <span class="slider-badge slider-badge--ok">На сайте</span>
+        </div>
+        <div class="slider-card__header-actions">
+            <label class="slider-switch" title="Включить слайд">
+                <input type="hidden" name="enabled[]" value="1" class="slider-enabled-value">
+                <input type="checkbox" class="slider-enabled-cb" checked="checked">
+                <span>Вкл.</span>
+            </label>
+            <a href="#" class="slider-card__remove" title="Удалить слайд"><i class="icon16 delete"></i></a>
+        </div>
+    </header>
+    <div class="slider-card__body">
+        <section class="slider-section">
+            <h3 class="slider-section__title">Основное</h3>
+            <div class="slider-fields">
+                <div class="field"><div class="name">Сортировка</div><div class="value"><input type="number" class="short" name="sort[]" value="" min="0" step="1"></div></div>
+                <div class="field"><div class="name">Ссылка</div><div class="value"><input type="text" class="long" name="link[]" value="" placeholder="/category/... или https://"></div></div>
+                <div class="field"><div class="name">Alt-текст</div><div class="value"><input type="text" class="long" name="alt[]" value="" placeholder="Описание для SEO и доступности"></div></div>
+            </div>
+        </section>
+        <section class="slider-section">
+            <h3 class="slider-section__title">Срок показа</h3>
+            <div class="slider-fields slider-fields--inline">
+                <div class="field"><div class="name">С</div><div class="value"><input type="date" name="date_from[]" value=""></div></div>
+                <div class="field"><div class="name">По</div><div class="value"><input type="date" name="date_to[]" value=""></div></div>
+            </div>
+            <p class="hint">Пустые даты — без ограничения по сроку.</p>
+        </section>
+        <section class="slider-section">
+            <h3 class="slider-section__title">Ответственные</h3>
+            <div class="slider-fields">
+                <div class="field"><div class="name">Менеджер по продажам</div><div class="value"><input type="text" name="sales_manager[]" value="" placeholder="Кто подготовил информацию"></div></div>
+                <div class="field"><div class="name">Контент-менеджер</div><div class="value"><input type="text" name="content_manager[]" value="" placeholder="Кто разместил баннер"></div></div>
+            </div>
+        </section>
+        <section class="slider-section slider-section--stats">
+            <h3 class="slider-section__title">Статистика</h3>
+            <div class="slider-metrics">
+                <div class="slider-metric"><span class="slider-metric__val">0</span><span class="slider-metric__lbl">показы</span></div>
+                <div class="slider-metric"><span class="slider-metric__val">0</span><span class="slider-metric__lbl">клики</span></div>
+                <div class="slider-metric"><span class="slider-metric__val">—</span><span class="slider-metric__lbl">CTR</span></div>
+            </div>
+        </section>
+        <section class="slider-section slider-section--banners">
+            <h3 class="slider-section__title">Изображения</h3>
+            <div class="slider-banners">
+                <div class="slider-banner">
+                    <div class="slider-banner__head"><span class="slider-banner__device">Компьютер</span><span class="slider-banner__size">1300×220</span></div>
+                    <div class="slider-banner__preview"><span class="slider-banner__empty">Нет файла</span></div>
+                    <label class="slider-banner__upload button light-gray"><span>Выбрать файл</span><input type="file" name="img[]" accept="image/png,image/jpeg"></label>
+                    <input type="hidden" name="img_path[]" value="">
+                </div>
+                <div class="slider-banner">
+                    <div class="slider-banner__head"><span class="slider-banner__device">Планшет</span><span class="slider-banner__size">992×660</span></div>
+                    <div class="slider-banner__preview"><span class="slider-banner__empty">Авто из десктопа</span></div>
+                    <label class="slider-banner__upload button light-gray"><span>Выбрать файл</span><input type="file" name="img_tablet[]" accept="image/png,image/jpeg"></label>
+                    <input type="hidden" name="img_tablet_path[]" value="">
+                </div>
+                <div class="slider-banner">
+                    <div class="slider-banner__head"><span class="slider-banner__device">Телефон</span><span class="slider-banner__size">576×870</span></div>
+                    <div class="slider-banner__preview"><span class="slider-banner__empty">Авто из десктопа</span></div>
+                    <label class="slider-banner__upload button light-gray"><span>Выбрать файл</span><input type="file" name="img_mobile[]" accept="image/png,image/jpeg"></label>
+                    <input type="hidden" name="img_mobile_path[]" value="">
+                </div>
+            </div>
+        </section>
+    </div>
+</article>
+</script>
+
 <script>
-    $(document).ready(function() {
-        var slideRowTemplate =
-            '<div class="field-group slider-slide-row">' +
-                '<input type="hidden" name="id[]" value="">' +
-                '<div class="slider-slide-row__meta">' +
-                    '<input type="text" placeholder="Сортировка" size="8" name="sort[]" value="">' +
-                    '<input type="text" placeholder="Ссылка" name="link[]" size="30" value="">' +
-                    '<input type="text" placeholder="Alt" name="alt[]" size="30" value="">' +
-                    '<label class="slider-toggle">' +
-                        '<input type="hidden" name="enabled[]" value="1" class="slider-enabled-value">' +
-                        '<input type="checkbox" class="slider-enabled-cb" checked="checked">' +
-                        '<span>Включён</span>' +
-                    '</label>' +
-                    '<span class="slider-status slider-status--active">Показывается на сайте</span>' +
-                    '<a href="#" class="button red remove">Удалить</a>' +
-                '</div>' +
-                '<div class="slider-slide-row__staff">' +
-                    '<label><span>Менеджер по продажам</span><input type="text" name="sales_manager[]" value="" placeholder="Кто подготовил информацию"></label>' +
-                    '<label><span>Контент-менеджер</span><input type="text" name="content_manager[]" value="" placeholder="Кто разместил баннер"></label>' +
-                '</div>' +
-                '<div class="slider-slide-row__stats">' +
-                    '<span>Показы: <strong>0</strong></span>' +
-                    '<span>Клики: <strong>0</strong></span>' +
-                    '<span>CTR: <strong>—</strong></span>' +
-                '</div>' +
-                '<div class="slider-slide-row__dates">' +
-                    '<label><span>Показывать с</span><input type="date" name="date_from[]" value=""></label>' +
-                    '<label><span>Показывать по</span><input type="date" name="date_to[]" value=""></label>' +
-                    '<span class="hint">Оставьте пустым, если срок не ограничен. После даты окончания слайд скрывается автоматически.</span>' +
-                '</div>' +
-                '<div class="slider-slide-row__images">' +
-                    '<label class="slider-upload"><span>Компьютер</span><em class="slider-size-hint">Рекомендуемый размер: 1300×220 px (JPG/PNG). Широкая полоса, высота на сайте до 220 px.</em><input type="file" name="img[]" accept="image/png,image/jpeg"><input type="hidden" name="img_path[]" value=""></label>' +
-                    '<label class="slider-upload"><span>Планшет</span><em class="slider-size-hint">Рекомендуемый размер: 992×660 px. Для экранов до 1200 px. Можно не загружать — создастся из десктопного.</em><input type="file" name="img_tablet[]" accept="image/png,image/jpeg"><input type="hidden" name="img_tablet_path[]" value=""></label>' +
-                    '<label class="slider-upload"><span>Телефон</span><em class="slider-size-hint">Рекомендуемый размер: 576×870 px. Для экранов до 480 px. Можно не загружать — создастся из десктопного.</em><input type="file" name="img_mobile[]" accept="image/png,image/jpeg"><input type="hidden" name="img_mobile_path[]" value=""></label>' +
-                '</div>' +
-            '</div>';
+$(function() {
+    var $list = $('.slider-admin__list');
 
-        function syncEnabled($row) {
-            var $cb = $row.find('.slider-enabled-cb');
-            $row.find('.slider-enabled-value').val($cb.is(':checked') ? '1' : '0');
+    function syncEnabled($card) {
+        var $cb = $card.find('.slider-enabled-cb');
+        $card.find('.slider-enabled-value').val($cb.is(':checked') ? '1' : '0');
+    }
+
+    function renumberCards() {
+        $list.find('.slider-card').each(function(i) {
+            $(this).find('.slider-card__num').first().text('Слайд ' + (i + 1));
+        });
+    }
+
+    function bindCard($card) {
+        syncEnabled($card);
+    }
+
+    $list.find('.slider-card').each(function() {
+        bindCard($(this));
+    });
+
+    $('#slider-add').on('click', function(e) {
+        e.preventDefault();
+        var html = $('#slider-slide-template').html();
+        var $card = $(html.trim()).hide();
+        $list.append($card);
+        bindCard($card);
+        renumberCards();
+        $card.find('.slider-card__num').text('Новый слайд');
+        $card.slideDown(200);
+        $('html, body').animate({ scrollTop: $card.offset().top - 40 }, 300);
+    });
+
+    $list.on('change', '.slider-enabled-cb', function() {
+        syncEnabled($(this).closest('.slider-card'));
+    });
+
+    $list.on('click', '.slider-card__remove', function(e) {
+        e.preventDefault();
+        if (!confirm('Удалить этот слайд?')) {
+            return;
         }
-
-        $('.add-field .slider-slide-row').each(function() {
-            syncEnabled($(this));
-        });
-
-        $('#add').click(function() {
-            $(slideRowTemplate).fadeIn('slow').appendTo('.add-field');
-            return false;
-        });
-
-        $('.add-field').on('change', '.slider-enabled-cb', function() {
-            syncEnabled($(this).closest('.slider-slide-row'));
-        });
-
-        $('.add-field').on('click', '.remove', function() {
-            $(this).closest('.slider-slide-row').remove();
-            return false;
+        $(this).closest('.slider-card').slideUp(200, function() {
+            $(this).remove();
+            renumberCards();
         });
     });
+
+    $list.on('click', '.slider-card__toggle', function() {
+        var $card = $(this).closest('.slider-card');
+        $card.toggleClass('slider-card--collapsed');
+        $(this).attr('aria-expanded', $card.hasClass('slider-card--collapsed') ? 'false' : 'true');
+    });
+
+    $list.on('change', 'input[type=file]', function() {
+        var file = this.files && this.files[0];
+        if (!file) {
+            return;
+        }
+        var $preview = $(this).closest('.slider-banner').find('.slider-banner__preview');
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            $preview.html('<img src="' + ev.target.result + '" alt="">');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    $list.on('input', 'input[name="link[]"]', function() {
+        var val = $.trim($(this).val());
+        var $preview = $(this).closest('.slider-card').find('.slider-card__link-preview');
+        if (val) {
+            $preview.text(val.length > 48 ? val.substring(0, 48) + '…' : val);
+        } else {
+            $preview.html('<em>без ссылки</em>');
+        }
+    });
+
+    if ($list.find('.slider-card').length > 3) {
+        $list.find('.slider-card').each(function(i) {
+            if (i >= 3) {
+                $(this).addClass('slider-card--collapsed');
+                $(this).find('.slider-card__toggle').attr('aria-expanded', 'false');
+            }
+        });
+    }
+});
 </script>

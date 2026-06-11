@@ -31,7 +31,7 @@ class shopSliderPlugin extends shopPlugin
 
     public static function isSlideVisible(array $slide)
     {
-        if (empty($slide['enabled'])) {
+        if (array_key_exists('enabled', $slide) && !$slide['enabled']) {
             return false;
         }
 
