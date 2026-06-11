@@ -426,9 +426,13 @@
 </script>
 {/if}
 
-<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js"></script>
-<script>
-    $(function(){
+<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js" defer></script>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof jQuery === 'undefined' || typeof LazyLoad === 'undefined') {
+            return;
+        }
+        jQuery(function($){
        $('input[value="В корзину"]').click(function(){
            yaCounter34079080.reachGoal('dobavili_v_korzinu');
        });
@@ -461,12 +465,18 @@
         if (lazyLoadInstance) {
             lazyLoadInstance.update();
         }
+        });
     });
 </script>
 
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-<script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof jQuery === 'undefined' || !jQuery.fn.slick) {
+            return;
+        }
+        var $ = jQuery;
 
     $('.tag-slider').slick({
         dots: false,
@@ -510,6 +520,7 @@
         });
     });
 
+    });
 </script>
 
 </body>

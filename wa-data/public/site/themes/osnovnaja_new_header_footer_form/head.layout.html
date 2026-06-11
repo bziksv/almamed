@@ -1,6 +1,11 @@
 {strip}
 
-{* fonts *}
+{* fonts — preconnect сокращает cold load на ~200–400 ms *}
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://mc.yandex.ru">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
 <link rel="stylesheet" href="{$wa_theme_url}font-awesome/css/font-awesome.min.css">
 <link href='//fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400&amp;subset=cyrillic,latin' rel='stylesheet' type='text/css'>
 <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type='text/css'>

@@ -387,4 +387,94 @@ class shopFrontendCategoryAction extends shopFrontendAction
         }
         return ($a['sort'] < $b['sort']) ? -1 : 1;
     }
+
+    const CATEGORY_CACHE_TTL = 900;
+    const CATEGORY_CACHE_GROUP = 'shop/frontend_category';
+
+    public function display($clear_assign = true)
+    {
+        $cached_html = $this->getCachedCategoryHtml();
+        if ($cached_html !== null) {
+            echo $cached_html;
+            return '';
+        }
+
+        $html = parent::display(false);
+        $this->setCachedCategoryHtml($html);
+
+        return $html;
+    }
+
+    protected function canUseCategoryCache()
+    {
+        if (waSystemConfig::isDebug() || waRequest::isXMLHttpRequest()) {
+            return false;
+        }
+        if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
+            return false;
+        }
+        if (waRequest::method() !== waRequest::METHOD_GET || waRequest::get()) {
+            return false;
+        }
+        if (!waRequest::param('category_url') && !waRequest::param('category_id')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function getCategoryCacheKey()
+    {
+        $vars = $this->view->getVars();
+        $category = ifset($vars, 'category', array());
+        $mtime = !empty($category['edit_datetime'])
+            ? $category['edit_datetime']
+            : ifset($category, 'create_datetime', '0');
+        $routing = wa()->getRouting();
+        $route = $routing->getRoute();
+
+        return md5(implode('|', array(
+            $routing->getDomain(null, true),
+            ifset($route, 'url', ''),
+            waRequest::getTheme(),
+            ifset($category, 'id', 0),
+            $mtime,
+        )));
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getCachedCategoryHtml()
+    {
+        if (!$this->canUseCategoryCache()) {
+            return null;
+        }
+
+        $cache = new waSerializeCache(
+            $this->getCategoryCacheKey(),
+            self::CATEGORY_CACHE_TTL,
+            self::CATEGORY_CACHE_GROUP
+        );
+        if (!$cache->isCached()) {
+            return null;
+        }
+
+        $html = $cache->get();
+        return is_string($html) && $html !== '' ? $html : null;
+    }
+
+    protected function setCachedCategoryHtml($html)
+    {
+        if (!$this->canUseCategoryCache() || !is_string($html) || $html === '') {
+            return;
+        }
+
+        $cache = new waSerializeCache(
+            $this->getCategoryCacheKey(),
+            self::CATEGORY_CACHE_TTL,
+            self::CATEGORY_CACHE_GROUP
+        );
+        $cache->set($html);
+    }
 }

@@ -72,7 +72,8 @@
         clickmap:true,
         trackLinks:true,
         accurateTrackBounce:true,
-        webvisor:true
+        webvisor:false,
+        defer:true
     });
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/34079080" style="position:absolute; left:-9999px;" alt="Yandex.Metrika" /></div></noscript>
@@ -99,8 +100,8 @@
 <!-- VK ретаргет старый кабинет-->
 <!-- <script type="text/javascript">(window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p=VK-RTRG-232634-cUaQR';</script> -->
 
-<!-- VK ретаргет новый кабинет-->
-<script type="text/javascript">!function(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://vk.com/js/api/openapi.js?159",t.onload=function(){VK.Retargeting.Init("VK-RTRG-289950-djrJo"),VK.Retargeting.Hit()},document.head.appendChild(t)}();</script><noscript><img src="https://vk.com/rtrg?p=VK-RTRG-289950-djrJo" style="position:fixed; left:-999px;" alt="vk"/></noscript>
+<!-- VK ретаргет новый кабинет — после load, не блокирует DOMContentLoaded -->
+<script type="text/javascript">window.addEventListener('load',function(){!function(){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://vk.com/js/api/openapi.js?159",t.onload=function(){VK.Retargeting.Init("VK-RTRG-289950-djrJo"),VK.Retargeting.Hit()},document.head.appendChild(t)}();});</script><noscript><img src="https://vk.com/rtrg?p=VK-RTRG-289950-djrJo" style="position:fixed; left:-999px;" alt="vk"/></noscript>
 {/literal}
 
 {literal}
