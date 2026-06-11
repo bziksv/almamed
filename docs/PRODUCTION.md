@@ -69,6 +69,25 @@ chown -R almamed.su:almamed.su wa-cache wa-log
 Pull делать **от root** допустимо, но после — **обязательно chown**.  
 `php cli.php cache clear` — **только от пользователя `almamed.su`**, иначе кеш снова root-owned → «Ошибка #0» в магазине.
 
+### После деплоя — smoke + TTFB
+
+```bash
+curl -sS -L -o /dev/null -w "home %{http_code} %{time_starttransfer}s\n" \
+  -H "Host: almamed.su" -k https://213.139.209.184/
+curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" \
+  -H "Host: almamed.su" -k "https://213.139.209.184/category/ginekologiya/"
+curl -sS -o /dev/null -w "search %{time_starttransfer}s\n" \
+  -H "Host: almamed.su" -k "https://213.139.209.184/search/%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF/"
+curl -sS -o /dev/null -w "suggest %{time_total}s\n" \
+  -H "Host: almamed.su" -k "https://213.139.209.184/searchpro-plugin/suggest/?q=%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF"
+curl -sS -o /dev/null -w "static page %{time_starttransfer}s\n" \
+  -H "Host: almamed.su" -k "https://213.139.209.184/kontakty/"
+```
+
+SearchPro: в настройках витрины `use_v2=1`, `page_results_cache=86400`.
+
+Sitemap seofilter: URL фильтров в `https://almamed.su/filter-sitemap.xml` — добавить в Google Search Console отдельно (WA 1.14.4 не включает его в главный `sitemap.xml` автоматически).
+
 ---
 
 ## Файлы только на prod (не в git)

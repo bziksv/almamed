@@ -262,6 +262,35 @@ class shopProductbrandsPlugin extends shopPlugin
     }
 
     /**
+     * Список value_id => name для фичи «бренд» — отдельный кэш, чтобы cold /brands/ не тянул 1500+ values каждый раз.
+     *
+     * @param array $feature
+     * @param shopFeatureModel $feature_model
+     * @return array
+     */
+    protected static function getCachedBrandFeatureValues($feature, shopFeatureModel $feature_model)
+    {
+        if (wa()->getEnv() != 'frontend') {
+            return $feature_model->getFeatureValues($feature);
+        }
+
+        $cache = new waSerializeCache(
+            'feature_values_' . $feature['id'],
+            86400,
+            'shop/productbrands'
+        );
+        if ($cache->isCached()) {
+            $values = $cache->get();
+            return is_array($values) ? $values : array();
+        }
+
+        $values = $feature_model->getFeatureValues($feature);
+        $cache->set($values);
+
+        return $values;
+    }
+
+    /**
      * @param boolean $with_count
      * @return int[]
      */
@@ -368,7 +397,7 @@ class shopProductbrandsPlugin extends shopPlugin
 
         if ($feature) {
             $feature_model = new shopFeatureModel();
-            $brand_names = $feature_model->getFeatureValues($feature);
+            $brand_names = self::getCachedBrandFeatureValues($feature, $feature_model);
             $product_features_model = new shopProductFeaturesModel();
             $types = array();
             if (wa()->getEnv() == 'frontend' && waRequest::param('type_id') && is_array(waRequest::param('type_id'))) {
