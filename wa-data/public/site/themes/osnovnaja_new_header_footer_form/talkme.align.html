@@ -50,34 +50,6 @@
         transition: none;
     }
 
-    #almamed-cookie-consent .cookie-consent__chat {
-        flex-shrink: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        height: 40px;
-        padding: 0 16px;
-        border: none;
-        border-radius: 6px;
-        background: #0497C0;
-        color: #fff;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-        box-sizing: border-box;
-    }
-
-    #almamed-cookie-consent .cookie-consent__chat .material-icons {
-        font-size: 18px;
-        line-height: 1;
-    }
-
-    #almamed-cookie-consent .cookie-consent__chat:hover {
-        background: #036884;
-    }
-
     /* Скрываем плавающую кнопку Talk-Me на ПК — используем «Напишите нам» в футере */
     body.almamed-custom-chat .online-chat-root .online-chat-trigger,
     body.almamed-custom-chat .online-chat-root .trigger-classic,
@@ -89,12 +61,6 @@
     }
 }
 
-@media only screen and (max-width: 768px) {
-    #almamed-cookie-consent .cookie-consent__chat {
-        width: calc(100% - 48px);
-        margin-left: 48px;
-    }
-}
 </style>
 
 <script>
@@ -114,7 +80,7 @@
     }
 
     function getChatButton() {
-        return document.querySelector('#footer-pane .almamed-chat-open') || document.querySelector('.almamed-chat-open');
+        return document.querySelector('#footer-pane .almamed-chat-open');
     }
 
     function alignTriggerToFooter() {
@@ -199,7 +165,7 @@
     }
 
     document.addEventListener('click', function(e) {
-        var btn = e.target.closest('.almamed-chat-open');
+        var btn = e.target.closest('#footer-pane .almamed-chat-open');
         if (!btn) {
             return;
         }
@@ -212,7 +178,7 @@
         if (!isDesktop()) {
             return;
         }
-        if (e.target.closest('.almamed-chat-open')) {
+        if (e.target.closest('#footer-pane .almamed-chat-open')) {
             cancelCloseMenu();
             openTalkMeMenu();
             return;
@@ -227,7 +193,7 @@
             return;
         }
 
-        if (e.target.closest('.almamed-chat-open')) {
+        if (e.target.closest('#footer-pane .almamed-chat-open')) {
             scheduleCloseMenu();
             return;
         }
