@@ -333,47 +333,8 @@ class shopSearchproPluginFrontendDropdownController extends waController
 
 	public function execute()
 	{
-		if (shopSearchproV2Settings::isUseV2()) {
-			$controller = new shopSearchproPluginFrontendSuggestController();
-			$controller->execute();
-			return;
-		}
-
-		$products = $this->find('products');
-
-		$categories = $this->find('categories', array($this, 'workupCategories'), array(
-			'status' => $this->getSettings('dropdown_categories_products_status'),
-			'seo_names' => $this->isCategoriesUseSeoNames(),
-			'finder' => $this->getFinder(),
-			'products' => $products,
-			'env' => $this->getEnv()
-		));
-
-		$brands = $this->find('brands');
-		$history = $this->find('history');
-		$popular = $this->find('popular');
-		$data = array(
-			'products' => $products,
-			'categories' => $categories,
-			'brands' => $brands,
-			'history' => $history,
-			'popular' => $popular
-		);
-
-		$results = array();
-
-		$sort = $this->getSettings('dropdown_entities_sort');
-		foreach($sort as $entity) {
-			if(array_key_exists($entity, $data)) {
-				$results[$entity] = $data[$entity];
-			}
-		}
-
-		$this->setResults($results);
-
-		$this->setCount($this->getFinder()->getCount('products'));
-
-		$this->output();
+		$controller = new shopSearchproPluginFrontendSuggestController();
+		$controller->execute();
 	}
 
 	protected function output()

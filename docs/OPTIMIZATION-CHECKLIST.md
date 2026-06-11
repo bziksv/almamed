@@ -18,8 +18,8 @@
 | 3c | Shop / SearchPro | Шаблон: `$wa->shop->category()` в цикле | ✅ | `searchpro_plugin_page.html` |
 | 3d | Shop / категория / SEO | N+1 `extendCategory()` в сетке подкатегорий | ✅ | `getCategorySeoNamesByIds()` |
 | 4 | Shop / `/brands/` / productbrands | 1504 бренда в одном HTML (547 KB) | ✅ | Пагинация 120/стр → **~169 KB**; стили `block paging-nav` |
-| 5 | Shop / SearchPro | Кэш результатов страницы (`page_results_cache`) | 🟡 | См. раздел ниже — уже включён, узкое место не только кэш |
-| 6 | Shop / SearchPro | Рендер страницы после finder (HTML + категории) | 🟡 | Кэш `page_html_*` + `page_cats_*`; fast path SQL; warm **~1.5 s** (было ~2.8 s) |
+| 5 | Shop / SearchPro | Кэш результатов страницы (`page_results_cache`) | ✅ | 86400 s prod; finder warm ~11 ms |
+| 6 | Shop / SearchPro | Рендер страницы после finder (HTML + категории) | ✅ | `page_full_*` + v2; warm search **~0.09 s** local |
 | 7 | Shop / productbrands | `getBrands()` грузит **все** бренды в память на каждый запрос | ✅ | `getBrandsPage()` + кэш `feature_values_*` 24 ч (cold sorted_ids без повторного getFeatureValues) |
 | 8 | Shop / productbrands | Шаблон брендов в БД: `src` + `data-src` на каждом `<img>` | ✅ | Убран `data-src`, `loading="lazy"` в action |
 | 9 | Shop / sitemap | `sitemap-shop-1.xml` ~3.7 MB | ✅ | Seofilter URL **убраны** из `sitemap-shop-1`; фильтры → `/filter-sitemap.xml` (отдельный index, до 10k URL/стр.) |
@@ -28,6 +28,9 @@
 | 12 | Shop / категория | `getTagsByCategory()` — params всех подкатегорий дерева | ✅ | 1 SQL вместо N× `get()` при `meta=true` |
 | 13 | Site / page cache | Статические shop-страницы без кэша | ✅ | `shopFrontendPageAction` — full HTML cache 1 ч; warm **~0.03 s** (dostavka) |
 | 14 | Site / шапка | SearchPro: иконка лупы на кнопке | ✅ | Белая на бирюзовом фоне |
+| 15 | Shop / категория | Full HTML cache гостей (15 мин) | ✅ | Fix ключа + readable fallback; warm TTFB **~0.01 s**; `X-Shop-Cache: category-hit` |
+| 16 | Site / frontend | defer JS, third-party после load | ✅ | Metrika/VK/Roistat/Talk-Me; preconnect fonts |
+| 17 | Site / slider | FOUC баннера при load | ✅ | Sync lightslider CSS/JS; 1-й слайд до init |
 
 **Легенда:** ✅ сделано · 🟡 частично / проверено · ⏳ в очереди
 
@@ -109,10 +112,10 @@ CLI-компоненты (warm finder ~11 ms, `getCollectionCategories` ~2 ms): 
 
 ```bash
 ./start-dev.sh
-curl -sS -o /dev/null -w "home %{time_starttransfer}s\n" http://localhost:8080/
-curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" http://localhost:8080/category/ginekologiya/
-curl -sS -o /dev/null -w "search %{time_starttransfer}s\n" "http://localhost:8080/search/%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF/"
-curl -sS -o /dev/null -w "brands %{size_download}B %{time_starttransfer}s\n" http://localhost:8080/brands/
+./.local/regression-perf.sh
+
+# prod (с сервера):
+BASE_URL=https://213.139.209.184 HOST_HEADER=almamed.su ./.local/regression-perf.sh
 ```
 
 Категория с `meta=true` / `rec01` — вручную. См. [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md).
@@ -130,4 +133,5 @@ curl -sS -o /dev/null -w "brands %{size_download}B %{time_starttransfer}s\n" htt
 | 2026-06-11 | Cold suggest: grams/combine off in dropdown, getProductsSuggest, categories from products, sidebar tree cache |
 | 2026-06-11 | П.6 — SearchPro: кэш page_html/page_cats, fast path категорий, упрощён SQL |
 | 2026-06-11 | П.13 — HTML cache shop info pages; п.7 — кэш feature_values брендов 24 ч |
-| 2026-06-11 | П.9–10 — seofilter: ранний 404 в routing; sitemap фильтров в `filter-sitemap-*.xml` |
+| 2026-06-11 | П.15–17 — category HTML cache, defer third-party, FOUC slider; deploy `webasyst clearCache` |
+| 2026-06-11 | П.5–6 SearchPro v2 — warm search ~0.09 s, suggest ~20 ms |

@@ -289,21 +289,18 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	protected function getCachedPageShell(array $vars)
 	{
-		$cache_key = null;
-		if ($this->isUseV2()) {
-			$cache_key = $this->getPageService()->getFullPageCacheKey(
-				$this->query,
-				$this->category_id,
-				$this->getEnv(),
-				array(
-					'is_empty' => $this->isEmpty(),
-					'is_ajax' => $this->isAjax(),
-					'category_mode' => $this->getCategoryMode(),
-					'category_inline_mode_style' => $this->getCategoryInlineModeStyle(),
-					'filter_position' => $this->getSettings('design_filter_position'),
-				)
-			);
-		}
+		$cache_key = $this->getPageService()->getFullPageCacheKey(
+			$this->query,
+			$this->category_id,
+			$this->getEnv(),
+			array(
+				'is_empty' => $this->isEmpty(),
+				'is_ajax' => $this->isAjax(),
+				'category_mode' => $this->getCategoryMode(),
+				'category_inline_mode_style' => $this->getCategoryInlineModeStyle(),
+				'filter_position' => $this->getSettings('design_filter_position'),
+			)
+		);
 
 		if ($cache_key) {
 			$cache = $this->getPageSerializeCache('page_full_' . $cache_key);
@@ -384,9 +381,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	public function executeDefault()
 	{
-		$js_assets = $this->isUseV2()
-			? array('page-v2', 'filters-v2')
-			: array('page');
+		$js_assets = array('page-v2', 'filters-v2');
 
 		$assets = array(
 			'js' => $js_assets,
@@ -439,13 +434,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	protected function saveQuery($count = null)
 	{
-		if ($this->isUseV2()) {
-			$this->getPageService()->scheduleQueryLog($this->query, $this->category_id, $count);
-			return;
-		}
-
-		$this->getQueryStorage()->save($this->query, $this->category_id, $count);
-		$this->getEnv()->pushSearchHistory($this->query);
+		$this->getPageService()->scheduleQueryLog($this->query, $this->category_id, $count);
 	}
 
 	protected function workupFilters($id)
@@ -454,7 +443,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 			return;
 		}
 
-		if ($this->isUseV2() && !$this->getPageService()->shouldBuildFilters()) {
+		if (!$this->getPageService()->shouldBuildFilters()) {
 			return;
 		}
 
@@ -778,12 +767,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 	protected function getFinder()
 	{
 		if(!isset($this->finder)) {
-			if ($this->isUseV2()) {
-				$this->finder = $this->getPageService()->getFinder($this->category_id);
-			} else {
-				$params = $this->getFinderParams();
-				$this->finder = new shopSearchproFinder($params);
-			}
+			$this->finder = $this->getPageService()->getFinder($this->category_id);
 		}
 
 		return $this->finder;
@@ -979,7 +963,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	private function getFilters()
 	{
-		if ($this->isUseV2() && !$this->getPageService()->shouldBuildFilters()) {
+		if (!$this->getPageService()->shouldBuildFilters()) {
 			return array();
 		}
 

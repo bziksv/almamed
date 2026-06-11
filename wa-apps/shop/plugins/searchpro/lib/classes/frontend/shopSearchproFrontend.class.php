@@ -94,8 +94,7 @@ class shopSearchproFrontend
 			}
 		}
 
-		$skip_init = shopSearchproV2Settings::isUseV2()
-			|| !empty($this->is_disabled_assets['init']);
+		$skip_init = !empty($this->is_disabled_assets['init']);
 
 		if (!$skip_init && (!waRequest::isXMLHttpRequest() || waRequest::get('shop_searchpro_init'))) {
 			$output_assets['init'] = array(
@@ -366,28 +365,9 @@ class shopSearchproFrontend
 
 		$popular = null;
 		$is_popular = (bool) $this->getSettings('page_empty_popular_status');
-		if($is_popular) {
+		if ($is_popular) {
 			$popular_max_count = (int) $this->getSettings('page_empty_popular_max_length');
-
-			if (shopSearchproV2Settings::isUseV2()) {
-				$popular = shopSearchproV2Factory::popularService()->getTop($popular_max_count);
-			} else {
-				$results_route_url = $this->getEnv()->getRouteUrl('shop/frontend/page/', array('plugin' => 'searchpro'));
-
-				$popular = $this->getQueryModel()->getVisible($popular_max_count);
-
-				foreach($popular as &$entity) {
-					$url = $results_route_url;
-					$encoded_query = urlencode($entity['query']);
-					if($entity['category_id']) {
-						$url .= "/{$entity['category_id']}";
-					}
-					$url .= "/{$encoded_query}/";
-
-					$entity['name'] = $entity['query'];
-					$entity['url'] = $url;
-				}
-			}
+			$popular = shopSearchproV2Factory::popularService()->getTop($popular_max_count);
 		}
 
 		$vars['popular'] = $popular;
@@ -488,153 +468,11 @@ class shopSearchproFrontend
 
 	public function field($params = array())
 	{
-		if(!$this->getSettings('status')) {
+		if (!$this->getSettings('status')) {
 			return '';
 		}
 
-		if (shopSearchproV2Settings::isUseV2()) {
-			return (new shopSearchproV2FieldRenderer($this))->render($params);
-		}
-
-		$assets = array();
-		if(empty($this->is_disabled_assets['field'])) {
-			$css = array();
-			if($this->getSettings('design_custom_fonts_status')) {
-				$css[] = 'fonts';
-			}
-			$css[] = 'field';
-
-			$assets = array(
-				'js' => array('field'),
-				'css' => empty($params['no_css']) ? $css : array()
-			);
-		}
-
-		$category_filter_status = (bool) $this->getSettings('category_filter_status');
-		$category_filter_deep = (int) $this->getSettings('category_filter_deep');
-
-		$vars['category_filter_status'] = $category_filter_status;
-		$vars['category_filter_deep'] = $category_filter_deep;
-
-		$vars['query'] = '';
-		if(waRequest::param('query')) {
-			$vars['query'] = waRequest::param('query');
-		}
-
-		if(waRequest::param('action') === 'category') {
-			$url_field = waRequest::param('url_type') == 1 ? 'url' : 'full_url';
-			$category_url = waRequest::param('category_url');
-
-			if($category_url) {
-				$category_model = new shopCategoryModel();
-				$category = $category_model->getByField($url_field, $category_url);
-
-				$vars['selected_category'] = $category;
-				$vars['is_in_category'] = true;
-			}
-		} else {
-			$vars['is_in_category'] = false;
-		}
-
-		if($category_filter_status) {
-			$source_categories = $this->getCachedCategoryTree($category_filter_deep);
-			$stack = array();
-			$categories = array();
-			foreach($source_categories as $key => $category) {
-				$is_hidden_parent = $category['parent_id'] && $category['id'] && !isset($source_categories[$category['parent_id']]);
-
-				if($category['status'] === '0' || $is_hidden_parent) {
-					continue;
-				}
-
-				$category['childs'] = array();
-
-				$l = count($stack);
-
-				while($l > 0 && $stack[$l - 1]['depth'] >= $category['depth']) {
-					array_pop($stack);
-					$l--;
-				}
-
-				if ($l == 0) {
-					$i = count($categories);
-					$categories[$i] = $category;
-					$stack[] = &$categories[$i];
-				} else {
-					$i = count($stack[$l - 1]['childs']);
-					$stack[$l - 1]['childs'][$i] = $category;
-					$stack[] = &$stack[$l - 1]['childs'][$i];
-				}
-			}
-
-			$vars['categories'] = $categories;
-		}
-
-		$vars['placeholder'] = $this->getSettings('placeholder');
-		$vars['button'] = $this->getSettings('button');
-
-		$uniqid = uniqid('searchpro-field-wrapper-');
-		$vars['uniqid'] = $uniqid;
-
-		$dropdown_status = (bool) $this->getSettings('dropdown_status');
-		$category_status = (bool) $this->getSettings('category_filter_status');
-		$dropdown_min_length = (int) $this->getSettings('dropdown_min_length');
-		$popular_status = (bool) $this->getSettings('dropdown_popular_is_visible');
-		$popular_max_count = (int) $this->getSettings('dropdown_popular_max_count');
-		$history_status = (bool) $this->getSettings('dropdown_history_is_visible');
-		$history_search_status = (bool) $this->getSettings('dropdown_history_status');
-		$history_max_count = (int) $this->getSettings('dropdown_history_max_count');
-		$history_cookie_key = shopSearchproEnv::HISTORY_COOKIE_KEY;
-		$clear_button_status = (bool) $this->getSettings('clear_button');
-		$params = compact('dropdown_status', 'category_status', 'dropdown_min_length', 'history_cookie_key', 'popular_status', 'popular_max_count', 'history_status', 'history_search_status', 'history_max_count', 'clear_button_status');
-
-		if($history_status || $popular_status) {
-			$helper_params = array(
-				'history' => array(
-					'status' => $history_status,
-					'max' => $history_max_count
-				),
-				'popular' => array(
-					'status' => $popular_status,
-					'max' => $popular_max_count
-				)
-			);
-			$params['helper_url'] = $this->getEnv()->getRouteUrl('shop/frontend/helper', array('plugin' => 'searchpro'), true);
-			$params['helper_dropdown'] = array(
-				'current' => '',
-				'template' => $this->helperDropdown($helper_params, true)
-			);
-		}
-
-		$vars['params'] = $params;
-
-		return $this->outputFrontend($this->getPluginPath() . 'templates/actions/frontend/FrontendField.html', $assets, $vars, array(
-			'class' => 'js-searchpro__field-wrapper',
-			'id' => $uniqid
-		));
-	}
-
-	protected function getCachedCategoryTree($depth)
-	{
-		if (shopSearchproV2Settings::isUseV2()) {
-			return shopSearchproV2Factory::categoryTreeService()->getFlatTree($depth);
-		}
-
-		$route = $this->getEnv()->getCurrentStorefront();
-		$cache_key = 'tree_' . md5($route . '|' . (int) $depth);
-		$cache = new waSerializeCache($cache_key, 3600, 'shop/searchpro/categories');
-
-		if ($cache->isCached()) {
-			$cached = $cache->get();
-			if (is_array($cached)) {
-				return $cached;
-			}
-		}
-
-		$data = $this->getEnv()->getCategoryModel()->getTree(0, $depth, true, $route);
-		$cache->set($data);
-
-		return $data;
+		return (new shopSearchproV2FieldRenderer($this))->render($params);
 	}
 
 	public function fetchTemplate($path, array $vars = array())
@@ -655,22 +493,5 @@ class shopSearchproFrontend
 		$view->assign(compact('content', 'wrapper', 'data'));
 
 		return $view->fetch($this->getPluginPath() . 'templates/actions/frontend/FrontendOutputV2.html');
-	}
-
-	protected function outputFrontend($content, $assets = array(), $vars = array(), $wrapper = null, $data = array())
-	{
-		$view = $this->getView();
-		$view->assign('assets', $assets);
-
-		$assets_links = $this->getAssets($assets);
-		$view->assign('assets_links', $assets_links);
-
-		$view->assign($vars);
-
-		$content = $view->fetch($content);
-
-		$view->assign(compact('content', 'wrapper', 'data'));
-
-		return $view->fetch($this->getTemplatePath('Output'));
 	}
 }

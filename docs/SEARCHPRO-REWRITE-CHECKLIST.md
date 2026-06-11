@@ -246,7 +246,7 @@ lib/
 
 - [ ] **7.4** Удалить: `FrontendOutput.html`, `shopSearchproSmartyResource`, duplicate template layers
 
-- [ ] **7.5** Удалить legacy JS: ~~`frontend.suggest-render.js`~~, ~~`frontend.field-init.js`~~ ✅; **`frontend.field.js`**, **`frontend.page.js`** — после регрессии (fallback при `use_v2=0`)
+- [x] **7.5** Удалить legacy JS: ~~`frontend.suggest-render.js`~~, ~~`frontend.field-init.js`~~ ✅; **`frontend.field.js`**, **`frontend.page.js`** ✅ (−512 KB)
 
 - [ ] **7.6** Упростить settings UI — скрыть неиспользуемые corrector combine modes
 
@@ -278,14 +278,11 @@ lib/
 
 ```bash
 # TTFB — SearchPro не должен добавлять >50ms к категории после фазы 2
+./.local/regression-perf.sh
+
+# или вручную:
 curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" \
   http://localhost:8080/category/veterinariya/
-
-curl -sS -o /dev/null -w "suggest warm %{time_total}s\n" \
-  "http://localhost:8080/searchpro-plugin/suggest/?q=стетоскоп"
-
-curl -sS -o /dev/null -w "search warm %{time_starttransfer}s\n" \
-  "http://localhost:8080/search/%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF/"
 ```
 
 ### CLI профайлеры
@@ -293,7 +290,7 @@ curl -sS -o /dev/null -w "search warm %{time_starttransfer}s\n" \
 - `.local/profile-searchpro.php` — finder/page
 - `.local/profile-searchpro-field.php` — field() cost
 
-### Ручные сценарии
+### Ручные сценарии (фаза 9 — проверить в браузере после деплоя)
 
 - [ ] Поиск кириллица / латиница / опечатка раскладки
 - [ ] Поиск внутри категории (category filter)
@@ -302,6 +299,7 @@ curl -sS -o /dev/null -w "search warm %{time_starttransfer}s\n" \
 - [ ] Mobile: поле в header + mobile pane — **один** instance JS
 - [ ] Breadcrumbs на `/search/.../`
 - [ ] Цена «по запросу» в suggest (price ≤ 0)
+- [ ] Баннер-слайдер: нет «стопки» баннеров при загрузке
 
 ---
 
@@ -363,14 +361,14 @@ curl -sS -o /dev/null -w "search warm %{time_starttransfer}s\n" \
 | 0 | ✅ | 2026-06-11 |
 | 1 | ✅ | 2026-06-11 |
 | 2 | ✅ | 2026-06-11 |
-| 3 | ⏳ | |
-| 4 | ⏳ | |
-| 5 | ⏳ | |
-| 6 | ⏳ | |
-| 7 | ⏳ | |
-| 8 | ⏳ | |
-| 9 | ⏳ | |
-| 10 | ⏳ | |
+| 3 | ✅ | 2026-06-11 |
+| 4 | ✅ | 2026-06-11 |
+| 5 | ✅ | 2026-06-11 |
+| 6 | ✅ | 2026-06-11 |
+| 7 | 🟡 | 7.5 ✅ legacy JS удалён; detector/finders — позже |
+| 8 | ✅ | 2026-06-11 |
+| 9 | 🟡 | auto: `.local/regression-perf.sh` ✅; ручные сценарии ниже |
+| 10 | 🟡 | prod: use_v2=1, GSC filter-sitemap, мониторинг |
 
 **Легенда:** ⏳ не начато · 🟡 в работе · ✅ готово
 
