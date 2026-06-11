@@ -1,12 +1,14 @@
 {literal}
-<!-- Сервис roistat -->
+<!-- Сервис roistat — после load -->
 <script>
+window.addEventListener('load', function() {
 (function(w, d, s, h, id) {
     w.roistatProjectId = id; w.roistatHost = h;
     var p = d.location.protocol == "https:" ? "https://" : "http://";
     var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href);
     var js = d.createElement(s); js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);
 })(window, document, 'script', 'cloud.roistat.com', '8615773304e6306d7dd2703cf1a28713');
+}, { once: true });
 </script>
 <!-- Roistat Counter End -->
 
@@ -15,23 +17,35 @@
 <!-- Виджет подписки Sendpulse  -->
 <!-- <script src="//web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="efb28995705c90d2ff723b7182e24071cc21cda39d619b0c0bdbb51e0118559d"></script>  -->
 
-<!-- Виджет talk-me.ru  -->
-<!-- Begin Talk-Me {literal} -->
+<!-- Виджет talk-me.ru — после первого взаимодействия или через 8 с -->
+<!-- Begin Talk-Me -->
 <script>
-setTimeout(function(){
-  (function(){(function c(d,w,m,i) {
+(function() {
+  var loaded = false;
+  function loadTalkMe() {
+    if (loaded) { return; }
+    loaded = true;
+    (function(){(function c(d,w,m,i) {
       window.supportAPIMethod = m;
       var s = d.createElement('script');
-      s.id = 'supportScript'; 
+      s.id = 'supportScript';
       var id = '31b1fbfef36756cc1a2e078bb4899fa9';
       s.src = (!i ? 'https://lcab.talk-me.ru/support/support.js' : 'https://static.site-chat.me/support/support.int.js') + '?h=' + id;
+      s.async = true;
       s.onerror = i ? undefined : function(){c(d,w,m,true)};
       w[m] = w[m] ? w[m] : function(){(w[m].q = w[m].q ? w[m].q : []).push(arguments);};
       (d.head ? d.head : d.body).appendChild(s);
-  })(document,window,'TalkMe')})();
-}, 3000); // Загрузить через 3 секунды после готовности страницы
+    })(document,window,'TalkMe')})();
+  }
+  ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(function(ev) {
+    window.addEventListener(ev, loadTalkMe, { once: true, passive: true });
+  });
+  window.addEventListener('load', function() {
+    setTimeout(loadTalkMe, 8000);
+  }, { once: true });
+})();
 </script>
-<!-- {/literal} End Talk-Me -->
+<!-- End Talk-Me -->
 
 
 

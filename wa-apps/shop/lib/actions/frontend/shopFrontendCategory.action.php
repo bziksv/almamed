@@ -413,7 +413,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
         if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
             return false;
         }
-        if (waRequest::method() !== waRequest::METHOD_GET || waRequest::get()) {
+        if (waRequest::method() !== 'get' || waRequest::get()) {
             return false;
         }
         if (!waRequest::param('category_url') && !waRequest::param('category_id')) {

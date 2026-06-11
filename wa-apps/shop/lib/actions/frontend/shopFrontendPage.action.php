@@ -62,7 +62,7 @@ class shopFrontendPageAction extends waPageAction
         if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
             return false;
         }
-        if (waRequest::method() !== waRequest::METHOD_GET || waRequest::get()) {
+        if (waRequest::method() !== 'get' || waRequest::get()) {
             return false;
         }
         if (!waRequest::param('page_id')) {
