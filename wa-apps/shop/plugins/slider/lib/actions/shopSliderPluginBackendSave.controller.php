@@ -23,13 +23,17 @@ class shopSliderPluginBackendSaveController extends waJsonController
         $img_mobile = $this->processImageField('img_mobile', waRequest::post('img_mobile_path'));
 
         $existing = array();
-        foreach ($model->fetchAll() as $record) {
+        foreach ($model->order('sort ASC')->fetchAll() as $record) {
             $existing[$record['id']] = $record;
         }
 
+        $table_fields = $this->getTableFields($model);
         $kept_ids = array();
 
         foreach ($img as $key => $db) {
+            if (!$db) {
+                continue;
+            }
             $tablet = ifset($img_tablet, $key, '');
             $mobile = ifset($img_mobile, $key, '');
 
@@ -72,14 +76,14 @@ class shopSliderPluginBackendSaveController extends waJsonController
             if ($slide_id && isset($existing[$slide_id])) {
                 $data['views_count'] = (int) ifset($existing[$slide_id], 'views_count', 0);
                 $data['clicks_count'] = (int) ifset($existing[$slide_id], 'clicks_count', 0);
-                $model->updateById($slide_id, $data);
+                $model->updateById($slide_id, $this->filterDataByTableFields($data, $table_fields));
                 $kept_ids[] = $slide_id;
                 continue;
             }
 
             $data['views_count'] = 0;
             $data['clicks_count'] = 0;
-            $kept_ids[] = $model->insert($data);
+            $kept_ids[] = $model->insert($this->filterDataByTableFields($data, $table_fields));
         }
 
         foreach ($existing as $id => $record) {
@@ -96,6 +100,11 @@ class shopSliderPluginBackendSaveController extends waJsonController
         $files = array();
 
         if (!isset($_FILES[$field]['error']) || !is_array($_FILES[$field]['error'])) {
+            if (is_array($paths)) {
+                foreach ($paths as $key => $path) {
+                    $files[$key] = $path;
+                }
+            }
             return $files;
         }
 
@@ -117,11 +126,16 @@ class shopSliderPluginBackendSaveController extends waJsonController
 
             waFiles::create(wa()->getConfig()->getPath('data') . '/public/shop/slider/img');
 
-            shopSliderImageOptimizer::saveUploaded(
-                $_FILES[$field]['tmp_name'][$key],
-                $files_root,
-                $field
-            );
+            if (class_exists('shopSliderImageOptimizer')) {
+                shopSliderImageOptimizer::saveUploaded(
+                    $_FILES[$field]['tmp_name'][$key],
+                    $files_root,
+                    $field
+                );
+            } else {
+                $image = waImage::factory($_FILES[$field]['tmp_name'][$key]);
+                $image->save($files_root, 85);
+            }
 
             if ($field === 'img') {
                 shopSliderResponsiveImages::generateFromDesktop($public_path, true);
@@ -167,5 +181,25 @@ class shopSliderPluginBackendSaveController extends waJsonController
             'id' => null,
             'name' => $fallback_name,
         );
+    }
+
+    protected function getTableFields(shopSliderModel $model)
+    {
+        static $fields = null;
+        if ($fields !== null) {
+            return $fields;
+        }
+
+        $fields = array();
+        foreach ($model->query('SHOW COLUMNS FROM shop_slider')->fetchAll() as $row) {
+            $fields[$row['Field']] = true;
+        }
+
+        return $fields;
+    }
+
+    protected function filterDataByTableFields(array $data, array $fields)
+    {
+        return array_intersect_key($data, $fields);
     }
 }
