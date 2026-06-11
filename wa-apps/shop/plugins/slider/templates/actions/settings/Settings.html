@@ -71,66 +71,67 @@
                 </header>
 
                 <div class="slider-card__body">
-                    <section class="slider-section">
+                    <section class="slider-section slider-section--full">
                         <h3 class="slider-section__title">Основное</h3>
-                        <div class="slider-fields">
-                            <div class="field">
-                                <div class="name">Сортировка</div>
-                                <div class="value">
-                                    <input type="number" class="short" name="sort[]" value="{$form.sort|escape}" min="0" step="1">
+                        <div class="slider-form">
+                            <div class="slider-form__row">
+                                <label class="slider-form__label">Сортировка</label>
+                                <div class="slider-form__control slider-form__control--short">
+                                    <input type="number" name="sort[]" value="{$form.sort|escape}" min="0" step="1">
                                 </div>
                             </div>
-                            <div class="field">
-                                <div class="name">Ссылка</div>
-                                <div class="value">
-                                    <input type="text" class="long" name="link[]" value="{$form.link|escape}" placeholder="/category/... или https://">
+                            <div class="slider-form__row">
+                                <label class="slider-form__label">Ссылка</label>
+                                <div class="slider-form__control">
+                                    <input type="text" name="link[]" value="{$form.link|escape}" placeholder="/category/... или https://">
                                 </div>
                             </div>
-                            <div class="field">
-                                <div class="name">Alt-текст</div>
-                                <div class="value">
-                                    <input type="text" class="long" name="alt[]" value="{$form.alt|escape}" placeholder="Описание для SEO и доступности">
+                            <div class="slider-form__row">
+                                <label class="slider-form__label">Alt-текст</label>
+                                <div class="slider-form__control">
+                                    <input type="text" name="alt[]" value="{$form.alt|escape}" placeholder="Описание для SEO и доступности">
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <section class="slider-section">
-                        <h3 class="slider-section__title">Срок показа</h3>
-                        <div class="slider-fields slider-fields--inline">
-                            <div class="field">
-                                <div class="name">С</div>
-                                <div class="value">
+                    <div class="slider-card__columns">
+                        <section class="slider-section">
+                            <h3 class="slider-section__title">Срок показа</h3>
+                            <div class="slider-dates">
+                                <label class="slider-dates__item">
+                                    <span class="slider-dates__label">С</span>
                                     <input type="date" name="date_from[]" value="{$form.date_from|default:''|escape}">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="name">По</div>
-                                <div class="value">
+                                </label>
+                                <label class="slider-dates__item">
+                                    <span class="slider-dates__label">По</span>
                                     <input type="date" name="date_to[]" value="{$form.date_to|default:''|escape}">
-                                </div>
+                                </label>
                             </div>
-                        </div>
-                        <p class="hint">Пустые даты — без ограничения по сроку.</p>
-                    </section>
+                            <p class="hint">Пустые даты — без ограничения по сроку.</p>
+                        </section>
 
-                    <section class="slider-section">
-                        <h3 class="slider-section__title">Ответственные</h3>
-                        <div class="slider-fields">
-                            <div class="field">
-                                <div class="name">Менеджер по продажам</div>
-                                <div class="value">
-                                    <input type="text" name="sales_manager[]" value="{$form.sales_manager|default:''|escape}" placeholder="Кто подготовил информацию">
+                        <section class="slider-section">
+                            <h3 class="slider-section__title">Ответственные</h3>
+                            <div class="slider-form">
+                                <div class="slider-form__row slider-form__row--stack">
+                                    <label class="slider-form__label">Менеджер по продажам</label>
+                                    <div class="slider-form__control slider-user-wrap">
+                                        <input type="hidden" name="sales_manager_id[]" value="{$form.sales_manager_id|default:''|escape}" class="slider-user-id">
+                                        <input type="text" class="slider-user-input" name="sales_manager[]" value="{$form.sales_manager_label|escape}" placeholder="Начните вводить имя или email" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="slider-form__row slider-form__row--stack">
+                                    <label class="slider-form__label">Контент-менеджер</label>
+                                    <div class="slider-form__control slider-user-wrap">
+                                        <input type="hidden" name="content_manager_id[]" value="{$form.content_manager_id|default:''|escape}" class="slider-user-id">
+                                        <input type="text" class="slider-user-input" name="content_manager[]" value="{$form.content_manager_label|escape}" placeholder="Начните вводить имя или email" autocomplete="off">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <div class="name">Контент-менеджер</div>
-                                <div class="value">
-                                    <input type="text" name="content_manager[]" value="{$form.content_manager|default:''|escape}" placeholder="Кто разместил баннер">
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                            <p class="hint">Выберите пользователя из подсказок — сохранится привязка к контакту.</p>
+                        </section>
+                    </div>
 
                     <section class="slider-section slider-section--stats">
                         <h3 class="slider-section__title">Статистика</h3>
@@ -399,18 +400,25 @@
 }
 .slider-card__body {
     padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.slider-card__columns {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px 24px;
 }
+.slider-section--full {
+    width: 100%;
+}
 .slider-section {
     min-width: 0;
 }
-.slider-section--stats {
-    grid-column: 1 / -1;
-}
-.slider-section--banners {
-    grid-column: 1 / -1;
+.slider-section .hint {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #999;
 }
 .slider-section__title {
     margin: 0 0 10px;
@@ -420,27 +428,71 @@
     letter-spacing: .03em;
     color: #888;
 }
-.slider-fields .field {
-    margin-bottom: 8px;
+.slider-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-.slider-fields .field:last-child {
-    margin-bottom: 0;
+.slider-form__row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 10px 14px;
+    align-items: center;
 }
-.slider-fields .field .name {
-    width: 140px;
+.slider-form__row--stack {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    align-items: stretch;
+}
+.slider-form__label {
     font-size: 13px;
+    color: #555;
+    margin: 0;
 }
-.slider-fields--inline {
+.slider-form__control input[type=text],
+.slider-form__control input[type=number],
+.slider-form__control input[type=date] {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.slider-form__control--short input {
+    max-width: 100px;
+}
+.slider-dates {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px 24px;
+    gap: 12px 16px;
+    align-items: center;
 }
-.slider-fields--inline .field {
-    margin-bottom: 0;
+.slider-dates__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
 }
-.slider-fields--inline .field .name {
-    width: auto;
+.slider-dates__label {
+    font-size: 13px;
+    color: #555;
     min-width: 24px;
+}
+.slider-dates__item input[type=date] {
+    width: 160px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.slider-user-wrap {
+    position: relative;
+}
+.slider-user-input {
+    width: 100%;
+    box-sizing: border-box;
+}
+.slider-section--stats {
+    width: 100%;
+}
+.slider-section--banners {
+    width: 100%;
 }
 .slider-metrics {
     display: flex;
@@ -541,8 +593,12 @@
     border-top: 1px solid #e0e0e0;
 }
 @media (max-width: 900px) {
-    .slider-card__body {
+    .slider-card__columns {
         grid-template-columns: 1fr;
+    }
+    .slider-form__row {
+        grid-template-columns: 1fr;
+        gap: 4px;
     }
     .slider-banners {
         grid-template-columns: 1fr;
@@ -575,29 +631,44 @@
         </div>
     </header>
     <div class="slider-card__body">
-        <section class="slider-section">
+        <section class="slider-section slider-section--full">
             <h3 class="slider-section__title">Основное</h3>
-            <div class="slider-fields">
-                <div class="field"><div class="name">Сортировка</div><div class="value"><input type="number" class="short" name="sort[]" value="" min="0" step="1"></div></div>
-                <div class="field"><div class="name">Ссылка</div><div class="value"><input type="text" class="long" name="link[]" value="" placeholder="/category/... или https://"></div></div>
-                <div class="field"><div class="name">Alt-текст</div><div class="value"><input type="text" class="long" name="alt[]" value="" placeholder="Описание для SEO и доступности"></div></div>
+            <div class="slider-form">
+                <div class="slider-form__row"><label class="slider-form__label">Сортировка</label><div class="slider-form__control slider-form__control--short"><input type="number" name="sort[]" value="" min="0" step="1"></div></div>
+                <div class="slider-form__row"><label class="slider-form__label">Ссылка</label><div class="slider-form__control"><input type="text" name="link[]" value="" placeholder="/category/... или https://"></div></div>
+                <div class="slider-form__row"><label class="slider-form__label">Alt-текст</label><div class="slider-form__control"><input type="text" name="alt[]" value="" placeholder="Описание для SEO и доступности"></div></div>
             </div>
         </section>
-        <section class="slider-section">
-            <h3 class="slider-section__title">Срок показа</h3>
-            <div class="slider-fields slider-fields--inline">
-                <div class="field"><div class="name">С</div><div class="value"><input type="date" name="date_from[]" value=""></div></div>
-                <div class="field"><div class="name">По</div><div class="value"><input type="date" name="date_to[]" value=""></div></div>
-            </div>
-            <p class="hint">Пустые даты — без ограничения по сроку.</p>
-        </section>
-        <section class="slider-section">
-            <h3 class="slider-section__title">Ответственные</h3>
-            <div class="slider-fields">
-                <div class="field"><div class="name">Менеджер по продажам</div><div class="value"><input type="text" name="sales_manager[]" value="" placeholder="Кто подготовил информацию"></div></div>
-                <div class="field"><div class="name">Контент-менеджер</div><div class="value"><input type="text" name="content_manager[]" value="" placeholder="Кто разместил баннер"></div></div>
-            </div>
-        </section>
+        <div class="slider-card__columns">
+            <section class="slider-section">
+                <h3 class="slider-section__title">Срок показа</h3>
+                <div class="slider-dates">
+                    <label class="slider-dates__item"><span class="slider-dates__label">С</span><input type="date" name="date_from[]" value=""></label>
+                    <label class="slider-dates__item"><span class="slider-dates__label">По</span><input type="date" name="date_to[]" value=""></label>
+                </div>
+                <p class="hint">Пустые даты — без ограничения по сроку.</p>
+            </section>
+            <section class="slider-section">
+                <h3 class="slider-section__title">Ответственные</h3>
+                <div class="slider-form">
+                    <div class="slider-form__row slider-form__row--stack">
+                        <label class="slider-form__label">Менеджер по продажам</label>
+                        <div class="slider-form__control slider-user-wrap">
+                            <input type="hidden" name="sales_manager_id[]" value="" class="slider-user-id">
+                            <input type="text" class="slider-user-input" name="sales_manager[]" value="" placeholder="Начните вводить имя или email" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="slider-form__row slider-form__row--stack">
+                        <label class="slider-form__label">Контент-менеджер</label>
+                        <div class="slider-form__control slider-user-wrap">
+                            <input type="hidden" name="content_manager_id[]" value="" class="slider-user-id">
+                            <input type="text" class="slider-user-input" name="content_manager[]" value="" placeholder="Начните вводить имя или email" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <p class="hint">Выберите пользователя из подсказок — сохранится привязка к контакту.</p>
+            </section>
+        </div>
         <section class="slider-section slider-section--stats">
             <h3 class="slider-section__title">Статистика</h3>
             <div class="slider-metrics">
@@ -636,10 +707,47 @@
 <script>
 $(function() {
     var $list = $('.slider-admin__list');
+    var contactAutocompleteUrl = {$contact_autocomplete_url_json};
 
     function syncEnabled($card) {
         var $cb = $card.find('.slider-enabled-cb');
         $card.find('.slider-enabled-value').val($cb.is(':checked') ? '1' : '0');
+    }
+
+    function initUserAutocomplete($scope) {
+        if (!$.fn.autocomplete) {
+            return;
+        }
+        $scope.find('.slider-user-wrap').each(function() {
+            var $wrap = $(this);
+            var $text = $wrap.find('.slider-user-input');
+            var $hidden = $wrap.find('.slider-user-id');
+            if ($text.data('ui-autocomplete')) {
+                return;
+            }
+            $text.autocomplete({
+                source: contactAutocompleteUrl,
+                minLength: 2,
+                delay: 300,
+                select: function(event, ui) {
+                    $hidden.val(ui.item.id);
+                    $text.val(ui.item.name);
+                    $text.data('selected-name', ui.item.name);
+                    return false;
+                }
+            }).on('change', function() {
+                if ($.trim($text.val()) === '') {
+                    $hidden.val('');
+                }
+            }).on('input', function() {
+                if ($hidden.val() && $text.val() !== $text.data('selected-name')) {
+                    $hidden.val('');
+                }
+            });
+            if ($hidden.val()) {
+                $text.data('selected-name', $text.val());
+            }
+        });
     }
 
     function renumberCards() {
@@ -650,6 +758,7 @@ $(function() {
 
     function bindCard($card) {
         syncEnabled($card);
+        initUserAutocomplete($card);
     }
 
     $list.find('.slider-card').each(function() {

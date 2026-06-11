@@ -85,6 +85,9 @@ ul#select-view li:last-child a{border-radius:0 4px 4px 0;}
 ul.product-list li .image:hover .image-setting-wrapper{opacity:1;}
 }
 ul.product-list{margin:0;padding:0;margin-bottom:1.5rem;}
+ul.product-list.thumbs.carousel:not(.owl-loaded){overflow:hidden;}
+ul.product-list.thumbs.carousel:not(.owl-loaded) > li{list-style:none !important;float:none !important;width:100% !important;margin-right:0 !important;}
+ul.product-list.thumbs.carousel:not(.owl-loaded) > li:not(:first-child){display:none !important;}
 ul.product-list.carousel li:first-child,
 ul.product-list > li{list-style:none;}
 ul.product-list.carousel li:first-child,

@@ -15,6 +15,8 @@ class shopSliderPluginBackendSaveController extends waJsonController
         $date_to = waRequest::post('date_to');
         $sales_manager = waRequest::post('sales_manager');
         $content_manager = waRequest::post('content_manager');
+        $sales_manager_id = waRequest::post('sales_manager_id');
+        $content_manager_id = waRequest::post('content_manager_id');
 
         $img = $this->processImageField('img', waRequest::post('img_path'));
         $img_tablet = $this->processImageField('img_tablet', waRequest::post('img_tablet_path'));
@@ -41,6 +43,15 @@ class shopSliderPluginBackendSaveController extends waJsonController
                 }
             }
 
+            $sales = self::resolveManagerField(
+                ifset($sales_manager_id, $key, 0),
+                ifset($sales_manager, $key, '')
+            );
+            $content = self::resolveManagerField(
+                ifset($content_manager_id, $key, 0),
+                ifset($content_manager, $key, '')
+            );
+
             $slide_id = (int) ifset($ids, $key, 0);
             $data = array(
                 'sort' => ifset($sort, $key, 0),
@@ -52,8 +63,10 @@ class shopSliderPluginBackendSaveController extends waJsonController
                 'enabled' => (int) ifset($enabled, $key, 1),
                 'date_from' => self::normalizeDate(ifset($date_from, $key, '')),
                 'date_to' => self::normalizeDate(ifset($date_to, $key, '')),
-                'sales_manager' => trim((string) ifset($sales_manager, $key, '')),
-                'content_manager' => trim((string) ifset($content_manager, $key, '')),
+                'sales_manager' => $sales['name'],
+                'sales_manager_id' => $sales['id'],
+                'content_manager' => $content['name'],
+                'content_manager_id' => $content['id'],
             );
 
             if ($slide_id && isset($existing[$slide_id])) {
@@ -133,5 +146,26 @@ class shopSliderPluginBackendSaveController extends waJsonController
         }
 
         return $date->format('Y-m-d');
+    }
+
+    protected static function resolveManagerField($contact_id, $fallback_name)
+    {
+        $contact_id = (int) $contact_id;
+        $fallback_name = trim((string) $fallback_name);
+
+        if ($contact_id) {
+            $contact = new waContact($contact_id);
+            if ($contact->exists()) {
+                return array(
+                    'id' => $contact_id,
+                    'name' => $contact->getName(),
+                );
+            }
+        }
+
+        return array(
+            'id' => null,
+            'name' => $fallback_name,
+        );
     }
 }

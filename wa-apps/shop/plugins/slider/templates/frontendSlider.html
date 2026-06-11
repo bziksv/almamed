@@ -3,15 +3,19 @@
 <style>
     .header-slider-wrap {
         padding: 0 0.75rem;
+        overflow: hidden;
+        position: relative;
     }
     .header-slider {
         text-align: center;
         overflow: hidden;
         max-width: 100%;
     }
-    .header-slider .lSSlideOuter {
+    .header-slider .lSSlideOuter,
+    .header-slider .lSSlideWrapper {
         max-width: 100%;
         margin: 0 auto;
+        overflow: hidden !important;
     }
     .header-slider img {
         width: 100%;
@@ -32,13 +36,23 @@
             max-height: 420px;
         }
     }
-    #slider-head:not(.lSSlide) {
+    #slider-head,
+    #slider-head > li {
+        list-style: none !important;
+        margin: 0;
+        padding: 0;
+    }
+    #slider-head:not(.slider-ready) {
         margin: 0;
         padding: 0;
         overflow: hidden;
     }
-    #slider-head:not(.lSSlide) > li:not(:first-child) {
-        display: none;
+    #slider-head:not(.slider-ready) > li:not(:first-child) {
+        display: none !important;
+    }
+    #slider-head:not(.slider-ready) > li:first-child {
+        display: block;
+        width: 100%;
     }
     @media only screen and (max-width: 800px) {
         .header-slider-wrap {
@@ -51,7 +65,7 @@
 <script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}"></script>
 
 <div class="header-slider">
-    <ul id="slider-head" style="list-style: none">
+    <ul id="slider-head">
         {foreach $slides as $s}
             <li data-slide-id="{$s.id|escape}">
                 <a href="{$s.link|escape}" class="slider-slide-link" data-slide-id="{$s.id|escape}">
@@ -102,6 +116,19 @@
         }
 
         var trackedViews = {};
+        var activeBucket = null;
+        var resizeTimer = null;
+        var rebuilding = false;
+
+        function getBreakpointBucket(width) {
+            if (width <= MOBILE_BREAKPOINT) {
+                return 'mobile';
+            }
+            if (width <= TABLET_BREAKPOINT) {
+                return 'tablet';
+            }
+            return 'desktop';
+        }
 
         function sendStat(slideId, type) {
             if (!STAT_URL || !slideId) {
@@ -125,7 +152,7 @@
         }
 
         function getActiveSlideId() {
-            var $active = $slider.find('li.active');
+            var $active = $slider.find('li.active').first();
             if (!$active.length) {
                 $active = $slider.children('li').first();
             }
@@ -151,7 +178,7 @@
             $slider.find('img').each(function() {
                 var $img = $(this);
                 var src = pickSrc($img);
-                if (src) {
+                if (src && $img.attr('src') !== src) {
                     $img.attr('src', src);
                 }
             });
@@ -174,76 +201,81 @@
             return waits.length ? $.when.apply($, waits) : $.when();
         }
 
-        function sliderOptions() {
+        function sliderOptions(width) {
+            var bucket = getBreakpointBucket(width);
+            var useAdaptiveHeight = bucket !== 'desktop';
+
             return {
                 item: 1,
                 slideMove: 1,
                 pause: 5000,
                 controls: false,
-                loop: true,
-                auto: true,
-                enableDrag: false,
+                loop: $slider.children('li').length > 1,
+                auto: $slider.children('li').length > 1,
+                enableDrag: bucket !== 'desktop',
                 easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
                 speed: 600,
-                adaptiveHeight: false,
-                slideMargin: 0,
+                adaptiveHeight: useAdaptiveHeight,
+                slideMargin: bucket === 'desktop' ? 0 : 6,
                 onAfterSlide: function() {
                     trackView(getActiveSlideId());
-                },
-                responsive: [
-                    {
-                        breakpoint: TABLET_BREAKPOINT,
-                        settings: {
-                            item: 1,
-                            slideMove: 1,
-                            slideMargin: 6,
-                            enableDrag: true
-                        }
-                    },
-                    {
-                        breakpoint: 800,
-                        settings: {
-                            item: 1,
-                            slideMove: 1,
-                            slideMargin: 6,
-                            enableDrag: true
-                        }
-                    },
-                    {
-                        breakpoint: MOBILE_BREAKPOINT,
-                        settings: {
-                            item: 1,
-                            slideMove: 1,
-                            enableDrag: true
-                        }
-                    }
-                ]
+                }
             };
         }
 
         function destroySlider() {
             if ($slider.hasClass('lightSlider') && typeof $slider.destroy === 'function') {
-                $slider.destroy();
+                try {
+                    $slider.destroy();
+                } catch (e) {}
             }
+            $slider.removeClass('slider-ready lightSlider lSSlide');
         }
 
         function initSlider() {
             destroySlider();
-            $slider.lightSlider(sliderOptions());
-            trackView(getActiveSlideId());
+            var width = window.innerWidth || document.documentElement.clientWidth;
+            activeBucket = getBreakpointBucket(width);
+
+            if ($slider.children('li').length < 1) {
+                return;
+            }
+
+            try {
+                $slider.lightSlider(sliderOptions(width));
+                $slider.addClass('slider-ready');
+                trackView(getActiveSlideId());
+            } catch (e) {
+                $slider.removeClass('slider-ready');
+            }
         }
 
-        function rebuildSlider() {
+        function rebuildSlider(force) {
+            if (rebuilding) {
+                return;
+            }
+
+            var width = window.innerWidth || document.documentElement.clientWidth;
+            var bucket = getBreakpointBucket(width);
+            if (!force && bucket === activeBucket && $slider.hasClass('slider-ready')) {
+                return;
+            }
+
+            rebuilding = true;
             applyResponsiveSrc();
-            whenAllImagesReady().always(initSlider);
+            whenAllImagesReady().always(function() {
+                initSlider();
+                rebuilding = false;
+            });
         }
 
-        rebuildSlider();
+        rebuildSlider(true);
 
-        var resizeTimer;
         $(window).on('resize orientationchange', function() {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(rebuildSlider, 200);
+            resizeTimer = setTimeout(function() {
+                rebuildSlider(false);
+            }, 250);
         });
     });
 </script>

@@ -3,7 +3,7 @@
 return array(
     'name' => 'Слайдер',
     'description' => 'Слайдер',
-    'version' => '1.3.0',
+    'version' => '1.3.1',
     'img'=>'img/brands.png',
     'custom_settings' => true,
     'frontend' => true,
