@@ -127,5 +127,4 @@ class ClickfrogUDPSender
 	
 }
 
-ClickfrogUDPSender::sendto();
-?>
+// Отправка перенесена в index.php через register_shutdown_function — не блокирует TTFB.
