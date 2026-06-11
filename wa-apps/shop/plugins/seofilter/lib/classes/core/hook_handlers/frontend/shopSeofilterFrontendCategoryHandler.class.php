@@ -22,17 +22,37 @@ class shopSeofilterFrontendCategoryHandler extends shopSeofilterHookHandler
 			return '';
 		}
 
-		$this->setCurrentFeatureValueIds();
+		$is_seofilter_page = $this->plugin_routing->isSeofilterPage();
+		$has_products = true;
 
-		if ($this->settings->use_custom_products_collection)
+		if ($is_seofilter_page)
 		{
-			$this->reAssignProducts($this->plugin_routing->getCategoryId());
+			$has_products = shopSeofilterViewHelper::filterHasProducts(
+				$this->plugin_routing->getFilter(),
+				$this->plugin_routing->getStorefront(),
+				$this->plugin_routing->getCategoryId(),
+				$this->currency
+			);
 		}
 
-		if ($this->plugin_routing->isSeofilterPage())
+		if ($has_products)
+		{
+			$this->setCurrentFeatureValueIds();
+
+			if ($this->settings->use_custom_products_collection)
+			{
+				$this->reAssignProducts($this->plugin_routing->getCategoryId());
+			}
+		}
+
+		if ($is_seofilter_page)
 		{
 			$this->initializeContext();
-			$this->setResponseHttpCode();
+
+			if (!$has_products)
+			{
+				$this->setResponseHttpCode();
+			}
 
 			$this->plugin_routing->restoreInitialUrl();
 		}
@@ -123,16 +143,13 @@ class shopSeofilterFrontendCategoryHandler extends shopSeofilterHookHandler
 
 	private function setResponseHttpCode()
 	{
-		if (!$this->plugin_routing->getFilter()->countProducts($this->plugin_routing->getCategoryId(), $this->currency))
+		$empty_page_http_code = $this->plugin_routing->getFilter()->empty_page_http_code;
+		if (!is_string($empty_page_http_code) || strlen(trim($empty_page_http_code)) !== 3)
 		{
-			$empty_page_http_code = $this->plugin_routing->getFilter()->empty_page_http_code;
-			if (!is_string($empty_page_http_code) || strlen(trim($empty_page_http_code)) !== 3)
-			{
-				$empty_page_http_code = $this->settings->empty_page_http_code;
-			}
-
-			wa()->getResponse()->setStatus($empty_page_http_code);
+			$empty_page_http_code = $this->settings->empty_page_http_code;
 		}
+
+		wa()->getResponse()->setStatus($empty_page_http_code);
 	}
 
 	private function fetchDataForAjaxHandlers()

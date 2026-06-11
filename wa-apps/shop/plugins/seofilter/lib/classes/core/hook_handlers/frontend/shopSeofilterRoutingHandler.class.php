@@ -29,11 +29,8 @@ class shopSeofilterRoutingHandler extends shopSeofilterHookHandler
 
 	private function sitemap()
 	{
-		if (!$this->settings->use_sitemap_hook)
-		{
-			$this->routing['filter-sitemap.xml'] = 'frontend/sitemap';
-			$this->routing['filter-sitemap-<sitemap_page>.xml'] = 'frontend/sitemap';
-		}
+		$this->routing['filter-sitemap.xml'] = 'frontend/sitemap';
+		$this->routing['filter-sitemap-<sitemap_page>.xml'] = 'frontend/sitemap';
 	}
 
 	private function core()
@@ -60,6 +57,8 @@ class shopSeofilterRoutingHandler extends shopSeofilterHookHandler
 
 			$plugin_routing->removeSeofilterSuffixFromUrl();
 			$plugin_routing->patchGetParameters();
+
+			$plugin_routing->respondIfEmptySeofilterPage();
 
 			$plugin_routing->redispatch();
 		}

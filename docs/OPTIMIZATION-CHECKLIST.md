@@ -22,8 +22,8 @@
 | 6 | Shop / SearchPro | Рендер страницы после finder (HTML + категории) | 🟡 | Кэш `page_html_*` + `page_cats_*`; fast path SQL; warm **~1.5 s** (было ~2.8 s) |
 | 7 | Shop / productbrands | `getBrands()` грузит **все** бренды в память на каждый запрос | 🟡 | `getBrandsPage()` — только 120/стр; кэш sorted IDs 1 ч |
 | 8 | Shop / productbrands | Шаблон брендов в БД: `src` + `data-src` на каждом `<img>` | ✅ | Убран `data-src`, `loading="lazy"` в action |
-| 9 | Shop / sitemap | `sitemap-shop-1.xml` ~3.7 MB | ⏳ | Разбивка / лимит URL |
-| 10 | Shop / seofilter | 404 на несуществующий фильтр ~4+ s | ⏳ | `empty_page_http_code`; ранний exit без полного рендера |
+| 9 | Shop / sitemap | `sitemap-shop-1.xml` ~3.7 MB | ✅ | Seofilter URL **убраны** из `sitemap-shop-1`; фильтры → `/filter-sitemap.xml` (отдельный index, до 10k URL/стр.) |
+| 10 | Shop / seofilter | 404 на пустой фильтр ~4+ s | ✅ | Ранний exit в routing (`respondIfEmptySeofilterPage`); warm **~0.12 s** (было ~4+ s) |
 | 11 | Shop / категория | `subcategoriesFilters($id)` в цикле при `?brend=` | ✅ | `subcategoriesFiltersByIds()` — 1 SQL |
 | 12 | Shop / категория | `getTagsByCategory()` — params всех подкатегорий дерева | ✅ | 1 SQL вместо N× `get()` при `meta=true` |
 | 13 | Site / page cache | Статические shop-страницы без кэша | ⏳ | |
@@ -129,4 +129,4 @@ curl -sS -o /dev/null -w "brands %{size_download}B %{time_starttransfer}s\n" htt
 | 2026-06-11 | П.8 — убран дубль data-src на /brands/; п.11 — batch subcategoriesFilters |
 | 2026-06-11 | Cold suggest: grams/combine off in dropdown, getProductsSuggest, categories from products, sidebar tree cache |
 | 2026-06-11 | П.6 — SearchPro: кэш page_html/page_cats, fast path категорий, упрощён SQL |
-| 2026-06-09 | SearchPro — план полного переписывания: [SEARCHPRO-REWRITE-CHECKLIST.md](SEARCHPRO-REWRITE-CHECKLIST.md) |
+| 2026-06-11 | П.9–10 — seofilter: ранний 404 в routing; sitemap фильтров в `filter-sitemap-*.xml` |

@@ -229,6 +229,49 @@ class shopSeofilterRouting
 		exit;
 	}
 
+	/**
+	 * Пустая SEO-страница фильтра с HTTP 4xx — без полного рендера категории.
+	 *
+	 * @throws waException
+	 */
+	public function respondIfEmptySeofilterPage()
+	{
+		if (!$this->is_seofilter_page || !$this->filter || !$this->category)
+		{
+			return;
+		}
+
+		if (shopSeofilterViewHelper::filterHasProducts(
+			$this->filter,
+			$this->getStorefront(),
+			$this->category['id'],
+			$this->currency
+		))
+		{
+			return;
+		}
+
+		$http_code = $this->getEmptyPageHttpCode();
+		if ((int) $http_code < 400)
+		{
+			return;
+		}
+
+		wa()->getResponse()->setStatus($http_code);
+		throw new waException(_w('Page not found'), (int) $http_code);
+	}
+
+	private function getEmptyPageHttpCode()
+	{
+		$empty_page_http_code = $this->filter->empty_page_http_code;
+		if (!is_string($empty_page_http_code) || strlen(trim($empty_page_http_code)) !== 3)
+		{
+			$empty_page_http_code = $this->settings->empty_page_http_code;
+		}
+
+		return $empty_page_http_code;
+	}
+
 	public function tryToPerformRedirects()
 	{
 		$redirect_url = null;

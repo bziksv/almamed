@@ -3,7 +3,7 @@
 class shopSeofilterSitemapCachedSitemap implements shopSeofilterISitemap
 {
 	const PRIORITY = 0.6;
-	const LIMIT = 30000;
+	const LIMIT = 10000;
 
 	private $urls = array();
 	private $storefront;

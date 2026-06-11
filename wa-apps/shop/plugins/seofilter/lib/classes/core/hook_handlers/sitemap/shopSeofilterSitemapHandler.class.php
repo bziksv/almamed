@@ -19,7 +19,8 @@ class shopSeofilterSitemapHandler extends shopSeofilterHookHandler
 
 	protected function beforeHandle()
 	{
-		return $this->settings->is_enabled && $this->settings->use_sitemap_hook;
+		// URL фильтров — в отдельных filter-sitemap-*.xml (см. AppSitemapIndexSitemapHandler).
+		return false;
 	}
 
 	protected function defaultHandleResult()
