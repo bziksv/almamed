@@ -61,6 +61,17 @@
     }
 }
 
+/* Пока виден cookie-баннер — не показываем плавающую кнопку Talk-Me (мобилка) */
+body.cookie-consent-pending .online-chat-root .online-chat-trigger,
+body.cookie-consent-pending .online-chat-root .trigger-classic,
+body.cookie-consent-pending .online-chat-root .trigger-round,
+body.cookie-consent-pending .online-chat-root .trigger-background {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+}
+
 </style>
 
 <script>
@@ -145,6 +156,10 @@
         return !!(node && node.closest && node.closest('.online-chat-root'));
     }
 
+    function isCookieConsentPending() {
+        return document.body.classList.contains('cookie-consent-pending');
+    }
+
     function syncTriggerMode() {
         if (isDesktop()) {
             document.body.classList.add('almamed-custom-chat');
@@ -157,11 +172,17 @@
         closeTalkMeMenu();
 
         var api = talkMe();
-        if (api) {
-            try {
-                api('showTrigger');
-            } catch (e) {}
+        if (!api) {
+            return;
         }
+
+        try {
+            if (isCookieConsentPending()) {
+                api('hideTrigger');
+            } else {
+                api('showTrigger');
+            }
+        } catch (e) {}
     }
 
     document.addEventListener('click', function(e) {
@@ -224,6 +245,8 @@
             alignTriggerToFooter();
         }
     }, { passive: true });
+
+    window.addEventListener('almamed-cookie-consent-change', syncTriggerMode);
 })(window, document);
 </script>
 {/strip}

@@ -196,6 +196,7 @@
     button.addEventListener('click', function() {
         writeCookie(COOKIE_NAME, '1', COOKIE_DAYS);
         document.body.classList.remove('cookie-consent-pending');
+        window.dispatchEvent(new Event('almamed-cookie-consent-change'));
         banner.classList.remove('is-visible');
         banner.classList.add('is-hidden');
         window.setTimeout(function() {
