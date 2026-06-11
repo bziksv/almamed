@@ -484,12 +484,80 @@
 }
 
 @media only screen and (min-width: 1201px) and (max-width: 1400px) {
-    .nav-wrapper .header-links-col {
-        display: none !important;
+    .nav-wrapper .header-top-bar__inner > .header-links-col {
+        flex: 0 0 auto;
+        flex-shrink: 0;
+        min-width: 0;
+        padding-right: 4px !important;
     }
 
-    .nav-wrapper .header-search-col {
-        flex-basis: 140px;
+    .nav-wrapper .header-links-col .base-menu > li > a,
+    .nav-wrapper .header-links-col .header-pages-top > li > a {
+        padding: 0 7px;
+        font-size: 13px;
+    }
+
+    .nav-wrapper .header-top-bar__inner > .header-search-col {
+        flex: 1 1 100px;
+        min-width: 90px;
+        max-width: 160px;
+        padding: 0 6px !important;
+    }
+
+    .nav-wrapper .header-cart-col {
+        flex: 0 0 102px;
+    }
+
+    .nav-wrapper .header-top-bar__inner #cart a.link-to-cart {
+        padding: 0 8px !important;
+        gap: 6px;
+    }
+
+    .nav-wrapper .header-top-bar__inner #cart a.link-to-cart .cart-text strong {
+        font-size: 12px;
+    }
+
+    .nav-wrapper .header-auth-col {
+        flex: 0 0 98px;
+    }
+
+    .nav-wrapper .header-auth-col .base-menu > li > a,
+    .nav-wrapper .header-auth-col .header-auth-user {
+        padding: 0 6px;
+        font-size: 13px;
+    }
+
+    .nav-wrapper .header-phone-col {
+        flex: 0 0 192px;
+    }
+
+    .nav-wrapper .header-phone-col .head-phone {
+        padding: 0 12px;
+    }
+
+    .nav-wrapper .header-phone-col .head-phone .phone-h,
+    .nav-wrapper .header-phone-col .head-phone .phone-h a {
+        font-size: 17px;
+    }
+
+    .nav-wrapper .header-phone-col .head-phone .text-h {
+        font-size: 11px;
+    }
+
+    .nav-wrapper .header-logo-col.is-visible ~ .header-search-col {
+        max-width: 130px;
+    }
+}
+
+@media only screen and (min-width: 1201px) and (max-width: 1240px) {
+    .nav-wrapper .header-top-bar__inner > .header-search-col {
+        max-width: 130px;
+    }
+
+    .nav-wrapper .header-links-col .base-menu > li > a,
+    .nav-wrapper .header-links-col .header-pages-top > li > a {
+        padding: 0 5px;
+        font-size: 12.5px;
     }
 }
 </style>
