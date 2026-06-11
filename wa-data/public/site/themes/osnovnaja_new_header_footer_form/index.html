@@ -469,8 +469,7 @@
     });
 </script>
 
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" media="print" onload="this.media='all'"/>
-<noscript><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/></noscript>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
 <script defer>
     document.addEventListener('DOMContentLoaded', function() {
@@ -478,8 +477,16 @@
             return;
         }
         var $ = jQuery;
+        var $tagSlider = $('.tag-slider');
+        if (!$tagSlider.length) {
+            return;
+        }
+        $tagSlider.css('visibility', 'hidden');
+        $tagSlider.on('init', function() {
+            $(this).css('visibility', 'visible');
+        });
 
-    $('.tag-slider').slick({
+    $tagSlider.slick({
         dots: false,
         arrows: true,
         infinite: true,
