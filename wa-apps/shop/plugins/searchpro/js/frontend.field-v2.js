@@ -217,8 +217,7 @@
 
 	SearchproField.prototype.helperBox = function(create) {
 		if (!this._helperBox && create) {
-			var template = this.params.helper_dropdown && this.params.helper_dropdown.current;
-			this.ensureBox('helper', template || '');
+			this.ensureBox('helper', '');
 		}
 		return this._helperBox;
 	};
@@ -587,6 +586,10 @@
 				if (self.isEnabled('history')) {
 					self.updateHistoryBox(cookieGetJson(self.params.history_cookie_key));
 				}
+				var input = self.input();
+				if (input && !input.value.trim() && document.activeElement === input) {
+					self.showHelper();
+				}
 			})
 			.catch(function() {});
 	};
@@ -670,7 +673,11 @@
 			if (container) {
 				container.classList.add('js-searchpro__field-container--focus');
 			}
-			self.loadHelper();
+			self.loadHelper().then(function() {
+				if (!input.value.trim()) {
+					self.showHelper();
+				}
+			});
 		});
 		input.addEventListener('blur', function() {
 			var container = self.container();

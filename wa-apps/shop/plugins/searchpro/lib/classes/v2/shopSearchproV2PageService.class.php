@@ -17,7 +17,7 @@ class shopSearchproV2PageService
 		$query = shopSearchproPluginHelper::prepareQuery($query);
 		$category_id = (int) $category_id;
 
-		$products = $this->findProducts($query, $category_id);
+		list($query, $products) = $this->findProductsWithLayoutFallback($query, $category_id);
 
 		return new shopSearchproV2PageContext(
 			$query,
@@ -25,6 +25,31 @@ class shopSearchproV2PageService
 			$products,
 			$products->isEmpty()
 		);
+	}
+
+	/**
+	 * @return array{0: string, 1: shopSearchproResult}
+	 */
+	public function findProductsWithLayoutFallback($query, $category_id = 0)
+	{
+		$category_id = (int) $category_id;
+		$products = $this->findProducts($query, $category_id);
+		if (!$products->isEmpty() || $query === '') {
+			return array($query, $products);
+		}
+
+		foreach (shopSearchproV2KeyboardLayoutHelper::candidates($query) as $corrected_query) {
+			if ($corrected_query === $query) {
+				continue;
+			}
+			$this->finder = null;
+			$retry = $this->findProducts($corrected_query, $category_id);
+			if (!$retry->isEmpty()) {
+				return array($corrected_query, $retry);
+			}
+		}
+
+		return array($query, $products);
 	}
 
 	public function findProducts($query, $category_id = 0)

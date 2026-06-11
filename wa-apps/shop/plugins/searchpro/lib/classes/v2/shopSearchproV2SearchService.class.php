@@ -25,6 +25,26 @@ class shopSearchproV2SearchService
 
 	public function suggest($query, $category_id = 0)
 	{
+		$result = $this->suggestOnce($query, $category_id);
+		if ($result->count > 0 || $query === '') {
+			return $result;
+		}
+
+		foreach (shopSearchproV2KeyboardLayoutHelper::candidates($query) as $corrected_query) {
+			if ($corrected_query === $query) {
+				continue;
+			}
+			$retry = $this->suggestOnce($corrected_query, $category_id, true);
+			if ($retry->count > 0) {
+				return $retry;
+			}
+		}
+
+		return $result;
+	}
+
+	private function suggestOnce($query, $category_id = 0)
+	{
 		$this->query = $this->normalizer->normalize($query);
 		$query = $this->query;
 		$category_id = (int) $category_id;

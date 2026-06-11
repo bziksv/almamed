@@ -108,7 +108,7 @@ class shopSearchproKeyboardLayoutSmartCorrector extends shopSearchproCorrector
                                       /sxSX', array($this, 'modifyWordsCallback'), $query);
 	}
 
-	private function modifyWordsCallback(&$matches)
+	private function modifyWordsCallback($matches)
 	{
 		$word = $matches[0];
 
@@ -180,7 +180,7 @@ class shopSearchproKeyboardLayoutSmartCorrector extends shopSearchproCorrector
 
 	private function suggestWordWithinRegexpCallback($matches)
 	{
-		$word = &$matches[0];
+		$word = $matches[0];
 		return strtr($word, $this->is_flip ? $this->table_flip[$this->method] : $this->getData("table->{$this->method}"));
 	}
 

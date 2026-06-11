@@ -779,8 +779,15 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 	 */
 	protected function getProducts()
 	{
-		if(!isset($this->products)) {
-			$this->products = $this->getFinder()->find('products', $this->query);
+		if (!isset($this->products)) {
+			list($query, $this->products) = $this->getPageService()->findProductsWithLayoutFallback(
+				$this->query,
+				$this->category_id
+			);
+			if ($query !== $this->query) {
+				$this->query = $query;
+				waRequest::setParam('query', $this->query);
+			}
 		}
 
 		return $this->products;

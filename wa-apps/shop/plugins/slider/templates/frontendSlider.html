@@ -47,11 +47,19 @@
         padding: 0;
         overflow: hidden;
     }
-    #slider-head:not(.slider-ready) > li:not(:first-child) {
+    #slider-head:not(.slider-ready) > li:not(:first-child),
+    .header-slider-wrap:not(.slider-ready) #slider-head li:nth-child(n+2) {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    #slider-head:not(.slider-ready) > li:first-child {
-        display: block;
+    #slider-head:not(.slider-ready) > li:first-child,
+    .header-slider-wrap:not(.slider-ready) #slider-head li:first-child {
+        display: block !important;
+        visibility: visible !important;
         width: 100%;
     }
     @media only screen and (max-width: 800px) {
@@ -79,6 +87,23 @@
         {/foreach}
     </ul>
 </div>
+
+<script>
+    (function() {
+        var wrap = document.querySelector('.header-slider-wrap');
+        var ul = document.getElementById('slider-head');
+        if (!ul) {
+            return;
+        }
+        if (wrap) {
+            wrap.classList.remove('slider-ready');
+        }
+        var items = ul.children;
+        for (var i = 1; i < items.length; i++) {
+            items[i].style.display = 'none';
+        }
+    })();
+</script>
 
 <script>
     (function() {
@@ -230,6 +255,7 @@
                 } catch (e) {}
             }
             $slider.removeClass('slider-ready lightSlider lSSlide');
+            $('.header-slider-wrap').removeClass('slider-ready');
         }
 
         function initSlider() {
@@ -244,9 +270,11 @@
             try {
                 $slider.lightSlider(sliderOptions(width));
                 $slider.addClass('slider-ready');
+                $('.header-slider-wrap').addClass('slider-ready');
                 trackView(getActiveSlideId());
             } catch (e) {
                 $slider.removeClass('slider-ready');
+                $('.header-slider-wrap').removeClass('slider-ready');
             }
         }
 
