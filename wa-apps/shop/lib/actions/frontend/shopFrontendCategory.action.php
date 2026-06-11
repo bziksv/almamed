@@ -395,9 +395,11 @@ class shopFrontendCategoryAction extends shopFrontendAction
     {
         $cached_html = $this->getCachedCategoryHtml();
         if ($cached_html !== null) {
+            wa()->getResponse()->addHeader('X-Shop-Cache', 'category-hit');
             echo $cached_html;
             return '';
         }
+        wa()->getResponse()->addHeader('X-Shop-Cache', 'category-miss');
 
         $html = parent::display(false);
         $this->setCachedCategoryHtml($html);
@@ -462,10 +464,41 @@ class shopFrontendCategoryAction extends shopFrontendAction
             return $category_model->getById(waRequest::param('category_id'));
         }
         if (waRequest::param('category_url')) {
-            return $category_model->getByField($url_field, waRequest::param('category_url'));
+            $url = urldecode(waRequest::param('category_url'));
+            return $category_model->getByField($url_field, $url);
         }
 
         return null;
+    }
+
+    protected function getCategoryCacheFilePath($key)
+    {
+        return wa()->getCachePath('cache/'.$key.'.php', self::CATEGORY_CACHE_GROUP);
+    }
+
+    /**
+     * waSerializeCache::readFromFile требует is_writable — на prod после git pull
+     * файлы часто root-owned и чтение молча не срабатывает.
+     *
+     * @param string $key
+     * @return string|null
+     */
+    protected function readCategoryCacheValue($key)
+    {
+        $file = $this->getCategoryCacheFilePath($key);
+        if (!file_exists($file) || !is_readable($file)) {
+            return null;
+        }
+
+        $info = @unserialize(file_get_contents($file));
+        if (!is_array($info) || !isset($info['value']) || !is_string($info['value']) || $info['value'] === '') {
+            return null;
+        }
+        if (!empty($info['ttl']) && $info['ttl'] >= 0 && time() - $info['time'] >= $info['ttl']) {
+            return null;
+        }
+
+        return $info['value'];
     }
 
     /**
@@ -487,11 +520,11 @@ class shopFrontendCategoryAction extends shopFrontendAction
             self::CATEGORY_CACHE_TTL,
             self::CATEGORY_CACHE_GROUP
         );
-        if (!$cache->isCached()) {
-            return null;
+        $html = $cache->isCached() ? $cache->get() : null;
+        if (!is_string($html) || $html === '') {
+            $html = $this->readCategoryCacheValue($key);
         }
 
-        $html = $cache->get();
         return is_string($html) && $html !== '' ? $html : null;
     }
 
@@ -511,6 +544,11 @@ class shopFrontendCategoryAction extends shopFrontendAction
             self::CATEGORY_CACHE_TTL,
             self::CATEGORY_CACHE_GROUP
         );
-        $cache->set($html);
+        if ($cache->set($html)) {
+            $file = $this->getCategoryCacheFilePath($key);
+            if (file_exists($file)) {
+                @chmod($file, 0664);
+            }
+        }
     }
 }

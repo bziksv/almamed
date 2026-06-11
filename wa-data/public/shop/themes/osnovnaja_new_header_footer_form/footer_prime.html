@@ -17,7 +17,7 @@ window.addEventListener('load', function() {
 <!-- Виджет подписки Sendpulse  -->
 <!-- <script src="//web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="efb28995705c90d2ff723b7182e24071cc21cda39d619b0c0bdbb51e0118559d"></script>  -->
 
-<!-- Виджет talk-me.ru — после первого взаимодействия или через 8 с -->
+<!-- Виджет talk-me.ru — только после load; без mousemove (DevTools двигает мышь → ранний load) -->
 <!-- Begin Talk-Me -->
 <script>
 (function() {
@@ -37,11 +37,11 @@ window.addEventListener('load', function() {
       (d.head ? d.head : d.body).appendChild(s);
     })(document,window,'TalkMe')})();
   }
-  ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(function(ev) {
-    window.addEventListener(ev, loadTalkMe, { once: true, passive: true });
-  });
   window.addEventListener('load', function() {
-    setTimeout(loadTalkMe, 8000);
+    ['scroll', 'touchstart', 'keydown'].forEach(function(ev) {
+      window.addEventListener(ev, loadTalkMe, { once: true, passive: true });
+    });
+    setTimeout(loadTalkMe, 10000);
   }, { once: true });
 })();
 </script>

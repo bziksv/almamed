@@ -67,7 +67,13 @@ chown -R almamed.su:almamed.su wa-cache wa-log
 ```
 
 Pull делать **от root** допустимо, но после — **обязательно chown**.  
-`php cli.php cache clear` — **только от пользователя `almamed.su`**, иначе кеш снова root-owned → «Ошибка #0» в магазине.
+`php cli.php cache clear` — **только от пользователя `almamed.su`**, иначе кеш снова root-owned → «Ошибка #0» в магазине и **HTML-кеш категорий не читается** (Webasyst требует `is_writable` на файл кеша).
+
+```bash
+# Проверка кеша категории после деплоя (2-й запрос должен быть category-hit и TTFB < 0.05s)
+curl -s -D - -o /dev/null -H "Host: almamed.su" -k "https://213.139.209.184/category/veterinariya/" | grep -i x-shop-cache
+curl -s -D - -o /dev/null -H "Host: almamed.su" -k "https://213.139.209.184/category/veterinariya/" | grep -i x-shop-cache
+```
 
 ### После деплоя — smoke + TTFB
 
