@@ -38,7 +38,11 @@ window.addEventListener('load', function() {
     })(document,window,'TalkMe')})();
   };
   window.addEventListener('load', function() {
-    window.addEventListener('touchstart', window.almamedLoadTalkMe, { once: true, passive: true });
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.head-phone, .header-phone-col, [data-load-chat]')) {
+        window.almamedLoadTalkMe();
+      }
+    }, { once: true, capture: true });
   }, { once: true });
 })();
 </script>

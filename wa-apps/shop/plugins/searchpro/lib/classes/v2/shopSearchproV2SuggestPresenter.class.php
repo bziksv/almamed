@@ -157,8 +157,13 @@ class shopSearchproV2SuggestPresenter
 			'href' => $this->getProductHref($entity),
 		);
 
-		if ($show_image) {
-			$item['image'] = shopImage::getUrl($entity, '48x48');
+		if ($show_image && !empty($entity['image_id'])) {
+			$item['image'] = shopImage::getUrl(array(
+				'product_id' => (int) ifset($entity, 'id', 0),
+				'id' => (int) $entity['image_id'],
+				'filename' => ifset($entity, 'image_filename', ''),
+				'ext' => ifset($entity, 'ext', 'jpg'),
+			), '48x48');
 		}
 
 		if ($show_price) {

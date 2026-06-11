@@ -7,15 +7,16 @@
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
 <link rel="stylesheet" href="{$wa_theme_url}font-awesome/css/font-awesome.min.css">
-<link href='//fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400&amp;subset=cyrillic,latin' rel='stylesheet' type='text/css' media="print" onload="this.media='all'">
-<noscript><link href='//fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400&amp;subset=cyrillic,latin' rel='stylesheet' type='text/css'></noscript>
-<link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type='text/css' media="print" onload="this.media='all'">
-<noscript><link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type='text/css'></noscript>
+<link href='//fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400&amp;subset=cyrillic,latin&amp;display=swap' rel='stylesheet' type='text/css' media="print" onload="this.media='all'">
+<noscript><link href='//fonts.googleapis.com/css?family=Roboto:500,400italic,700italic,300,700,500italic,300italic,400&amp;subset=cyrillic,latin&amp;display=swap' rel='stylesheet' type='text/css'></noscript>
+<link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=swap" rel="stylesheet" type='text/css' media="print" onload="this.media='all'">
+<noscript><link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=swap" rel="stylesheet" type='text/css'></noscript>
 {if $wa->shop && $wa->shop->currency() == 'RUB'}<link href="{$wa_url}wa-content/font/ruble/arial/fontface.css" rel="stylesheet" type="text/css">{/if}
 
-{* css *}
-<link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
-{if $wa->shop}<link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>{/if}
+{* css — некритичные таблицы стилей уходят в footer через speedup *}
+<link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'"/>
+<noscript><link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/></noscript>
+{if $wa->shop}<link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'"/><noscript><link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/></noscript>{/if}
 {$wa->css()} {* links active plugins CSS *}
 
 {* js *}

@@ -155,9 +155,9 @@
                                 <div class="corner top left">{$badge_html}</div>
                             {/if}
                             {if empty($without_micro_markup)}
-                                {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'default' => "`$wa_theme_url`img/dummy200.png"])}
                             {else}
-                                {$wa->shop->productImgHtml($p, '200', ['alt' => $p.name, 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {$wa->shop->productImgHtml($p, '200', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'default' => "`$wa_theme_url`img/dummy200.png"])}
                             {/if}
                         </div>
                     </div>

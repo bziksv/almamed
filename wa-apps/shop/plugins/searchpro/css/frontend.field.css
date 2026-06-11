@@ -465,6 +465,15 @@
 .searchpro__dropdown .searchpro__dropdown-entity_image-container {
 	float: left;
 	margin-right: 10px;
+	width: 48px;
+	height: 48px;
+	flex-shrink: 0;
+}
+.searchpro__dropdown .searchpro__dropdown-entity_image {
+	display: block;
+	width: 48px;
+	height: 48px;
+	object-fit: contain;
 }
 .searchpro__dropdown .searchpro__dropdown-entity_summary {
 	margin-top: 5px;

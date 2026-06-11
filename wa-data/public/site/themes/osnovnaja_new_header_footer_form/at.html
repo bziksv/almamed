@@ -10,7 +10,7 @@
 {$at['speedup'] = !empty($theme_settings.speedup) && !waRequest::isXMLHttpRequest()}
 {$at['regex']['s'] = "/(<script\b[^>]*>[\s\S]*?<\/script>)/"}
 {$at['regex']['l'] = "/(<link\b[^>]*rel\s*=\s*['\"]stylesheet['\"][^>]*>)/"}
-{$at['css_sync_pattern'] = '/profitbuy\.min\.css|profitbuy\.shop\.min\.css|Material\\+Icons|category-icons\.css|searchpro|owl\.carousel|breadcrumbs_plugin/i'}
+{$at['css_sync_pattern'] = '/Material\\+Icons|searchpro.*field|breadcrumbs_plugin|lightslider/i'}
 {$at['scripts'] = []}
 {$at['links'] = []}
 

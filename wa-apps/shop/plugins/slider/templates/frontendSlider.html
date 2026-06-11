@@ -1,4 +1,5 @@
-<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?{time()}" rel="stylesheet" type="text/css">
+<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.2" rel="stylesheet" type="text/css" media="print" onload="this.media='all'">
+<noscript><link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.2" rel="stylesheet" type="text/css"></noscript>
 
 <style>
     .header-slider-wrap {
@@ -10,29 +11,35 @@
         text-align: center;
         overflow: hidden;
         max-width: 100%;
+        aspect-ratio: 1300 / 220;
+        max-height: 220px;
+        contain: layout style;
     }
     .header-slider .lSSlideOuter,
     .header-slider .lSSlideWrapper {
         max-width: 100%;
         margin: 0 auto;
         overflow: hidden !important;
+        height: 100% !important;
     }
     .header-slider img {
         width: 100%;
         max-width: 100%;
-        height: auto;
+        height: 100%;
         vertical-align: middle;
         display: block;
         margin: 0 auto;
         object-fit: contain;
     }
-    @media (min-width: 1201px) {
-        .header-slider img {
-            max-height: 220px;
+    @media (max-width: 1200px) {
+        .header-slider {
+            aspect-ratio: 992 / 660;
+            max-height: 420px;
         }
     }
-    @media (max-width: 1200px) {
-        .header-slider img {
+    @media (max-width: 480px) {
+        .header-slider {
+            aspect-ratio: 576 / 870;
             max-height: 420px;
         }
     }
@@ -70,18 +77,21 @@
     }
 </style>
 
-<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}"></script>
+<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?v1.3.2" defer data-script-exception="1"></script>
 
 <div class="header-slider">
     <ul id="slider-head">
-        {foreach $slides as $s}
+        {foreach $slides as $s name=slider_slides}
             <li data-slide-id="{$s.id|escape}">
                 <a href="{$s.link|escape}" class="slider-slide-link" data-slide-id="{$s.id|escape}">
-                    <img src="{$s.img|escape}"
+                    <img{if $smarty.foreach.slider_slides.first} src="{$s.img|escape}" fetchpriority="high" decoding="async"{else} src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1300 220'%3E%3C/svg%3E" loading="lazy"{/if}
                          alt="{$s.alt|escape}"
+                         width="1300"
+                         height="220"
                          data-desktop-src="{$s.img|escape}"
                          data-tablet-src="{$s.img_tablet|escape}"
-                         data-mobile-src="{$s.img_mobile|escape}">
+                         data-mobile-src="{$s.img_mobile|escape}"
+                         data-lazy-slide="{if $smarty.foreach.slider_slides.first}0{else}1{/if}">
                 </a>
             </li>
         {/foreach}
@@ -113,20 +123,42 @@
         if (!slider) {
             return;
         }
-        var width = window.innerWidth || document.documentElement.clientWidth;
-        var imgs = slider.getElementsByTagName('img');
-        for (var i = 0; i < imgs.length; i++) {
-            var img = imgs[i];
+
+        function pickSrc(img) {
+            var width = window.innerWidth || document.documentElement.clientWidth;
             var src = img.getAttribute('data-desktop-src');
             if (width <= MOBILE_BREAKPOINT && img.getAttribute('data-mobile-src')) {
                 src = img.getAttribute('data-mobile-src');
             } else if (width <= TABLET_BREAKPOINT && img.getAttribute('data-tablet-src')) {
                 src = img.getAttribute('data-tablet-src');
             }
+            return src;
+        }
+
+        function ensureSlideSrc(img) {
+            if (!img || img.getAttribute('data-lazy-slide') !== '1') {
+                return;
+            }
+            var src = pickSrc(img);
+            if (src && img.getAttribute('src') !== src) {
+                img.setAttribute('src', src);
+                img.setAttribute('data-lazy-slide', '0');
+            }
+        }
+
+        var imgs = slider.getElementsByTagName('img');
+        for (var i = 0; i < imgs.length; i++) {
+            var img = imgs[i];
+            if (img.getAttribute('data-lazy-slide') === '1') {
+                continue;
+            }
+            var src = pickSrc(img);
             if (src) {
                 img.setAttribute('src', src);
             }
         }
+
+        window.almamedSliderEnsureSrc = ensureSlideSrc;
     })();
 </script>
 
@@ -184,6 +216,19 @@
             return $active.data('slide-id');
         }
 
+        function preloadVisibleSlides() {
+            $slider.find('li.active img, li.lslide.active img').each(function() {
+                if (window.almamedSliderEnsureSrc) {
+                    window.almamedSliderEnsureSrc(this);
+                }
+            });
+            $slider.children('li').first().find('img').each(function() {
+                if (window.almamedSliderEnsureSrc) {
+                    window.almamedSliderEnsureSrc(this);
+                }
+            });
+        }
+
         $slider.on('click', '.slider-slide-link', function() {
             sendStat($(this).data('slide-id'), 'click');
         });
@@ -202,6 +247,9 @@
         function applyResponsiveSrc() {
             $slider.find('img').each(function() {
                 var $img = $(this);
+                if ($img.data('lazy-slide') === 1 && window.almamedSliderEnsureSrc) {
+                    return;
+                }
                 var src = pickSrc($img);
                 if (src && $img.attr('src') !== src) {
                     $img.attr('src', src);
@@ -228,7 +276,6 @@
 
         function sliderOptions(width) {
             var bucket = getBreakpointBucket(width);
-            var useAdaptiveHeight = bucket !== 'desktop';
 
             return {
                 item: 1,
@@ -240,9 +287,13 @@
                 enableDrag: bucket !== 'desktop',
                 easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
                 speed: 600,
-                adaptiveHeight: useAdaptiveHeight,
+                adaptiveHeight: false,
                 slideMargin: bucket === 'desktop' ? 0 : 6,
+                onBeforeSlide: function() {
+                    preloadVisibleSlides();
+                },
                 onAfterSlide: function() {
+                    preloadVisibleSlides();
                     trackView(getActiveSlideId());
                 }
             };
@@ -266,6 +317,8 @@
             if ($slider.children('li').length < 1) {
                 return;
             }
+
+            preloadVisibleSlides();
 
             try {
                 $slider.lightSlider(sliderOptions(width));

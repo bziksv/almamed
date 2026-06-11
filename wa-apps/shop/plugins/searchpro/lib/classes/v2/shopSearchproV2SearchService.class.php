@@ -26,6 +26,14 @@ class shopSearchproV2SearchService
 	public function suggest($query, $category_id = 0)
 	{
 		$result = $this->suggestOnce($query, $category_id);
+
+		if ($query !== '') {
+			$typo_fixed = $this->tryTypoCandidates($query, $category_id, $result);
+			if ($typo_fixed !== null) {
+				return $typo_fixed;
+			}
+		}
+
 		if ($result->count > 0 || $query === '') {
 			return $result;
 		}
@@ -34,13 +42,37 @@ class shopSearchproV2SearchService
 			if ($corrected_query === $query) {
 				continue;
 			}
-			$retry = $this->suggestOnce($corrected_query, $category_id, true);
+			$retry = $this->suggestOnce($corrected_query, $category_id);
 			if ($retry->count > 0) {
 				return $retry;
 			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @param shopSearchproV2SuggestResult|null $current
+	 * @return shopSearchproV2SuggestResult|null
+	 */
+	private function tryTypoCandidates($query, $category_id, shopSearchproV2SuggestResult $current = null)
+	{
+		$products = $current ? ifset($current->results, 'products', array()) : array();
+		if ($current && !shopSearchproV2TypoHelper::isWeakMatch($query, $products)) {
+			return null;
+		}
+
+		foreach (shopSearchproV2TypoHelper::candidates($query, $this->settings) as $corrected_query) {
+			$retry = $this->suggestOnce($corrected_query, $category_id);
+			if ($retry->count <= 0) {
+				continue;
+			}
+			if (!shopSearchproV2TypoHelper::isWeakMatch($corrected_query, ifset($retry->results, 'products', array()))) {
+				return $retry;
+			}
+		}
+
+		return null;
 	}
 
 	private function suggestOnce($query, $category_id = 0)

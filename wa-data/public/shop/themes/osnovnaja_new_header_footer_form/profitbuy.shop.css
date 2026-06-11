@@ -183,6 +183,7 @@ ul.product-list.thumbs.carousel li:first-child { display: block; width: auto; fl
 ul.product-list.thumbs li .image { width: 100%; }
 ul.product-list.thumbs li .image img { vertical-align: middle; }
 ul.product-list.thumbs.owl-carousel .owl-item img { display: inline-block; vertical-align: middle; width: auto; }
+ul.product-list.thumbs li .badge-wrapper img { width: 200px; height: 200px; max-width: 100%; object-fit: contain; vertical-align: middle; }
 ul.product-list.thumbs li .badge-wrapper { min-height: 200px; line-height: 200px; text-align: center; width: 100%; }
 ul.product-list.thumbs li .pl-item-wrapper { position: relative; height: 340px; overflow: hidden; margin: 5px 0; padding: 10px 15px; }
 ul.product-list.thumbs li .pl-item-info {

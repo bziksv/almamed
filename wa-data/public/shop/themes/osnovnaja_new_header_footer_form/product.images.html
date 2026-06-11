@@ -20,7 +20,7 @@
                     {$wa->shop->badgeHtml($product.badge)}
                 </div>
                 <a href="{$wa->shop->productImgUrl($product, '970')}">
-                    {$wa->shop->productImgHtml($product, '750', [ 'itemprop' => 'image', 'id' => 'product-image', 'alt' => $product.name|escape ])}
+                    {$wa->shop->productImgHtml($product, '750', [ 'itemprop' => 'image', 'id' => 'product-image', 'alt' => $product.name|escape, 'width' => '750', 'height' => '750', 'fetchpriority' => 'high', 'decoding' => 'async' ])}
                 </a>
                 <div id="switching-image" style="display: none;"></div>
             </div>
