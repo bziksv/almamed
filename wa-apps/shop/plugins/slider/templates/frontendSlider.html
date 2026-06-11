@@ -1,4 +1,5 @@
-<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?{time()}" rel="stylesheet" type="text/css">
+<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?{time()}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'">
+<noscript><link href="/wa-apps/shop/plugins/slider/css/lightslider.css?{time()}" rel="stylesheet" type="text/css"></noscript>
 
 <style>
     .header-slider{
@@ -7,7 +8,7 @@
     }
 </style>
 
-<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}"></script>
+<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}" defer></script>
 
 <div class="header-slider">
     <ul id="slider-head" style="list-style: none">
@@ -17,8 +18,12 @@
     </ul>
 </div>
 
-<script>
-    $('#slider-head').lightSlider({
+<script defer>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof jQuery === 'undefined' || !jQuery.fn.lightSlider) {
+        return;
+    }
+    jQuery('#slider-head').lightSlider({
         item: 1,
         slideMove: 1,
         pause: 5000,
@@ -48,4 +53,5 @@
             }
         ],
     });
+});
 </script>

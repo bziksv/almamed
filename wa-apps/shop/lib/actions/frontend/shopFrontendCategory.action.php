@@ -425,8 +425,11 @@ class shopFrontendCategoryAction extends shopFrontendAction
 
     protected function getCategoryCacheKey()
     {
-        $vars = $this->view->getVars();
-        $category = ifset($vars, 'category', array());
+        $category = $this->resolveCategoryForCache();
+        if (!$category) {
+            return null;
+        }
+
         $mtime = !empty($category['edit_datetime'])
             ? $category['edit_datetime']
             : ifset($category, 'create_datetime', '0');
@@ -437,9 +440,32 @@ class shopFrontendCategoryAction extends shopFrontendAction
             $routing->getDomain(null, true),
             ifset($route, 'url', ''),
             waRequest::getTheme(),
-            ifset($category, 'id', 0),
+            $category['id'],
             $mtime,
         )));
+    }
+
+    /**
+     * @return array|null
+     */
+    protected function resolveCategoryForCache()
+    {
+        $vars = $this->view->getVars();
+        if (!empty($vars['category']['id'])) {
+            return $vars['category'];
+        }
+
+        $category_model = $this->getModel();
+        $url_field = waRequest::param('url_type') == 1 ? 'url' : 'full_url';
+
+        if (waRequest::param('category_id')) {
+            return $category_model->getById(waRequest::param('category_id'));
+        }
+        if (waRequest::param('category_url')) {
+            return $category_model->getByField($url_field, waRequest::param('category_url'));
+        }
+
+        return null;
     }
 
     /**
@@ -451,8 +477,13 @@ class shopFrontendCategoryAction extends shopFrontendAction
             return null;
         }
 
+        $key = $this->getCategoryCacheKey();
+        if ($key === null) {
+            return null;
+        }
+
         $cache = new waSerializeCache(
-            $this->getCategoryCacheKey(),
+            $key,
             self::CATEGORY_CACHE_TTL,
             self::CATEGORY_CACHE_GROUP
         );
@@ -470,8 +501,13 @@ class shopFrontendCategoryAction extends shopFrontendAction
             return;
         }
 
+        $key = $this->getCategoryCacheKey();
+        if ($key === null) {
+            return;
+        }
+
         $cache = new waSerializeCache(
-            $this->getCategoryCacheKey(),
+            $key,
             self::CATEGORY_CACHE_TTL,
             self::CATEGORY_CACHE_GROUP
         );
