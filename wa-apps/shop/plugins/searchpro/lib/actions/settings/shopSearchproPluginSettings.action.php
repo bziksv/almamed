@@ -34,6 +34,8 @@ class shopSearchproPluginSettingsAction extends waViewAction
 
 		$grams_model = new shopSearchproGramsModel();
 		$grams_count = $grams_model->count();
+		$grams_index_empty = ((int) ifset($grams_count, 'all', 0)) === 0;
+		$grams_status_enabled = !empty($settings['grams_status']);
 
 		$set_model = new shopSetModel();
 		$sets = $set_model->getAll();
@@ -41,7 +43,7 @@ class shopSearchproPluginSettingsAction extends waViewAction
 		$features_helper = new shopSearchproFeaturesHelper();
 		$features = $features_helper->getFeaturesCanFilter('id');
 
-		$vars = compact('plugin_name', 'plugin_url', 'themes', 'settings', 'templates', 'template_names', 'storefronts', 'storefront_groups', 'grams_count', 'version', 'is_enabled_seopage_plugin', 'is_enabled_seo_plugin', 'is_enabled_seofilter_plugin', 'is_enabled_brand_plugin', 'is_enabled_productbrands_plugin', 'queries', 'queries_count', 'queries_per_page', 'sets', 'features');
+		$vars = compact('plugin_name', 'plugin_url', 'themes', 'settings', 'templates', 'template_names', 'storefronts', 'storefront_groups', 'grams_count', 'grams_index_empty', 'grams_status_enabled', 'version', 'is_enabled_seopage_plugin', 'is_enabled_seo_plugin', 'is_enabled_seofilter_plugin', 'is_enabled_brand_plugin', 'is_enabled_productbrands_plugin', 'queries', 'queries_count', 'queries_per_page', 'sets', 'features');
 
 		$this->view->assign($vars);
 		$this->view->assign('plugin', $vars);

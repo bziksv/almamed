@@ -1,0 +1,72 @@
+{$field_shell}
+
+<script type="text/javascript" data-script-exception="searchpro-field-v2">
+{literal}
+(function($) {
+	window.shop_searchpro = window.shop_searchpro || {/literal}{$searchpro_config|@json_encode nofilter}{literal};
+	if (!window.shop_searchpro.loader) {
+		window.shop_searchpro.loader = {
+			assets: {},
+			is_loading: {},
+			loadJs: function(url, asset, callback) {
+				var resolve = function() {
+					if (typeof callback === 'function' && window.shop_searchpro.loader.assets[asset]) {
+						callback.call(window.shop_searchpro.loader.assets[asset]);
+					}
+				};
+				if (window.shop_searchpro.loader.is_loading[asset]) {
+					$(document).on('shop_searchpro_asset_loaded_' + asset, resolve);
+					return false;
+				}
+				if (Object.keys(this.assets).indexOf(asset) === -1 && !window.shop_searchpro.loader.is_loading[asset]) {
+					window.shop_searchpro.loader.is_loading[asset] = true;
+					$.ajax({
+						dataType: 'script',
+						cache: true,
+						url: url,
+						complete: function() {
+							window.shop_searchpro.loader.is_loading[asset] = false;
+							window.shop_searchpro.loader.assets[asset] = true;
+							$(document).trigger('shop_searchpro_asset_loaded_' + asset);
+							resolve();
+						}
+					});
+				} else {
+					resolve();
+				}
+			},
+			loadCss: function(url) {
+				$('<link>').appendTo('head').attr({ type: 'text/css', rel: 'stylesheet', href: url });
+			}
+		};
+	}
+
+	var field_params = {/literal}{$params|@json_encode nofilter}{literal};
+	var asset_urls = {/literal}{$asset_urls|@json_encode nofilter}{literal};
+	var wrapper_id = '{/literal}{$uniqid|escape:'javascript'}{literal}';
+	var booted = false;
+
+	var boot_field = function() {
+		if (booted || !asset_urls.field_v2) {
+			return;
+		}
+		booted = true;
+		window.shop_searchpro.loader.loadJs(asset_urls.field_v2, 'field-v2', function() {
+			$(document).trigger('shop-searchpro-field-loaded');
+			if (typeof window.shop_searchpro_field_init === 'function') {
+				window.shop_searchpro_field_init(wrapper_id, field_params);
+			}
+		});
+	};
+
+	var $wrapper = $('#' + wrapper_id);
+	$wrapper.find('.js-searchpro__field-input').one('focus', boot_field);
+
+	if (window.requestIdleCallback) {
+		requestIdleCallback(boot_field, { timeout: 4000 });
+	} else {
+		setTimeout(boot_field, 2500);
+	}
+})(jQuery);
+{/literal}
+</script>

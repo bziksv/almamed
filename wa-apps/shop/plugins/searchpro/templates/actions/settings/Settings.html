@@ -1,4 +1,13 @@
 <div id="searchpro-settings"></div>
+{if $grams_index_empty && $grams_status_enabled}
+<div class="block double-padded highlighted searchpro-settings-grams-notice">
+	<strong>N-граммы не проиндексированы.</strong>
+	Корректор по N-граммам на фронте автоматически отключён (v2 pipeline).
+	Запустите переиндексацию:
+	<code>php cli.php shop searchproPluginRebuildGrams</code>
+	или отключите «N-граммы» в настройках.
+</div>
+{/if}
 <script type="text/javascript">
 	window.shop_searchpro = {$plugin|json_encode};
 </script>

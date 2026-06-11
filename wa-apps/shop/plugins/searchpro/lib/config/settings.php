@@ -6,7 +6,8 @@
 
 return array(
 	'basic' => array(
-		'status' => '1'
+		'status' => '1',
+		'use_v2' => '1',
 	),
 	'storefronts' => array(
 		'*' => array(

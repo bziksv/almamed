@@ -3,9 +3,50 @@
 </div>
 
 <script type="text/javascript">
+{literal}
 	(function($) {
+		var field_params = {/literal}{$params|@json_encode nofilter}{literal};
+
+		var load_helper_dropdown = function(instance) {
+			if (!field_params.helper_url || (!field_params.popular_status && !field_params.history_status)) {
+				return $.Deferred().resolve().promise();
+			}
+			if (instance._searchpro_helper_loaded) {
+				return $.Deferred().resolve().promise();
+			}
+			instance._searchpro_helper_loaded = true;
+
+			return $.get(field_params.helper_url).done(function(html) {
+				if (!html) {
+					return;
+				}
+				var $box = instance.getHelperBox();
+				if ($box && $box.length) {
+					$box.html(html);
+				} else {
+					instance.createHelper(html);
+				}
+				instance.prepareHistory();
+			});
+		};
+
 		var create_field = function(field) {
-			new field('{$uniqid}', {$params|@json_encode nofilter});
+			var instance = new field('{$uniqid}', field_params);
+
+			if (field_params.helper_url) {
+				instance.getSelector('input').one('focus', function() {
+					load_helper_dropdown(instance);
+				});
+				if (window.requestIdleCallback) {
+					requestIdleCallback(function() {
+						load_helper_dropdown(instance);
+					}, {timeout: 4000});
+				} else {
+					setTimeout(function() {
+						load_helper_dropdown(instance);
+					}, 2500);
+				}
+			}
 		};
 
 		if(window.shop_searchpro_field) {
@@ -17,4 +58,5 @@
 			create_field(field);
 		});
 	})(jQuery);
+{/literal}
 </script>

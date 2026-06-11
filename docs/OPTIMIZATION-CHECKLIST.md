@@ -129,3 +129,4 @@ curl -sS -o /dev/null -w "brands %{size_download}B %{time_starttransfer}s\n" htt
 | 2026-06-11 | П.8 — убран дубль data-src на /brands/; п.11 — batch subcategoriesFilters |
 | 2026-06-11 | П.12 — batch params в `getTagsByCategory()` (meta=true) |
 | 2026-06-11 | П.6 — SearchPro: кэш page_html/page_cats, fast path категорий, упрощён SQL |
+| 2026-06-09 | SearchPro — план полного переписывания: [SEARCHPRO-REWRITE-CHECKLIST.md](SEARCHPRO-REWRITE-CHECKLIST.md) |

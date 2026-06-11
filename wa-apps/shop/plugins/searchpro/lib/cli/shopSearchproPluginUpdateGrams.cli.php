@@ -1,6 +1,5 @@
 <?php
 
-class shopSearchproPluginUpdateGramsCli extends waCliController
+class shopSearchproPluginUpdateGramsCli extends shopSearchproPluginRebuildGramsCli
 {
-
 }

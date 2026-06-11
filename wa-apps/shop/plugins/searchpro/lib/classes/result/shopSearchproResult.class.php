@@ -53,7 +53,9 @@ class shopSearchproResult
 	public function getCollection()
 	{
 		if(!isset($this->collection)) {
-			$this->collection = new shopSearchproProductsCollection($this->isCorrect() ? array_keys($this->results) : array());
+			$this->collection = new shopSearchproProductsCollection(
+				$this->isCorrect() ? $this->extractResultIds() : array()
+			);
 		}
 
 		return $this->collection;
@@ -65,10 +67,24 @@ class shopSearchproResult
 	public function getInitialCollection()
 	{
 		if(!isset($this->initial_collection)) {
-			$this->initial_collection = new shopProductsCollection($this->isCorrect() ? array_keys($this->results) : array());
+			$this->initial_collection = new shopProductsCollection(
+				$this->isCorrect() ? $this->extractResultIds() : array()
+			);
 		}
 
 		return $this->initial_collection;
+	}
+
+	private function extractResultIds()
+	{
+		$ids = array();
+		foreach ($this->results as $result) {
+			if (!empty($result['id'])) {
+				$ids[] = $result['id'];
+			}
+		}
+
+		return $ids;
 	}
 
 	public function getPriceRange()

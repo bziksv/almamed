@@ -1,6 +1,6 @@
 {capture assign="inline_assets"}
 {if !empty($assets_links.init)}
-    <script type="text/javascript" src="{$assets_links.init.url}?{rand()}"></script>
+    <script type="text/javascript" src="{$assets_links.init.url}"></script>
 {/if}
 {if !empty($assets.js) || !empty($assets_links.css)}
     <script type="text/javascript">

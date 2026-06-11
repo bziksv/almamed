@@ -300,6 +300,23 @@ class shopSearchproPluginFrontendDropdownController extends waController
 		}
 		unset($category);
 
+		$parent_ids = array();
+		foreach ($categories as $category) {
+			if (!empty($category['existing_name']) && !empty($category['parent_id'])) {
+				$parent_ids[(int) $category['parent_id']] = true;
+			}
+		}
+		if ($parent_ids) {
+			$parent_categories = (new shopCategoryModel())->getById(array_keys($parent_ids));
+			foreach ($categories as &$category) {
+				$parent_id = (int) ifset($category, 'parent_id', 0);
+				if ($parent_id && isset($parent_categories[$parent_id])) {
+					$category['parent_name'] = $parent_categories[$parent_id]['name'];
+				}
+			}
+			unset($category);
+		}
+
 		return $categories;
 	}
 
@@ -316,6 +333,12 @@ class shopSearchproPluginFrontendDropdownController extends waController
 
 	public function execute()
 	{
+		if (shopSearchproV2Settings::isUseV2()) {
+			$controller = new shopSearchproPluginFrontendSuggestController();
+			$controller->execute();
+			return;
+		}
+
 		$products = $this->find('products');
 
 		$categories = $this->find('categories', array($this, 'workupCategories'), array(

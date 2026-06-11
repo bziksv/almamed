@@ -29,6 +29,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 	protected $is_empty = false;
 	protected $default_action_params = array();
 	protected $category_routes_model;
+	protected $page_service;
 
 	public function __construct($params = null)
 	{
@@ -40,6 +41,20 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 		$this->id = waRequest::post('shop_searchpro_id', '');
 
 		waRequest::setParam('shop_searchpro_debug', 1);
+	}
+
+	protected function getPageService()
+	{
+		if (!isset($this->page_service)) {
+			$this->page_service = shopSearchproV2Factory::pageService();
+		}
+
+		return $this->page_service;
+	}
+
+	protected function isUseV2()
+	{
+		return shopSearchproV2Settings::isUseV2();
 	}
 
 	protected function getEnv()
@@ -266,10 +281,44 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 		if(!$products->isEmpty()) {
 			$vars = $this->view->getVars();
-			$content = $this->getFrontend()->page($vars);
+			$content = $this->getCachedPageShell($vars);
 
 			$this->view->assign('content', $content);
 		}
+	}
+
+	protected function getCachedPageShell(array $vars)
+	{
+		$cache_key = null;
+		if ($this->isUseV2()) {
+			$cache_key = $this->getPageService()->getFullPageCacheKey(
+				$this->query,
+				$this->category_id,
+				$this->getEnv(),
+				array(
+					'is_empty' => $this->isEmpty(),
+					'is_ajax' => $this->isAjax(),
+					'category_mode' => $this->getCategoryMode(),
+					'category_inline_mode_style' => $this->getCategoryInlineModeStyle(),
+					'filter_position' => $this->getSettings('design_filter_position'),
+				)
+			);
+		}
+
+		if ($cache_key) {
+			$cache = $this->getPageSerializeCache('page_full_' . $cache_key);
+			if ($cache->isCached()) {
+				return $cache->get();
+			}
+		}
+
+		$content = $this->getFrontend()->page($vars);
+
+		if ($cache_key && $content !== '') {
+			$this->getPageSerializeCache('page_full_' . $cache_key)->set($content);
+		}
+
+		return $content;
 	}
 
 	protected function workupQuery()
@@ -310,7 +359,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 		);
 		$this->includeAssets($assets);
 
-		$this->getQueryStorage()->save($this->query, $this->category_id, 0);
+		$this->saveQuery(0);
 
 		$collection = $this->getEmptyCollection();
 
@@ -335,8 +384,12 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	public function executeDefault()
 	{
+		$js_assets = $this->isUseV2()
+			? array('page-v2', 'filters-v2')
+			: array('page');
+
 		$assets = array(
-			'js' => array('page'),
+			'js' => $js_assets,
 			'css' => $this->cssAssets()
 		);
 		$this->includeAssets($assets);
@@ -386,6 +439,11 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	protected function saveQuery($count = null)
 	{
+		if ($this->isUseV2()) {
+			$this->getPageService()->scheduleQueryLog($this->query, $this->category_id, $count);
+			return;
+		}
+
 		$this->getQueryStorage()->save($this->query, $this->category_id, $count);
 		$this->getEnv()->pushSearchHistory($this->query);
 	}
@@ -393,6 +451,10 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 	protected function workupFilters($id)
 	{
 		if(!$this->getFilterStatus()) {
+			return;
+		}
+
+		if ($this->isUseV2() && !$this->getPageService()->shouldBuildFilters()) {
 			return;
 		}
 
@@ -716,8 +778,12 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 	protected function getFinder()
 	{
 		if(!isset($this->finder)) {
-			$params = $this->getFinderParams();
-			$this->finder = new shopSearchproFinder($params);
+			if ($this->isUseV2()) {
+				$this->finder = $this->getPageService()->getFinder($this->category_id);
+			} else {
+				$params = $this->getFinderParams();
+				$this->finder = new shopSearchproFinder($params);
+			}
 		}
 
 		return $this->finder;
@@ -913,6 +979,10 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	private function getFilters()
 	{
+		if ($this->isUseV2() && !$this->getPageService()->shouldBuildFilters()) {
+			return array();
+		}
+
 		if(!isset($this->filters)) {
 			$products = $this->getProducts();
 

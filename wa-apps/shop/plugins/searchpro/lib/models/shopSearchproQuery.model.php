@@ -45,13 +45,34 @@ class shopSearchproQueryModel extends waModel
 
 	public function getVisible($limit = null)
 	{
+		$limit = $limit !== null ? max(1, (int) $limit) : null;
+		$cache_key = 'visible_' . ($limit !== null ? $limit : 'all');
+
+		$cache = new waSerializeCache($cache_key, 600, 'shop/searchpro/popular');
+		if ($cache->isCached()) {
+			$cached = $cache->get();
+			if (is_array($cached)) {
+				return $cached;
+			}
+		}
+
+		$rows = $this->fetchVisible($limit);
+		$cache->set($rows);
+
+		return $rows;
+	}
+
+	protected function fetchVisible($limit = null)
+	{
 		$sql = <<<SQL
-SELECT *
-	FROM {$this->getTableName()}
-WHERE status = '1' AND query != ''
-ORDER BY frequency DESC
+SELECT q.*, c.name AS category_name
+	FROM {$this->getTableName()} AS q
+LEFT JOIN `shop_category` AS c
+	ON c.id = q.category_id
+WHERE q.status = '1' AND q.query != ''
+ORDER BY q.frequency DESC
 SQL;
-		if($limit !== null) {
+		if ($limit !== null) {
 			$limit = $this->escape($limit, 'int');
 			$sql .= " LIMIT $limit";
 		}
@@ -109,5 +130,74 @@ SQL;
 		}
 
 		return $this->query($sql)->fetchAll();
+	}
+
+	public function countCleanupCandidates($top_limit = 10000, $keep_days = 90)
+	{
+		$top_limit = max(1, (int) $top_limit);
+		$keep_days = max(1, (int) $keep_days);
+		$cutoff = date('Y-m-d H:i:s', strtotime('-' . $keep_days . ' days'));
+
+		$sql = <<<SQL
+SELECT COUNT(*)
+FROM {$this->getTableName()} AS q
+WHERE q.last_datetime < s:cutoff
+AND q.id NOT IN (
+	SELECT id FROM (
+		SELECT id
+		FROM {$this->getTableName()}
+		ORDER BY frequency DESC
+		LIMIT i:top_limit
+	) AS kept
+)
+SQL;
+
+		return (int) $this->query($sql, array(
+			'cutoff' => $cutoff,
+			'top_limit' => $top_limit,
+		))->fetchField();
+	}
+
+	public function cleanup($top_limit = 10000, $keep_days = 90)
+	{
+		$top_limit = max(1, (int) $top_limit);
+		$keep_days = max(1, (int) $keep_days);
+		$cutoff = date('Y-m-d H:i:s', strtotime('-' . $keep_days . ' days'));
+
+		$sql = <<<SQL
+DELETE FROM {$this->getTableName()}
+WHERE last_datetime < s:cutoff
+AND id NOT IN (
+	SELECT id FROM (
+		SELECT id
+		FROM {$this->getTableName()}
+		ORDER BY frequency DESC
+		LIMIT i:top_limit
+	) AS kept
+)
+SQL;
+
+		$result = $this->exec($sql, array(
+			'cutoff' => $cutoff,
+			'top_limit' => $top_limit,
+		));
+
+		$this->clearPopularCache();
+
+		if ($result instanceof waDbResultDelete) {
+			return (int) $result->affectedRows();
+		}
+
+		return 0;
+	}
+
+	public function clearPopularCache()
+	{
+		foreach (array(3, 5, 10, 15, 20, 30, 50, 'all') as $limit) {
+			$cache = new waSerializeCache('visible_' . $limit, 600, 'shop/searchpro/popular');
+			if ($cache->isCached()) {
+				$cache->delete();
+			}
+		}
 	}
 }

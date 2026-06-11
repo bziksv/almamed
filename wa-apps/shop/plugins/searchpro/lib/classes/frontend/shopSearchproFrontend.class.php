@@ -94,7 +94,10 @@ class shopSearchproFrontend
 			}
 		}
 
-		if(empty($this->is_disabled_assets['init']) && (!waRequest::isXMLHttpRequest() || waRequest::get('shop_searchpro_init'))) {
+		$skip_init = shopSearchproV2Settings::isUseV2()
+			|| !empty($this->is_disabled_assets['init']);
+
+		if (!$skip_init && (!waRequest::isXMLHttpRequest() || waRequest::get('shop_searchpro_init'))) {
 			$output_assets['init'] = array(
 				'type' => 'js',
 				'url' => $this->getEnv()->getRouteUrl('shop/frontend/config/', array(
@@ -364,21 +367,26 @@ class shopSearchproFrontend
 		$popular = null;
 		$is_popular = (bool) $this->getSettings('page_empty_popular_status');
 		if($is_popular) {
-			$results_route_url = $this->getEnv()->getRouteUrl('shop/frontend/page/', array('plugin' => 'searchpro'));
-
 			$popular_max_count = (int) $this->getSettings('page_empty_popular_max_length');
-			$popular = $this->getQueryModel()->getVisible($popular_max_count);
 
-			foreach($popular as &$entity) {
-				$url = $results_route_url;
-				$encoded_query = urlencode($entity['query']);
-				if($entity['category_id']) {
-					$url .= "/{$entity['category_id']}";
+			if (shopSearchproV2Settings::isUseV2()) {
+				$popular = shopSearchproV2Factory::popularService()->getTop($popular_max_count);
+			} else {
+				$results_route_url = $this->getEnv()->getRouteUrl('shop/frontend/page/', array('plugin' => 'searchpro'));
+
+				$popular = $this->getQueryModel()->getVisible($popular_max_count);
+
+				foreach($popular as &$entity) {
+					$url = $results_route_url;
+					$encoded_query = urlencode($entity['query']);
+					if($entity['category_id']) {
+						$url .= "/{$entity['category_id']}";
+					}
+					$url .= "/{$encoded_query}/";
+
+					$entity['name'] = $entity['query'];
+					$entity['url'] = $url;
 				}
-				$url .= "/{$encoded_query}/";
-
-				$entity['name'] = $entity['query'];
-				$entity['url'] = $url;
 			}
 		}
 
@@ -484,6 +492,10 @@ class shopSearchproFrontend
 			return '';
 		}
 
+		if (shopSearchproV2Settings::isUseV2()) {
+			return (new shopSearchproV2FieldRenderer($this))->render($params);
+		}
+
 		$assets = array();
 		if(empty($this->is_disabled_assets['field'])) {
 			$css = array();
@@ -525,8 +537,7 @@ class shopSearchproFrontend
 		}
 
 		if($category_filter_status) {
-			$route = $this->getEnv()->getCurrentStorefront();
-			$source_categories = $this->getEnv()->getCategoryModel()->getTree(0, $category_filter_deep, true, $route);
+			$source_categories = $this->getCachedCategoryTree($category_filter_deep);
 			$stack = array();
 			$categories = array();
 			foreach($source_categories as $key => $category) {
@@ -588,12 +599,10 @@ class shopSearchproFrontend
 					'max' => $popular_max_count
 				)
 			);
-			$helper_dropdown = $this->helperDropdown($helper_params);
-			$helper_dropdown_example = $this->helperDropdown($helper_params, true);
-
+			$params['helper_url'] = $this->getEnv()->getRouteUrl('shop/frontend/helper', array('plugin' => 'searchpro'), true);
 			$params['helper_dropdown'] = array(
-				'current' => $helper_dropdown,
-				'template' => $helper_dropdown_example
+				'current' => '',
+				'template' => $this->helperDropdown($helper_params, true)
 			);
 		}
 
@@ -603,6 +612,49 @@ class shopSearchproFrontend
 			'class' => 'js-searchpro__field-wrapper',
 			'id' => $uniqid
 		));
+	}
+
+	protected function getCachedCategoryTree($depth)
+	{
+		if (shopSearchproV2Settings::isUseV2()) {
+			return shopSearchproV2Factory::categoryTreeService()->getFlatTree($depth);
+		}
+
+		$route = $this->getEnv()->getCurrentStorefront();
+		$cache_key = 'tree_' . md5($route . '|' . (int) $depth);
+		$cache = new waSerializeCache($cache_key, 3600, 'shop/searchpro/categories');
+
+		if ($cache->isCached()) {
+			$cached = $cache->get();
+			if (is_array($cached)) {
+				return $cached;
+			}
+		}
+
+		$data = $this->getEnv()->getCategoryModel()->getTree(0, $depth, true, $route);
+		$cache->set($data);
+
+		return $data;
+	}
+
+	public function fetchTemplate($path, array $vars = array())
+	{
+		$view = $this->getView();
+		$view->assign($vars);
+		return $view->fetch($path);
+	}
+
+	public function outputFrontendV2($content, $assets = array(), $vars = array(), $wrapper = null, $data = array())
+	{
+		$view = $this->getView();
+		$view->assign('assets', $assets);
+		$view->assign('assets_links', $this->getAssets($assets));
+		$view->assign($vars);
+
+		$content = $view->fetch($content);
+		$view->assign(compact('content', 'wrapper', 'data'));
+
+		return $view->fetch($this->getPluginPath() . 'templates/actions/frontend/FrontendOutputV2.html');
 	}
 
 	protected function outputFrontend($content, $assets = array(), $vars = array(), $wrapper = null, $data = array())

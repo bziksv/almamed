@@ -1,0 +1,28 @@
+<div class="searchpro__field js-searchpro__field">
+	<div class="searchpro__field-container js-searchpro__field-container">
+		<div class="searchpro__field-input-container">
+			<input class="searchpro__field-input js-searchpro__field-input" type="search" autocomplete="off"
+			       placeholder="{$placeholder|escape}"{if $query} value="{$query|escape}"{/if}/>
+			<div class="searchpro__field-clear-button js-searchpro__field-clear-button"{if !$query} style="display: none;"{/if}></div>
+		</div>
+		{if $category_filter_status}
+			<div class="searchpro__field-categories-container js-searchpro__field-categories-root">
+				<input type="hidden" name="category_id" value="{$selected_category_id}"
+				       class="js-searchpro__field-category-input"/>
+				<div class="searchpro__field-categories-label js-searchpro__field-category-selector">
+					<span class="js-searchpro__field-category-label">
+						{if $selected_category_name}{$selected_category_name|escape}{else}Все категории{/if}
+					</span>
+				</div>
+				<ul class="searchpro__field-categories-list js-searchpro__field-categories-list">
+					<li class="js-searchpro__field-category searchpro__field-category searchpro__field-category-all selected" data-id="0">Все категории</li>
+				</ul>
+			</div>
+		{/if}
+		<div class="searchpro__field-button-container">
+			<div class="searchpro__field-button js-searchpro__field-button">
+				<i class="material-icons mi-2x">&#xE8B6;</i>
+			</div>
+		</div>
+	</div>
+</div>

@@ -11,6 +11,7 @@ class shopSearchproFinder
 	private $finders = array();
 	private $collections = array();
 	private $output_collections = array();
+	private $search_total_counts = array();
 	private $relevancy_multipliers = array(
 		'General' => 1,
 
@@ -81,6 +82,10 @@ class shopSearchproFinder
 			return array();
 		}
 
+		if ($type === 'products' && isset($cache['products_total'])) {
+			$this->search_total_counts['products'] = (int) $cache['products_total'];
+		}
+
 		$results = $this->getResultsByKeys($type, $result);
 
 		return $results;
@@ -105,6 +110,10 @@ class shopSearchproFinder
 		}
 
 		$cache[$type] = $results;
+
+		if ($type === 'products' && isset($this->search_total_counts['products'])) {
+			$cache['products_total'] = $this->search_total_counts['products'];
+		}
 
 		return $this->getCache($word)->set($cache);
 	}
@@ -320,7 +329,14 @@ class shopSearchproFinder
 
 	private function createOutputCollection($type, $results)
 	{
-		$this->output_collections[$type] = new shopSearchproProductsCollection(array_keys($results));
+		$ids = array();
+		foreach ($results as $result) {
+			if (!empty($result['id'])) {
+				$ids[] = $result['id'];
+			}
+		}
+
+		$this->output_collections[$type] = new shopSearchproProductsCollection($ids);
 
 		return $this->output_collections[$type];
 	}
@@ -500,17 +516,28 @@ class shopSearchproFinder
 		}
 
 		if($collection) {
-			$finder_params = $this->getFinderParams();
-			$search_fields = $finder_params['search_fields'];
+			if ($limit === null && $this->getParam('cache_type') === 'dropdown') {
+				$limit = $this->getResultsCount('products', 'max');
+				if ($limit <= 0) {
+					$limit = 10;
+				}
+			}
 
-			$products = $collection->getProductIds($limit);
+			$fetch_limit = $limit;
+			if ($limit !== null && $this->getParam('cache_type') === 'dropdown' && !is_array($query)) {
+				$fetch_limit = $limit + 1;
+			}
 
-			/*if(!empty($search_fields['products']['filled'])) {
-				$is_event_frontend_products = !empty($search_fields['products']['event_frontend_products']);
-				$products = $collection->getProductsFilled($limit, $is_event_frontend_products);
-			} else {
-				$products = $collection->getProductIds($limit);
-			}*/
+			$products = $collection->getProductIds($fetch_limit);
+
+			if ($limit !== null && $this->getParam('cache_type') === 'dropdown' && !is_array($query)) {
+				if (count($products) > $limit) {
+					$products = array_slice($products, 0, $limit, true);
+					$this->search_total_counts['products'] = (int) $collection->count();
+				} else {
+					$this->search_total_counts['products'] = count($products);
+				}
+			}
 
 			return $products;
 		}
@@ -545,10 +572,18 @@ class shopSearchproFinder
 		$results = $this->get($type, $query);
 
 		if(!$results) {
+			$limit = null;
+			if ($this->getParam('cache_type') === 'dropdown') {
+				$limit = $this->getResultsCount($type, 'max');
+				if ($limit <= 0) {
+					$limit = null;
+				}
+			}
+
 			if($type === 'products') {
-				$results = $this->searchProducts($query);
+				$results = $this->searchProducts($query, $limit);
 			} elseif(in_array($type, $this->search_entities)) {
-				$results = $this->searchEntities($type, $query);
+				$results = $this->searchEntities($type, $query, $limit);
 			} else {
 				throw new shopSearchproException('UNKNOWN_SEARCH_TYPE');
 			}
@@ -745,7 +780,11 @@ class shopSearchproFinder
 		}*/
 
 		if($results) {
-			$this->increaseCount($type, count($results));
+			$result_count = count($results);
+			if ($type === 'products' && array_key_exists('products', $this->search_total_counts)) {
+				$result_count = $this->search_total_counts['products'];
+			}
+			$this->increaseCount($type, $result_count);
 			$this->saveOutputResults($type, $results);
 
 			if($type === 'products') {

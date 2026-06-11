@@ -421,8 +421,20 @@ class shopSearchproEnv
 
 	private function isEnabledShopPlugin($plugin)
 	{
-		$plugin_info = $this->getSystem()->getConfig()->getPluginInfo($plugin);
+		static $cache = array();
+		static $enabled_plugins = null;
 
-		return !empty($plugin_info);
+		if (!array_key_exists($plugin, $cache)) {
+			if ($enabled_plugins === null) {
+				$path = $this->getSystem('shop')->getConfig()->getConfigPath('plugins.php', true);
+				$enabled_plugins = is_readable($path) ? include($path) : array();
+				if (!is_array($enabled_plugins)) {
+					$enabled_plugins = array();
+				}
+			}
+			$cache[$plugin] = !empty($enabled_plugins[$plugin]);
+		}
+
+		return $cache[$plugin];
 	}
 }
