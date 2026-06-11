@@ -9,75 +9,79 @@ class shopSliderPluginBackendSaveController extends waJsonController
         $sort = waRequest::post('sort');
         $link = waRequest::post('link');
         $alt = waRequest::post('alt');
-        $img_path = waRequest::post('img_path');
 
-        $files = array();
-        foreach ($_FILES['img']['error'] as $key => $img) {
-            if ($img) {
-                $files[$key] = ifset($img_path, $key, '');
-                if ($files[$key]) {
-                    $this->ensureMobileThumbnail($files[$key]);
-                }
-            } else {
-                $format = array('/png', '/jpeg');
-
-                if (in_array(strstr($_FILES['img']['type'][$key], '/'), $format)) {
-                    $file_name = $_FILES['img']['name'][$key];
-                    $files[$key] = '/wa-data/public/shop/slider/img/' . $file_name;
-                    $files_root = wa()->getConfig()->getPath('data') . '/public/shop/slider/img/' . $file_name;
-
-                    waFiles::create(wa()->getConfig()->getPath('data') . '/public/shop/slider/img');
-
-                    $image = waImage::factory($_FILES['img']['tmp_name'][$key]);
-                    $image->save($files_root, 100);
-
-                    $this->saveMobileThumbnail($_FILES['img']['tmp_name'][$key], $files_root);
-                } else {
-                    $files[$key] = false;
-                }
-            }
-        }
+        $img = $this->processImageField('img', waRequest::post('img_path'));
+        $img_tablet = $this->processImageField('img_tablet', waRequest::post('img_tablet_path'));
+        $img_mobile = $this->processImageField('img_mobile', waRequest::post('img_mobile_path'));
 
         $records = $model->order('sort ASC')->fetchAll();
         foreach ($records as $r) {
             $model->deleteById($r['id']);
         }
 
-        foreach ($files as $key => $db) {
+        foreach ($img as $key => $db) {
+            $tablet = ifset($img_tablet, $key, '');
+            $mobile = ifset($img_mobile, $key, '');
+
+            if ($db) {
+                $generated = shopSliderResponsiveImages::generateFromDesktop($db, false);
+                if (!$tablet) {
+                    $tablet = $generated['img_tablet'];
+                }
+                if (!$mobile) {
+                    $mobile = $generated['img_mobile'];
+                }
+            }
+
             $model->insert(array(
-                'sort' => $sort[$key],
-                'link' => $link[$key],
-                'alt' => $alt[$key],
+                'sort' => ifset($sort, $key, 0),
+                'link' => ifset($link, $key, ''),
+                'alt' => ifset($alt, $key, ''),
                 'img' => $db,
+                'img_tablet' => $tablet,
+                'img_mobile' => $mobile,
             ));
         }
 
         $this->redirect('/webasyst/shop/?action=plugins#/slider/');
     }
 
-    protected function saveMobileThumbnail($source, $files_root)
+    protected function processImageField($field, $paths)
     {
-        $image_sm = waImage::factory($source);
-        $image_sm->resize(576, 220, 'WIDTH');
-        $image_sm->save($this->mobilePath($files_root), 100);
-    }
+        $files = array();
 
-    protected function ensureMobileThumbnail($public_path)
-    {
-        $basename = basename($public_path);
-        $files_root = wa()->getConfig()->getPath('data') . '/public/shop/slider/img/' . $basename;
-        if (!file_exists($files_root)) {
-            return;
+        if (!isset($_FILES[$field]['error']) || !is_array($_FILES[$field]['error'])) {
+            return $files;
         }
-        $mobile_path = $this->mobilePath($files_root);
-        if (file_exists($mobile_path)) {
-            return;
-        }
-        $this->saveMobileThumbnail($files_root, $files_root);
-    }
 
-    protected function mobilePath($files_root)
-    {
-        return str_replace('/img/', '/img/sm_', $files_root);
+        foreach ($_FILES[$field]['error'] as $key => $error) {
+            if ($error) {
+                $files[$key] = ifset($paths, $key, '');
+                continue;
+            }
+
+            $format = array('/png', '/jpeg');
+            if (!in_array(strstr($_FILES[$field]['type'][$key], '/'), $format)) {
+                $files[$key] = false;
+                continue;
+            }
+
+            $file_name = $_FILES[$field]['name'][$key];
+            $public_path = '/wa-data/public/shop/slider/img/' . $file_name;
+            $files_root = wa()->getConfig()->getPath('data') . '/public/shop/slider/img/' . $file_name;
+
+            waFiles::create(wa()->getConfig()->getPath('data') . '/public/shop/slider/img');
+
+            $image = waImage::factory($_FILES[$field]['tmp_name'][$key]);
+            $image->save($files_root, 100);
+
+            if ($field === 'img') {
+                shopSliderResponsiveImages::generateFromDesktop($public_path, true);
+            }
+
+            $files[$key] = $public_path;
+        }
+
+        return $files;
     }
 }

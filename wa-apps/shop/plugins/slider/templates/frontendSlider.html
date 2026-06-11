@@ -3,40 +3,21 @@
 <style>
     .header-slider {
         text-align: center;
-        overflow: hidden;
-    }
-    .header-slider img {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-        vertical-align: middle;
-    }
-    /* До init lightSlider — только первый слайд, без «стопки» баннеров */
-    #slider-head:not(.lSSlide) {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        overflow: hidden;
-    }
-    #slider-head:not(.lSSlide) > li:not(:first-child) {
-        display: none;
-    }
-    @media only screen and (max-width: 800px) {
-        .header-slider {
-            margin-left: -0.75rem;
-            margin-right: -0.75rem;
-        }
     }
 </style>
 
 <script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}"></script>
 
 <div class="header-slider">
-    <ul id="slider-head">
+    <ul id="slider-head" style="list-style: none">
         {foreach $slides as $s}
             <li>
                 <a href="{$s.link|escape}">
-                    <img src="{$s.img|escape}" alt="{$s.alt|escape}"{if !empty($s.img_mobile) && $s.img_mobile != $s.img} data-mobile-src="{$s.img_mobile|escape}"{/if}>
+                    <img src="{$s.img|escape}"
+                         alt="{$s.alt|escape}"
+                         data-desktop-src="{$s.img|escape}"
+                         data-tablet-src="{$s.img_tablet|escape}"
+                         data-mobile-src="{$s.img_mobile|escape}">
                 </a>
             </li>
         {/foreach}
@@ -45,30 +26,34 @@
 
 <script>
     jQuery(function($) {
-        if (!$.fn.lightSlider) {
-            return;
-        }
-
         var $slider = $('#slider-head');
-        if (!$slider.length || $slider.hasClass('lightSlider')) {
+        if (!$slider.length || !$.fn.lightSlider) {
             return;
         }
 
-        if (window.matchMedia('(max-width: 800px)').matches) {
-            $slider.find('img[data-mobile-src]').each(function() {
-                var mobileSrc = $(this).attr('data-mobile-src');
-                if (mobileSrc) {
-                    $(this).attr('src', mobileSrc);
+        function responsiveSlideSrc() {
+            var width = window.innerWidth || document.documentElement.clientWidth;
+            $slider.find('img').each(function() {
+                var $img = $(this);
+                var src = $img.data('desktop-src');
+                if (width <= 480 && $img.data('mobile-src')) {
+                    src = $img.data('mobile-src');
+                } else if (width <= 992 && $img.data('tablet-src')) {
+                    src = $img.data('tablet-src');
+                }
+                if (src) {
+                    $img.attr('src', src);
                 }
             });
         }
+
+        responsiveSlideSrc();
 
         $slider.lightSlider({
             item: 1,
             slideMove: 1,
             pause: 5000,
             controls: false,
-            pager: false,
             loop: true,
             auto: true,
             enableDrag: false,
@@ -82,7 +67,7 @@
                     settings: {
                         item: 1,
                         slideMove: 1,
-                        slideMargin: 0,
+                        slideMargin: 6,
                         enableDrag: true
                     }
                 },
@@ -91,7 +76,6 @@
                     settings: {
                         item: 1,
                         slideMove: 1,
-                        slideMargin: 0,
                         enableDrag: true
                     }
                 }

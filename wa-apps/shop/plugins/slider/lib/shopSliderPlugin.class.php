@@ -7,7 +7,7 @@ class shopSliderPlugin extends shopPlugin
         $model = new shopSliderModel();
         $records = $model->order('sort ASC')->fetchAll();
         foreach ($records as &$slide) {
-            $slide['img_mobile'] = self::getSlideMobileImage(ifset($slide, 'img', ''));
+            $slide = self::resolveSlideImages($slide);
         }
         unset($slide);
 
@@ -18,10 +18,40 @@ class shopSliderPlugin extends shopPlugin
         return $view->fetch($app_config->getPluginPath('slider').'/templates/frontendSlider.html');
     }
 
-    /**
-     * Mobile banner: sm_* thumbnail generated on upload (576px wide).
-     */
-    protected static function getSlideMobileImage($img)
+    protected static function resolveSlideImages(array $slide)
+    {
+        $desktop = ifset($slide, 'img', '');
+        $tablet = ifset($slide, 'img_tablet', '');
+        $mobile = ifset($slide, 'img_mobile', '');
+
+        if (!$tablet) {
+            $tablet = self::getAutoTabletImage($desktop) ?: $desktop;
+        }
+        if (!$mobile) {
+            $mobile = self::getAutoMobileImage($desktop) ?: $desktop;
+        }
+
+        $slide['img_tablet'] = $tablet;
+        $slide['img_mobile'] = $mobile;
+
+        return $slide;
+    }
+
+    protected static function getAutoTabletImage($img)
+    {
+        if (!$img) {
+            return '';
+        }
+        $basename = basename($img);
+        $tablet_path = wa()->getConfig()->getPath('data').'/public/shop/slider/img/tb_'.$basename;
+        if (file_exists($tablet_path)) {
+            return '/wa-data/public/shop/slider/img/tb_'.$basename;
+        }
+
+        return '';
+    }
+
+    protected static function getAutoMobileImage($img)
     {
         if (!$img) {
             return '';
@@ -32,6 +62,6 @@ class shopSliderPlugin extends shopPlugin
             return '/wa-data/public/shop/slider/img/sm_'.$basename;
         }
 
-        return $img;
+        return '';
     }
 }

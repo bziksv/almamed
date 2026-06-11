@@ -1,26 +1,45 @@
 <h1>Слайдер</h1>
-<p class="hint">На мобильных автоматически используется уменьшенная копия баннера (576 px). Для лучшей читаемости текста на телефоне загружайте баннеры с крупным шрифтом или пересохраните слайды — мобильные превью создадутся заново.</p>
+<p class="hint">
+    Для каждого слайда можно загрузить три версии баннера: для компьютера, планшета (до 992 px) и телефона (до 480 px).
+    Если планшет или телефон не загружены — автоматически создаются версии 992 px и 576 px из десктопного баннера.
+</p>
 
 <div class="fields form">
     <form id="brand-edit-form" enctype="multipart/form-data" method="post" action="?plugin=slider&action=save">
         {$wa->csrf()}
 
-
         <div class="add-field">
             {foreach $forms as $form}
-            <div class="field-group">
-                        <input type="text" placeholder="Сортировка" size="8" name="sort[]" value="{$form.sort}">
-                        <input type="text" placeholder="Ссылка" name="link[]" size="30" value="{$form.link}">
-                        <input type="text" placeholder="Alt" name="alt[]" size="30" value="{$form.alt}">
-                        <input type="file" name="img[]" value="">
-                        <input type="hidden" name="img_path[]" value="{$form.img}">
-                        <img src="{$form.img}" style="max-width: 50px;">
-                        <a href="#" class="button red remove">Удалить</a>
-
+            <div class="field-group slider-slide-row">
+                <div class="slider-slide-row__meta">
+                    <input type="text" placeholder="Сортировка" size="8" name="sort[]" value="{$form.sort|escape}">
+                    <input type="text" placeholder="Ссылка" name="link[]" size="30" value="{$form.link|escape}">
+                    <input type="text" placeholder="Alt" name="alt[]" size="30" value="{$form.alt|escape}">
+                    <a href="#" class="button red remove">Удалить</a>
+                </div>
+                <div class="slider-slide-row__images">
+                    <label class="slider-upload">
+                        <span>Компьютер</span>
+                        <input type="file" name="img[]" accept="image/png,image/jpeg">
+                        <input type="hidden" name="img_path[]" value="{$form.img|escape}">
+                        {if !empty($form.img)}<img src="{$form.img|escape}" alt="">{/if}
+                    </label>
+                    <label class="slider-upload">
+                        <span>Планшет</span>
+                        <input type="file" name="img_tablet[]" accept="image/png,image/jpeg">
+                        <input type="hidden" name="img_tablet_path[]" value="{$form.img_tablet|default:''|escape}">
+                        {if !empty($form.img_tablet)}<img src="{$form.img_tablet|escape}" alt="">{/if}
+                    </label>
+                    <label class="slider-upload">
+                        <span>Телефон</span>
+                        <input type="file" name="img_mobile[]" accept="image/png,image/jpeg">
+                        <input type="hidden" name="img_mobile_path[]" value="{$form.img_mobile|default:''|escape}">
+                        {if !empty($form.img_mobile)}<img src="{$form.img_mobile|escape}" alt="">{/if}
+                    </label>
+                </div>
             </div>
             {/foreach}
         </div>
-
 
         <div class="field-group">
             <a href="#" class="button green" id="add">Добавить</a>
@@ -31,29 +50,66 @@
                 <input type="submit" class="button green" value="[s`Save`]">
             </div>
         </div>
-
     </form>
-
 </div>
 
+<style>
+    .slider-slide-row {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #ddd;
+    }
+    .slider-slide-row__meta {
+        margin-bottom: 0.75rem;
+    }
+    .slider-slide-row__images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .slider-upload {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        min-width: 140px;
+    }
+    .slider-upload span {
+        font-weight: bold;
+        font-size: 12px;
+        color: #666;
+    }
+    .slider-upload img {
+        max-width: 120px;
+        max-height: 60px;
+        border: 1px solid #eee;
+    }
+</style>
+
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
+        var slideRowTemplate =
+            '<div class="field-group slider-slide-row">' +
+                '<div class="slider-slide-row__meta">' +
+                    '<input type="text" placeholder="Сортировка" size="8" name="sort[]" value="">' +
+                    '<input type="text" placeholder="Ссылка" name="link[]" size="30" value="">' +
+                    '<input type="text" placeholder="Alt" name="alt[]" size="30" value="">' +
+                    '<a href="#" class="button red remove">Удалить</a>' +
+                '</div>' +
+                '<div class="slider-slide-row__images">' +
+                    '<label class="slider-upload"><span>Компьютер</span><input type="file" name="img[]" accept="image/png,image/jpeg"><input type="hidden" name="img_path[]" value=""></label>' +
+                    '<label class="slider-upload"><span>Планшет</span><input type="file" name="img_tablet[]" accept="image/png,image/jpeg"><input type="hidden" name="img_tablet_path[]" value=""></label>' +
+                    '<label class="slider-upload"><span>Телефон</span><input type="file" name="img_mobile[]" accept="image/png,image/jpeg"><input type="hidden" name="img_mobile_path[]" value=""></label>' +
+                '</div>' +
+            '</div>';
 
         $('#add').click(function() {
-            $('<div class="field-group">' +
-            '<input type="text" placeholder="Сортировка" name="sort[]" value="">' +
-            ' <input type="text" placeholder="Ссылка" name="link[]" value="">' +
-            ' <input type="file" name="img[]" value="">' +
-            ' <a href="#" class="button red remove">Удалить</a>' +
-            '</div>').fadeIn('slow').appendTo('.add-field');
+            $(slideRowTemplate).fadeIn('slow').appendTo('.add-field');
             return false;
         });
 
-        $('.add-field').on('click','.remove',function() {
-            $(this).parent().remove();
+        $('.add-field').on('click', '.remove', function() {
+            $(this).closest('.slider-slide-row').remove();
             return false;
         });
-
-
     });
 </script>
