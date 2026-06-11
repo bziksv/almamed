@@ -163,9 +163,13 @@
         $(window).load(windowSize);
         $(window).resize(windowSize);
 
-        if ($.at.shop && $.at.shop.url) {
-            $.at.shop.refreshCartWidget();
-        }
+        $(window).on('load', function () {
+            window.setTimeout(function () {
+                if ($.at.shop && $.at.shop.url) {
+                    $.at.shop.refreshCartWidget();
+                }
+            }, 1500);
+        });
     });
 </script>
 {/strip}

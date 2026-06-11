@@ -3,7 +3,9 @@
 <div class="mobile-nav-wrapper nav-all">
     <div class="mobile-nav-block-wrapper">
 
+        {if $wa->isMobile()}
         {include file="`$wa_active_theme_path`/searchform.html" mobile_search=true inline}
+        {/if}
 
         <nav class="mobile-nav-box-wrapper">
         
