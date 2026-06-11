@@ -5,6 +5,12 @@
         text-align: center;
         overflow: hidden;
     }
+    .header-slider img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        vertical-align: middle;
+    }
     /* До init lightSlider — только первый слайд, без «стопки» баннеров */
     #slider-head:not(.lSSlide) {
         margin: 0;
@@ -15,6 +21,12 @@
     #slider-head:not(.lSSlide) > li:not(:first-child) {
         display: none;
     }
+    @media only screen and (max-width: 800px) {
+        .header-slider {
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+        }
+    }
 </style>
 
 <script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?{time()}"></script>
@@ -22,7 +34,11 @@
 <div class="header-slider">
     <ul id="slider-head">
         {foreach $slides as $s}
-            <li><a href="{$s.link}"><img src="{$s.img}" alt="{$s.alt}"></a></li>
+            <li>
+                <a href="{$s.link|escape}">
+                    <img src="{$s.img|escape}" alt="{$s.alt|escape}"{if !empty($s.img_mobile) && $s.img_mobile != $s.img} data-mobile-src="{$s.img_mobile|escape}"{/if}>
+                </a>
+            </li>
         {/foreach}
     </ul>
 </div>
@@ -32,11 +48,27 @@
         if (!$.fn.lightSlider) {
             return;
         }
-        $('#slider-head').lightSlider({
+
+        var $slider = $('#slider-head');
+        if (!$slider.length || $slider.hasClass('lightSlider')) {
+            return;
+        }
+
+        if (window.matchMedia('(max-width: 800px)').matches) {
+            $slider.find('img[data-mobile-src]').each(function() {
+                var mobileSrc = $(this).attr('data-mobile-src');
+                if (mobileSrc) {
+                    $(this).attr('src', mobileSrc);
+                }
+            });
+        }
+
+        $slider.lightSlider({
             item: 1,
             slideMove: 1,
             pause: 5000,
             controls: false,
+            pager: false,
             loop: true,
             auto: true,
             enableDrag: false,
@@ -44,23 +76,26 @@
             speed: 600,
             adaptiveHeight: true,
             slideMargin: 0,
-            responsive : [
+            responsive: [
                 {
-                    breakpoint:800,
+                    breakpoint: 800,
                     settings: {
-                        item:1,
-                        slideMove:1,
-                        slideMargin:6,
+                        item: 1,
+                        slideMove: 1,
+                        slideMargin: 0,
+                        enableDrag: true
                     }
                 },
                 {
-                    breakpoint:480,
+                    breakpoint: 480,
                     settings: {
-                        item:1,
-                        slideMove:1
+                        item: 1,
+                        slideMove: 1,
+                        slideMargin: 0,
+                        enableDrag: true
                     }
                 }
-            ],
+            ]
         });
     });
 </script>
