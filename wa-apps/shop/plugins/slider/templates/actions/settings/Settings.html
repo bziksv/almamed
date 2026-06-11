@@ -1,8 +1,15 @@
 <h1>Слайдер</h1>
 <p class="hint">
-    Для каждого слайда можно загрузить три версии баннера: для компьютера, планшета (до 992 px) и телефона (до 480 px).
-    Если планшет или телефон не загружены — автоматически создаются версии 992 px и 576 px из десктопного баннера.
+    Для каждого слайда можно загрузить три версии баннера: для компьютера, планшета и телефона.
+    Если планшет или телефон не загружены — они создаются автоматически из десктопного баннера.
+    При загрузке изображения автоматически сжимаются до рекомендуемых размеров.
 </p>
+{if $active_count > $max_visible_slides}
+<p class="hint slider-rotation-hint">
+    Активных слайдов: {$active_count|escape}. На сайте одновременно показывается не более {$max_visible_slides|escape}.
+    Остальные участвуют в ротации: чем меньше показов у слайда, тем чаще он попадает в карусель.
+</p>
+{/if}
 
 <div class="fields form">
     <form id="brand-edit-form" enctype="multipart/form-data" method="post" action="?plugin=slider&action=save">
@@ -10,28 +17,68 @@
 
         <div class="add-field">
             {foreach $forms as $form}
+            {assign var="slide_enabled" value=$form.enabled|default:1}
+            {assign var="slide_visible" value=$form.is_visible|default:1}
             <div class="field-group slider-slide-row">
+                <input type="hidden" name="id[]" value="{$form.id|default:''|escape}">
                 <div class="slider-slide-row__meta">
                     <input type="text" placeholder="Сортировка" size="8" name="sort[]" value="{$form.sort|escape}">
                     <input type="text" placeholder="Ссылка" name="link[]" size="30" value="{$form.link|escape}">
                     <input type="text" placeholder="Alt" name="alt[]" size="30" value="{$form.alt|escape}">
+                    <label class="slider-toggle">
+                        <input type="hidden" name="enabled[]" value="{$slide_enabled|escape}" class="slider-enabled-value">
+                        <input type="checkbox" class="slider-enabled-cb"{if $slide_enabled} checked="checked"{/if}>
+                        <span>Включён</span>
+                    </label>
+                    <span class="slider-status{if $slide_visible} slider-status--active{else} slider-status--inactive{/if}">
+                        {if $slide_visible}Показывается на сайте{else}Скрыт на сайте{/if}
+                    </span>
                     <a href="#" class="button red remove">Удалить</a>
+                </div>
+                <div class="slider-slide-row__staff">
+                    <label>
+                        <span>Менеджер по продажам</span>
+                        <input type="text" name="sales_manager[]" value="{$form.sales_manager|default:''|escape}" placeholder="Кто подготовил информацию">
+                    </label>
+                    <label>
+                        <span>Контент-менеджер</span>
+                        <input type="text" name="content_manager[]" value="{$form.content_manager|default:''|escape}" placeholder="Кто разместил баннер">
+                    </label>
+                </div>
+                <div class="slider-slide-row__stats">
+                    <span>Показы: <strong>{$form.views_count|default:0|escape}</strong></span>
+                    <span>Клики: <strong>{$form.clicks_count|default:0|escape}</strong></span>
+                    <span>CTR: <strong>{if $form.ctr !== null}{$form.ctr|escape}%{else}—{/if}</strong></span>
+                </div>
+                <div class="slider-slide-row__dates">
+                    <label>
+                        <span>Показывать с</span>
+                        <input type="date" name="date_from[]" value="{$form.date_from|default:''|escape}">
+                    </label>
+                    <label>
+                        <span>Показывать по</span>
+                        <input type="date" name="date_to[]" value="{$form.date_to|default:''|escape}">
+                    </label>
+                    <span class="hint">Оставьте пустым, если срок не ограничен. После даты окончания слайд скрывается автоматически.</span>
                 </div>
                 <div class="slider-slide-row__images">
                     <label class="slider-upload">
                         <span>Компьютер</span>
+                        <em class="slider-size-hint">Рекомендуемый размер: 1300×220 px (JPG/PNG). Широкая полоса, высота на сайте до 220 px.</em>
                         <input type="file" name="img[]" accept="image/png,image/jpeg">
                         <input type="hidden" name="img_path[]" value="{$form.img|escape}">
                         {if !empty($form.img)}<img src="{$form.img|escape}" alt="">{/if}
                     </label>
                     <label class="slider-upload">
                         <span>Планшет</span>
+                        <em class="slider-size-hint">Рекомендуемый размер: 992×660 px. Для экранов до 1200 px. Можно не загружать — создастся из десктопного.</em>
                         <input type="file" name="img_tablet[]" accept="image/png,image/jpeg">
                         <input type="hidden" name="img_tablet_path[]" value="{$form.img_tablet|default:''|escape}">
                         {if !empty($form.img_tablet)}<img src="{$form.img_tablet|escape}" alt="">{/if}
                     </label>
                     <label class="slider-upload">
                         <span>Телефон</span>
+                        <em class="slider-size-hint">Рекомендуемый размер: 576×870 px. Для экранов до 480 px. Можно не загружать — создастся из десктопного.</em>
                         <input type="file" name="img_mobile[]" accept="image/png,image/jpeg">
                         <input type="hidden" name="img_mobile_path[]" value="{$form.img_mobile|default:''|escape}">
                         {if !empty($form.img_mobile)}<img src="{$form.img_mobile|escape}" alt="">{/if}
@@ -54,13 +101,64 @@
 </div>
 
 <style>
+    .slider-rotation-hint {
+        background: #fff8e1;
+        border-left: 3px solid #ffb300;
+        padding: 0.5rem 0.75rem;
+    }
     .slider-slide-row {
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
         border-bottom: 1px solid #ddd;
     }
     .slider-slide-row__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem 0.75rem;
         margin-bottom: 0.75rem;
+    }
+    .slider-slide-row__staff {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+    }
+    .slider-slide-row__staff label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 220px;
+        font-size: 12px;
+        color: #666;
+    }
+    .slider-slide-row__stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+        font-size: 12px;
+        color: #555;
+    }
+    .slider-slide-row__dates {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem 1rem;
+        margin-bottom: 0.75rem;
+    }
+    .slider-slide-row__dates label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 12px;
+        color: #666;
+    }
+    .slider-slide-row__dates .hint {
+        flex: 1 1 220px;
+        margin: 0;
+        font-size: 11px;
+        color: #888;
     }
     .slider-slide-row__images {
         display: flex;
@@ -71,17 +169,44 @@
         display: flex;
         flex-direction: column;
         gap: 0.35rem;
-        min-width: 140px;
+        min-width: 220px;
+        max-width: 280px;
     }
     .slider-upload span {
         font-weight: bold;
         font-size: 12px;
         color: #666;
     }
+    .slider-size-hint {
+        font-style: normal;
+        font-size: 11px;
+        line-height: 1.35;
+        color: #888;
+    }
     .slider-upload img {
         max-width: 120px;
         max-height: 60px;
         border: 1px solid #eee;
+    }
+    .slider-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    .slider-status {
+        font-size: 11px;
+        padding: 0.15rem 0.45rem;
+        border-radius: 3px;
+    }
+    .slider-status--active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .slider-status--inactive {
+        background: #ffebee;
+        color: #c62828;
     }
 </style>
 
@@ -89,22 +214,56 @@
     $(document).ready(function() {
         var slideRowTemplate =
             '<div class="field-group slider-slide-row">' +
+                '<input type="hidden" name="id[]" value="">' +
                 '<div class="slider-slide-row__meta">' +
                     '<input type="text" placeholder="Сортировка" size="8" name="sort[]" value="">' +
                     '<input type="text" placeholder="Ссылка" name="link[]" size="30" value="">' +
                     '<input type="text" placeholder="Alt" name="alt[]" size="30" value="">' +
+                    '<label class="slider-toggle">' +
+                        '<input type="hidden" name="enabled[]" value="1" class="slider-enabled-value">' +
+                        '<input type="checkbox" class="slider-enabled-cb" checked="checked">' +
+                        '<span>Включён</span>' +
+                    '</label>' +
+                    '<span class="slider-status slider-status--active">Показывается на сайте</span>' +
                     '<a href="#" class="button red remove">Удалить</a>' +
                 '</div>' +
+                '<div class="slider-slide-row__staff">' +
+                    '<label><span>Менеджер по продажам</span><input type="text" name="sales_manager[]" value="" placeholder="Кто подготовил информацию"></label>' +
+                    '<label><span>Контент-менеджер</span><input type="text" name="content_manager[]" value="" placeholder="Кто разместил баннер"></label>' +
+                '</div>' +
+                '<div class="slider-slide-row__stats">' +
+                    '<span>Показы: <strong>0</strong></span>' +
+                    '<span>Клики: <strong>0</strong></span>' +
+                    '<span>CTR: <strong>—</strong></span>' +
+                '</div>' +
+                '<div class="slider-slide-row__dates">' +
+                    '<label><span>Показывать с</span><input type="date" name="date_from[]" value=""></label>' +
+                    '<label><span>Показывать по</span><input type="date" name="date_to[]" value=""></label>' +
+                    '<span class="hint">Оставьте пустым, если срок не ограничен. После даты окончания слайд скрывается автоматически.</span>' +
+                '</div>' +
                 '<div class="slider-slide-row__images">' +
-                    '<label class="slider-upload"><span>Компьютер</span><input type="file" name="img[]" accept="image/png,image/jpeg"><input type="hidden" name="img_path[]" value=""></label>' +
-                    '<label class="slider-upload"><span>Планшет</span><input type="file" name="img_tablet[]" accept="image/png,image/jpeg"><input type="hidden" name="img_tablet_path[]" value=""></label>' +
-                    '<label class="slider-upload"><span>Телефон</span><input type="file" name="img_mobile[]" accept="image/png,image/jpeg"><input type="hidden" name="img_mobile_path[]" value=""></label>' +
+                    '<label class="slider-upload"><span>Компьютер</span><em class="slider-size-hint">Рекомендуемый размер: 1300×220 px (JPG/PNG). Широкая полоса, высота на сайте до 220 px.</em><input type="file" name="img[]" accept="image/png,image/jpeg"><input type="hidden" name="img_path[]" value=""></label>' +
+                    '<label class="slider-upload"><span>Планшет</span><em class="slider-size-hint">Рекомендуемый размер: 992×660 px. Для экранов до 1200 px. Можно не загружать — создастся из десктопного.</em><input type="file" name="img_tablet[]" accept="image/png,image/jpeg"><input type="hidden" name="img_tablet_path[]" value=""></label>' +
+                    '<label class="slider-upload"><span>Телефон</span><em class="slider-size-hint">Рекомендуемый размер: 576×870 px. Для экранов до 480 px. Можно не загружать — создастся из десктопного.</em><input type="file" name="img_mobile[]" accept="image/png,image/jpeg"><input type="hidden" name="img_mobile_path[]" value=""></label>' +
                 '</div>' +
             '</div>';
+
+        function syncEnabled($row) {
+            var $cb = $row.find('.slider-enabled-cb');
+            $row.find('.slider-enabled-value').val($cb.is(':checked') ? '1' : '0');
+        }
+
+        $('.add-field .slider-slide-row').each(function() {
+            syncEnabled($(this));
+        });
 
         $('#add').click(function() {
             $(slideRowTemplate).fadeIn('slow').appendTo('.add-field');
             return false;
+        });
+
+        $('.add-field').on('change', '.slider-enabled-cb', function() {
+            syncEnabled($(this).closest('.slider-slide-row'));
         });
 
         $('.add-field').on('click', '.remove', function() {

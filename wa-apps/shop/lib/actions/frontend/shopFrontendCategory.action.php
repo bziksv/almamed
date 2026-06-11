@@ -396,8 +396,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
         $cached_html = $this->getCachedCategoryHtml();
         if ($cached_html !== null) {
             wa()->getResponse()->addHeader('X-Shop-Cache', 'category-hit');
-            echo $cached_html;
-            return '';
+            return $cached_html;
         }
         wa()->getResponse()->addHeader('X-Shop-Cache', 'category-miss');
 

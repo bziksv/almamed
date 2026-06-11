@@ -1,8 +1,50 @@
 <link href="/wa-apps/shop/plugins/slider/css/lightslider.css?{time()}" rel="stylesheet" type="text/css">
 
 <style>
+    .header-slider-wrap {
+        padding: 0 0.75rem;
+    }
     .header-slider {
         text-align: center;
+        overflow: hidden;
+        max-width: 100%;
+    }
+    .header-slider .lSSlideOuter {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    .header-slider img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        vertical-align: middle;
+        display: block;
+        margin: 0 auto;
+        object-fit: contain;
+    }
+    @media (min-width: 1201px) {
+        .header-slider img {
+            max-height: 220px;
+        }
+    }
+    @media (max-width: 1200px) {
+        .header-slider img {
+            max-height: 420px;
+        }
+    }
+    #slider-head:not(.lSSlide) {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    #slider-head:not(.lSSlide) > li:not(:first-child) {
+        display: none;
+    }
+    @media only screen and (max-width: 800px) {
+        .header-slider-wrap {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 </style>
 
@@ -11,8 +53,8 @@
 <div class="header-slider">
     <ul id="slider-head" style="list-style: none">
         {foreach $slides as $s}
-            <li>
-                <a href="{$s.link|escape}">
+            <li data-slide-id="{$s.id|escape}">
+                <a href="{$s.link|escape}" class="slider-slide-link" data-slide-id="{$s.id|escape}">
                     <img src="{$s.img|escape}"
                          alt="{$s.alt|escape}"
                          data-desktop-src="{$s.img|escape}"
@@ -25,61 +67,183 @@
 </div>
 
 <script>
+    (function() {
+        var TABLET_BREAKPOINT = 1200;
+        var MOBILE_BREAKPOINT = 480;
+        var slider = document.getElementById('slider-head');
+        if (!slider) {
+            return;
+        }
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        var imgs = slider.getElementsByTagName('img');
+        for (var i = 0; i < imgs.length; i++) {
+            var img = imgs[i];
+            var src = img.getAttribute('data-desktop-src');
+            if (width <= MOBILE_BREAKPOINT && img.getAttribute('data-mobile-src')) {
+                src = img.getAttribute('data-mobile-src');
+            } else if (width <= TABLET_BREAKPOINT && img.getAttribute('data-tablet-src')) {
+                src = img.getAttribute('data-tablet-src');
+            }
+            if (src) {
+                img.setAttribute('src', src);
+            }
+        }
+    })();
+</script>
+
+<script>
     jQuery(function($) {
+        var TABLET_BREAKPOINT = 1200;
+        var MOBILE_BREAKPOINT = 480;
+        var STAT_URL = {$stat_url};
         var $slider = $('#slider-head');
         if (!$slider.length || !$.fn.lightSlider) {
             return;
         }
 
-        function responsiveSlideSrc() {
+        var trackedViews = {};
+
+        function sendStat(slideId, type) {
+            if (!STAT_URL || !slideId) {
+                return;
+            }
+            $.ajax({
+                url: STAT_URL,
+                type: 'POST',
+                data: { id: slideId, type: type },
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+        }
+
+        function trackView(slideId) {
+            slideId = parseInt(slideId, 10);
+            if (!slideId || trackedViews[slideId]) {
+                return;
+            }
+            trackedViews[slideId] = true;
+            sendStat(slideId, 'view');
+        }
+
+        function getActiveSlideId() {
+            var $active = $slider.find('li.active');
+            if (!$active.length) {
+                $active = $slider.children('li').first();
+            }
+            return $active.data('slide-id');
+        }
+
+        $slider.on('click', '.slider-slide-link', function() {
+            sendStat($(this).data('slide-id'), 'click');
+        });
+
+        function pickSrc($img) {
             var width = window.innerWidth || document.documentElement.clientWidth;
+            var src = $img.data('desktop-src');
+            if (width <= MOBILE_BREAKPOINT && $img.data('mobile-src')) {
+                src = $img.data('mobile-src');
+            } else if (width <= TABLET_BREAKPOINT && $img.data('tablet-src')) {
+                src = $img.data('tablet-src');
+            }
+            return src;
+        }
+
+        function applyResponsiveSrc() {
             $slider.find('img').each(function() {
                 var $img = $(this);
-                var src = $img.data('desktop-src');
-                if (width <= 480 && $img.data('mobile-src')) {
-                    src = $img.data('mobile-src');
-                } else if (width <= 992 && $img.data('tablet-src')) {
-                    src = $img.data('tablet-src');
-                }
+                var src = pickSrc($img);
                 if (src) {
                     $img.attr('src', src);
                 }
             });
         }
 
-        responsiveSlideSrc();
-
-        $slider.lightSlider({
-            item: 1,
-            slideMove: 1,
-            pause: 5000,
-            controls: false,
-            loop: true,
-            auto: true,
-            enableDrag: false,
-            easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
-            speed: 600,
-            adaptiveHeight: true,
-            slideMargin: 0,
-            responsive: [
-                {
-                    breakpoint: 800,
-                    settings: {
-                        item: 1,
-                        slideMove: 1,
-                        slideMargin: 6,
-                        enableDrag: true
-                    }
-                },
-                {
-                    breakpoint: 480,
-                    settings: {
-                        item: 1,
-                        slideMove: 1,
-                        enableDrag: true
-                    }
+        function whenAllImagesReady() {
+            var waits = [];
+            $slider.find('img').each(function() {
+                var deferred = $.Deferred();
+                var img = this;
+                if (img.complete && img.naturalWidth) {
+                    deferred.resolve();
+                } else {
+                    $(img).one('load error', function() {
+                        deferred.resolve();
+                    });
                 }
-            ]
+                waits.push(deferred.promise());
+            });
+            return waits.length ? $.when.apply($, waits) : $.when();
+        }
+
+        function sliderOptions() {
+            return {
+                item: 1,
+                slideMove: 1,
+                pause: 5000,
+                controls: false,
+                loop: true,
+                auto: true,
+                enableDrag: false,
+                easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
+                speed: 600,
+                adaptiveHeight: false,
+                slideMargin: 0,
+                onAfterSlide: function() {
+                    trackView(getActiveSlideId());
+                },
+                responsive: [
+                    {
+                        breakpoint: TABLET_BREAKPOINT,
+                        settings: {
+                            item: 1,
+                            slideMove: 1,
+                            slideMargin: 6,
+                            enableDrag: true
+                        }
+                    },
+                    {
+                        breakpoint: 800,
+                        settings: {
+                            item: 1,
+                            slideMove: 1,
+                            slideMargin: 6,
+                            enableDrag: true
+                        }
+                    },
+                    {
+                        breakpoint: MOBILE_BREAKPOINT,
+                        settings: {
+                            item: 1,
+                            slideMove: 1,
+                            enableDrag: true
+                        }
+                    }
+                ]
+            };
+        }
+
+        function destroySlider() {
+            if ($slider.hasClass('lightSlider') && typeof $slider.destroy === 'function') {
+                $slider.destroy();
+            }
+        }
+
+        function initSlider() {
+            destroySlider();
+            $slider.lightSlider(sliderOptions());
+            trackView(getActiveSlideId());
+        }
+
+        function rebuildSlider() {
+            applyResponsiveSrc();
+            whenAllImagesReady().always(initSlider);
+        }
+
+        rebuildSlider();
+
+        var resizeTimer;
+        $(window).on('resize orientationchange', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(rebuildSlider, 200);
         });
     });
 </script>

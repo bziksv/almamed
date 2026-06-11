@@ -27,8 +27,8 @@ class shopFrontendPageAction extends waPageAction
 
         $cached_html = $this->getCachedPageHtml();
         if ($cached_html !== null) {
-            echo $cached_html;
-            return '';
+            wa()->getResponse()->addHeader('X-Shop-Cache', 'page-hit');
+            return $cached_html;
         }
 
         try {
