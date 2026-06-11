@@ -67,7 +67,7 @@ cd /var/www/almamed.su/data/www/almamed.su
 git pull origin main
 chown -R almamed.su:almamed.su .
 find wa-cache -mindepth 1 -delete
-sudo -u almamed.su php cli.php cache clear
+sudo -u almamed.su php cli.php webasyst clearCache
 chown -R almamed.su:almamed.su wa-cache wa-log
 ```
 

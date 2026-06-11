@@ -62,12 +62,12 @@ cd /var/www/almamed.su/data/www/almamed.su
 git pull origin main
 chown -R almamed.su:almamed.su .
 find wa-cache -mindepth 1 -delete
-sudo -u almamed.su php cli.php cache clear
+sudo -u almamed.su php cli.php webasyst clearCache
 chown -R almamed.su:almamed.su wa-cache wa-log
 ```
 
 Pull делать **от root** допустимо, но после — **обязательно chown**.  
-`php cli.php cache clear` — **только от пользователя `almamed.su`**, иначе кеш снова root-owned → «Ошибка #0» в магазине и **HTML-кеш категорий не читается** (Webasyst требует `is_writable` на файл кеша).
+`php cli.php webasyst clearCache` — **только от пользователя `almamed.su`**
 
 ```bash
 # Проверка кеша категории после деплоя (2-й запрос должен быть category-hit и TTFB < 0.05s)
