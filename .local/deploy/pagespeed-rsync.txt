@@ -15,7 +15,6 @@ wa-apps/shop/plugins/searchpro/lib/classes/v2/shopSearchproV2TypoHelper.class.ph
 wa-apps/shop/plugins/searchpro/lib/config/settings.php
 wa-apps/shop/plugins/searchpro/lib/updates/2.0/1749446700.php
 wa-apps/shop/plugins/searchpro/lib/updates/2.0/1749560000.php
-wa-apps/shop/plugins/searchpro/templates/actions/frontend/FrontendField.html
 
 # --- Slider (CLS, WebP, preload LCP) ---
 wa-apps/shop/plugins/slider/lib/actions/shopSliderPluginBackendSave.controller.php

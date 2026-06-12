@@ -393,6 +393,7 @@
 	margin-top: 5px;
 	z-index: 800;
 	position: relative;
+	min-width: 520px;
 }
 .searchpro__dropdown .searchpro__dropdown-view-all {
 	border-top: 1px solid #f2f2f2;
@@ -426,7 +427,13 @@
 	text-decoration: none;
 }
 .searchpro__dropdown .searchpro__dropdown-entity {
-	display: block;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	gap: 10px;
 	padding: 7px 20px;
 	-webkit-transition: background-color 0.3s, color 0.3s;
 	-o-transition: background-color 0.3s, color 0.3s;
@@ -466,14 +473,29 @@
 	overflow: hidden;
 	-o-text-overflow: ellipsis;
 	text-overflow: ellipsis;
+	-webkit-box-flex: 1;
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.searchpro__dropdown .searchpro__dropdown-entity_meta {
+	-ms-flex-negative: 0;
+	flex-shrink: 0;
+	margin-left: auto;
+	text-align: right;
+	white-space: nowrap;
+}
+.searchpro__dropdown .searchpro__dropdown-entity_count {
+	font-size: 14px;
+	color: #828282;
 }
 .searchpro__dropdown .searchpro__dropdown-entity_subname {
 	color: #828282;
 	font-size: 12px;
 }
 .searchpro__dropdown .searchpro__dropdown-entity_image-container {
-	float: left;
-	margin-right: 10px;
+	float: none;
+	margin-right: 0;
 	width: 48px;
 	height: 48px;
 	flex-shrink: 0;
@@ -498,7 +520,19 @@
 	font-family: "ALSRubl-Arial", Arial, sans-serif;
 }
 .searchpro__dropdown .searchpro__dropdown-entity_price-container {
-	margin-top: 5px;
+	margin-top: 0;
+}
+.searchpro__dropdown .searchpro__dropdown-entity--products .searchpro__dropdown-entity_price-container {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	-webkit-box-align: end;
+	-ms-flex-align: end;
+	align-items: flex-end;
 }
 .searchpro__dropdown .searchpro__dropdown-entity_compare-price {
 	font-size: 0.8em;
@@ -507,4 +541,5 @@
 }
 .searchpro__dropdown .searchpro-highlighted {
 	font-weight: 500;
+	color: #e53935;
 }

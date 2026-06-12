@@ -115,13 +115,15 @@ class shopSearchproV2SearchService
 				shopSearchproPluginFrontendDropdownController::class,
 				'workupCategories',
 			), array(
-				'status' => (bool) $this->settings->get('dropdown_categories_products_status'),
+				'status' => false,
 				'seo_names' => $this->isCategoriesUseSeoNames(),
 				'finder' => $this->finder,
 				'products' => $products,
 				'env' => $this->env,
 			));
 		}
+
+		$categories = $this->prepareDropdownCategories($categories, $products);
 
 		$brands = ($products || $categories)
 			? $this->findType('brands')
@@ -336,5 +338,58 @@ class shopSearchproV2SearchService
 			$this->cache = new shopSearchproV2ResultCache($this->settings->getDropdownCacheTtl());
 		}
 		return $this->cache;
+	}
+
+	/**
+	 * @param array $categories
+	 * @param array $products
+	 * @return array
+	 */
+	private function prepareDropdownCategories(array $categories, array $products)
+	{
+		if (!$categories) {
+			return array();
+		}
+
+		$images_by_category = array();
+		foreach ($products as $product) {
+			$category_id = (int) ifset($product, 'category_id', 0);
+			if (!$category_id || isset($images_by_category[$category_id]) || empty($product['image_id'])) {
+				continue;
+			}
+			$images_by_category[$category_id] = shopImage::getUrl(array(
+				'product_id' => (int) ifset($product, 'id', 0),
+				'id' => (int) $product['image_id'],
+				'filename' => ifset($product, 'image_filename', ''),
+				'ext' => ifset($product, 'ext', 'jpg'),
+			), '48x48');
+		}
+
+		foreach ($categories as &$category) {
+			$category_id = (int) ifset($category, 'id', 0);
+			if ($category_id && isset($images_by_category[$category_id])) {
+				$category['image_url'] = $images_by_category[$category_id];
+			}
+			if (empty($category['count'])) {
+				$category['count'] = (int) ifset($category, 'count', 0);
+			}
+		}
+		unset($category);
+
+		usort($categories, function ($a, $b) {
+			$count_a = (int) ifset($a, 'count', 0);
+			$count_b = (int) ifset($b, 'count', 0);
+			if ($count_a !== $count_b) {
+				return $count_b - $count_a;
+			}
+			return strcmp(ifset($a, 'name', ''), ifset($b, 'name', ''));
+		});
+
+		$max = (int) $this->settings->get('dropdown_categories_max_count');
+		if ($max > 0 && count($categories) > $max) {
+			$categories = array_slice($categories, 0, $max);
+		}
+
+		return $categories;
 	}
 }

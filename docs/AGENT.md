@@ -35,7 +35,14 @@ cd ~/Documents/projects/almamed
 
 - URL: **http://localhost:8080/** (только HTTP)
 - БД: `127.0.0.1`, `almamed` / `localdev`, `almamed_su_db` (MySQL **8.0**, не 9)
-- Переключение БД: `cp wa-config/db.php.local wa-config/db.php` (local) или `db.php.remote` (prod, ~112s главная — не для dev)
+- Переключение БД:
+  - `./.local/use-db-remote.sh` — боевая MySQL (45.90.35.63), видны правки из prod-админки; медленнее
+  - `./.local/use-db-local.sh` — local MySQL 127.0.0.1
+  - вручную: `cp wa-config/db.php.local|db.php.remote wa-config/db.php` + `php cli.php webasyst clearCache`
+- **Файлы с prod** (картинки, webp — БД remote, файлы local):
+  - `cp .local/sync-prod.env.example .local/sync-prod.env` + SSH-ключ на `root@45.90.35.63`
+  - `./.local/sync-from-prod.sh` — remote БД + папки товаров, которых нет local
+  - `./.local/sync-wa-data-from-prod.sh missing|recent|webp|products` — см. `docs/GIT-WORKFLOW.md`
 
 ---
 

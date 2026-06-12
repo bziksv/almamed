@@ -53,6 +53,15 @@ if [[ -x .local/regression-perf.sh ]]; then
     ./.local/regression-perf.sh || true
 fi
 
+if [[ -x .local/check-sitemap.sh ]]; then
+  BASE_URL="${BASE_URL:-https://213.139.209.184}" HOST_HEADER="${HOST_HEADER:-almamed.su}" \
+    ./.local/check-sitemap.sh || true
+fi
+
+if command -v php >/dev/null 2>&1 && [[ -f .local/opcache-audit.php ]]; then
+  run_as_owner php .local/opcache-audit.php || true
+fi
+
 if [[ -n "${THEME_VER:-}" ]]; then
   LIVE=$(curl -sS $HOST "${BASE}/" 2>/dev/null | grep -oE 'profitbuy\.min\.css\?v[0-9.]+' | head -1 || true)
   if [[ -z "$LIVE" && -n "${HOST_HEADER:-}" ]]; then

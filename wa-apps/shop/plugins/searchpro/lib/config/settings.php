@@ -63,7 +63,7 @@ return array(
 			'dropdown_status' => '1',
 			'dropdown_min_length' => '3',
 			'dropdown_highlight' => '1',
-			'dropdown_entities_sort' => array('products', 'brands', 'popular', 'history'),
+			'dropdown_entities_sort' => array('categories', 'products', 'brands', 'popular', 'history'),
 			'dropdown_products_status' => '1',
 			'dropdown_event_frontend_products' => '1',
 			'dropdown_products_min_count' => '3',
@@ -75,11 +75,11 @@ return array(
 			'dropdown_products_seopage_plugin_status' => '0',
 			'dropdown_results_cache' => '10800',
 
-			'dropdown_categories_status' => '0',
+			'dropdown_categories_status' => '1',
 			'dropdown_categories_hidden_hide_status' => '1',
-			'dropdown_categories_min_count' => '3',
-			'dropdown_categories_max_count' => '5',
-			'dropdown_categories_products_status' => '0',
+			'dropdown_categories_min_count' => '1',
+			'dropdown_categories_max_count' => '6',
+			'dropdown_categories_products_status' => '1',
 			'dropdown_categories_names_status' => '1',
 			'dropdown_categories_descriptions_status' => '1',
 			'dropdown_categories_seo_plugin_status' => '0',
@@ -104,7 +104,7 @@ return array(
 	),
 	'themes' => array(
 		'*' => array(
-			'design_custom_fonts_status' => '1',
+			'design_custom_fonts_status' => '0',
 			'design_field_width' => '450',
 			'design_field_main_color' => '#f2994a',
 			'design_field_border_color' => '#e7e7e7',

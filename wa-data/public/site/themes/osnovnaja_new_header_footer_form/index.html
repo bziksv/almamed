@@ -111,7 +111,7 @@
                     <div class="header-top-bar__inner">
                         {if !empty($header_logo)}<div class="header-top-bar__item header-logo-col header-logo-col--scroll">{$header_logo}</div>{/if}
                         {if !empty($header1)}<div class="header-top-bar__item header-links-col link-top-not-fix">{$header1}</div>{/if}
-                        {if $wa->shop}<div class="header-top-bar__item header-search-col">{include file="`$wa_active_theme_path`/searchform.html" inline}</div>{/if}
+                        {if $wa->shop && !$wa->isMobile()}<div class="header-top-bar__item header-search-col">{include file="`$wa_active_theme_path`/searchform.html" inline}</div>{/if}
                         {include file="cart.top.menu.fix.html" inline}
                         {if !empty($header_auth)}<div class="header-top-bar__item header-auth-col">{$header_auth}</div>{/if}
                         {if !empty($header_phone)}<div class="header-top-bar__item header-phone-col">{$header_phone}</div>{/if}
@@ -137,9 +137,14 @@
             </div>
         </div>
 
+        {if $wa->shop && class_exists('shopSliderPlugin')}
+            {$shop_home_url = $wa->getUrl('shop/frontend')}
+            {if $shop_home_url == $wa->currentUrl(false, true)}
         <div class="container header-slider-wrap">
             {shopSliderPlugin::slider()}
         </div>
+            {/if}
+        {/if}
 
         {include file="tree.html" inline}
 
@@ -410,6 +415,8 @@
 
     });
 </script>
+
+{if $wa->shop}{include file="`$wa_active_theme_path`/metrika.counter.html" inline}{/if}
 
 </body>
 </html>

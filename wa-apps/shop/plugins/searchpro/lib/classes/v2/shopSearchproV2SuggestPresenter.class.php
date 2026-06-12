@@ -205,6 +205,15 @@ class shopSearchproV2SuggestPresenter
 			'data_link' => $category_url,
 		);
 
+		if ((bool) $this->settings->get('dropdown_products_image_status') && !empty($entity['image_url'])) {
+			$item['image'] = $entity['image_url'];
+		}
+
+		$count = (int) ifset($entity, 'count', 0);
+		if ($count > 0) {
+			$item['count_label'] = $count . ' шт.';
+		}
+
 		if (!empty($entity['existing_name']) && !empty($entity['parent_id'])) {
 			$subname = $this->getCategoryName($entity['parent_id'], $entity);
 			if ($subname !== null) {

@@ -34,8 +34,54 @@ class webasystSitemapConfig extends waSitemapConfig
                 }
             }
         }
+
+        $this->appendShopPluginSitemapIndexes($system);
     }
-    
+
+    /**
+     * Plugin sitemap indexes (e.g. seofilter filter-sitemap.xml) in root /sitemap.xml.
+     */
+    protected function appendShopPluginSitemapIndexes(waSystem $system)
+    {
+        if (!$system->appExists('shop')) {
+            return;
+        }
+        wa('shop', 1);
+        $routing = $system->getRouting();
+        $seen = array();
+        foreach ($routing->getRoutes($this->domain) as $route) {
+            if (ifset($route, 'app', null) !== 'shop' || !empty($route['private'])) {
+                continue;
+            }
+            $route_with_domain = array_merge($route, array('domain' => $this->domain));
+            $event_params = array(
+                'domain' => $this->domain,
+                'route' => $route_with_domain,
+            );
+            $results = wa()->event(array('shop', 'app_sitemap_index_sitemap'), $event_params);
+            if (!$results) {
+                continue;
+            }
+            foreach ($results as $entries) {
+                if (!is_array($entries)) {
+                    continue;
+                }
+                foreach ($entries as $entry) {
+                    $loc = ifset($entry, 'url', ifset($entry, 'loc', ''));
+                    if (!$loc || isset($seen[$loc])) {
+                        continue;
+                    }
+                    $seen[$loc] = true;
+                    $lastmod = ifset($entry, 'lastmod', date('c'));
+                    echo '<sitemap>
+<loc>'.htmlspecialchars($loc, ENT_XML1).'</loc>
+      <lastmod>'.$lastmod.'</lastmod>
+</sitemap>';
+                }
+            }
+        }
+    }
+
     public function display()
     {
         $system = waSystem::getInstance();

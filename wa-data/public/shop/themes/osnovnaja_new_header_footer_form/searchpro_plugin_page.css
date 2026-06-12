@@ -1,5 +1,5 @@
 .searchpro__page-empty .searchpro__page-empty_header {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 36px;
 	line-height: 42px;
 	margin-bottom: 15px;
@@ -7,7 +7,7 @@
 	font-weight: 500;
 }
 .searchpro__page-empty .searchpro__page-empty_hint {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: #828282;
 	font-size: 18px;
 	line-height: 21px;
@@ -31,7 +31,7 @@
 	margin-bottom: 0;
 }
 .searchpro__page-empty .searchpro__page-empty_block-header {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 32px;
 	line-height: 38px;
 	margin-bottom: 30px;
@@ -46,7 +46,7 @@
 .searchpro__page-empty .searchpro__page-empty_item,
 .searchpro__page-empty .searchpro__page-empty_item:link,
 .searchpro__page-empty .searchpro__page-empty_item:visited {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 14px;
 	color: #000;
 	padding: 10px 15px;
@@ -79,10 +79,10 @@
 	color: #828282;
 	font-size: 12px;
 	margin-left: 5px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 }
 .searchpro__page-description {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 	color: #828282;
 	margin-bottom: 30px;
@@ -91,7 +91,7 @@
 .searchpro__page-description a,
 .searchpro__page-description a:link,
 .searchpro__page-description a:visited {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 18px;
 	color: #f2994a;
 	text-decoration: none;
@@ -113,14 +113,14 @@
 	text-decoration: none;
 	outline: none;
 	display: inline-block;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: #000;
 }
 .searchpro__page-categories .searchpro__page-category.hidden{
 	display:none;
 }
 .searchpro__page-categories .searchpro__page-category_hint {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: #bdbdbd;
 }
 .searchpro__page-categories--inline .searchpro__page-category,
@@ -270,7 +270,7 @@
 }
 .searchpro__page-categories--images .searchpro__page-category_hint {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: #bdbdbd;
 	-webkit-transition: color 0.3s;
 	-o-transition: color 0.3s;
@@ -292,7 +292,7 @@
 .searchpro__page-sort,
 .searchpro__page-sort * {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 }
 @media (max-width: 750px) {
 	.searchpro__page-sort {
@@ -449,7 +449,7 @@
 }
 .searchpro__page-mobile-filters_window {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -500,7 +500,7 @@
 	cursor: pointer;
 }
 .searchpro__page-mobile-filters_window-header_title {
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	font-size: 16px;
 	font-weight: 500;
 	line-height: 19px;
@@ -584,7 +584,7 @@
 	}
 	.searchpro__page-mobile,
 	.searchpro__page-mobile * {
-		font-family: "Searchpro-Roboto", sans-serif;
+		font-family: "Roboto", sans-serif;
 	}
 	.searchpro__page-mobile .searchpro__page-mobile-sort {
 		width: 100%;
@@ -760,7 +760,7 @@
 .searchpro__page-filters,
 .searchpro__page-filters * {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 }
 .searchpro__page-filters.searchpro__page-filters--categories {
 	border: none;
@@ -889,7 +889,7 @@
 	.searchpro__page-filters_button {
 	width: 100%;
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	display: block;
 	margin: 0;
 	border: none;
@@ -1024,7 +1024,7 @@
 .searchpro__page-filter .searchpro__page-filter_show-more-link:link,
 .searchpro__page-filter .searchpro__page-filter_show-more-link:visited {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: #f2994a;
 	text-decoration: none;
 	border-bottom: 1px dashed #f2994a;
@@ -1050,7 +1050,7 @@
 .searchpro__page-filter .searchpro__page-filter_category:link,
 .searchpro__page-filter .searchpro__page-filter_category:visited {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	color: #000;
 	-webkit-transition: 0.3s;
 	-o-transition: 0.3s;
@@ -1205,7 +1205,7 @@
 }
 .searchpro__page-filter_range .searchpro__page-filter_range-item input {
 	font-size: 14px;
-	font-family: "Searchpro-Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
 	padding: 0 0 0 5px;
 	margin: 0;
 	width: 100%;

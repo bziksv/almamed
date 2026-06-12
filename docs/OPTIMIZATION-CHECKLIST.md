@@ -22,7 +22,8 @@
 | 6 | Shop / SearchPro | Рендер страницы после finder (HTML + категории) | ✅ | `page_full_*` + v2; warm search **~0.09 s** local |
 | 7 | Shop / productbrands | `getBrands()` грузит **все** бренды в память на каждый запрос | ✅ | `getBrandsPage()` + кэш `feature_values_*` 24 ч (cold sorted_ids без повторного getFeatureValues) |
 | 8 | Shop / productbrands | Шаблон брендов в БД: `src` + `data-src` на каждом `<img>` | ✅ | Убран `data-src`, `loading="lazy"` в action |
-| 9 | Shop / sitemap | `sitemap-shop-1.xml` ~3.7 MB | ✅ | Seofilter URL **убраны** из `sitemap-shop-1`; фильтры → `/filter-sitemap.xml` (отдельный index, до 10k URL/стр.) |
+| 9 | Shop / sitemap | `sitemap-shop-1.xml` ~3.7 MB | ✅ | Seofilter URL **убраны** из `sitemap-shop-1`; фильтры → `/filter-sitemap.xml` |
+| 28 | Shop / sitemap | `filter-sitemap.xml` в корневом `/sitemap.xml` | ✅ local | `webasystSitemapConfig` + hook; fix `ifset($route,'app',null)` + `$event_params` by ref |
 | 10 | Shop / seofilter | 404 на пустой фильтр ~4+ s | ✅ | Ранний exit в routing (`respondIfEmptySeofilterPage`); warm **~0.12 s** (было ~4+ s) |
 | 11 | Shop / категория | `subcategoriesFilters($id)` в цикле при `?brend=` | ✅ | `subcategoriesFiltersByIds()` — 1 SQL |
 | 12 | Shop / категория | `getTagsByCategory()` — params всех подкатегорий дерева | ✅ | 1 SQL вместо N× `get()` при `meta=true` |
@@ -31,6 +32,16 @@
 | 15 | Shop / категория | Full HTML cache гостей (15 мин) | ✅ | Fix ключа + readable fallback; warm TTFB **~0.01 s**; `X-Shop-Cache: category-hit` |
 | 16 | Site / frontend | defer JS, third-party после load | ✅ | Metrika/VK/Roistat/Talk-Me; preconnect fonts |
 | 17 | Site / slider | FOUC баннера при load | ✅ | Sync lightslider CSS/JS; 1-й слайд до init |
+| 18 | Site / шапка | Баннер-слайдер только на главной | ✅ | `lightslider` не грузится на категориях/поиске |
+| 19 | Shop / каталог | Lazy-load превью товаров (после 4-й) | ✅ | `loading=lazy` в `list-thumbs.html` |
+| 20 | Site / шрифты | Roboto 400/500/700 вместо 8 начертаний | ✅ | −5 woff2 с fonts.gstatic.com |
+| 21 | Site / шрифты | Убрать Font Awesome с каждой страницы | ✅ | SVG в `share-light.html` (только карточка товара) |
+| 22 | SearchPro | Отключить дубль Searchpro-Roboto | ✅ | `design_custom_fonts_status=0`, theme CSS → Roboto |
+| 23 | SearchPro / mobile | Один instance поля поиска на mobile | ✅ | header skip + pane skip на shop; `content-search-bar` only |
+| 24 | Shop / главная | Full HTML cache гостей (15 мин) | ✅ | `shopFrontend.action.php`; `X-Shop-Cache: home-hit` |
+| 25 | Ops / prod | OPcache audit script | ✅ | `.local/opcache-audit.php` в post-deploy |
+| 26 | Ops / prod | Sitemap smoke script | ✅ | `.local/check-sitemap.sh` — размеры + filter-sitemap |
+| 27 | SearchPro | Legacy templates v1 | ✅ | удалены `FrontendOutput.html`, `FrontendField.html` |
 
 **Легенда:** ✅ сделано · 🟡 частично / проверено · ⏳ в очереди
 
@@ -114,8 +125,10 @@ CLI-компоненты (warm finder ~11 ms, `getCollectionCategories` ~2 ms): 
 ./start-dev.sh
 ./.local/regression-perf.sh
 
-# prod (с сервера):
+# prod (с сервера или с -k к IP):
 BASE_URL=https://213.139.209.184 HOST_HEADER=almamed.su ./.local/regression-perf.sh
+# или полный smoke (perf + HTML markers):
+BASE_URL=https://almamed.su ./.local/verify-deploy.sh
 ```
 
 Категория с `meta=true` / `rec01` — вручную. См. [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md).
@@ -135,3 +148,7 @@ BASE_URL=https://213.139.209.184 HOST_HEADER=almamed.su ./.local/regression-perf
 | 2026-06-11 | П.13 — HTML cache shop info pages; п.7 — кэш feature_values брендов 24 ч |
 | 2026-06-11 | П.15–17 — category HTML cache, defer third-party, FOUC slider; deploy `webasyst clearCache` |
 | 2026-06-11 | П.5–6 SearchPro v2 — warm search ~0.09 s, suggest ~20 ms |
+| 2026-06-12 | П.18 — баннер только на главной; п.19 — lazy превью в list-thumbs |
+| 2026-06-12 | П.20–22 — Roboto 3 начертания, без Font Awesome, SearchPro без дубля шрифта |
+| 2026-06-12 | П.23 — mobile: один SearchPro field; `.local/verify-deploy.sh` для prod smoke |
+| 2026-06-12 | П.25–27 — opcache-audit, check-sitemap, SearchPro legacy templates removed |

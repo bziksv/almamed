@@ -3,7 +3,8 @@
 <div class="mobile-nav-wrapper nav-all">
     <div class="mobile-nav-block-wrapper">
 
-        {if $wa->isMobile()}
+        {* Shop mobile: search in main.html content-search-bar; skip duplicate here *}
+        {if $wa->isMobile() && $wa_app != 'shop'}
         {include file="`$wa_active_theme_path`/searchform.html" mobile_search=true inline}
         {/if}
 

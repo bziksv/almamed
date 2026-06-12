@@ -46,14 +46,18 @@
 							{/if}
 						</a>
 					{elseif $group === 'categories'}
-						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity" data-action="goto:data-link"
+						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity searchpro__dropdown-entity--categories" data-action="goto:data-link"
 						   data-link="{$wa->shop->categoryUrl($entity)}"
 						   href="{$entity.category_results_url|default:$wa->shop->categoryUrl($category)}">
+							{if $products_image_status && !empty($entity.image_url)}
+								<div class="searchpro__dropdown-entity_image-container">
+									<img class="searchpro__dropdown-entity_image" src="{$entity.image_url|escape}"/>
+								</div>
+							{/if}
 							<div class="searchpro__dropdown-entity_name">
 								{$name}
 
 								{if $entity.existing_name}
-									{* Если категория с таким же именем уже есть в списке выводим название категории на уровень выше *}
 									{if $entity.parent_id}
 										{$parent_category = $wa->shop->category($entity.parent_id)}
 										<span class="searchpro__dropdown-entity_subname">
@@ -62,6 +66,11 @@
 									{/if}
 								{/if}
 							</div>
+							{if !empty($entity.count)}
+								<div class="searchpro__dropdown-entity_meta searchpro__dropdown-entity_count">
+									{$entity.count} шт.
+								</div>
+							{/if}
 						</a>
 					{elseif $group === 'brands'}
 						<a class="searchpro__dropdown-entity js-searchpro__dropdown-entity" data-action="goto:data-link"

@@ -32,6 +32,7 @@ wa-data/public/shop/*
 
 # --- Локальная разработка ---
 .local/run/
+.local/sync-prod.env
 .db-dump/
 .cursor/
 

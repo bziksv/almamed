@@ -92,7 +92,15 @@ curl -sS -o /dev/null -w "static page %{time_starttransfer}s\n" \
 
 SearchPro: в настройках витрины `use_v2=1`, `page_results_cache=86400`.
 
-Sitemap seofilter: URL фильтров в `https://almamed.su/filter-sitemap.xml` — добавить в Google Search Console отдельно (WA 1.14.4 не включает его в главный `sitemap.xml` автоматически).
+Sitemap seofilter: `filter-sitemap.xml` автоматически в `/sitemap.xml` (при `use_sitemap_hook=1`). Дополнительно можно добавить в GSC; в `robots.txt` — строка `Sitemap: .../filter-sitemap.xml` (опционально).
+
+### Post-deploy smoke (на сервере)
+
+```bash
+./.local/verify-deploy.sh
+./.local/check-sitemap.sh          # sitemap-shop-1 ~3.5 MB, filter-sitemap отдельно
+php .local/opcache-audit.php       # CLI skip на prod — см. php -i | grep opcache
+```
 
 ---
 

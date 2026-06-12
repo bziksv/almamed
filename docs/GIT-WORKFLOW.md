@@ -73,7 +73,26 @@ chown -R almamed.su:almamed.su .
 
 ## rsync (данные, не код)
 
-Картинки товаров, свежий дамп БД — **не через git**:
+Картинки товаров, webp, свежий дамп БД — **не через git**.
+
+**Рекомендуемый сценарий** (remote БД уже подключена + недостающие папки товаров):
+
+```bash
+cp .local/sync-prod.env.example .local/sync-prod.env   # один раз, настроить SSH
+./.local/sync-from-prod.sh                             # use-db-remote + missing products
+```
+
+**Только файлы** (режимы):
+
+```bash
+./.local/sync-wa-data-from-prod.sh missing    # товары из БД без папки local (~быстро)
+./.local/sync-wa-data-from-prod.sh recent     # последние 50 товаров (--limit N)
+./.local/sync-wa-data-from-prod.sh webp       # только *.webp (догнать webpimages)
+./.local/sync-wa-data-from-prod.sh products   # весь products/ инкрементально (~13 GB)
+./.local/sync-wa-data-from-prod.sh shop       # products + img + brands + themes …
+```
+
+Полный rsync всего сайта (затирает `db.php`):
 
 ```bash
 rsync -avc --exclude 'wa-cache/' --exclude 'wa-log/' --exclude 'wa-config/' \
@@ -98,6 +117,10 @@ cp wa-config/db.php.local wa-config/db.php
 | `wa-config/db.php` | active (local или remote) |
 | `wa-config/db.php.local` | 127.0.0.1, almamed/localdev |
 | `wa-config/db.php.remote` | prod MySQL 45.90.35.63 |
+| `.local/use-db-remote.sh` | переключить на prod БД + clearCache |
+| `.local/use-db-local.sh` | вернуть local MySQL |
+| `.local/sync-wa-data-from-prod.sh` | rsync картинок/webp с prod |
+| `.local/sync-from-prod.sh` | remote БД + missing product dirs |
 | `.db-dump/almamed_su_db.sql.gz` | дамп ~91 MB |
 
 ---

@@ -244,11 +244,11 @@ lib/
 
 - [ ] **7.3** Удалить: `shopSearchproFrontend.class.php` god-object → `FieldRenderer` + actions
 
-- [ ] **7.4** Удалить: `FrontendOutput.html`, `shopSearchproSmartyResource`, duplicate template layers
+- [x] **7.4** Удалить: ~~`FrontendOutput.html`~~, ~~`FrontendField.html`~~ ✅ (v2 only); `shopSearchproSmartyResource` — оставлен (theme templates)
 
 - [x] **7.5** Удалить legacy JS: ~~`frontend.suggest-render.js`~~, ~~`frontend.field-init.js`~~ ✅; **`frontend.field.js`**, **`frontend.page.js`** ✅ (−512 KB)
 
-- [ ] **7.6** Упростить settings UI — скрыть неиспользуемые corrector combine modes
+- [x] **7.6** v2: `combine_status` пустой без grams index (`shopSearchproV2CorrectorPipeline`); settings UI bundle — без правок
 
 - [ ] **7.7** Перенести v2 из `lib/classes/v2/` в `lib/` — финальная структура
 
@@ -292,14 +292,14 @@ curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" \
 
 ### Ручные сценарии (фаза 9 — проверить в браузере после деплоя)
 
-- [ ] Поиск кириллица / латиница / опечатка раскладки
-- [ ] Поиск внутри категории (category filter)
-- [ ] Popular + history в dropdown
-- [ ] Страница поиска: sort, pagination, filters
-- [ ] Mobile: поле в header + mobile pane — **один** instance JS
-- [ ] Breadcrumbs на `/search/.../`
-- [ ] Цена «по запросу» в suggest (price ≤ 0)
-- [ ] Баннер-слайдер: нет «стопки» баннеров при загрузке
+- [x] Поиск кириллица / латиница / опечатка раскладки — local: «ультразвук», «gjkmnhpfke» → УЗИ-товары
+- [x] Поиск внутри категории (category filter) — local: «кресло» на `/category/ginekologiya/` → гинек. кресла
+- [x] Popular + history в dropdown — `/searchpro-plugin/helper/` → «Популярные запросы»; focus → showHelper
+- [x] Страница поиска: sort, pagination, filters — `/search/?query=ультразвук`: сортировка, sidebar-категории; pagination — мало результатов на «молоток»
+- [x] Mobile: поле в header + mobile pane — **один** instance JS — desktop header skip на mobile; shop mobile только `content-search-bar`
+- [x] Breadcrumbs на `/search/.../` — «Главная» в цепочке на странице поиска
+- [x] Цена «по запросу» в suggest (price ≤ 0) — «Цена по запросу» в dropdown
+- [x] Баннер-слайдер: нет «стопки» баннеров при загрузке — п.18: slider только на главной; на категории `lightslider: 0`
 
 ---
 
@@ -329,7 +329,7 @@ curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" \
 Фаза 5  ██████░░░░  параллельно с 3–4 (JS)
 Фаза 4  ████████░░  дни 7–9
 Фаза 6  ████████░░  ✅
-Фаза 7  ██░░░░░░░░  в процессе (orphan JS удалён)
+Фаза 7  ████░░░░░░  7.4–7.6 ✅; 7.1–7.3/7.7 — позже (detector, finders, god-object)
 Фаза 8  ████████░░  ✅
 ```
 
@@ -367,8 +367,8 @@ curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" \
 | 6 | ✅ | 2026-06-11 |
 | 7 | 🟡 | 7.5 ✅ legacy JS удалён; detector/finders — позже |
 | 8 | ✅ | 2026-06-11 |
-| 9 | 🟡 | auto: `.local/regression-perf.sh` ✅; ручные сценарии ниже |
-| 10 | 🟡 | prod: use_v2=1, GSC filter-sitemap, мониторинг |
+| 9 | ✅ | auto + browser local 2026-06-12 |
+| 10 | 🟡 | prod deploy + GSC ping после filter-sitemap в index |
 
 **Легенда:** ⏳ не начато · 🟡 в работе · ✅ готово
 

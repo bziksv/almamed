@@ -16,33 +16,28 @@ class shopSeofilterAppSitemapIndexSitemapHandler extends shopSeofilterHookHandle
 	protected function handle()
 	{
 		$route = $this->route;
+		if (empty($route['domain'])) {
+			$route['domain'] = $this->domain ?: wa()->getRouting()->getDomain(null, true);
+		}
 
-		$sitemap_config = new shopSeofilterSitemapConfig($this->route);
-		$pages_count = $sitemap_config->count();
+		$sitemap_config = new shopSeofilterSitemapConfig($route);
+		if ($sitemap_config->count() === 0) {
+			return array();
+		}
 
-		$url_params = array();
-
-		for ($page = 1; $page <= $pages_count; $page++)
-		{
-			$route_params = array(
+		return array(array(
+			'url' => wa('shop')->getRouting()->getUrl('shop', array(
 				'module' => 'frontend',
 				'plugin' => 'seofilter',
 				'action' => 'sitemap',
-				'sitemap_page' => $page
-			);
-
-			$url_params[] = array(
-				'url' => wa('shop')->getRouting()->getUrl('shop', $route_params, true, $this->domain, $route['url']),
-				'lastmod' => date('c'),
-			);
-		}
-
-		return $url_params;
+			), true, $route['domain'], $route['url']),
+			'lastmod' => date('c'),
+		));
 	}
 
 	protected function beforeHandle()
 	{
-		return $this->settings->is_enabled;
+		return $this->settings->is_enabled && $this->settings->use_sitemap_hook;
 	}
 
 	protected function defaultHandleResult()

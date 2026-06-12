@@ -4,7 +4,7 @@ class shopSearchproPluginViewHelper
 {
 	public static $groups = array(
 		'products' => 'Товары',
-		'categories' => 'Категории',
+		'categories' => 'Категория',
 		'brands' => 'Бренды',
 		'popular' => 'Популярные запросы',
 		'history' => 'История запросов'
