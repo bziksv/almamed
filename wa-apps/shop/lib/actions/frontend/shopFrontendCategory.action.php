@@ -395,20 +395,51 @@ class shopFrontendCategoryAction extends shopFrontendAction
     {
         $cached_html = $this->getCachedCategoryHtml();
         if ($cached_html !== null) {
+            $this->applyBrowserNoCacheHeaders();
             wa()->getResponse()->addHeader('X-Shop-Cache', 'category-hit');
-            return $cached_html;
+            return $this->patchCategoryHtmlHead($cached_html);
         }
+        $this->applyBrowserNoCacheHeaders();
         wa()->getResponse()->addHeader('X-Shop-Cache', 'category-miss');
 
         $html = parent::display(false);
+        $html = $this->patchCategoryHtmlHead($html);
         $this->setCachedCategoryHtml($html);
 
         return $html;
     }
 
+    /**
+     * Full-page cache хранит старый &lt;head&gt;; title/meta задаются в execute() + SEO-плагин.
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function patchCategoryHtmlHead($html)
+    {
+        $response = wa()->getResponse();
+        if (!$response->getTitle()) {
+            $category = $this->view->getVars('category');
+            if (!empty($category['id'])) {
+                $response->setTitle(shopCategoryModel::getDefaultMetaTitle($category));
+            }
+        }
+        if (!$response->getMeta('keywords')) {
+            $category = $this->view->getVars('category');
+            if (!empty($category['id'])) {
+                $response->setMeta('keywords', shopCategoryModel::getDefaultMetaKeywords($category));
+            }
+        }
+
+        return $this->patchHtmlHeadFromResponse($html);
+    }
+
     protected function canUseCategoryCache()
     {
         if (waSystemConfig::isDebug() || waRequest::isXMLHttpRequest()) {
+            return false;
+        }
+        if ($this->isLocalDevHost()) {
             return false;
         }
         if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
@@ -443,6 +474,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
             waRequest::getTheme(),
             $category['id'],
             $mtime,
+            'head-meta-v1',
         )));
     }
 

@@ -178,6 +178,17 @@ class shopFrontendAction extends waViewAction
     {
         $this->applyHomepageHeadMetaToResponse();
 
+        return $this->patchHtmlHeadFromResponse($html);
+    }
+
+    /**
+     * Подставляет актуальные title/keywords/description из waResponse в HTML.
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function patchHtmlHeadFromResponse($html)
+    {
         $response = wa()->getResponse();
         $title = htmlspecialchars((string) $response->getTitle(), ENT_QUOTES, 'UTF-8');
         $keywords = htmlspecialchars((string) $response->getMeta('keywords'), ENT_QUOTES, 'UTF-8');
@@ -229,11 +240,34 @@ class shopFrontendAction extends waViewAction
         }
         $this->view->getHelper()->globals($params);
 
+        if (!$this->isHomepageFrontendAction()) {
+            try {
+                return parent::display($clear_assign);
+            } catch (waException $e) {
+                if ($e->getCode() == 404) {
+                    $url = $this->getConfig()->getRequestUrl(false, true);
+                    if (substr($url, -1) !== '/' && strpos(substr($url, -5), '.') === false) {
+                        wa()->getResponse()->redirect($url.'/', 301);
+                    }
+                }
+                wa()->event('frontend_error', $e);
+                $this->view->assign('error_message', $e->getMessage());
+                $code = $e->getCode();
+                $this->view->assign('error_code', $code);
+                $this->getResponse()->setStatus($code ? $code : 500);
+                $this->setThemeTemplate('error.html');
+
+                return $this->view->fetch($this->getTemplate());
+            }
+        }
+
         $cached_html = $this->getCachedHomepageHtml();
         if ($cached_html !== null) {
+            $this->applyHomepageBrowserNoCacheHeaders();
             wa()->getResponse()->addHeader('X-Shop-Cache', 'home-hit');
             return $this->patchHomepageHtmlHead($cached_html);
         }
+        $this->applyHomepageBrowserNoCacheHeaders();
         wa()->getResponse()->addHeader('X-Shop-Cache', 'home-miss');
 
         try {
@@ -257,16 +291,25 @@ class shopFrontendAction extends waViewAction
             $html = $this->view->fetch($this->getTemplate());
         }
 
-        $html = $this->patchHomepageHtmlHead($html);
-
-        $this->setCachedHomepageHtml($html);
+        if ($this->isHomepageFrontendAction()) {
+            $html = $this->patchHomepageHtmlHead($html);
+            $this->setCachedHomepageHtml($html);
+        }
 
         return $html;
+    }
+
+    protected function isHomepageFrontendAction()
+    {
+        return get_class($this) === 'shopFrontendAction';
     }
 
     protected function canUseHomepageCache()
     {
         if (waSystemConfig::isDebug() || waRequest::isXMLHttpRequest()) {
+            return false;
+        }
+        if ($this->isLocalDevHost()) {
             return false;
         }
         if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
@@ -286,6 +329,32 @@ class shopFrontendAction extends waViewAction
         return true;
     }
 
+    /**
+     * Браузеры кэшируют HTML без Cache-Control → разные версии в Chrome/Safari/Cursor.
+     */
+    protected function applyBrowserNoCacheHeaders()
+    {
+        $response = wa()->getResponse();
+        $response->addHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        $response->addHeader('Pragma', 'no-cache');
+        $response->addHeader('Expires', '0');
+    }
+
+    protected function applyHomepageBrowserNoCacheHeaders()
+    {
+        $this->applyBrowserNoCacheHeaders();
+    }
+
+    protected function isLocalDevHost()
+    {
+        $host = waRequest::server('HTTP_HOST');
+        if (!$host) {
+            return false;
+        }
+
+        return (bool) preg_match('/^(localhost|127\.0\.0\.1)(:\d+)?$/', $host);
+    }
+
     protected function getHomepageCacheKey()
     {
         $routing = wa()->getRouting();
@@ -298,6 +367,7 @@ class shopFrontendAction extends waViewAction
             date('Y-m-d'),
             'head-meta-v2',
             'layout-sidebar-v3',
+            'browser-nocache-v1',
         )));
     }
 
