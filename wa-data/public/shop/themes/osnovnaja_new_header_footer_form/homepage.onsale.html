@@ -1,0 +1,17 @@
+{strip}
+
+{if !empty($theme_settings.homepage_productset_onsale)}
+    {$onsale = $wa->shop->products($theme_settings.homepage_productset_onsale, 8)}
+    {if !empty($onsale)}
+        {$strip_title = $theme_settings.homepage_onsale_title|default:'Акции'}
+        {include file='homepage.products-strip.html'
+            strip_title=$strip_title
+            strip_products=$onsale
+            strip_mod='home-products--onsale'
+            strip_more_url=$theme_settings.homepage_onsale_more_url|default:''
+            strip_more_label='Смотреть все акции'
+            inline}
+    {/if}
+{/if}
+
+{/strip}

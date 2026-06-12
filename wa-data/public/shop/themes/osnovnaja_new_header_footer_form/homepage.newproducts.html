@@ -1,0 +1,15 @@
+{strip}
+
+{if !empty($theme_settings.homepage_productset_new)}
+    {$newproducts = $wa->shop->products($theme_settings.homepage_productset_new, 8)}
+    {if !empty($newproducts)}
+        {$strip_title = $theme_settings.homepage_new_title|default:'Новинки'}
+        {include file='homepage.products-strip.html'
+            strip_title=$strip_title
+            strip_products=$newproducts
+            strip_mod='home-products--new'
+            inline}
+    {/if}
+{/if}
+
+{/strip}

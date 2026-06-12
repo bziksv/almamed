@@ -31,6 +31,10 @@ class shopSeoWaHomeRequestHandler implements shopSeoRequestHandler
 	
 	public function applyOuter()
 	{
+		if (empty($this->data)) {
+			$this->loadData();
+		}
+
 		$this->response->setMetaTitle($this->data['meta_title']);
 		$this->response->setMetaKeywords($this->data['meta_keywords']);
 		$this->response->setMetaDescription($this->data['meta_description']);

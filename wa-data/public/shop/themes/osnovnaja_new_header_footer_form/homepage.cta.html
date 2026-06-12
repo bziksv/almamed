@@ -1,0 +1,18 @@
+{strip}
+
+{$_cta_phone = $theme_settings.callme_phone|default:$wa->shop->settings('phone')|default:'8-800-100-37-97'}
+
+<section class="home-cta">
+    <div class="home-cta__inner">
+        <div class="home-cta__text">
+            <h2 class="home-cta__title">Нужна консультация или коммерческое предложение?</h2>
+            <p class="home-cta__hint">Менеджеры подберут оборудование под вашу клинику и рассчитают стоимость с доставкой.</p>
+        </div>
+        <div class="home-cta__actions">
+            <a href="tel:{str_replace(['(', ')', '-', ' '], '', $_cta_phone)}" class="home-cta__phone">{$_cta_phone|escape}</a>
+            <a href="/ostavit-zayavku/" class="button home-cta__btn">Оставить заявку</a>
+        </div>
+    </div>
+</section>
+
+{/strip}

@@ -1,0 +1,39 @@
+{strip}
+
+{$_hero_title = $theme_settings.homepage_about_title|default:'Оригинальные приборы и инструменты'}
+{$_hero_body = $theme_settings.homepage_about_body|default:'Поставки медицинского оборудования от ведущих производителей Европы, США, Азии. Более 18 000 позиций на складах и под заказ.'}
+{$_hero_phone = $theme_settings.callme_phone|default:$wa->shop->settings('phone')|default:'8-800-100-37-97'}
+{$_hero_cats = $wa->shop->categories(0, null, true)}
+{$_catalog_url = $wa_app_url}
+{foreach $_hero_cats as $_c}
+    {if $_c@first}{$_catalog_url = $_c.url}{/if}
+{/foreach}
+
+<section class="home-hero">
+    <div class="home-hero__inner">
+        <div class="home-hero__content">
+            <h1 class="home-hero__title">{$_hero_title|escape}</h1>
+            <p class="home-hero__text">{$_hero_body|escape}</p>
+            <div class="home-hero__actions">
+                <a href="{$_catalog_url|escape}" class="button home-hero__btn">Каталог оборудования</a>
+                <a href="/ostavit-zayavku/" class="button third-type home-hero__btn home-hero__btn--outline">Оставить заявку</a>
+            </div>
+        </div>
+        <ul class="home-hero__badges">
+            <li>
+                <i class="material-icons" aria-hidden="true">local_shipping</i>
+                <span>Доставка по всей России</span>
+            </li>
+            <li>
+                <i class="material-icons" aria-hidden="true">inventory_2</i>
+                <span>18 000+ позиций</span>
+            </li>
+            <li>
+                <i class="material-icons" aria-hidden="true">phone_in_talk</i>
+                <a href="tel:{str_replace(['(', ')', '-', ' '], '', $_hero_phone)}">{$_hero_phone|escape}</a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+{/strip}

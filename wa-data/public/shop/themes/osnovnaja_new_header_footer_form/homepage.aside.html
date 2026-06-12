@@ -1,0 +1,24 @@
+{strip}
+
+{$_aside_phone = $theme_settings.callme_phone|default:$wa->shop->settings('phone')|default:'8-800-100-37-97'}
+
+<aside class="home-aside">
+    <div class="home-aside__card home-aside__card--accent">
+        <h3 class="home-aside__title">Не нашли нужный товар?</h3>
+        <p class="home-aside__text">Среди 18&nbsp;000+ позиций не всегда просто выбрать с первого раза. Менеджеры подберут аналог и подготовят коммерческое предложение.</p>
+        <a href="/ostavit-zayavku/" class="button second-type home-aside__btn">Оставить заявку</a>
+    </div>
+
+    <div class="home-aside__card home-aside__card--phone">
+        <p class="home-aside__label">Бесплатный звонок по РФ</p>
+        <a href="tel:{str_replace(['(', ')', '-', ' '], '', $_aside_phone)}" class="home-aside__phone">{$_aside_phone|escape}</a>
+        <p class="home-aside__hint">Менеджеры на связи 09:00–18:00</p>
+    </div>
+
+    <ul class="home-aside__links">
+        <li><a href="/dostavka_i_oplata/"><i class="material-icons" aria-hidden="true">local_shipping</i><span>Доставка и оплата</span></a></li>
+        <li><a href="/kontakty/"><i class="material-icons" aria-hidden="true">location_on</i><span>Контакты и реквизиты</span></a></li>
+    </ul>
+</aside>
+
+{/strip}

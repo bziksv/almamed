@@ -78,15 +78,8 @@ class shopFrontendAction extends waViewAction
         if (wa()->getRouting()->getCurrentUrl()) {
             throw new waException('Page not found', 404);
         }
-        $title = waRequest::param('title');
-        if (!$title) {
-            $app = wa()->getAppInfo();
-            $title = $app['name'];
-        }
-        $this->getResponse()->setTitle($title);
-        $this->getResponse()->setMeta('keywords', waRequest::param('meta_keywords'));
-        $this->getResponse()->setMeta('description', waRequest::param('meta_description'));
 
+        $this->applyHomepageHeadMetaToResponse();
 
         // Open Graph
         $og_url = null;
@@ -113,6 +106,100 @@ class shopFrontendAction extends waViewAction
 
         $this->setThemeTemplate('home.html');
 
+    }
+
+    /**
+     * Title/description for homepage: route params → shop defaults → SEO plugin.
+     */
+    protected function applyHomepageHeadMetaToResponse()
+    {
+        $response = $this->getResponse();
+
+        $title = waRequest::param('title');
+        if (!$title) {
+            $shop_name = $this->getConfig()->getGeneralSettings('name');
+            if ($shop_name) {
+                $title = $shop_name.' — медицинское оборудование и инструменты';
+            } else {
+                $title = wa()->getAppInfo('shop')['name'];
+            }
+        }
+        $response->setTitle($title);
+
+        $keywords = waRequest::param('meta_keywords');
+        if ($keywords) {
+            $response->setMeta('keywords', $keywords);
+        }
+
+        $description = waRequest::param('meta_description');
+        if (!$description) {
+            $description = 'Поставки медицинского оборудования со всего мира: Европы, Америки, Азии. Оригинальные приборы и инструменты. Доставка по РФ.';
+        }
+        $response->setMeta('description', $description);
+
+        $this->applySeoHomepageMetaToResponse();
+    }
+
+    protected function applySeoHomepageMetaToResponse()
+    {
+        if (!class_exists('shopSeoPlugin') || !shopSeoPlugin::isEnabled()) {
+            return;
+        }
+
+        try {
+            $context = shopSeoContext::getInstance();
+            $storefront = $context->getStorefrontService()->getCurrentStorefront();
+            $info = null;
+            $data = $context->getStorefrontDataRenderer()->renderAll(
+                $storefront,
+                $context->getHomeDataCollector()->collect($storefront, $info)
+            );
+            $seo_response = $context->getResponse();
+            if (!empty($data['meta_title'])) {
+                $seo_response->setMetaTitle($data['meta_title']);
+            }
+            if (!empty($data['meta_keywords'])) {
+                $seo_response->setMetaKeywords($data['meta_keywords']);
+            }
+            if (!empty($data['meta_description'])) {
+                $seo_response->setMetaDescription($data['meta_description']);
+            }
+        } catch (Exception $e) {
+        }
+    }
+
+    /**
+     * Full-page homepage cache stores stale &lt;head&gt;; always inject fresh title/meta.
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function patchHomepageHtmlHead($html)
+    {
+        $this->applyHomepageHeadMetaToResponse();
+
+        $response = wa()->getResponse();
+        $title = htmlspecialchars((string) $response->getTitle(), ENT_QUOTES, 'UTF-8');
+        $keywords = htmlspecialchars((string) $response->getMeta('keywords'), ENT_QUOTES, 'UTF-8');
+        $description = htmlspecialchars((string) $response->getMeta('description'), ENT_QUOTES, 'UTF-8');
+
+        if ($title !== '') {
+            $html = preg_replace('/<title[^>]*>.*?<\/title>/is', '<title>'.$title.'</title>', $html, 1);
+        }
+        $html = preg_replace(
+            '/<meta name="Keywords" content="[^"]*"\s*\/?>/i',
+            '<meta name="Keywords" content="'.$keywords.'" />',
+            $html,
+            1
+        );
+        $html = preg_replace(
+            '/<meta name="Description" content="[^"]*"\s*\/?>/i',
+            '<meta name="Description" content="'.$description.'" />',
+            $html,
+            1
+        );
+
+        return $html;
     }
 
     const HOME_CACHE_TTL = 900;
@@ -145,7 +232,7 @@ class shopFrontendAction extends waViewAction
         $cached_html = $this->getCachedHomepageHtml();
         if ($cached_html !== null) {
             wa()->getResponse()->addHeader('X-Shop-Cache', 'home-hit');
-            return $cached_html;
+            return $this->patchHomepageHtmlHead($cached_html);
         }
         wa()->getResponse()->addHeader('X-Shop-Cache', 'home-miss');
 
@@ -169,6 +256,8 @@ class shopFrontendAction extends waViewAction
             $this->setThemeTemplate('error.html');
             $html = $this->view->fetch($this->getTemplate());
         }
+
+        $html = $this->patchHomepageHtmlHead($html);
 
         $this->setCachedHomepageHtml($html);
 
@@ -207,6 +296,7 @@ class shopFrontendAction extends waViewAction
             ifset($route, 'url', ''),
             waRequest::getTheme(),
             date('Y-m-d'),
+            'head-meta-v2',
         )));
     }
 

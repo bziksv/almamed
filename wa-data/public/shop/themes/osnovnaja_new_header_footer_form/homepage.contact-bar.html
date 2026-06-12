@@ -1,0 +1,23 @@
+{strip}
+
+{$_phone = $theme_settings.callme_phone|default:$wa->shop->settings('phone')|default:'8-800-100-37-97'}
+
+<section class="home-contact-bar fill-background">
+    <div class="home-contact-bar__inner">
+        <div class="home-contact-bar__text">
+            <h2 class="home-contact-bar__title">Не нашли нужный товар?</h2>
+            <p class="home-contact-bar__hint">Среди 18&nbsp;000+ позиций менеджеры подберут аналог и подготовят коммерческое предложение.</p>
+        </div>
+        <div class="home-contact-bar__phone">
+            <span class="home-contact-bar__label">Бесплатный звонок по РФ</span>
+            <a href="tel:{str_replace(['(', ')', '-', ' '], '', $_phone)}" class="home-contact-bar__number">{$_phone|escape}</a>
+            <span class="home-contact-bar__hours">09:00–18:00</span>
+        </div>
+        <div class="home-contact-bar__actions">
+            <a href="/ostavit-zayavku/" class="button second-type home-contact-bar__btn">Оставить заявку</a>
+            <a href="/dostavka_i_oplata/" class="home-contact-bar__link">Доставка и оплата</a>
+        </div>
+    </div>
+</section>
+
+{/strip}

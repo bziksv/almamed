@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
-<theme id="osnovnaja_new_header_footer_form" system="0" vendor="873332" author="wm-site" app="shop" parent_theme_id="site:osnovnaja_new_header_footer_form" version="1.3.0" source_theme_id="osnovnaja_new_header" edition="6">
+<theme id="osnovnaja_new_header_footer_form" system="0" vendor="873332" author="wm-site" app="shop" parent_theme_id="site:osnovnaja_new_header_footer_form" version="1.3.7" source_theme_id="osnovnaja_new_header" edition="20">
   <name locale="en_US">Profitbuy</name>
   <name locale="ru_RU">Основная тема с новой шапкой и формой в подвале</name>
   <files>
@@ -164,9 +164,42 @@
       <description locale="en_US">Slider home page</description>
       <description locale="ru_RU"/>
     </file>
+    <file path="homepage.intro.html" custom="0">
+      <description locale="ru_RU">CTA и статистика на главной</description>
+    </file>
+    <file path="homepage.products-strip.html" custom="0">
+      <description locale="ru_RU">Общий шаблон полосы товаров</description>
+    </file>
+    <file path="homepage.bestsellers.html" custom="0">
+      <description locale="ru_RU">Хиты продаж на главной</description>
+    </file>
+    <file path="homepage.onsale.html" custom="0">
+      <description locale="ru_RU">Акции на главной</description>
+    </file>
+    <file path="homepage.newproducts.html" custom="0">
+      <description locale="ru_RU">Новинки на главной</description>
+    </file>
+    <file path="homepage.benefits.html" custom="0">
+      <description locale="ru_RU">Преимущества AlmaMed</description>
+    </file>
+    <file path="homepage.audiences.html" custom="0">
+      <description locale="ru_RU">Кому мы поставляем</description>
+    </file>
+    <file path="homepage.categories-grid.html" custom="0">
+      <description locale="ru_RU">Популярные направления</description>
+    </file>
+    <file path="homepage.contact-bar.html" custom="0">
+      <description locale="ru_RU">Контактная полоса перед новостями</description>
+    </file>
     <file path="homepage.lastadd.html" custom="0" modified="1">
-      <description locale="en_US">Slider home page</description>
-      <description locale="ru_RU"/>
+      <description locale="en_US">News on homepage</description>
+      <description locale="ru_RU">Новости на главной</description>
+    </file>
+    <file path="homepage.aside.html" custom="0">
+      <description locale="ru_RU">Правая колонка блока товаров на главной</description>
+    </file>
+    <file path="homepage.css" custom="0">
+      <description locale="ru_RU">Стили главной страницы</description>
     </file>
     <file path="homepage.callme.html" custom="0">
 		</file>
@@ -385,7 +418,7 @@
       <name locale="ru_RU">Текст вкладки "контакты"</name>
     </setting>
     <setting var="homepage_productset_bestsellers" control_type="text">
-      <value/>
+      <value>set/bestsellers</value>
       <name locale="en_US">Source products list «Bestsellers»</name>
       <name locale="ru_RU">Источник товаров для списка «Бестселлеры»</name>
       <description locale="ru_RU">В качестве источника могут служить: - список товаров магазина(пример: set/bestsellers), список товаров категории(пример: category/732), список товаров объеденных тегом(пример: tag/samsung). Товары из этого списка будут показаны на витрине магазина под слайдером в блоке лучших приложений на текущий день.</description>
@@ -393,11 +426,42 @@
     </setting>
     <setting var="homepage_bestsellers_title" control_type="text">
       <value locale="en_US">Hot deals for {$date}</value>
-      <value locale="ru_RU">Лучшие предложения на {$date}</value>
+      <value locale="ru_RU">Хиты продаж</value>
       <name locale="en_US">Title above the bestseller list</name>
       <name locale="ru_RU">Заголовок списка "бестселлеров"</name>
       <description locale="en_US">If provided, &lt;b&gt;{$date}&lt;/b&gt; will be replaced with the current date</description>
       <description locale="ru_RU">Переменная &lt;b&gt;{$date}&lt;/b&gt; в заголовке (если указана) будет заменена на текущую дату</description>
+    </setting>
+    <setting var="homepage_onsale_title" control_type="text">
+      <value locale="ru_RU">Акции</value>
+      <value locale="en_US">On sale</value>
+      <name locale="ru_RU">Заголовок блока «Акции»</name>
+      <name locale="en_US">Title for on-sale products block</name>
+    </setting>
+    <setting var="homepage_productset_onsale" control_type="text">
+      <value>set/onsale</value>
+      <name locale="ru_RU">Список товаров «Акции»</name>
+      <name locale="en_US">On-sale product set</name>
+      <description locale="ru_RU">Пример: set/onsale — список товаров со скидкой на главной.</description>
+      <description locale="en_US">Example: set/onsale</description>
+    </setting>
+    <setting var="homepage_onsale_more_url" control_type="text">
+      <value/>
+      <name locale="ru_RU">Ссылка «Смотреть все акции»</name>
+      <name locale="en_US">Link to all sale products</name>
+    </setting>
+    <setting var="homepage_new_title" control_type="text">
+      <value locale="ru_RU">Новинки</value>
+      <value locale="en_US">New arrivals</value>
+      <name locale="ru_RU">Заголовок блока «Новинки»</name>
+      <name locale="en_US">Title for new products block</name>
+    </setting>
+    <setting var="homepage_productset_new" control_type="text">
+      <value>set/new</value>
+      <name locale="ru_RU">Список товаров «Новинки»</name>
+      <name locale="en_US">New products set</name>
+      <description locale="ru_RU">Пример: set/new — новые товары на главной.</description>
+      <description locale="en_US">Example: set/new</description>
     </setting>
     <setting var="homepage_productset_userset" control_type="text">
       <value>set/promo_almamed</value>
@@ -407,7 +471,7 @@
       <description locale="en_US">Source: - products shop(example: set/bestsellers), products categories(example: category/732), products unite tag(example: tag/samsung).</description>
     </setting>
     <setting var="homepage_userset_title" control_type="text">
-      <value>Распродажа до конца месяца</value>
+      <value>Популярные товары</value>
       <name locale="en_US">Title above the «User» list</name>
       <name locale="ru_RU">Заголовок списка «Промо»</name>
       <description locale="en_US">If provided, &lt;b&gt;{$date}&lt;/b&gt; will be replaced with the current date</description>

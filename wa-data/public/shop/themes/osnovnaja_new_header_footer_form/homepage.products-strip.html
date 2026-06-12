@@ -1,0 +1,20 @@
+{strip}
+
+{if !empty($strip_products)}
+<section class="home-products fill-background{if !empty($strip_mod)} {$strip_mod|escape}{/if}">
+    {if !empty($strip_title)}
+        <h2 class="home-section-title">{$strip_title|escape}</h2>
+    {/if}
+    <div class="home-products__list">
+        {$select_view = 'thumbs'}
+        {include file='list-thumbs.html' products=$strip_products ulclass='expandable colored' select_view=$select_view without_micro_markup=true}
+    </div>
+    {if !empty($strip_more_url)}
+        <p class="home-block-more">
+            <a href="{$strip_more_url|escape}">{$strip_more_label|default:'Смотреть все'|escape}</a>
+        </p>
+    {/if}
+</section>
+{/if}
+
+{/strip}

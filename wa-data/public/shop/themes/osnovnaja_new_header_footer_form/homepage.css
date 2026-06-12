@@ -1,0 +1,603 @@
+/* Homepage — контент справа от sidebar (col l9) */
+
+.home-page {
+    margin-bottom: 1.5rem;
+}
+
+/* CTA + статистика */
+.home-intro {
+    padding: 1.35rem 1.5rem 1.5rem;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, #f4fbfd 0%, #fff 52%, #f8fcfe 100%);
+    border: 1px solid #d4ecf4;
+    border-radius: 8px;
+}
+
+.home-intro__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 1.35rem 1.75rem;
+    align-items: center;
+}
+
+.home-intro__title {
+    margin: 0 0 0.65rem;
+    font-size: 1.45rem;
+    font-weight: 600;
+    line-height: 1.28;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.home-intro__text {
+    margin: 0 0 1.1rem;
+    font-size: 0.95rem;
+    line-height: 1.58;
+    color: rgba(0, 0, 0, 0.68);
+}
+
+.home-intro__btn {
+    display: inline-block;
+}
+
+.home-intro__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-intro__stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 78px;
+    padding: 0.75rem 0.85rem;
+    background: #fff;
+    border: 1px solid #e3eef2;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(4, 151, 192, 0.06);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-intro__stat:hover {
+    border-color: #b8dce8;
+    box-shadow: 0 4px 14px rgba(4, 151, 192, 0.1);
+}
+
+.home-intro__stat-value {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0497C0;
+}
+
+.home-intro__stat-label {
+    display: block;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    color: rgba(0, 0, 0, 0.62);
+}
+
+.home-section-title {
+    margin: 0 0 1.15rem;
+    padding-top: 0.25rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    text-align: center;
+    color: #666;
+}
+
+/* Популярные товары — те же карточки, что в каталоге */
+.home-products {
+    padding: 1rem 1.15rem 0.35rem;
+    margin-bottom: 1.25rem;
+}
+
+.home-products__list {
+    margin: 0;
+}
+
+.home-products__list ul.product-list {
+    margin-bottom: 0.75rem;
+}
+
+/* Главная: 4 карточки в ряд (grid вместо float + margin) */
+.home-page .home-products__list ul.product-list.thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin: 0 0 0.75rem;
+    padding: 0;
+    list-style: none;
+}
+
+.home-page .home-products__list ul.product-list.thumbs::after {
+    content: none;
+    display: none;
+}
+
+.home-page .home-products__list ul.product-list.thumbs > li {
+    float: none !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    display: block;
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 1100px) {
+    .home-page .home-products__list ul.product-list.thumbs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .home-page .home-products__list ul.product-list.thumbs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .home-page .home-products__list ul.product-list.thumbs {
+        grid-template-columns: 1fr;
+    }
+}
+
+.home-block-more {
+    margin: 0 0 0.5rem;
+    text-align: center;
+}
+
+.home-block-more a {
+    font-size: 0.92rem;
+    color: #0497C0;
+    text-decoration: none;
+}
+
+.home-block-more a:hover {
+    color: #036884;
+    text-decoration: underline;
+}
+
+.home-section-title--left {
+    text-align: left;
+}
+
+/* Почему AlmaMed */
+.home-benefits {
+    padding: 1.15rem 1.25rem 1.35rem;
+    margin-bottom: 1.25rem;
+}
+
+.home-benefits__head {
+    margin-bottom: 1rem;
+}
+
+.home-benefits__lead {
+    margin: -0.35rem 0 0;
+    max-width: 52rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: rgba(0, 0, 0, 0.62);
+}
+
+.home-benefits__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-benefits__item {
+    padding: 0.9rem 0.95rem;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+}
+
+.home-benefits__item .material-icons {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 28px;
+    color: #0497C0;
+}
+
+.home-benefits__title {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.home-benefits__text {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: rgba(0, 0, 0, 0.62);
+}
+
+.home-benefits__action {
+    margin: 1rem 0 0;
+    text-align: center;
+}
+
+/* Бренды */
+.home-brands {
+    padding: 0.85rem 1rem 1.15rem;
+    margin-bottom: 1.25rem;
+}
+
+.home-brands__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-brands__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 158px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.home-brands__link:hover {
+    border-color: #b8dce8;
+    box-shadow: 0 6px 16px rgba(4, 151, 192, 0.12);
+    transform: translateY(-1px);
+}
+
+.home-brands__logo {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    min-height: 112px;
+    height: 112px;
+    padding: 6px 8px;
+    background: linear-gradient(180deg, #f8fafb 0%, #fff 100%);
+    box-sizing: border-box;
+}
+
+.home-brands__logo img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: calc(100% - 4px);
+    max-height: 100px;
+    object-fit: contain;
+    object-position: center center;
+}
+
+.home-brands__name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.62);
+    background: #f3f5f7;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.home-brands__link:hover .home-brands__name {
+    color: #0497C0;
+}
+
+@media only screen and (max-width: 1100px) {
+    .home-brands__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .home-brands__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    .home-brands__logo {
+        min-height: 96px;
+        height: 96px;
+        padding: 6px 8px;
+    }
+
+    .home-brands__logo img {
+        max-height: 84px;
+    }
+
+    .home-brands__name {
+        min-height: 2.25rem;
+        font-size: 0.68rem;
+    }
+}
+
+/* Кому поставляем */
+.home-audiences {
+    padding: 1rem 1.15rem 1.2rem;
+    margin-bottom: 1.25rem;
+}
+
+.home-audiences__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-audiences__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 100%;
+    padding: 0.95rem 1rem;
+    background: #fff;
+    border: 1px solid #e4e4e4;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-audiences__card:hover {
+    border-color: #b8dce8;
+    box-shadow: 0 4px 14px rgba(4, 151, 192, 0.1);
+}
+
+.home-audiences__card .material-icons {
+    margin-bottom: 0.5rem;
+    font-size: 30px;
+    color: #0497C0;
+}
+
+.home-audiences__title {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.home-audiences__text {
+    display: block;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: rgba(0, 0, 0, 0.58);
+}
+
+/* Популярные направления */
+.home-categories {
+    padding: 1rem 1.15rem 1.2rem;
+    margin-bottom: 1.25rem;
+}
+
+.home-categories__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.home-categories__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    padding: 0.75rem 0.65rem 0.85rem;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-categories__card:hover {
+    border-color: #b8dce8;
+    box-shadow: 0 4px 14px rgba(4, 151, 192, 0.08);
+}
+
+.home-categories__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 88px;
+    margin-bottom: 0.55rem;
+}
+
+.home-categories__image img {
+    max-width: 100%;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.home-categories__name {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.home-categories__count {
+    display: block;
+    font-size: 0.75rem;
+    color: #999;
+}
+
+/* Контактная полоса */
+.home-contact-bar {
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(135deg, #0497C0 0%, #037a9a 100%);
+    border-radius: 8px;
+}
+
+.home-contact-bar__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr) auto;
+    gap: 1rem 1.25rem;
+    align-items: center;
+}
+
+.home-contact-bar__title {
+    margin: 0 0 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #fff;
+}
+
+.home-contact-bar__hint {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.home-contact-bar__phone {
+    text-align: center;
+}
+
+.home-contact-bar__label,
+.home-contact-bar__hours {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.home-contact-bar__number {
+    display: block;
+    margin: 0.2rem 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    text-decoration: none;
+}
+
+.home-contact-bar__number:hover {
+    color: #fff;
+    opacity: 0.9;
+}
+
+.home-contact-bar__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+    min-width: 180px;
+}
+
+.home-contact-bar__btn {
+    text-align: center;
+}
+
+.home-contact-bar__link {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    text-decoration: underline;
+}
+
+.home-contact-bar__link:hover {
+    color: #fff;
+}
+
+@media only screen and (max-width: 1100px) {
+    .home-benefits__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-audiences__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-categories__grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .home-contact-bar__inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .home-contact-bar__phone {
+        text-align: center;
+    }
+
+    .home-contact-bar__actions {
+        align-items: center;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .home-intro__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .home-intro__stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .home-intro {
+        padding: 1rem;
+    }
+
+    .home-intro__title {
+        font-size: 1.25rem;
+    }
+
+    .home-intro__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .home-products {
+        padding: 0.85rem 0.75rem 0.25rem;
+    }
+
+    .home-benefits__grid,
+    .home-audiences__grid,
+    .home-categories__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-section-title--left {
+        text-align: center;
+    }
+}

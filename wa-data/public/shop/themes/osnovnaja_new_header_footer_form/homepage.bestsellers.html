@@ -1,0 +1,16 @@
+{strip}
+
+{if !empty($theme_settings.homepage_productset_bestsellers)}
+    {$bestsellers = $wa->shop->products($theme_settings.homepage_productset_bestsellers, 8)}
+    {if !empty($bestsellers)}
+        {$strip_title = $theme_settings.homepage_bestsellers_title|default:'Хиты продаж'}
+        {$strip_title = $strip_title|replace:'{$date}':$smarty.now|wa_datetime:'humandate'}
+        {include file='homepage.products-strip.html'
+            strip_title=$strip_title
+            strip_products=$bestsellers
+            strip_mod='home-products--bestsellers'
+            inline}
+    {/if}
+{/if}
+
+{/strip}

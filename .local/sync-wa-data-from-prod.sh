@@ -176,6 +176,18 @@ find_missing_product_ids() {
   ' "$ROOT"
 }
 
+# bash 3.2 (macOS) не имеет mapfile
+read_lines_into() {
+  local var_name="$1"
+  shift
+  eval "${var_name}=()"
+  local line
+  while IFS= read -r line; do
+    [[ -n "$line" ]] || continue
+    eval "${var_name}+=(\"\$line\")"
+  done < <("$@")
+}
+
 check_ssh
 
 case "$MODE" in
@@ -208,12 +220,12 @@ case "$MODE" in
       "${ROOT}/wa-data/public/shop/products/"
     ;;
   missing)
-    mapfile -t MISSING < <(find_missing_product_ids)
+    read_lines_into MISSING find_missing_product_ids
     echo "→ В БД, но нет папки local: ${#MISSING[@]} товар(ов)"
     rsync_product_paths "${MISSING[@]}"
     ;;
   recent)
-    mapfile -t RECENT < <(query_product_ids "SELECT id FROM shop_product ORDER BY id DESC LIMIT ${RECENT_LIMIT}")
+    read_lines_into RECENT query_product_ids "SELECT id FROM shop_product ORDER BY id DESC LIMIT ${RECENT_LIMIT}"
     echo "→ Последние ${RECENT_LIMIT} товаров по id"
     rsync_product_paths "${RECENT[@]}"
     ;;

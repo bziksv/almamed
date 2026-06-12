@@ -1,0 +1,26 @@
+{strip}
+
+{$_categories = $wa->shop->categories(0, 1, true)}
+{if count($_categories)}
+<section class="home-categories fill-background">
+    <h2 class="home-section-title">Популярные направления</h2>
+    <ul class="home-categories__grid">
+        {foreach $_categories as $sc}
+            {if $sc@iteration > 12}{break}{/if}
+            <li>
+                <a href="{$sc.url|escape}" class="home-categories__card">
+                    <span class="home-categories__image">
+                        <img src="{if class_exists('shopWmimageincatPlugin') && shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="{$sc.name|escape}" loading="lazy" width="200" height="200" />
+                    </span>
+                    <span class="home-categories__name">{$sc.name|escape}</span>
+                    {if !empty($sc.count)}
+                        <span class="home-categories__count">{$sc.count} {if $sc.count % 10 == 1 && $sc.count % 100 != 11}товар{elseif ($sc.count % 10 >= 2 && $sc.count % 10 <= 4) && ($sc.count % 100 < 10 || $sc.count % 100 >= 20)}товара{else}товаров{/if}</span>
+                    {/if}
+                </a>
+            </li>
+        {/foreach}
+    </ul>
+</section>
+{/if}
+
+{/strip}
