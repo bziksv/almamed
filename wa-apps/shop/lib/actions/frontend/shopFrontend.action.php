@@ -8,6 +8,12 @@ class shopFrontendAction extends waViewAction
 {
     public function __construct($params = null)
     {
+        if (!class_exists('shopFrontendHeadMetaPatch', false)) {
+            waAutoload::getInstance()->add(array(
+                'shopFrontendHeadMetaPatch' => 'wa-apps/shop/lib/classes/shopFrontendHeadMetaPatch.class.php',
+            ));
+        }
+
         parent::__construct($params);
 
         if (!waRequest::isXMLHttpRequest()) {
@@ -346,7 +352,7 @@ class shopFrontendAction extends waViewAction
             ifset($route, 'url', ''),
             waRequest::getTheme(),
             date('Y-m-d'),
-            'head-meta-v2',
+            'head-meta-v3',
             'layout-sidebar-v3',
             'browser-nocache-v1',
         )));
