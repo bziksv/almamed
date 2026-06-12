@@ -184,7 +184,41 @@ class shopFrontendAction extends waViewAction
     {
         $this->applyHomepageHeadMetaToResponse();
 
-        return $this->patchHtmlHeadFromResponse($html);
+        $html = $this->patchHtmlHeadFromResponse($html);
+
+        return $this->patchHomepageSliderBlock($html);
+    }
+
+    /**
+     * Full-page cache замораживает слайдер; подставляем актуальный список слайдов.
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function patchHomepageSliderBlock($html)
+    {
+        if (!class_exists('shopSliderPlugin')) {
+            return $html;
+        }
+
+        $fresh = shopSliderPlugin::slider();
+        if ($fresh === '') {
+            return preg_replace(
+                '/<div class="container header-slider-wrap[^"]*">[\s\S]*?<\/div>\s*(?=<\/header>)/',
+                '',
+                $html,
+                1
+            );
+        }
+
+        $replaced = preg_replace(
+            '/<div class="container header-slider-wrap[^"]*">[\s\S]*?<\/div>\s*(?=<\/header>)/',
+            '<div class="container header-slider-wrap">'.$fresh.'</div>'."\n        ",
+            $html,
+            1
+        );
+
+        return is_string($replaced) ? $replaced : $html;
     }
 
     /**
@@ -352,7 +386,8 @@ class shopFrontendAction extends waViewAction
             ifset($route, 'url', ''),
             waRequest::getTheme(),
             date('Y-m-d'),
-            'head-meta-v3',
+            'head-meta-v4',
+            'slider-live-v2',
             'layout-sidebar-v3',
             'browser-nocache-v1',
         )));

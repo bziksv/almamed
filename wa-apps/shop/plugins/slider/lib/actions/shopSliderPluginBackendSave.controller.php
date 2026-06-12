@@ -92,7 +92,17 @@ class shopSliderPluginBackendSaveController extends waJsonController
             }
         }
 
+        self::clearHomepageCache();
+
         $this->redirect('/webasyst/shop/?action=plugins#/slider/');
+    }
+
+    protected static function clearHomepageCache()
+    {
+        $cache_dir = wa()->getCachePath('', 'shop/frontend_home');
+        if (is_dir($cache_dir)) {
+            waFiles::delete($cache_dir);
+        }
     }
 
     protected function processImageField($field, $paths)

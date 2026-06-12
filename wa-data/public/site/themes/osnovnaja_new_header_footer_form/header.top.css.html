@@ -476,7 +476,7 @@
 
     .header-slider-wrap {
         min-height: 220px;
-        contain: layout style;
+        padding-bottom: 18px;
     }
 
     .header-line.alfa-background a#logo {
@@ -658,8 +658,65 @@
     }
 }
 
-/* Показать список категорий в sidebar (min.css прячет .sidebar-box до 1201px) */
+/* Категории: один список в sidebar. ≤992 — на всю ширину сверху; ≥993 — колонка 25%. */
+@media only screen and (max-width: 992px) {
+    main.maincontent > .container > .row-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    main.maincontent nav.sidebar.col-grid {
+        display: block !important;
+        order: -1;
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        float: none !important;
+        margin: 0 0 1rem !important;
+        padding: 0 !important;
+    }
+
+    main.maincontent #page-content.without-sidebar,
+    main.maincontent #page-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        float: none !important;
+    }
+}
+
 @media only screen and (min-width: 993px) {
+    main.maincontent > .container > .row-grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    nav.sidebar.col-grid {
+        display: block !important;
+        flex: 0 0 25%;
+        max-width: 25%;
+        width: 25% !important;
+        float: none !important;
+        box-sizing: border-box;
+    }
+
+    nav.sidebar.col-grid.float-right {
+        order: 2;
+    }
+
+    nav.sidebar.col-grid.float-right + #page-content.without-sidebar {
+        order: 1;
+    }
+
+    #page-content.without-sidebar {
+        flex: 0 0 75%;
+        max-width: 75%;
+        width: 75% !important;
+        float: none !important;
+        box-sizing: border-box;
+    }
+
     nav.sidebar.col-grid .sidebar-group .sidebar-box {
         display: block !important;
     }

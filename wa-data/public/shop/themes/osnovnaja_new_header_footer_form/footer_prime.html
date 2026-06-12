@@ -39,7 +39,8 @@ window.addEventListener('load', function() {
   };
   window.addEventListener('load', function() {
     document.addEventListener('click', function(e) {
-      if (e.target.closest('.head-phone, .header-phone-col, [data-load-chat]')) {
+      var el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+      if (el && el.closest && el.closest('.head-phone, .header-phone-col, [data-load-chat]')) {
         window.almamedLoadTalkMe();
       }
     }, { once: true, capture: true });

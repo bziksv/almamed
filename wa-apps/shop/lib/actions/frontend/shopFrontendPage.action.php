@@ -2,6 +2,17 @@
 
 class shopFrontendPageAction extends waPageAction
 {
+    public function __construct($params = null)
+    {
+        if (!class_exists('shopFrontendHeadMetaPatch', false)) {
+            waAutoload::getInstance()->add(array(
+                'shopFrontendHeadMetaPatch' => 'wa-apps/shop/lib/classes/shopFrontendHeadMetaPatch.class.php',
+            ));
+        }
+
+        parent::__construct($params);
+    }
+
     const PAGE_CACHE_TTL = 3600;
     const PAGE_CACHE_GROUP = 'shop/frontend_page';
 

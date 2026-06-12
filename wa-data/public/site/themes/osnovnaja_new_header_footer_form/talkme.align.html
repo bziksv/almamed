@@ -86,6 +86,18 @@ body.cookie-consent-pending .online-chat-root .trigger-background {
         return window.matchMedia('(min-width: ' + DESKTOP_MIN + 'px)').matches;
     }
 
+    function eventElement(e) {
+        if (!e || !e.target) {
+            return null;
+        }
+        return e.target.nodeType === 1 ? e.target : e.target.parentElement;
+    }
+
+    function closestTarget(e, selector) {
+        var el = eventElement(e);
+        return el && el.closest ? el.closest(selector) : null;
+    }
+
     function talkMe() {
         return typeof window.TalkMe === 'function' ? window.TalkMe : null;
     }
@@ -194,7 +206,7 @@ body.cookie-consent-pending .online-chat-root .trigger-background {
     }
 
     document.addEventListener('click', function(e) {
-        var btn = e.target.closest('#footer-pane .almamed-chat-open');
+        var btn = closestTarget(e, '#footer-pane .almamed-chat-open');
         if (!btn) {
             return;
         }
@@ -207,12 +219,12 @@ body.cookie-consent-pending .online-chat-root .trigger-background {
         if (!isDesktop()) {
             return;
         }
-        if (e.target.closest('#footer-pane .almamed-chat-open')) {
+        if (closestTarget(e, '#footer-pane .almamed-chat-open')) {
             cancelCloseMenu();
             openTalkMeMenu();
             return;
         }
-        if (isTalkMeUi(e.target)) {
+        if (isTalkMeUi(eventElement(e))) {
             cancelCloseMenu();
         }
     }, true);
@@ -222,12 +234,12 @@ body.cookie-consent-pending .online-chat-root .trigger-background {
             return;
         }
 
-        if (e.target.closest('#footer-pane .almamed-chat-open')) {
+        if (closestTarget(e, '#footer-pane .almamed-chat-open')) {
             scheduleCloseMenu();
             return;
         }
 
-        if (isTalkMeUi(e.target) && !isTalkMeUi(e.relatedTarget)) {
+        if (isTalkMeUi(eventElement(e)) && !isTalkMeUi(e.relatedTarget)) {
             scheduleCloseMenu();
         }
     }, true);

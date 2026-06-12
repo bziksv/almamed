@@ -1,7 +1,7 @@
 {strip}
 
-{if !$wa->isMobile() && !empty($theme_settings.category_tree_sidebar_show)}{include file="links.categories.sidebar.html" inline}{/if}
-{if !$wa->isMobile() && !empty($theme_settings.pages_sidebar)}{include file="links.pages.sidebar.html" inline}{/if}
+{if !empty($theme_settings.category_tree_sidebar_show)}{include file="links.categories.sidebar.html" inline}{/if}
+{if !empty($theme_settings.pages_sidebar)}{include file="links.pages.sidebar.html" inline}{/if}
 
 <!-- FOLLOW -->
 {if !$wa->isMobile()}

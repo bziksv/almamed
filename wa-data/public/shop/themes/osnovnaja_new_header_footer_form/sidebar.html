@@ -2,13 +2,13 @@
 
 {if !empty($filters) && $theme_settings.filter_pos == 'sidebar'}
     <div class="sidebar-group fill-background">
-        <div class="sidebar-title second-type">[`Filter`]<button class="toggle-menu"><i class="material-icons mi-2x">&#xE5D2;</i></button></div>
+        <div class="sidebar-title second-type">[`Filter`]</div>
         {include file="`$wa_active_theme_path`/filter.html" filter_controls=true}
     </div>
 {/if}
 
-{if !$wa->isMobile() && !empty($theme_settings.category_tree_sidebar_show)}{include file="`$wa_parent_theme_path`/links.categories.sidebar.html" inline}{/if}
-{if !$wa->isMobile() && !empty($theme_settings.pages_sidebar)}{include file="`$wa_parent_theme_path`/links.pages.sidebar.html" inline}{/if}
+{if !empty($theme_settings.category_tree_sidebar_show)}{include file="`$wa_parent_theme_path`/links.categories.sidebar.html" inline}{/if}
+{if !empty($theme_settings.pages_sidebar)}{include file="`$wa_parent_theme_path`/links.pages.sidebar.html" inline}{/if}
 
 <!-- 'frontend_nav' plugins -->
 {foreach $frontend_nav as $_key => $_}
@@ -16,7 +16,6 @@
         <div class="sidebar-group fill-background">
             <div class="sidebar-title">
                 {if substr($_key, -7) == '-plugin'}{$wa->pluginName(substr($_key, 0, -7))}{else}[`More`]{/if}
-                <button class="toggle-menu"><i class="material-icons mi-2x">&#xE5D2;</i></button>
             </div>
             <div class="sidebar-box">
                 {if strpos($_, 'menu-v') !== false}
@@ -34,7 +33,6 @@
         <div class="sidebar-group fill-background">
             <div class="sidebar-title">
                 {if substr($_key, -7) == '-plugin'}{$wa->pluginName(substr($_key, 0, -7))}{else}[`More`]{/if}
-                <button class="toggle-menu"><i class="material-icons mi-2x">&#xE5D2;</i></button>
             </div>
             <div class="sidebar-box">
                 {if strpos($_, 'menu-v') !== false}
@@ -63,10 +61,7 @@
 {if $category.params.bar_tags01}
     <!-- tags -->
     <div class="sidebar-group fill-background tag-plugin hide-on-med-and-down">
-        <div class="sidebar-title">
-            Популярные категории
-            <button class="toggle-menu"><i class="material-icons mi-2x">&#xE5D2;</i></button>
-        </div>
+        <div class="sidebar-title">Популярные категории</div>
         <div class="sidebar-box tags-params-sidebar">
             {foreach shopCustom::array_filter($category.params, 'bar_tags') as $plitka}
                 {if $plitka}
