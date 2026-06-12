@@ -9,11 +9,13 @@ class shopWebpimagesPluginGenerateCli extends waCliController
         wa('shop');
         waSystem::getInstance('shop', null, true);
 
-        $stats = shopWebpimagesHelper::generateAll($force);
+        $progress_every = (int) waRequest::param(1);
+        if ($progress_every <= 0) {
+            $progress_every = 500;
+        }
 
-        echo "Product thumbs WebP\n";
-        echo "Processed: {$stats['processed']}\n";
-        echo "Created: {$stats['created']}\n";
-        echo "Skipped: {$stats['skipped']}\n";
+        $stats = shopWebpimagesHelper::generateAll($force, null, $progress_every);
+
+        echo "Summary: processed={$stats['processed']} created={$stats['created']} skipped={$stats['skipped']}\n";
     }
 }

@@ -1,29 +1,58 @@
 {strip}
 <style>
-.share-native { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: .875rem; line-height: 1.4; }
-.share-native__label { color: #777; margin-right: 2px; }
-.share-native__link { display: inline-block; padding: 4px 10px; border: 1px solid rgba(51,51,51,.12); border-radius: 4px; background: #f5f5f5; color: rgba(0,0,0,.87); text-decoration: none; cursor: pointer; font: inherit; }
-.share-native__link:hover { background: #eee; }
+.share-native { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .875rem; line-height: 1; }
+.share-native__label { color: #777; margin-right: 4px; }
+.share-native__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid rgba(51,51,51,.12);
+    border-radius: 4px;
+    background: #f5f5f5;
+    color: rgba(0,0,0,.72);
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.share-native__link:hover { background: #eee; color: #fff; border-color: transparent; }
+.share-native__link--vk:hover { background: #4680c2; }
+.share-native__link--tg:hover { background: #229ed9; }
+.share-native__link--wa:hover { background: #25d366; }
+.share-native__link--ok:hover { background: #ee8208; }
+.share-native__link--copy:hover { background: #607d8b; }
 </style>
 {$share_url = $wa->currentUrl(true)|escape:'url'}
 {$share_title = ($product.name|default:$wa->title())|escape:'url'}
 <div class="share-native" aria-label="Поделиться">
     <span class="share-native__label">Поделиться:</span>
-    <a class="share-native__link" href="https://vk.com/share.php?url={$share_url}&amp;title={$share_title}" target="_blank" rel="noopener noreferrer nofollow" title="ВКонтакте">VK</a>
-    <a class="share-native__link" href="https://t.me/share/url?url={$share_url}&amp;text={$share_title}" target="_blank" rel="noopener noreferrer nofollow" title="Telegram">TG</a>
-    <a class="share-native__link" href="https://api.whatsapp.com/send?text={$share_title}%20{$share_url}" target="_blank" rel="noopener noreferrer nofollow" title="WhatsApp">WA</a>
-    <a class="share-native__link" href="https://connect.ok.ru/offer?url={$share_url}&amp;title={$share_title}" target="_blank" rel="noopener noreferrer nofollow" title="Одноклассники">OK</a>
-    <button type="button" class="share-native__link share-native__copy" data-share-url="{$wa->currentUrl(true)|escape}" title="Скопировать ссылку">Ссылка</button>
+    <a class="share-native__link share-native__link--vk" href="https://vk.com/share.php?url={$share_url}&amp;title={$share_title}" target="_blank" rel="noopener noreferrer nofollow" title="ВКонтакте" aria-label="Поделиться во ВКонтакте"><i class="fa fa-vk" aria-hidden="true"></i></a>
+    <a class="share-native__link share-native__link--tg" href="https://t.me/share/url?url={$share_url}&amp;text={$share_title}" target="_blank" rel="noopener noreferrer nofollow" title="Telegram" aria-label="Поделиться в Telegram"><i class="fa fa-telegram" aria-hidden="true"></i></a>
+    <a class="share-native__link share-native__link--wa" href="https://api.whatsapp.com/send?text={$share_title}%20{$share_url}" target="_blank" rel="noopener noreferrer nofollow" title="WhatsApp" aria-label="Поделиться в WhatsApp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+    <a class="share-native__link share-native__link--ok" href="https://connect.ok.ru/offer?url={$share_url}&amp;title={$share_title}" target="_blank" rel="noopener noreferrer nofollow" title="Одноклассники" aria-label="Поделиться в Одноклассниках"><i class="fa fa-odnoklassniki" aria-hidden="true"></i></a>
+    <button type="button" class="share-native__link share-native__link--copy share-native__copy" data-share-url="{$wa->currentUrl(true)|escape}" title="Скопировать ссылку" aria-label="Скопировать ссылку"><i class="fa fa-link" aria-hidden="true"></i></button>
 </div>
 <script>
 (function() {
-    var btn = document.querySelector('.share-native__copy');
-    if (!btn || !navigator.clipboard) {
-        if (btn) { btn.style.display = 'none'; }
+    var root = document.currentScript && document.currentScript.previousElementSibling;
+    if (!root || !root.classList.contains('share-native')) {
+        root = document.querySelector('.share-native');
+    }
+    if (!root) { return; }
+    var btn = root.querySelector('.share-native__copy');
+    if (!btn) { return; }
+    if (!navigator.clipboard) {
+        btn.style.display = 'none';
         return;
     }
     btn.addEventListener('click', function() {
         navigator.clipboard.writeText(btn.getAttribute('data-share-url') || window.location.href);
+        btn.setAttribute('title', 'Ссылка скопирована');
+        setTimeout(function() { btn.setAttribute('title', 'Скопировать ссылку'); }, 2000);
     });
 })();
 </script>

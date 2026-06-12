@@ -72,9 +72,10 @@ class shopWebpimagesHelper
     }
 
     /**
+     * @param int $progress_every выводить прогресс каждые N файлов (0 — без вывода)
      * @return array{processed: int, created: int, skipped: int}
      */
-    public static function generateAll($force = false, array $size_pattern = null)
+    public static function generateAll($force = false, array $size_pattern = null, $progress_every = 0)
     {
         if ($size_pattern === null) {
             $size_pattern = array('200', '750', '96x96', '970');
@@ -96,6 +97,11 @@ class shopWebpimagesHelper
             new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
         );
 
+        $started_at = microtime(true);
+        if ($progress_every > 0) {
+            self::reportProgress($stats, $started_at, true);
+        }
+
         foreach ($iterator as $file) {
             if (!$file->isFile()) {
                 continue;
@@ -111,17 +117,55 @@ class shopWebpimagesHelper
 
             if (!$force && file_exists($webp_path) && filemtime($webp_path) >= filemtime($path)) {
                 $stats['skipped']++;
-                continue;
-            }
-
-            if (self::ensureWebp($path, $force)) {
+            } elseif (self::ensureWebp($path, $force)) {
                 $stats['created']++;
             } else {
                 $stats['skipped']++;
             }
+
+            if ($progress_every > 0 && $stats['processed'] % $progress_every === 0) {
+                self::reportProgress($stats, $started_at, false);
+            }
+        }
+
+        if ($progress_every > 0 && $stats['processed'] > 0) {
+            self::reportProgress($stats, $started_at, false, true);
         }
 
         return $stats;
+    }
+
+    protected static function reportProgress(array $stats, $started_at, $is_start = false, $is_final = false)
+    {
+        $elapsed = max(microtime(true) - $started_at, 0.001);
+        $rate = $stats['processed'] / $elapsed;
+
+        if ($is_start) {
+            echo "Product thumbs WebP — scan started at " . date('Y-m-d H:i:s') . "\n";
+        } elseif ($is_final) {
+            echo sprintf(
+                "[%s] done — processed=%d created=%d skipped=%d, elapsed=%ds (avg %.1f/s)\n",
+                date('H:i:s'),
+                $stats['processed'],
+                $stats['created'],
+                $stats['skipped'],
+                (int) round($elapsed),
+                $rate
+            );
+        } else {
+            echo sprintf(
+                "[%s] processed=%d created=%d skipped=%d (%.1f/s)\n",
+                date('H:i:s'),
+                $stats['processed'],
+                $stats['created'],
+                $stats['skipped'],
+                $rate
+            );
+        }
+
+        if (defined('STDOUT')) {
+            @fflush(STDOUT);
+        }
     }
 
     protected static function wrapPicture($html, $webp_url)
