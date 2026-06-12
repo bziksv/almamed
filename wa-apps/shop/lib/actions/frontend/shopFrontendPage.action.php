@@ -27,8 +27,9 @@ class shopFrontendPageAction extends waPageAction
 
         $cached_html = $this->getCachedPageHtml();
         if ($cached_html !== null) {
+            $this->applyBrowserNoCacheHeaders();
             wa()->getResponse()->addHeader('X-Shop-Cache', 'page-hit');
-            return $cached_html;
+            return $this->patchPageHtmlHead($cached_html);
         }
 
         try {
@@ -49,14 +50,49 @@ class shopFrontendPageAction extends waPageAction
             $html = $this->view->fetch($this->getTemplate());
         }
 
+        $this->applyBrowserNoCacheHeaders();
+        wa()->getResponse()->addHeader('X-Shop-Cache', 'page-miss');
+        $html = $this->patchPageHtmlHead($html);
         $this->setCachedPageHtml($html);
 
         return $html;
     }
 
+    protected function patchPageHtmlHead($html)
+    {
+        $response = wa()->getResponse();
+        $page = $this->view->getVars('page');
+
+        if (!$response->getTitle() && !empty($page['title'])) {
+            $response->setTitle($page['title']);
+        }
+        if (!$response->getMeta('keywords') && !empty($page['keywords'])) {
+            $response->setMeta('keywords', $page['keywords']);
+        }
+        if (!$response->getMeta('description') && !empty($page['description'])) {
+            $response->setMeta('description', $page['description']);
+        }
+
+        $canonical = $this->view->getVars('canonical');
+
+        return shopFrontendHeadMetaPatch::apply($html, $canonical ? (string) $canonical : null);
+    }
+
+    protected function applyBrowserNoCacheHeaders()
+    {
+        $response = wa()->getResponse();
+        $response->addHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        $response->addHeader('Pragma', 'no-cache');
+        $response->addHeader('Expires', '0');
+    }
+
     protected function canUsePageCache()
     {
         if (waSystemConfig::isDebug() || waRequest::isXMLHttpRequest()) {
+            return false;
+        }
+        $host = waRequest::server('HTTP_HOST');
+        if ($host && preg_match('/^(localhost|127\.0\.0\.1)(:\d+)?$/', $host)) {
             return false;
         }
         if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
@@ -90,6 +126,7 @@ class shopFrontendPageAction extends waPageAction
             waRequest::getTheme(),
             waRequest::param('page_id'),
             $mtime,
+            'head-meta-v2',
         )));
     }
 

@@ -418,17 +418,16 @@ class shopFrontendCategoryAction extends shopFrontendAction
     protected function patchCategoryHtmlHead($html)
     {
         $response = wa()->getResponse();
-        if (!$response->getTitle()) {
-            $category = $this->view->getVars('category');
-            if (!empty($category['id'])) {
-                $response->setTitle(shopCategoryModel::getDefaultMetaTitle($category));
-            }
+        $category = $this->view->getVars('category');
+
+        if (!$response->getTitle() && !empty($category['id'])) {
+            $response->setTitle(shopCategoryModel::getDefaultMetaTitle($category));
         }
-        if (!$response->getMeta('keywords')) {
-            $category = $this->view->getVars('category');
-            if (!empty($category['id'])) {
-                $response->setMeta('keywords', shopCategoryModel::getDefaultMetaKeywords($category));
-            }
+        if (!$response->getMeta('keywords') && !empty($category['id'])) {
+            $response->setMeta('keywords', shopCategoryModel::getDefaultMetaKeywords($category));
+        }
+        if (!$response->getMeta('description') && !empty($category['meta_description'])) {
+            $response->setMeta('description', $category['meta_description']);
         }
 
         return $this->patchHtmlHeadFromResponse($html);
@@ -474,7 +473,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
             waRequest::getTheme(),
             $category['id'],
             $mtime,
-            'head-meta-v1',
+            'head-meta-v2',
         )));
     }
 

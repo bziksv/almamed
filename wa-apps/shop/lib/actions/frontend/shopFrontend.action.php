@@ -189,28 +189,9 @@ class shopFrontendAction extends waViewAction
      */
     protected function patchHtmlHeadFromResponse($html)
     {
-        $response = wa()->getResponse();
-        $title = htmlspecialchars((string) $response->getTitle(), ENT_QUOTES, 'UTF-8');
-        $keywords = htmlspecialchars((string) $response->getMeta('keywords'), ENT_QUOTES, 'UTF-8');
-        $description = htmlspecialchars((string) $response->getMeta('description'), ENT_QUOTES, 'UTF-8');
+        $canonical = $this->view->getVars('canonical');
 
-        if ($title !== '') {
-            $html = preg_replace('/<title[^>]*>.*?<\/title>/is', '<title>'.$title.'</title>', $html, 1);
-        }
-        $html = preg_replace(
-            '/<meta name="Keywords" content="[^"]*"\s*\/?>/i',
-            '<meta name="Keywords" content="'.$keywords.'" />',
-            $html,
-            1
-        );
-        $html = preg_replace(
-            '/<meta name="Description" content="[^"]*"\s*\/?>/i',
-            '<meta name="Description" content="'.$description.'" />',
-            $html,
-            1
-        );
-
-        return $html;
+        return shopFrontendHeadMetaPatch::apply($html, $canonical ? (string) $canonical : null);
     }
 
     const HOME_CACHE_TTL = 900;
