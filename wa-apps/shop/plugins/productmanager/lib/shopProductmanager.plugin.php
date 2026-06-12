@@ -24,6 +24,54 @@ Class shopProductmanagerPlugin extends shopPlugin {
         );
     }
 
+    /**
+     * @event backend_menu
+     * @return array
+     */
+    public function backendMenu()
+    {
+        if (!wa()->getUser()->getRights('shop', 'settings')) {
+            return array();
+        }
+
+        $this->addJs('js/tab.js');
+
+        $selected = waRequest::get('plugin') === 'productmanager' ? 'selected' : 'no-tab';
+
+        return array(
+            'core_li' => '<li class="' . $selected . ' productmanager-topmenu-li">'
+                . '<a href="?action=plugins#/productmanager/">'
+                . '<i class="icon16 user"></i> Менеджеры товаров'
+                . '</a></li>',
+        );
+    }
+
+    /**
+     * Auto-assign manager from category binding on new/updated products.
+     *
+     * @param array $params
+     */
+    public function productPresave($params)
+    {
+        if (empty($params['new_data']) || !is_array($params['new_data'])) {
+            return;
+        }
+
+        if (!empty($params['new_data']['manager'])) {
+            return;
+        }
+
+        $category_id = (int) ifset($params['new_data'], 'category_id', 0);
+        if (!$category_id) {
+            return;
+        }
+
+        $manager_id = (new shopProductmanagerService())->resolveBoundManager($category_id);
+        if ($manager_id) {
+            $params['new_data']['manager'] = $manager_id;
+        }
+    }
+
     public static function getManagerFront($params){
         if($params){
 
@@ -104,23 +152,14 @@ Class shopProductmanagerPlugin extends shopPlugin {
     }
 
 
-    public function get_users(){
-
-        $user = new waUser();
-        $arr_users = array();
-        foreach($user->getUsers() as $id => $name){
-            $contact = new waContact($id);
-            foreach($this->field_user as $field){
-                $arr_users[$id][$field] = $contact->get($field,"default");
-                if($field == "photo")
-                    $arr_users[$id][$field] = $contact->getPhoto();
-            }
-        }
-        return $arr_users;
+    public function get_users()
+    {
+        return (new shopProductmanagerService())->getManagers();
     }
 
     public function get_user($id){
 
+        $arr_users = array();
         $contact = new waContact($id);
         foreach($this->field_user as $field){
             if($field == "phone" or $field == "email")

@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="{$wa_app_static_url}plugins/productmanager/css/admin.css?v{$asset_version}">
+
+<div class="pm-dashboard" id="pm-dashboard"
+     data-url-assign="{$app_url|escape}?plugin=productmanager&module=assign"
+     data-url-stats="{$app_url|escape}?plugin=productmanager&module=stats">
+
+    <header class="pm-header">
+        <div class="pm-header__text">
+            <h1 class="pm-title">Менеджеры товаров</h1>
+            <p class="pm-subtitle">Назначение менеджеров, контроль по категориям и случайное распределение</p>
+        </div>
+        <div class="pm-header__actions">
+            <button type="button" class="pm-btn pm-btn--default pm-btn-refresh" id="pm-refresh">
+                <i class="icon16 update"></i> Обновить
+            </button>
+        </div>
+    </header>
+    <div class="pm-csrf">{$wa->csrf()}</div>
+
+    <div class="pm-cards" id="pm-summary">
+        <div class="pm-card">
+            <div class="pm-card__label">Всего товаров</div>
+            <div class="pm-card__value" data-field="total">{$summary.total|escape}</div>
+        </div>
+        <div class="pm-card pm-card--ok">
+            <div class="pm-card__label">С менеджером</div>
+            <div class="pm-card__value" data-field="assigned">{$summary.assigned|escape}</div>
+        </div>
+        <div class="pm-card pm-card--warn">
+            <div class="pm-card__label">Без менеджера</div>
+            <div class="pm-card__value" data-field="unassigned">{$summary.unassigned|escape}</div>
+        </div>
+        <div class="pm-card pm-card--info">
+            <div class="pm-card__label">Категорий с пропусками</div>
+            <div class="pm-card__value" data-field="categories_with_gaps">{$summary.categories_with_gaps|escape}</div>
+        </div>
+    </div>
+
+    <div class="pm-layout">
+        <aside class="pm-panel pm-panel--managers">
+            <div class="pm-panel__head">
+                <h2>Менеджеры</h2>
+                <span class="pm-badge">{$managers|@count}</span>
+            </div>
+            {if $manager_group_missing}
+                <p class="pm-hint pm-hint--warn">Группа «{$manager_group_names|@implode:', '|escape}» не найдена в Webasyst. Укажите точное название в настройках плагина.</p>
+            {else}
+                <p class="pm-hint">Участники группы «{$manager_group_resolved|@implode:', '|escape}» — отметьте, кто участвует в случайном назначении, и нажмите «Сохранить выбор»</p>
+            {/if}
+            <div class="pm-manager-actions">
+                <button type="button" class="pm-btn pm-btn--default" id="pm-save-pool">Сохранить выбор</button>
+                <span class="pm-pool-status" id="pm-pool-status"></span>
+            </div>
+            <div class="pm-manager-list" id="pm-manager-list">
+                {if $managers|@count}
+                    {foreach $managers as $id => $m}
+                    <label class="pm-manager" data-id="{$id}">
+                        <input type="checkbox" class="pm-manager-check" value="{$id}"
+                               {if !empty($m.in_pool)}checked{/if}>
+                        <span class="pm-manager__avatar">
+                            {if !empty($m.photo)}
+                                <img src="{$m.photo|escape}" alt="" width="40" height="40">
+                            {else}
+                                <span class="pm-manager__initial">{$m.name|truncate:1:''|escape}</span>
+                            {/if}
+                        </span>
+                        <span class="pm-manager__body">
+                            <span class="pm-manager__name">{$m.name|escape}</span>
+                            <span class="pm-manager__meta">
+                                {if !empty($m.email[0])}
+                                    <span class="pm-manager__email">{$m.email[0]|escape}</span>
+                                {/if}
+                                <span class="pm-manager__count" title="Товаров с этим менеджером">{$m.assigned_count|default:0} товаров</span>
+                            </span>
+                        </span>
+                    </label>
+                    {/foreach}
+                {else}
+                    <p class="pm-empty">Нет пользователей в группе «{$manager_group_names|@implode:', '|escape}»</p>
+                {/if}
+            </div>
+        </aside>
+
+        <section class="pm-panel pm-panel--main">
+            <div class="pm-toolbar">
+                <div class="pm-toolbar__row">
+                    <label class="pm-search">
+                        <i class="icon16 search"></i>
+                        <input type="search" id="pm-category-search" placeholder="Поиск категории…" autocomplete="off">
+                        <button type="button" class="pm-search-clear" id="pm-search-clear" title="Очистить" hidden>&times;</button>
+                    </label>
+                    <span class="pm-search-count" id="pm-search-count" hidden></span>
+                    <label class="pm-check">
+                        <input type="checkbox" id="pm-hide-empty">
+                        Скрыть пустые категории
+                    </label>
+                    <label class="pm-check">
+                        <input type="checkbox" id="pm-only-unassigned" checked>
+                        Только без менеджера
+                    </label>
+                    <span class="pm-toolbar-hint">Выберите менеджера в строке → кнопка <strong>На товары</strong></span>
+                </div>
+                <div class="pm-toolbar__row pm-toolbar__actions">
+                    <button type="button" class="pm-btn pm-btn--primary" id="pm-assign-selected">
+                        Случайно назначить
+                    </button>
+                    <button type="button" class="pm-btn pm-btn--danger" id="pm-clear-selected">
+                        Снять менеджеров
+                    </button>
+                    <span class="pm-toolbar__status" id="pm-status"></span>
+                </div>
+            </div>
+
+            <div class="pm-table-wrap">
+                <table class="pm-table" id="pm-category-table">
+                    <thead>
+                        <tr>
+                            <th class="pm-col-check"><input type="checkbox" id="pm-select-all-categories" title="Выбрать все"></th>
+                            <th class="pm-col-name">Категория</th>
+                            <th class="pm-col-num">Товаров</th>
+                            <th class="pm-col-num">Без менеджера</th>
+                            <th class="pm-col-dist">Распределение</th>
+                            <th class="pm-col-mgr">Менеджер → на товары</th>
+                            <th class="pm-col-actions">Ещё</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pm-category-body">
+                        {include file="./CategoryRows.html" inline}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    {if !empty($settings_controls)}
+    <details class="pm-settings-fold">
+        <summary>Настройки плагина (email, mailto)</summary>
+        <form id="plugins-settings-form" method="post" action="?module=plugins&action=save&id={$plugin_id}">
+            <div class="fields form pm-settings-fields">
+                {$settings_controls}
+            </div>
+            <div class="pm-settings-save">
+                <input type="submit" class="button green" value="Сохранить настройки">
+                <span id="plugins-settings-form-status"></span>
+            </div>
+            {$wa->csrf()}
+        </form>
+    </details>
+    {/if}
+</div>
+
+<script src="{$wa_app_static_url}plugins/productmanager/js/admin.js?v{$asset_version}"></script>
+<script>
+(function ($) {
+    $.productmanagerAdmin.init({
+        managers: {$managers_json nofilter},
+        categories: {$categories_json nofilter},
+        summary: {$summary_json nofilter},
+        managerPool: {$manager_pool_json nofilter}
+    });
+})(jQuery);
+</script>

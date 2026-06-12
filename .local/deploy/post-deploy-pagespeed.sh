@@ -15,6 +15,10 @@ run_as_owner() {
 
 echo "=== post-deploy PageSpeed ==="
 
+THEME_VER=$(grep -oE 'version="[0-9]+\.[0-9]+\.[0-9]+"' \
+  wa-data/public/site/themes/osnovnaja_new_header_footer_form/theme.xml | head -1 | tr -d 'version="')
+echo "theme version in theme.xml: ${THEME_VER:-unknown}"
+
 # WebP plugin autoload
 run_as_owner php -r "
 require 'wa-config/SystemConfig.class.php';
@@ -47,6 +51,18 @@ done
 if [[ -x .local/regression-perf.sh ]]; then
   BASE_URL="${BASE_URL:-https://213.139.209.184}" HOST_HEADER="${HOST_HEADER:-almamed.su}" \
     ./.local/regression-perf.sh || true
+fi
+
+if [[ -n "${THEME_VER:-}" ]]; then
+  LIVE=$(curl -sS $HOST "${BASE}/" 2>/dev/null | grep -oE 'profitbuy\.min\.css\?v[0-9.]+' | head -1 || true)
+  if [[ -z "$LIVE" && -n "${HOST_HEADER:-}" ]]; then
+    LIVE=$(curl -sS --http1.1 -H "Host: ${HOST_HEADER}" "${BASE_URL:-https://almamed.su}/" 2>/dev/null \
+      | grep -oE 'profitbuy\.min\.css\?v[0-9.]+' | head -1 || true)
+  fi
+  echo "live CSS URL: ${LIVE:-curl failed}"
+  if [[ -n "$LIVE" && "$LIVE" != *"?v${THEME_VER}"* && "$LIVE" != *"?v${THEME_VER}."* ]]; then
+    echo "WARN: HTML still serves old ?v= — check theme.xml deployed and clearCache ran"
+  fi
 fi
 
 echo "=== done ==="

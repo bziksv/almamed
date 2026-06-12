@@ -1,0 +1,59 @@
+{foreach $categories as $row}
+<tr class="pm-row{if $row.unassigned > 0} pm-row--gap{/if}{if $row.bound_manager} pm-row--bound{/if}"
+    data-id="{$row.id}"
+    data-name="{$row.name|lower|escape}"
+    data-empty="{if $row.total}0{else}1{/if}">
+    <td class="pm-col-check">
+        <input type="checkbox" class="pm-category-check" value="{$row.id}">
+    </td>
+    <td class="pm-col-name">
+        <span class="pm-cat-name">{$row.name|escape}</span>
+        {if $row.full_url}<span class="pm-cat-url">/{$row.full_url|escape}</span>{/if}
+    </td>
+    <td class="pm-col-num">{$row.total}</td>
+    <td class="pm-col-num">
+        {if $row.unassigned > 0}
+            <span class="pm-pill pm-pill--warn">{$row.unassigned}</span>
+        {else}
+            <span class="pm-muted">0</span>
+        {/if}
+    </td>
+    <td class="pm-col-dist">
+        {if $row.total > 0 && $row.managers|@count}
+            <div class="pm-dist">
+                {foreach $row.managers as $mid => $cnt name=dist}
+                    <span class="pm-dist__seg" style="width: {100*$cnt/$row.total|string_format:'%.4f'}%"></span>
+                {/foreach}
+            </div>
+            <div class="pm-dist-legend">
+                {foreach $row.managers as $mid => $cnt name=leg}
+                    {if isset($managers[$mid])}{$managers[$mid].name|escape}{else}#{$mid}{/if}: {$cnt}{if !$smarty.foreach.leg.last}, {/if}
+                {/foreach}
+            </div>
+        {elseif $row.total > 0}
+            <span class="pm-muted">—</span>
+        {else}
+            <span class="pm-muted">нет товаров</span>
+        {/if}
+    </td>
+    <td class="pm-col-mgr">
+        <div class="pm-mgr-cell">
+            <select class="pm-bind-select">
+                <option value="">—</option>
+                {foreach $managers as $mid => $m}
+                    <option value="{$mid}"{if $row.bound_manager == $mid} selected{/if}>{$m.name|escape}</option>
+                {/foreach}
+            </select>
+            <button type="button" class="pm-btn pm-btn--go pm-set-manager pm-btn-apply"{if $row.unassigned <= 0} disabled{/if} title="Проставить выбранного менеджера на товары без менеджера">На товары</button>
+            <span class="pm-bound-dot" title="Категория привязана — новые товары получат этого менеджера"></span>
+        </div>
+    </td>
+    <td class="pm-col-actions">
+        <div class="pm-actions">
+            <button type="button" class="pm-act pm-bind-apply">Привязать</button>
+            <button type="button" class="pm-act pm-act--warn pm-bind-clear"{if !$row.bound_manager} disabled{/if}>Снять</button>
+            <button type="button" class="pm-act pm-row-assign"{if $row.unassigned <= 0} disabled{/if}>Случайно</button>
+        </div>
+    </td>
+</tr>
+{/foreach}
