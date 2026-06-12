@@ -48,11 +48,9 @@
                 font-family: 'Material Icons'!important;
             }
         </style>
-        {if $wa->isMobile()}
         <div class="fill-background content-search-bar">
             {include file="`$wa_active_theme_path`/searchform.html"}
         </div>
-        {/if}
 
         {if $action == 'page'}<!-- internal navigation breadcrumbs -->
             <div class="fill-background">

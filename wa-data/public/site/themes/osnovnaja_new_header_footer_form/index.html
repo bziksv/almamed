@@ -111,7 +111,7 @@
                     <div class="header-top-bar__inner">
                         {if !empty($header_logo)}<div class="header-top-bar__item header-logo-col header-logo-col--scroll">{$header_logo}</div>{/if}
                         {if !empty($header1)}<div class="header-top-bar__item header-links-col link-top-not-fix">{$header1}</div>{/if}
-                        {if $wa->shop && !$wa->isMobile()}<div class="header-top-bar__item header-search-col">{include file="searchform.header.html" inline}</div>{/if}
+                        {if $wa->shop}<div class="header-top-bar__item header-search-col">{include file="searchform.header.html" inline}</div>{/if}
                         {include file="cart.top.menu.fix.html" inline}
                         {if !empty($header_auth)}<div class="header-top-bar__item header-auth-col">{$header_auth}</div>{/if}
                         {if !empty($header_phone)}<div class="header-top-bar__item header-phone-col">{$header_phone}</div>{/if}

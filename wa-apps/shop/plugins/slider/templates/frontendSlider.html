@@ -1,77 +1,37 @@
-<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.5" rel="stylesheet" type="text/css" media="print" onload="this.media='all'">
-<noscript><link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.5" rel="stylesheet" type="text/css"></noscript>
-
 <style>
     .header-slider-wrap {
         padding: 0 0.75rem;
-        overflow: visible;
         position: relative;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
     }
     .header-slider {
-        text-align: center;
-        overflow: visible;
-        max-width: 100%;
-    }
-    .header-slider .lSSlideOuter {
-        max-width: 100%;
-        margin: 0 auto;
-        overflow: visible;
-    }
-    .header-slider .lSSlideWrapper {
-        overflow: hidden !important;
-        width: 100%;
-        margin: 0 auto;
         position: relative;
-        aspect-ratio: 1300 / 220;
-        max-height: 220px;
-    }
-    .header-slider .lSSlideWrapper img {
         width: 100%;
         max-width: 100%;
-        height: 100%;
-        vertical-align: middle;
-        display: block;
-        margin: 0 auto;
-        object-fit: contain;
-    }
-    @media (max-width: 1200px) {
-        .header-slider .lSSlideWrapper {
-            aspect-ratio: 992 / 660;
-            max-height: 420px;
-        }
-    }
-    @media (max-width: 480px) {
-        .header-slider .lSSlideWrapper {
-            aspect-ratio: 576 / 870;
-            max-height: 420px;
-        }
-    }
-    #slider-head,
-    #slider-head > li {
-        list-style: none !important;
-        margin: 0;
-        padding: 0;
-    }
-    #slider-head:not(.slider-ready) {
-        margin: 0;
-        padding: 0;
         overflow: hidden;
     }
-    #slider-head:not(.slider-ready) > li:not(:first-child),
-    .header-slider-wrap:not(.slider-ready) #slider-head li:nth-child(n+2) {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        overflow: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    #slider-head:not(.slider-ready) > li:first-child,
-    .header-slider-wrap:not(.slider-ready) #slider-head li:first-child {
-        display: block !important;
-        visibility: visible !important;
+    .almamed-slider {
+        position: relative;
         width: 100%;
+        line-height: 0;
+    }
+    .almamed-slider__slide {
+        display: none;
+        width: 100%;
+    }
+    .almamed-slider__slide.is-active {
+        display: block;
+    }
+    .almamed-slider__slide a {
+        display: block;
+        line-height: 0;
+    }
+    .almamed-slider__slide img {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        display: block;
+        margin: 0 auto;
     }
     @media only screen and (max-width: 800px) {
         .header-slider-wrap {
@@ -79,108 +39,42 @@
             padding-right: 0;
         }
     }
-    .header-slider-wrap .lSPager.lSpg {
-        display: block !important;
-        margin: 10px 0 0 !important;
-        padding: 0 !important;
-        text-align: center;
-        line-height: 1;
-    }
-    .header-slider-wrap .lSPager.lSpg > li {
-        padding: 0 5px;
-    }
-    .header-slider-wrap .lSPager.lSpg li a {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        padding: 0;
-        font-size: 0;
-        line-height: 0;
-        border-radius: 50%;
-        background: #c5c5c5;
-        overflow: hidden;
-    }
-    .header-slider-wrap .lSPager.lSpg li.active a,
-    .header-slider-wrap .lSPager.lSpg li:hover a {
-        background: #0497C0;
-    }
-    .header-slider-wrap .lSAction > a {
-        background-image: none !important;
-        background-color: rgba(255, 255, 255, 0.92);
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
-        line-height: 34px;
-        text-align: center;
-        font-size: 22px;
-        font-weight: 700;
-        color: #0497C0;
-        text-decoration: none;
-        opacity: 1;
-    }
-    .header-slider-wrap .lSAction > .lSPrev::before {
-        content: '‹';
-    }
-    .header-slider-wrap .lSAction > .lSNext::before {
-        content: '›';
-    }
-    .header-slider .lSPager.lSpg {
-        display: none !important;
-    }
-    .header-slider .lSAction {
-        display: none !important;
-    }
-    .almamed-slider-nav {
+    .almamed-slider-dots {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 10px;
+        z-index: 5;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 14px;
-        margin: 10px 0 0;
-        padding: 0 0.75rem 2px;
-    }
-    .almamed-slider-nav__dots {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        pointer-events: none;
     }
     .almamed-slider-dot {
-        width: 12px;
-        height: 12px;
+        pointer-events: auto;
+        width: 8px;
+        height: 8px;
         border: none;
         border-radius: 50%;
         padding: 0;
-        background: #c5c5c5;
+        background: #d1edf5;
         cursor: pointer;
+        transition: background-color 0.3s ease;
     }
     .almamed-slider-dot.is-active,
     .almamed-slider-dot:hover {
         background: #0497C0;
     }
-    .almamed-slider-nav__arrow {
-        width: 34px;
-        height: 34px;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        border-radius: 50%;
-        background: #fff;
-        color: #0497C0;
-        font-size: 22px;
-        font-weight: 700;
-        line-height: 1;
-        cursor: pointer;
-        flex-shrink: 0;
-    }
-    .almamed-slider-nav__arrow:hover {
-        background: #f5f5f5;
-    }
 </style>
 
-<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?v1.3.5" defer data-script-exception="1"></script>
-
 <div class="header-slider">
-    <ul id="slider-head">
+    <div class="almamed-slider" id="almamed-slider">
         {foreach $slides as $s name=slider_slides}
-            <li data-slide-id="{$s.id|escape}">
+            <div class="almamed-slider__slide{if $smarty.foreach.slider_slides.first} is-active{/if}"
+                 data-slide-id="{$s.id|escape}">
                 <a href="{$s.link|escape}" class="slider-slide-link" data-slide-id="{$s.id|escape}">
                     <img src="{$s.img|escape}"
                          alt="{$s.alt|escape}"
@@ -194,375 +88,175 @@
                          data-mobile-src="{$s.img_mobile|escape}"
                          data-mobile-webp="{$s.img_mobile_webp|escape}">
                 </a>
-            </li>
+            </div>
         {/foreach}
-    </ul>
+        {if $slides|@count > 1}
+        <nav class="almamed-slider-dots" aria-label="[`Slides`]">
+            {foreach $slides as $s name=slider_dots}
+                <button type="button"
+                        class="almamed-slider-dot{if $smarty.foreach.slider_dots.first} is-active{/if}"
+                        data-slide-to="{$smarty.foreach.slider_dots.index}"
+                        data-slide-id="{$s.id|escape}"
+                        aria-label="Слайд {$smarty.foreach.slider_dots.iteration}"></button>
+            {/foreach}
+        </nav>
+        {/if}
+    </div>
 </div>
 
-{if $slides|@count > 1}
-<nav class="almamed-slider-nav" aria-label="[`Slides`]">
-    <button type="button" class="almamed-slider-nav__arrow almamed-slider-nav__arrow--prev" aria-label="[`Previous`]">‹</button>
-    <div class="almamed-slider-nav__dots">
-        {foreach $slides as $s name=slider_dots}
-            <button type="button"
-                    class="almamed-slider-dot{if $smarty.foreach.slider_dots.first} is-active{/if}"
-                    data-slide-to="{$smarty.foreach.slider_dots.index}"
-                    data-slide-id="{$s.id|escape}"
-                    aria-label="Слайд {$smarty.foreach.slider_dots.iteration}"></button>
-        {/foreach}
-    </div>
-    <button type="button" class="almamed-slider-nav__arrow almamed-slider-nav__arrow--next" aria-label="[`Next`]">›</button>
-</nav>
-{/if}
-
 <script>
-    (function() {
-        var TABLET_BREAKPOINT = 1200;
-        var MOBILE_BREAKPOINT = 480;
-        var slider = document.getElementById('slider-head');
-        if (!slider) {
-            return;
-        }
+(function() {
+    var TABLET_BREAKPOINT = 1200;
+    var MOBILE_BREAKPOINT = 480;
+    var AUTOPLAY_MS = 5000;
+    var STAT_URL = {$stat_url};
 
-        var supportsWebp = (function() {
+    var root = document.getElementById('almamed-slider');
+    if (!root) {
+        return;
+    }
+
+    var slides = root.querySelectorAll('.almamed-slider__slide');
+    var nav = root.querySelector('.almamed-slider-dots');
+    var dots = nav ? nav.querySelectorAll('.almamed-slider-dot') : [];
+    var current = 0;
+    var autoTimer = null;
+    var trackedViews = {};
+    var wrap = root.closest('.header-slider-wrap');
+
+    var supportsWebp = (function() {
+        try {
             var canvas = document.createElement('canvas');
             canvas.width = 1;
             canvas.height = 1;
             return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-        })();
-
-        function pickSrc(img) {
-            var width = window.innerWidth || document.documentElement.clientWidth;
-            var src = img.getAttribute('data-desktop-src');
-            var webp = img.getAttribute('data-desktop-webp');
-            if (width <= MOBILE_BREAKPOINT && img.getAttribute('data-mobile-src')) {
-                src = img.getAttribute('data-mobile-src');
-                webp = img.getAttribute('data-mobile-webp');
-            } else if (width <= TABLET_BREAKPOINT && img.getAttribute('data-tablet-src')) {
-                src = img.getAttribute('data-tablet-src');
-                webp = img.getAttribute('data-tablet-webp');
-            }
-            if (supportsWebp && webp) {
-                return webp;
-            }
-            return src;
+        } catch (e) {
+            return false;
         }
-
-        function ensureSlideSrc(img) {
-            if (!img) {
-                return;
-            }
-            var src = pickSrc(img);
-            if (src && img.getAttribute('src') !== src) {
-                img.setAttribute('src', src);
-            }
-        }
-
-        var imgs = slider.getElementsByTagName('img');
-        for (var i = 0; i < imgs.length; i++) {
-            ensureSlideSrc(imgs[i]);
-        }
-
-        window.almamedSliderEnsureSrc = ensureSlideSrc;
-        window.almamedSliderSupportsWebp = supportsWebp;
     })();
-</script>
 
-<script>
-    jQuery(function($) {
-        var TABLET_BREAKPOINT = 1200;
-        var MOBILE_BREAKPOINT = 480;
-        var STAT_URL = {$stat_url};
-        var $slider = $('#slider-head');
-        if (!$slider.length) {
+    function pickSrc(img) {
+        var width = window.innerWidth || document.documentElement.clientWidth;
+        var src = img.getAttribute('data-desktop-src');
+        var webp = img.getAttribute('data-desktop-webp');
+        if (width <= MOBILE_BREAKPOINT && img.getAttribute('data-mobile-src')) {
+            src = img.getAttribute('data-mobile-src');
+            webp = img.getAttribute('data-mobile-webp');
+        } else if (width <= TABLET_BREAKPOINT && img.getAttribute('data-tablet-src')) {
+            src = img.getAttribute('data-tablet-src');
+            webp = img.getAttribute('data-tablet-webp');
+        }
+        if (supportsWebp && webp) {
+            return webp;
+        }
+        return src;
+    }
+
+    function applyResponsiveSrc() {
+        var imgs = root.querySelectorAll('img');
+        for (var i = 0; i < imgs.length; i++) {
+            var src = pickSrc(imgs[i]);
+            if (src && imgs[i].getAttribute('src') !== src) {
+                imgs[i].setAttribute('src', src);
+            }
+        }
+    }
+
+    function sendStat(slideId, type) {
+        if (!STAT_URL || !slideId || !window.fetch) {
             return;
         }
+        var body = new URLSearchParams();
+        body.append('id', slideId);
+        body.append('type', type);
+        fetch(STAT_URL, {
+            method: 'POST',
+            body: body,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            credentials: 'same-origin'
+        }).catch(function() {});
+    }
 
-        var trackedViews = {};
-        var activeBucket = null;
-        var resizeTimer = null;
-        var rebuilding = false;
-        var sliderInitialized = false;
-        var autoTimer = null;
-        var $nav = $('.almamed-slider-nav');
-
-        function getBreakpointBucket(width) {
-            if (width <= MOBILE_BREAKPOINT) {
-                return 'mobile';
-            }
-            if (width <= TABLET_BREAKPOINT) {
-                return 'tablet';
-            }
-            return 'desktop';
+    function trackView(index) {
+        var slide = slides[index];
+        if (!slide) {
+            return;
         }
-
-        function sendStat(slideId, type) {
-            if (!STAT_URL || !slideId) {
-                return;
-            }
-            $.ajax({
-                url: STAT_URL,
-                type: 'POST',
-                data: { id: slideId, type: type },
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
+        var slideId = parseInt(slide.getAttribute('data-slide-id'), 10);
+        if (!slideId || trackedViews[slideId]) {
+            return;
         }
+        trackedViews[slideId] = true;
+        sendStat(slideId, 'view');
+    }
 
-        function trackView(slideId) {
-            slideId = parseInt(slideId, 10);
-            if (!slideId || trackedViews[slideId]) {
-                return;
-            }
-            trackedViews[slideId] = true;
-            sendStat(slideId, 'view');
+    function syncNav() {
+        for (var i = 0; i < dots.length; i++) {
+            dots[i].classList.toggle('is-active', i === current);
         }
+    }
 
-        function getActiveSlideId() {
-            var $active = $slider.find('li.lslide.active').first();
-            if (!$active.length) {
-                $active = $slider.find('li.active').first();
-            }
-            if (!$active.length) {
-                $active = $slider.children('li').first();
-            }
-            return $active.data('slide-id');
+    function showSlide(index) {
+        if (!slides.length) {
+            return;
         }
-
-        function syncCustomNav() {
-            if (typeof $slider.getCurrentSlideCount === 'function') {
-                var idx = $slider.getCurrentSlideCount() - 1;
-                $('.almamed-slider-dot').removeClass('is-active').eq(idx).addClass('is-active');
-                return;
-            }
-            var slideId = getActiveSlideId();
-            $('.almamed-slider-dot').removeClass('is-active');
-            if (slideId) {
-                $('.almamed-slider-dot[data-slide-id="' + slideId + '"]').addClass('is-active');
-            }
+        if (index < 0) {
+            index = slides.length - 1;
         }
-
-        function goToSlideSafe(index) {
-            if (typeof $slider.goToSlide !== 'function') {
-                return false;
-            }
-            $slider.goToSlide(index);
-            syncCustomNav();
-            return true;
+        if (index >= slides.length) {
+            index = 0;
         }
-
-        function goNextSafe() {
-            if (typeof $slider.goToNextSlide !== 'function') {
-                return false;
-            }
-            $slider.goToNextSlide();
-            syncCustomNav();
-            return true;
+        current = index;
+        for (var i = 0; i < slides.length; i++) {
+            slides[i].classList.toggle('is-active', i === current);
         }
-
-        function goPrevSafe() {
-            if (typeof $slider.goToPrevSlide !== 'function') {
-                return false;
-            }
-            $slider.goToPrevSlide();
-            syncCustomNav();
-            return true;
+        syncNav();
+        trackView(current);
+        if (wrap) {
+            wrap.classList.add('slider-ready');
         }
+    }
 
-        function startAutoPlay() {
-            if ($slider.children('li').length < 2) {
-                return;
-            }
-            clearInterval(autoTimer);
-            autoTimer = setInterval(function() {
-                goNextSafe();
-            }, 5000);
+    function startAutoPlay() {
+        if (slides.length < 2) {
+            return;
         }
+        clearInterval(autoTimer);
+        autoTimer = setInterval(function() {
+            showSlide(current + 1);
+        }, AUTOPLAY_MS);
+    }
 
-        function stopAutoPlay() {
-            clearInterval(autoTimer);
+    function stopAutoPlay() {
+        clearInterval(autoTimer);
+    }
+
+    root.addEventListener('click', function(e) {
+        if (e.target.closest('.almamed-slider-dot')) {
+            e.preventDefault();
+            showSlide(parseInt(e.target.closest('.almamed-slider-dot').getAttribute('data-slide-to'), 10));
+            startAutoPlay();
+            return;
         }
-
-        $nav.on('click', '.almamed-slider-dot', function() {
-            goToSlideSafe(parseInt($(this).data('slide-to'), 10));
-        });
-        $nav.on('click', '.almamed-slider-nav__arrow--prev', function() {
-            goPrevSafe();
-        });
-        $nav.on('click', '.almamed-slider-nav__arrow--next', function() {
-            goNextSafe();
-        });
-        $('.header-slider-wrap').on('mouseenter', stopAutoPlay).on('mouseleave', startAutoPlay);
-
-        function preloadVisibleSlides() {
-            $slider.find('img').each(function() {
-                if (window.almamedSliderEnsureSrc) {
-                    window.almamedSliderEnsureSrc(this);
-                }
-            });
+        var link = e.target.closest('.slider-slide-link');
+        if (link) {
+            sendStat(link.getAttribute('data-slide-id'), 'click');
         }
-
-        $slider.on('click', '.slider-slide-link', function() {
-            sendStat($(this).data('slide-id'), 'click');
-        });
-
-        function pickSrc($img) {
-            var width = window.innerWidth || document.documentElement.clientWidth;
-            var src = $img.data('desktop-src');
-            var webp = $img.data('desktop-webp');
-            if (width <= MOBILE_BREAKPOINT && $img.data('mobile-src')) {
-                src = $img.data('mobile-src');
-                webp = $img.data('mobile-webp');
-            } else if (width <= TABLET_BREAKPOINT && $img.data('tablet-src')) {
-                src = $img.data('tablet-src');
-                webp = $img.data('tablet-webp');
-            }
-            if (window.almamedSliderSupportsWebp && webp) {
-                return webp;
-            }
-            return src;
-        }
-
-        function applyResponsiveSrc() {
-            $slider.find('img').each(function() {
-                var $img = $(this);
-                var src = pickSrc($img);
-                if (src && $img.attr('src') !== src) {
-                    $img.attr('src', src);
-                }
-            });
-        }
-
-        function whenAllImagesReady() {
-            var waits = [];
-            $slider.find('img').each(function() {
-                var deferred = $.Deferred();
-                var img = this;
-                if (img.complete) {
-                    deferred.resolve();
-                } else {
-                    $(img).one('load error', function() {
-                        deferred.resolve();
-                    });
-                    setTimeout(function() {
-                        deferred.resolve();
-                    }, 3000);
-                }
-                waits.push(deferred.promise());
-            });
-            return waits.length ? $.when.apply($, waits) : $.when();
-        }
-
-        function sliderOptions(width) {
-            var bucket = getBreakpointBucket(width);
-
-            return {
-                item: 1,
-                slideMove: 1,
-                pause: 5000,
-                controls: false,
-                pager: false,
-                loop: $slider.children('li').length > 1,
-                auto: false,
-                enableDrag: bucket !== 'desktop',
-                easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
-                speed: 600,
-                adaptiveHeight: false,
-                slideMargin: bucket === 'desktop' ? 0 : 6,
-                onBeforeSlide: function() {
-                    preloadVisibleSlides();
-                },
-                onAfterSlide: function() {
-                    preloadVisibleSlides();
-                    trackView(getActiveSlideId());
-                    syncCustomNav();
-                }
-            };
-        }
-
-        function destroySlider() {
-            if ($slider.hasClass('lightSlider') && typeof $slider.destroy === 'function') {
-                try {
-                    $slider.destroy();
-                } catch (e) {}
-            }
-            $slider.removeClass('slider-ready lightSlider lSSlide');
-            $('.header-slider-wrap').removeClass('slider-ready');
-        }
-
-        function initSlider() {
-            if (!$.fn.lightSlider) {
-                return false;
-            }
-
-            destroySlider();
-            var width = window.innerWidth || document.documentElement.clientWidth;
-            activeBucket = getBreakpointBucket(width);
-
-            if ($slider.children('li').length < 1) {
-                return false;
-            }
-
-            $slider.children('li').each(function() {
-                this.style.display = '';
-            });
-
-            preloadVisibleSlides();
-
-            try {
-                $slider.lightSlider(sliderOptions(width));
-                $slider.addClass('slider-ready');
-                $('.header-slider-wrap').addClass('slider-ready');
-                trackView(getActiveSlideId());
-                syncCustomNav();
-                startAutoPlay();
-                sliderInitialized = true;
-                return true;
-            } catch (e) {
-                $slider.removeClass('slider-ready');
-                $('.header-slider-wrap').removeClass('slider-ready');
-                return false;
-            }
-        }
-
-        function rebuildSlider(force) {
-            if (rebuilding) {
-                return;
-            }
-
-            var width = window.innerWidth || document.documentElement.clientWidth;
-            var bucket = getBreakpointBucket(width);
-            if (!force && sliderInitialized && bucket === activeBucket && $slider.hasClass('slider-ready')) {
-                return;
-            }
-
-            rebuilding = true;
-            applyResponsiveSrc();
-            whenAllImagesReady().always(function() {
-                initSlider();
-                rebuilding = false;
-            });
-        }
-
-        function bootSlider(attempt) {
-            if ($.fn.lightSlider) {
-                rebuildSlider(true);
-                return;
-            }
-            if (attempt > 100) {
-                return;
-            }
-            setTimeout(function() {
-                bootSlider(attempt + 1);
-            }, 50);
-        }
-
-        bootSlider(0);
-
-        $(window).on('resize orientationchange', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                rebuildSlider(false);
-            }, 250);
-        });
     });
+
+    if (wrap) {
+        wrap.addEventListener('mouseenter', stopAutoPlay);
+        wrap.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    var resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(applyResponsiveSrc, 200);
+    });
+
+    applyResponsiveSrc();
+    showSlide(0);
+    startAutoPlay();
+})();
 </script>
