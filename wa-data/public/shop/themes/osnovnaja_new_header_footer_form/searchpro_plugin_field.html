@@ -5,7 +5,7 @@
 			       placeholder="{$placeholder}"{if $wa->param('query')} value="{$wa->param('query')|escape}"{/if}/>
 			<div class="searchpro__field-clear-button js-searchpro__field-clear-button"{if !$wa->param('query')} style="display: none;"{/if}></div>
 		</div>
-		{if $category_filter_status && $category_filter_deep}
+		{if 0 && $category_filter_status && $category_filter_deep}
 			{if $wa->param('category_id')}
 				{$selected_category_id = $wa->param('category_id')}
 			{/if}

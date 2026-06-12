@@ -1,0 +1,62 @@
+# PageSpeed P0–P2 — rsync --files-from (paths relative to project root)
+# Usage: .local/deploy/rsync-pagespeed.sh user@213.139.209.184:/var/www/almamed.su/data/www/almamed.su/
+
+# --- SearchPro (typo, category filter off, field fix) ---
+wa-apps/shop/plugins/searchpro/css/frontend.field.css
+wa-apps/shop/plugins/searchpro/css/frontend.fonts.css
+wa-apps/shop/plugins/searchpro/js/frontend.field-v2.js
+wa-apps/shop/plugins/searchpro/lib/actions/frontend/shopSearchproPluginFrontendPage.action.php
+wa-apps/shop/plugins/searchpro/lib/classes/corrector/keyboardLayout/shopSearchproKeyboardLayoutSmartCorrector.class.php
+wa-apps/shop/plugins/searchpro/lib/classes/v2/shopSearchproV2KeyboardLayoutHelper.class.php
+wa-apps/shop/plugins/searchpro/lib/classes/v2/shopSearchproV2PageService.class.php
+wa-apps/shop/plugins/searchpro/lib/classes/v2/shopSearchproV2SearchService.class.php
+wa-apps/shop/plugins/searchpro/lib/classes/v2/shopSearchproV2SuggestPresenter.class.php
+wa-apps/shop/plugins/searchpro/lib/classes/v2/shopSearchproV2TypoHelper.class.php
+wa-apps/shop/plugins/searchpro/lib/config/settings.php
+wa-apps/shop/plugins/searchpro/lib/updates/2.0/1749446700.php
+wa-apps/shop/plugins/searchpro/lib/updates/2.0/1749560000.php
+wa-apps/shop/plugins/searchpro/templates/actions/frontend/FrontendField.html
+
+# --- Slider (CLS, WebP, preload LCP) ---
+wa-apps/shop/plugins/slider/lib/actions/shopSliderPluginBackendSave.controller.php
+wa-apps/shop/plugins/slider/lib/actions/shopSliderPluginSettings.action.php
+wa-apps/shop/plugins/slider/lib/classes/shopSliderResponsiveImages.class.php
+wa-apps/shop/plugins/slider/lib/cli/shopSliderPluginGenerateResponsive.cli.php
+wa-apps/shop/plugins/slider/lib/config/db.php
+wa-apps/shop/plugins/slider/lib/config/plugin.php
+wa-apps/shop/plugins/slider/lib/shopSliderPlugin.class.php
+wa-apps/shop/plugins/slider/lib/updates/1749470600.php
+wa-apps/shop/plugins/slider/templates/actions/settings/Settings.html
+wa-apps/shop/plugins/slider/templates/frontendSlider.html
+
+# --- WebP images (new plugin) ---
+wa-apps/shop/plugins/webpimages/
+
+# --- Shop theme ---
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/footer_prime.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/head.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/list-thumbs.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/product.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/product.images.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/profitbuy.shop.css
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/profitbuy.shop.js
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/profitbuy.shop.min.css
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/profitbuy.shop.min.js
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/reviews.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/searchpro_plugin_field.css
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/searchpro_plugin_field.html
+wa-data/public/shop/themes/osnovnaja_new_header_footer_form/share-light.html
+
+# --- Site theme (head, logo, layout fixes) ---
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/at.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/e.address.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/head.layout.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/header.top.css.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/index.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/logo.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/logo.no.text.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/profitbuy.critical.css.html
+wa-data/public/site/themes/osnovnaja_new_header_footer_form/theme.css.html
+
+# --- P3 partial (homepage HTML cache) — optional 2nd wave ---
+wa-apps/shop/lib/actions/frontend/shopFrontend.action.php

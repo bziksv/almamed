@@ -53,11 +53,9 @@
         <!-- purchase -->
         <div id="cart-flyer" class="product-sidebar fill-background">
         
-            {if !empty($theme_settings.share)}<!-- share -->
-                <div class="share-wrapper">
-                    {$theme_settings.share}
-                </div>
-            {/if}
+            <div class="share-wrapper">
+                {include file="share-light.html" inline}
+            </div>
             
             {if !empty($product.rating) && $product.rating > 0}
                 <div id="product-rating-wrapper">

@@ -1,5 +1,20 @@
 .searchpro__field {
 	width: 450px;
+	max-width: 100%;
+}
+@media (max-width: 992px) {
+	.search-pro,
+	.searchpro__field,
+	.js-searchpro__field-wrapper {
+		width: 100%;
+		max-width: 100%;
+	}
+	.searchpro__field .searchpro__field-container {
+		width: 100%;
+	}
+	.searchpro__field .searchpro__field-input-container .searchpro__field-input {
+		padding-right: 42px;
+	}
 }
 .searchpro__field,
 .searchpro__field * {

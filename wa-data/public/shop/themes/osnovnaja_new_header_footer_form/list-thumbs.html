@@ -155,9 +155,17 @@
                                 <div class="corner top left">{$badge_html}</div>
                             {/if}
                             {if empty($without_micro_markup)}
-                                {$wa->shop->productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {if $index > 3}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {else}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {/if}
                             {else}
-                                {$wa->shop->productImgHtml($p, '200', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {if $index > 3}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {else}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                {/if}
                             {/if}
                         </div>
                     </div>
@@ -249,7 +257,7 @@
                             <form class="purchase addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}{if strpos($p.frontend_url, '?')}&{else}?{/if}cart=1"{/if} method="post" action="{$wa->getUrl('shop/frontendCart/add')}">
                                 <div class="price-wrapper">
                                     {if shop_currency_html($p.price) == 0}
-                                        <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты."></div>
+                                        <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты."><span>Цена по запросу</span> <i>?</i></div>
                                     {else}
 										{if !empty($category) && $index > $category.params.product_per_price}
 											<span class="text-price" data-text="Цена: "></span>
@@ -333,9 +341,6 @@
 {literal}
 <div id="tooltip"></div>
 <script>
-    $(".product-list li .buy-box-product").html('<span>Цена по запросу</span>');
-    $(".product-list li .buy-box-product").append(' <i>?</i>');
-
     $(".product-list").on('mousemove','li .buy-box-product',function (eventObject) {
         $data_tooltip = $(this).attr("data-tooltip");
         $("#tooltip").text($data_tooltip)

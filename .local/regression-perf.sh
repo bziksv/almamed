@@ -29,7 +29,10 @@ echo "=== almamed perf regression ==="
 echo "BASE_URL=$BASE_URL${HOST_HEADER:+ Host=$HOST_HEADER}"
 echo
 
-curl_ttfb "home" "/"
+curl_ttfb "home cold" "/"
+curl_ttfb "home warm" "/"
+curl -sS -D - -o /dev/null "${BASE_URL}/" | grep -i x-shop-cache || echo "home cache header: (miss)"
+curl -sS -D - -o /dev/null "${BASE_URL}/" | grep -i x-shop-cache || true
 curl_ttfb "category cold" "/category/ginekologiya/"
 curl_ttfb "category warm" "/category/ginekologiya/"
 curl_ttfb "search cold" "/search/%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF/"

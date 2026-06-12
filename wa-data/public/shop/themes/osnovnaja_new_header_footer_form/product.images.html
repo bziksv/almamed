@@ -20,7 +20,7 @@
                     {$wa->shop->badgeHtml($product.badge)}
                 </div>
                 <a href="{$wa->shop->productImgUrl($product, '970')}">
-                    {$wa->shop->productImgHtml($product, '750', [ 'itemprop' => 'image', 'id' => 'product-image', 'alt' => $product.name|escape, 'width' => '750', 'height' => '750', 'fetchpriority' => 'high', 'decoding' => 'async' ])}
+                    {shopWebpimagesPlugin::productImgHtml($product, '750', [ 'itemprop' => 'image', 'id' => 'product-image', 'alt' => $product.name|escape, 'width' => '750', 'height' => '750', 'fetchpriority' => 'high', 'decoding' => 'async' ])}
                 </a>
                 <div id="switching-image" style="display: none;"></div>
             </div>
@@ -39,7 +39,7 @@
                 {foreach $product.images as $image}
                     <div class="image{if $image.id == $product.image_id && empty($product.video_url)} selected{/if}">
                         <a id="product-image-{$image.id}" href="{$wa->shop->imgUrl($image, '970')}">
-                        {$wa->shop->imgHtml($image, '96x96', ['alt' => $product.id|escape])}
+                        {shopWebpimagesPlugin::imgHtml($image, '96x96', ['alt' => $product.name|escape, 'width' => '96', 'height' => '96', 'loading' => 'lazy', 'decoding' => 'async'])}
                         </a>
                     </div>
                 {/foreach}

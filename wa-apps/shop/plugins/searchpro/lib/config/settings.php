@@ -24,7 +24,7 @@ return array(
 			'button' => 'Найти',
 			'placeholder' => 'Введите запрос...',
 			'clear_button' => '1',
-			'category_filter_status' => '1',
+			'category_filter_status' => '0',
 			'category_filter_deep' => '1',
 
 			'search_mode' => 'shop',
@@ -63,7 +63,7 @@ return array(
 			'dropdown_status' => '1',
 			'dropdown_min_length' => '3',
 			'dropdown_highlight' => '1',
-			'dropdown_entities_sort' => array('products', 'categories', 'brands', 'popular', 'history'),
+			'dropdown_entities_sort' => array('products', 'brands', 'popular', 'history'),
 			'dropdown_products_status' => '1',
 			'dropdown_event_frontend_products' => '1',
 			'dropdown_products_min_count' => '3',
@@ -75,7 +75,7 @@ return array(
 			'dropdown_products_seopage_plugin_status' => '0',
 			'dropdown_results_cache' => '10800',
 
-			'dropdown_categories_status' => '1',
+			'dropdown_categories_status' => '0',
 			'dropdown_categories_hidden_hide_status' => '1',
 			'dropdown_categories_min_count' => '3',
 			'dropdown_categories_max_count' => '5',

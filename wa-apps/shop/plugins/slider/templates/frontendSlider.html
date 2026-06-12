@@ -89,8 +89,11 @@
                          width="1300"
                          height="220"
                          data-desktop-src="{$s.img|escape}"
+                         data-desktop-webp="{$s.img_webp|escape}"
                          data-tablet-src="{$s.img_tablet|escape}"
+                         data-tablet-webp="{$s.img_tablet_webp|escape}"
                          data-mobile-src="{$s.img_mobile|escape}"
+                         data-mobile-webp="{$s.img_mobile_webp|escape}"
                          data-lazy-slide="{if $smarty.foreach.slider_slides.first}0{else}1{/if}">
                 </a>
             </li>
@@ -124,13 +127,26 @@
             return;
         }
 
+        var supportsWebp = (function() {
+            var canvas = document.createElement('canvas');
+            canvas.width = 1;
+            canvas.height = 1;
+            return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+        })();
+
         function pickSrc(img) {
             var width = window.innerWidth || document.documentElement.clientWidth;
             var src = img.getAttribute('data-desktop-src');
+            var webp = img.getAttribute('data-desktop-webp');
             if (width <= MOBILE_BREAKPOINT && img.getAttribute('data-mobile-src')) {
                 src = img.getAttribute('data-mobile-src');
+                webp = img.getAttribute('data-mobile-webp');
             } else if (width <= TABLET_BREAKPOINT && img.getAttribute('data-tablet-src')) {
                 src = img.getAttribute('data-tablet-src');
+                webp = img.getAttribute('data-tablet-webp');
+            }
+            if (supportsWebp && webp) {
+                return webp;
             }
             return src;
         }
@@ -159,6 +175,7 @@
         }
 
         window.almamedSliderEnsureSrc = ensureSlideSrc;
+        window.almamedSliderSupportsWebp = supportsWebp;
     })();
 </script>
 
@@ -236,10 +253,16 @@
         function pickSrc($img) {
             var width = window.innerWidth || document.documentElement.clientWidth;
             var src = $img.data('desktop-src');
+            var webp = $img.data('desktop-webp');
             if (width <= MOBILE_BREAKPOINT && $img.data('mobile-src')) {
                 src = $img.data('mobile-src');
+                webp = $img.data('mobile-webp');
             } else if (width <= TABLET_BREAKPOINT && $img.data('tablet-src')) {
                 src = $img.data('tablet-src');
+                webp = $img.data('tablet-webp');
+            }
+            if (window.almamedSliderSupportsWebp && webp) {
+                return webp;
             }
             return src;
         }

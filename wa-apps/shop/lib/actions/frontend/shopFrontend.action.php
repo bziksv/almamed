@@ -115,6 +115,9 @@ class shopFrontendAction extends waViewAction
 
     }
 
+    const HOME_CACHE_TTL = 900;
+    const HOME_CACHE_GROUP = 'shop/frontend_home';
+
     public function display($clear_assign = true)
     {
         /**
@@ -139,8 +142,15 @@ class shopFrontendAction extends waViewAction
         }
         $this->view->getHelper()->globals($params);
 
+        $cached_html = $this->getCachedHomepageHtml();
+        if ($cached_html !== null) {
+            wa()->getResponse()->addHeader('X-Shop-Cache', 'home-hit');
+            return $cached_html;
+        }
+        wa()->getResponse()->addHeader('X-Shop-Cache', 'home-miss');
+
         try {
-            return parent::display(false);
+            $html = parent::display(false);
         } catch (waException $e) {
             if ($e->getCode() == 404) {
                 $url = $this->getConfig()->getRequestUrl(false, true);
@@ -157,7 +167,108 @@ class shopFrontendAction extends waViewAction
             $this->view->assign('error_code', $code);
             $this->getResponse()->setStatus($code ? $code : 500);
             $this->setThemeTemplate('error.html');
-            return $this->view->fetch($this->getTemplate());
+            $html = $this->view->fetch($this->getTemplate());
+        }
+
+        $this->setCachedHomepageHtml($html);
+
+        return $html;
+    }
+
+    protected function canUseHomepageCache()
+    {
+        if (waSystemConfig::isDebug() || waRequest::isXMLHttpRequest()) {
+            return false;
+        }
+        if (waRequest::get('preview') || wa()->getUser()->isAuth()) {
+            return false;
+        }
+        if (waRequest::method() !== 'get' || waRequest::get()) {
+            return false;
+        }
+        if (wa()->getRouting()->getCurrentUrl()) {
+            return false;
+        }
+        $vars = $this->view->getVars();
+        if (!empty($vars['error_code'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function getHomepageCacheKey()
+    {
+        $routing = wa()->getRouting();
+        $route = $routing->getRoute();
+
+        return md5(implode('|', array(
+            $routing->getDomain(null, true),
+            ifset($route, 'url', ''),
+            waRequest::getTheme(),
+            date('Y-m-d'),
+        )));
+    }
+
+    protected function getHomeCacheFilePath($key)
+    {
+        return wa()->getCachePath('cache/'.$key.'.php', self::HOME_CACHE_GROUP);
+    }
+
+    /**
+     * @param string $key
+     * @return string|null
+     */
+    protected function readHomeCacheValue($key)
+    {
+        $file = $this->getHomeCacheFilePath($key);
+        if (!file_exists($file) || !is_readable($file)) {
+            return null;
+        }
+
+        $info = @unserialize(file_get_contents($file));
+        if (!is_array($info) || !isset($info['value']) || !is_string($info['value']) || $info['value'] === '') {
+            return null;
+        }
+        if (!empty($info['ttl']) && $info['ttl'] >= 0 && time() - $info['time'] >= $info['ttl']) {
+            return null;
+        }
+
+        return $info['value'];
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getCachedHomepageHtml()
+    {
+        if (!$this->canUseHomepageCache()) {
+            return null;
+        }
+
+        $key = $this->getHomepageCacheKey();
+        $cache = new waSerializeCache($key, self::HOME_CACHE_TTL, self::HOME_CACHE_GROUP);
+        $html = $cache->isCached() ? $cache->get() : null;
+        if (!is_string($html) || $html === '') {
+            $html = $this->readHomeCacheValue($key);
+        }
+
+        return is_string($html) && $html !== '' ? $html : null;
+    }
+
+    protected function setCachedHomepageHtml($html)
+    {
+        if (!$this->canUseHomepageCache() || !is_string($html) || $html === '') {
+            return;
+        }
+
+        $key = $this->getHomepageCacheKey();
+        $cache = new waSerializeCache($key, self::HOME_CACHE_TTL, self::HOME_CACHE_GROUP);
+        if ($cache->set($html)) {
+            $file = $this->getHomeCacheFilePath($key);
+            if (file_exists($file)) {
+                @chmod($file, 0664);
+            }
         }
     }
 }

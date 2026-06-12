@@ -64,6 +64,13 @@
 
     {include file="header.top.css.html" inline}
 
+    {if $wa->shop && class_exists('shopSliderPlugin')}
+        {$shop_home_url = $wa->getUrl('shop/frontend')}
+        {if $shop_home_url == $wa->currentUrl(false, true)}
+            {shopSliderPlugin::preloadLcp()}
+        {/if}
+    {/if}
+
 </head>
 <body class="{if !empty($theme_settings.show_background)}is-background{/if}{if !empty($theme_settings.volumetric)} is-volumetric{/if}">
 {if !$at.ie || $at.ie >= 9}
@@ -219,7 +226,8 @@
 
 
 
-<div class="city_f" style=" width: auto; background: url(/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/map2.webp) center top no-repeat;  background-size: contain; font-size:12px">
+<div class="city_f city_f-map" style="width:auto;font-size:12px">
+	<img src="/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/map2.webp" alt="" width="759" height="180" loading="lazy" decoding="async" style="display:block;width:759px;max-width:100%;margin:0 auto">
 	<div class="row" style="border-bottom: 1px solid #eee;border-top: 0;    width:759px;margin: 0 auto;">
 		<div class="col col_footer" style="width: 19%; margin:0 0 0 6%;">
 			<ul class="footer-menu_city" style=" padding: 0;">

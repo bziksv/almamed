@@ -29,6 +29,68 @@ class shopSliderPlugin extends shopPlugin
         return $view->fetch($app_config->getPluginPath('slider').'/templates/frontendSlider.html');
     }
 
+    /**
+     * Preload tags for the first visible slider image (homepage LCP).
+     */
+    public static function preloadLcp()
+    {
+        $first = self::getFirstVisibleSlide();
+        if (!$first) {
+            return '';
+        }
+
+        $links = array();
+        $mobile = ifset($first, 'img_mobile_webp', '') ?: ifset($first, 'img_mobile', '');
+        $tablet = ifset($first, 'img_tablet_webp', '') ?: ifset($first, 'img_tablet', '');
+        $desktop = ifset($first, 'img_webp', '') ?: ifset($first, 'img', '');
+
+        if ($mobile) {
+            $links[] = self::preloadLink($mobile, '(max-width: 480px)');
+        }
+        if ($tablet) {
+            $links[] = self::preloadLink($tablet, '(max-width: 1200px) and (min-width: 481px)');
+        }
+        if ($desktop) {
+            $links[] = self::preloadLink($desktop, '(min-width: 1201px)');
+        }
+
+        return implode("\n    ", $links);
+    }
+
+    protected static function preloadLink($url, $media)
+    {
+        $type = preg_match('/\.webp(\?|$)/i', $url) ? ' type="image/webp"' : '';
+        return sprintf(
+            '<link rel="preload" as="image" href="%s"%s media="%s" fetchpriority="high">',
+            htmlspecialchars($url, ENT_QUOTES, 'UTF-8'),
+            $type,
+            htmlspecialchars($media, ENT_QUOTES, 'UTF-8')
+        );
+    }
+
+    /**
+     * @return array|null
+     */
+    protected static function getFirstVisibleSlide()
+    {
+        $model = new shopSliderModel();
+        $records = array();
+        foreach ($model->order('sort ASC')->fetchAll() as $slide) {
+            if (!self::isSlideVisible($slide)) {
+                continue;
+            }
+            $records[] = self::resolveSlideImages($slide);
+        }
+
+        if (!$records) {
+            return null;
+        }
+
+        $records = self::pickSlidesForDisplay($records);
+
+        return reset($records) ?: null;
+    }
+
     public static function isSlideVisible(array $slide)
     {
         if (array_key_exists('enabled', $slide) && !$slide['enabled']) {
@@ -110,6 +172,9 @@ class shopSliderPlugin extends shopPlugin
 
         $slide['img_tablet'] = $tablet;
         $slide['img_mobile'] = $mobile;
+        $slide['img_webp'] = shopSliderResponsiveImages::publicWebpUrl($desktop);
+        $slide['img_tablet_webp'] = shopSliderResponsiveImages::publicWebpUrl($tablet);
+        $slide['img_mobile_webp'] = shopSliderResponsiveImages::publicWebpUrl($mobile);
 
         return $slide;
     }

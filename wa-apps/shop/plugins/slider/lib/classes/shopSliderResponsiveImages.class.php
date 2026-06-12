@@ -70,7 +70,109 @@ class shopSliderResponsiveImages
         }
         $result['img_mobile'] = self::publicUrlFromFilesystem($mobile_path);
 
+        self::ensureWebp($desktop_path, $force);
+        self::ensureWebp($tablet_path, $force);
+        self::ensureWebp($mobile_path, $force);
+
         return $result;
+    }
+
+    public static function webpFilesystemPath($path)
+    {
+        return preg_replace('/\.(jpe?g|png)$/i', '.webp', $path);
+    }
+
+    public static function publicWebpUrl($public_url)
+    {
+        if (!$public_url) {
+            return '';
+        }
+
+        $filesystem_path = self::desktopFilesystemPath($public_url);
+        if (!$filesystem_path) {
+            return '';
+        }
+
+        $webp_path = self::webpFilesystemPath($filesystem_path);
+        if (!file_exists($webp_path)) {
+            return '';
+        }
+
+        return self::webpFilesystemPath($public_url);
+    }
+
+    /**
+     * @return string filesystem path or empty string
+     */
+    public static function ensureWebp($filesystem_path, $force = false)
+    {
+        if (!function_exists('imagewebp') || !$filesystem_path || !file_exists($filesystem_path)) {
+            return '';
+        }
+
+        $webp_path = self::webpFilesystemPath($filesystem_path);
+        if (!$force && file_exists($webp_path) && filemtime($webp_path) >= filemtime($filesystem_path)) {
+            return $webp_path;
+        }
+
+        $info = self::getImageInfo($filesystem_path);
+        if (!$info) {
+            return '';
+        }
+
+        $image = self::loadImage($filesystem_path, $info['type']);
+        if (!$image) {
+            return '';
+        }
+
+        if ($info['type'] === IMAGETYPE_PNG) {
+            imagepalettetotruecolor($image);
+            imagealphablending($image, true);
+            imagesavealpha($image, true);
+        }
+
+        imagewebp($image, $webp_path, 85);
+        imagedestroy($image);
+
+        return $webp_path;
+    }
+
+    /**
+     * @return array{processed: int, created: int, skipped: int}
+     */
+    public static function generateAllWebp($force = false)
+    {
+        $stats = array(
+            'processed' => 0,
+            'created' => 0,
+            'skipped' => 0,
+        );
+
+        $dir = self::imgDir();
+        if (!is_dir($dir)) {
+            return $stats;
+        }
+
+        foreach (waFiles::listdir($dir) as $filename) {
+            if (!preg_match('/\.(jpe?g|png)$/i', $filename)) {
+                continue;
+            }
+
+            $stats['processed']++;
+            $path = $dir . '/' . $filename;
+            $webp_path = self::webpFilesystemPath($path);
+
+            if (!$force && file_exists($webp_path) && filemtime($webp_path) >= filemtime($path)) {
+                $stats['skipped']++;
+                continue;
+            }
+
+            if (self::ensureWebp($path, $force)) {
+                $stats['created']++;
+            }
+        }
+
+        return $stats;
     }
 
     /**
