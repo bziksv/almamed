@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE theme PUBLIC "wa-app-theme" "http://www.webasyst.com/wa-content/xml/wa-app-theme.dtd">
-<theme id="osnovnaja_new_header_footer_form" system="0" vendor="873332" author="wm-site" app="shop" parent_theme_id="site:osnovnaja_new_header_footer_form" version="1.3.8" source_theme_id="osnovnaja_new_header" edition="21">
+<theme id="osnovnaja_new_header_footer_form" system="0" vendor="873332" author="wm-site" app="shop" parent_theme_id="site:osnovnaja_new_header_footer_form" version="1.3.9" source_theme_id="osnovnaja_new_header" edition="22">
   <name locale="en_US">Profitbuy</name>
   <name locale="ru_RU">Основная тема с новой шапкой и формой в подвале</name>
   <files>
@@ -231,7 +231,7 @@
       <description locale="ru_RU"/>
     </file>
     <file path="footer_prime.html" custom="1" modified="1">
-      <description locale="ru_RU"></description>
+      <description locale="ru_RU"/>
     </file>
     <file path="clickfrogru_udp_tcp.html" custom="1" modified="1">
       <description locale="ru_RU"/>

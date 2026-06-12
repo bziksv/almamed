@@ -10,7 +10,6 @@
 {* flag sidebar *}
 {$is_sidebar =  !empty($theme_settings.sidebar) &&
                 !(
-                    ($is_home_page && empty($theme_settings.sidebar_home)) ||
                     (strpos($action, 'product') !== false && empty($theme_settings.sidebar_product)) ||
                     $action == 'cart' ||
                     $action == 'checkout' ||
