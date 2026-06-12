@@ -297,6 +297,7 @@ class shopFrontendAction extends waViewAction
             waRequest::getTheme(),
             date('Y-m-d'),
             'head-meta-v2',
+            'layout-sidebar-v3',
         )));
     }
 

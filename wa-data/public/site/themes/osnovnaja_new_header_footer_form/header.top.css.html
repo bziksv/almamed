@@ -657,5 +657,12 @@
         max-width: 100%;
     }
 }
+
+/* Показать список категорий в sidebar (min.css прячет .sidebar-box до 1201px) */
+@media only screen and (min-width: 993px) {
+    nav.sidebar.col-grid .sidebar-group .sidebar-box {
+        display: block !important;
+    }
+}
 </style>
 {/strip}
