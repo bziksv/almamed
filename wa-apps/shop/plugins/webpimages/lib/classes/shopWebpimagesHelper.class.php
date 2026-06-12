@@ -22,12 +22,12 @@ class shopWebpimagesHelper
             return $html;
         }
 
-        $image = array(
+        $image = self::normalizeImage(array(
             'id' => $product['image_id'],
             'product_id' => ifset($product, 'id', ifset($product, 'product_id', 0)),
-            'filename' => ifset($product, 'image_filename'),
+            'filename' => ifset($product, 'image_filename', ''),
             'ext' => ifset($product, 'ext', 'jpg'),
-        );
+        ));
 
         return self::wrapPicture($html, self::webpUrl($image, $size));
     }
@@ -42,7 +42,7 @@ class shopWebpimagesHelper
             return $html;
         }
 
-        return self::wrapPicture($html, self::webpUrl($image, $size));
+        return self::wrapPicture($html, self::webpUrl(self::normalizeImage($image), $size));
     }
 
     /**
@@ -50,13 +50,23 @@ class shopWebpimagesHelper
      */
     public static function webpUrl(array $image, $size)
     {
+        $image = self::normalizeImage($image);
         if (empty($image['id']) || empty($image['product_id'])) {
+            return '';
+        }
+
+        $original_path = shopImage::getPath($image);
+        if (!is_readable($original_path)) {
             return '';
         }
 
         $thumb_path = shopImage::getThumbsPath($image, $size);
         if (!file_exists($thumb_path)) {
-            shopImage::generateThumbs($image, array($size));
+            try {
+                shopImage::generateThumbs($image, array($size));
+            } catch (Exception $e) {
+                return '';
+            }
         }
         if (!file_exists($thumb_path)) {
             return '';
@@ -166,6 +176,23 @@ class shopWebpimagesHelper
         if (defined('STDOUT')) {
             @fflush(STDOUT);
         }
+    }
+
+    protected static function normalizeImage(array $image)
+    {
+        $filename = ifset($image, 'filename', ifset($image, 'image_filename', ''));
+        if (!is_string($filename)) {
+            $filename = '';
+        }
+
+        $product_id = ifset($image, 'product_id', ifset($image, 'id', 0));
+
+        return array(
+            'id' => ifset($image, 'id', 0),
+            'product_id' => $product_id,
+            'filename' => $filename,
+            'ext' => ifset($image, 'ext', 'jpg'),
+        );
     }
 
     protected static function wrapPicture($html, $webp_url)

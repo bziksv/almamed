@@ -4,11 +4,17 @@
 
 {$promocards = $wa->shop->promos()}
 
-{$bestsellers = $wa->shop->products( $theme_settings.homepage_productset_bestsellers , 15 )}
-{$userset = $wa->shop->products( $theme_settings.homepage_productset_userset , 15 )}
+{$bestsellers = null}
+{if !empty($theme_settings.homepage_productset_bestsellers)}
+    {$bestsellers = $wa->shop->products($theme_settings.homepage_productset_bestsellers, 15)}
+{/if}
+{$userset = null}
+{if !empty($theme_settings.homepage_productset_userset)}
+    {$userset = $wa->shop->products($theme_settings.homepage_productset_userset, 15)}
+{/if}
 
-{if $theme_settings.homepage_bxslider_mode == 'products'}
-    {$promoproducts = $wa->shop->products( $theme_settings.homepage_productset_promo , 15 )}
+{if $theme_settings.homepage_bxslider_mode == 'products' && !empty($theme_settings.homepage_productset_promo)}
+    {$promoproducts = $wa->shop->products($theme_settings.homepage_productset_promo, 15)}
 {/if}
 
 {if empty($promocards) && empty($promoproducts) && empty($bestsellers) && empty($user_set)}

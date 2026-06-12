@@ -403,7 +403,7 @@ class shopFormPlugin extends shopPlugin
   </div>
   </form>
 </div>
-<?
+<?php
     }
 
 

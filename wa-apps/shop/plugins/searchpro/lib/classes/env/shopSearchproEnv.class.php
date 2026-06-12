@@ -252,7 +252,20 @@ class shopSearchproEnv
 	 */
 	public function getCurrentTheme()
 	{
-		return waRequest::getTheme();
+		$theme_id = waRequest::getTheme();
+		if (waTheme::exists($theme_id, 'shop')) {
+			return $theme_id;
+		}
+
+		foreach ($this->getRouting()->getByApp('shop') as $routes) {
+			foreach ($routes as $route) {
+				if (!empty($route['theme']) && waTheme::exists($route['theme'], 'shop')) {
+					return $route['theme'];
+				}
+			}
+		}
+
+		return 'default';
 	}
 
 	/**
