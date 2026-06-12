@@ -1,5 +1,5 @@
-<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.4" rel="stylesheet" type="text/css" media="print" onload="this.media='all'">
-<noscript><link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.4" rel="stylesheet" type="text/css"></noscript>
+<link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.5" rel="stylesheet" type="text/css" media="print" onload="this.media='all'">
+<noscript><link href="/wa-apps/shop/plugins/slider/css/lightslider.css?v1.3.5" rel="stylesheet" type="text/css"></noscript>
 
 <style>
     .header-slider-wrap {
@@ -125,9 +125,57 @@
     .header-slider-wrap .lSAction > .lSNext::before {
         content: '›';
     }
+    .header-slider .lSPager.lSpg {
+        display: none !important;
+    }
+    .header-slider .lSAction {
+        display: none !important;
+    }
+    .almamed-slider-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin: 10px 0 0;
+        padding: 0 0.75rem 2px;
+    }
+    .almamed-slider-nav__dots {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .almamed-slider-dot {
+        width: 12px;
+        height: 12px;
+        border: none;
+        border-radius: 50%;
+        padding: 0;
+        background: #c5c5c5;
+        cursor: pointer;
+    }
+    .almamed-slider-dot.is-active,
+    .almamed-slider-dot:hover {
+        background: #0497C0;
+    }
+    .almamed-slider-nav__arrow {
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 50%;
+        background: #fff;
+        color: #0497C0;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .almamed-slider-nav__arrow:hover {
+        background: #f5f5f5;
+    }
 </style>
 
-<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?v1.3.4" defer data-script-exception="1"></script>
+<script type="text/javascript" src="/wa-apps/shop/plugins/slider/js/lightslider.js?v1.3.5" defer data-script-exception="1"></script>
 
 <div class="header-slider">
     <ul id="slider-head">
@@ -150,6 +198,22 @@
         {/foreach}
     </ul>
 </div>
+
+{if $slides|@count > 1}
+<nav class="almamed-slider-nav" aria-label="[`Slides`]">
+    <button type="button" class="almamed-slider-nav__arrow almamed-slider-nav__arrow--prev" aria-label="[`Previous`]">‹</button>
+    <div class="almamed-slider-nav__dots">
+        {foreach $slides as $s name=slider_dots}
+            <button type="button"
+                    class="almamed-slider-dot{if $smarty.foreach.slider_dots.first} is-active{/if}"
+                    data-slide-to="{$smarty.foreach.slider_dots.index}"
+                    data-slide-id="{$s.id|escape}"
+                    aria-label="Слайд {$smarty.foreach.slider_dots.iteration}"></button>
+        {/foreach}
+    </div>
+    <button type="button" class="almamed-slider-nav__arrow almamed-slider-nav__arrow--next" aria-label="[`Next`]">›</button>
+</nav>
+{/if}
 
 <script>
     (function() {
@@ -219,6 +283,8 @@
         var resizeTimer = null;
         var rebuilding = false;
         var sliderInitialized = false;
+        var autoTimer = null;
+        var $nav = $('.almamed-slider-nav');
 
         function getBreakpointBucket(width) {
             if (width <= MOBILE_BREAKPOINT) {
@@ -252,12 +318,80 @@
         }
 
         function getActiveSlideId() {
-            var $active = $slider.find('li.active').first();
+            var $active = $slider.find('li.lslide.active').first();
+            if (!$active.length) {
+                $active = $slider.find('li.active').first();
+            }
             if (!$active.length) {
                 $active = $slider.children('li').first();
             }
             return $active.data('slide-id');
         }
+
+        function syncCustomNav() {
+            if (typeof $slider.getCurrentSlideCount === 'function') {
+                var idx = $slider.getCurrentSlideCount() - 1;
+                $('.almamed-slider-dot').removeClass('is-active').eq(idx).addClass('is-active');
+                return;
+            }
+            var slideId = getActiveSlideId();
+            $('.almamed-slider-dot').removeClass('is-active');
+            if (slideId) {
+                $('.almamed-slider-dot[data-slide-id="' + slideId + '"]').addClass('is-active');
+            }
+        }
+
+        function goToSlideSafe(index) {
+            if (typeof $slider.goToSlide !== 'function') {
+                return false;
+            }
+            $slider.goToSlide(index);
+            syncCustomNav();
+            return true;
+        }
+
+        function goNextSafe() {
+            if (typeof $slider.goToNextSlide !== 'function') {
+                return false;
+            }
+            $slider.goToNextSlide();
+            syncCustomNav();
+            return true;
+        }
+
+        function goPrevSafe() {
+            if (typeof $slider.goToPrevSlide !== 'function') {
+                return false;
+            }
+            $slider.goToPrevSlide();
+            syncCustomNav();
+            return true;
+        }
+
+        function startAutoPlay() {
+            if ($slider.children('li').length < 2) {
+                return;
+            }
+            clearInterval(autoTimer);
+            autoTimer = setInterval(function() {
+                goNextSafe();
+            }, 5000);
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoTimer);
+        }
+
+        $nav.on('click', '.almamed-slider-dot', function() {
+            goToSlideSafe(parseInt($(this).data('slide-to'), 10));
+        });
+        $nav.on('click', '.almamed-slider-nav__arrow--prev', function() {
+            goPrevSafe();
+        });
+        $nav.on('click', '.almamed-slider-nav__arrow--next', function() {
+            goNextSafe();
+        });
+        $('.header-slider-wrap').on('mouseenter', stopAutoPlay).on('mouseleave', startAutoPlay);
 
         function preloadVisibleSlides() {
             $slider.find('img').each(function() {
@@ -325,10 +459,10 @@
                 item: 1,
                 slideMove: 1,
                 pause: 5000,
-                controls: true,
-                pager: true,
+                controls: false,
+                pager: false,
                 loop: $slider.children('li').length > 1,
-                auto: $slider.children('li').length > 1,
+                auto: false,
                 enableDrag: bucket !== 'desktop',
                 easing: 'cubic-bezier(0.25, 0, 0.25, 1)',
                 speed: 600,
@@ -340,6 +474,7 @@
                 onAfterSlide: function() {
                     preloadVisibleSlides();
                     trackView(getActiveSlideId());
+                    syncCustomNav();
                 }
             };
         }
@@ -378,6 +513,8 @@
                 $slider.addClass('slider-ready');
                 $('.header-slider-wrap').addClass('slider-ready');
                 trackView(getActiveSlideId());
+                syncCustomNav();
+                startAutoPlay();
                 sliderInitialized = true;
                 return true;
             } catch (e) {
