@@ -2,6 +2,7 @@
 
 .home-page {
     margin-bottom: 1.5rem;
+    max-width: 100%;
 }
 
 /* CTA + статистика */
@@ -151,6 +152,11 @@
 .home-block-more {
     margin: 0 0 0.5rem;
     text-align: center;
+}
+
+.home-brands .home-block-more {
+    margin-top: 1rem;
+    margin-bottom: 0.15rem;
 }
 
 .home-block-more a {
@@ -567,14 +573,9 @@
 @media only screen and (max-width: 700px) {
     .home-intro__inner {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
-    .home-intro__stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media only screen and (max-width: 700px) {
     .home-intro {
         padding: 1rem;
     }
@@ -583,8 +584,16 @@
         font-size: 1.25rem;
     }
 
+    /* 2 колонки — без огромных пустых карточек на всю ширину */
     .home-intro__stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem;
+    }
+
+    .home-intro__stat {
+        min-height: 68px;
+        padding: 0.65rem 0.55rem;
+        text-align: center;
     }
 
     .home-products {
@@ -599,5 +608,16 @@
 
     .home-section-title--left {
         text-align: center;
+    }
+
+    .home-contact-bar__actions {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .home-page {
+        overflow-x: clip;
     }
 }
