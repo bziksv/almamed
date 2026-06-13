@@ -1026,6 +1026,13 @@
         min-height: 0;
     }
 
+    @media only screen and (max-width: 1200px) {
+        .header-slider-wrap {
+            /* резерв под LCP-слайдер — меньше скачков до init lightslider */
+            min-height: clamp(180px, 52vw, 320px);
+        }
+    }
+
     .header-line.alfa-background a#logo {
         display: inline-flex;
         align-items: center;

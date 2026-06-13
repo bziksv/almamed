@@ -196,3 +196,4 @@ N+1 `$wa->shop->product($p.id)` в `list-thumbs.html` заменён на `shopC
 | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) | Доп. параметры категорий (plitka, rec, h1, …) |
 | [OPTIMIZATION-CHECKLIST.md](OPTIMIZATION-CHECKLIST.md) | **Чеклист оптимизации** (живой, обновлять при находках) |
 | `.cursor/rules/category-params.mdc` | Защита params категорий (always apply) |
+| `.cursor/rules/external-scripts.mdc` | **Не трогать Метрику**; другие внешние скрипты — только после согласования |

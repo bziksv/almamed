@@ -1,59 +1,124 @@
 {literal}
-<!-- Сервис roistat — после load -->
+<!-- Roistat: после load + idle / первое действие (не блокирует LCP) -->
 <script>
-window.addEventListener('load', function() {
-(function(w, d, s, h, id) {
-    w.roistatProjectId = id; w.roistatHost = h;
-    var p = d.location.protocol == "https:" ? "https://" : "http://";
-    var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href);
-    var js = d.createElement(s); js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);
-})(window, document, 'script', 'cloud.roistat.com', '8615773304e6306d7dd2703cf1a28713');
-}, { once: true });
+;(function() {
+    'use strict';
+
+    var ROISTAT_HOST = 'cloud.roistat.com';
+    var ROISTAT_ID = '8615773304e6306d7dd2703cf1a28713';
+    var scheduled = false;
+
+    function loadRoistat() {
+        if (scheduled) {
+            return;
+        }
+        scheduled = true;
+
+        (function(w, d, s, h, id) {
+            w.roistatProjectId = id;
+            w.roistatHost = h;
+            var p = d.location.protocol === 'https:' ? 'https://' : 'http://';
+            var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie)
+                ? '/dist/module.js'
+                : '/api/site/1.0/' + id + '/init?referrer=' + encodeURIComponent(d.location.href);
+            var js = d.createElement(s);
+            js.charset = 'UTF-8';
+            js.async = 1;
+            js.src = p + h + u;
+            var js2 = d.getElementsByTagName(s)[0];
+            js2.parentNode.insertBefore(js, js2);
+        })(window, document, 'script', ROISTAT_HOST, ROISTAT_ID);
+    }
+
+    function scheduleRoistat() {
+        var hasVisit = /^.*roistat_visit=[^;]+/.test(document.cookie);
+        var idleTimeout = hasVisit ? 2500 : 6000;
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadRoistat, { timeout: idleTimeout });
+        } else {
+            setTimeout(loadRoistat, hasVisit ? 2000 : 5000);
+        }
+    }
+
+    window.addEventListener('load', scheduleRoistat, { once: true });
+
+    ['scroll', 'touchstart', 'keydown', 'click'].forEach(function(name) {
+        window.addEventListener(name, loadRoistat, { once: true, passive: name !== 'keydown' && name !== 'click' });
+    });
+})();
 </script>
 <!-- Roistat Counter End -->
 
-
-
-<!-- Виджет подписки Sendpulse  -->
-<!-- <script src="//web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="efb28995705c90d2ff723b7182e24071cc21cda39d619b0c0bdbb51e0118559d"></script>  -->
-
-<!-- Виджет talk-me.ru — грузим только по действию пользователя (клик «Напишите нам», touch на мобилке) -->
-<!-- Begin Talk-Me -->
+<!-- Talk-Me: по клику сразу; на mobile плавающая кнопка — после scroll/touch или idle -->
 <script>
-(function() {
-  var loaded = false;
-  window.almamedLoadTalkMe = function() {
-    if (loaded) { return; }
-    loaded = true;
-    (function(){(function c(d,w,m,i) {
-      window.supportAPIMethod = m;
-      var s = d.createElement('script');
-      s.id = 'supportScript';
-      var id = '31b1fbfef36756cc1a2e078bb4899fa9';
-      s.src = (!i ? 'https://lcab.talk-me.ru/support/support.js' : 'https://static.site-chat.me/support/support.int.js') + '?h=' + id;
-      s.async = true;
-      s.onerror = i ? undefined : function(){c(d,w,m,true)};
-      w[m] = w[m] ? w[m] : function(){(w[m].q = w[m].q ? w[m].q : []).push(arguments);};
-      (d.head ? d.head : d.body).appendChild(s);
-    })(document,window,'TalkMe')})();
-  };
-  window.addEventListener('load', function() {
+;(function() {
+    'use strict';
+
+    var loaded = false;
+    var deferredStarted = false;
+    var DESKTOP_MIN = 993;
+
+    function isDesktop() {
+        return window.matchMedia('(min-width: ' + DESKTOP_MIN + 'px)').matches;
+    }
+
+    window.almamedLoadTalkMe = function() {
+        if (loaded) {
+            return;
+        }
+        loaded = true;
+
+        (function c(d, w, m, i) {
+            window.supportAPIMethod = m;
+            var s = d.createElement('script');
+            s.id = 'supportScript';
+            var id = '31b1fbfef36756cc1a2e078bb4899fa9';
+            s.src = (!i
+                ? 'https://lcab.talk-me.ru/support/support.js'
+                : 'https://static.site-chat.me/support/support.int.js') + '?h=' + id;
+            s.async = true;
+            s.onerror = i ? undefined : function() { c(d, w, m, true); };
+            w[m] = w[m] || function() {
+                (w[m].q = w[m].q || []).push(arguments);
+            };
+            (d.head || d.body).appendChild(s);
+        })(document, window, 'TalkMe');
+    };
+
+    function scheduleMobileTalkMe() {
+        if (deferredStarted || isDesktop()) {
+            return;
+        }
+        deferredStarted = true;
+
+        var run = function() {
+            window.almamedLoadTalkMe();
+        };
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(run, { timeout: 10000 });
+        } else {
+            setTimeout(run, 10000);
+        }
+
+        ['scroll', 'touchstart'].forEach(function(name) {
+            window.addEventListener(name, run, { once: true, passive: true });
+        });
+    }
+
     document.addEventListener('click', function(e) {
-      var el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-      if (el && el.closest && el.closest('.head-phone, .header-phone-col, [data-load-chat]')) {
-        window.almamedLoadTalkMe();
-      }
-    }, { once: true, capture: true });
-  }, { once: true });
+        var el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+        if (!el || !el.closest) {
+            return;
+        }
+        if (el.closest('.head-phone, .header-phone-col, [data-load-chat], .almamed-chat-open, .stay-chat')) {
+            window.almamedLoadTalkMe();
+        }
+    }, true);
+
+    window.addEventListener('load', scheduleMobileTalkMe, { once: true });
 })();
 </script>
 <!-- End Talk-Me -->
-
-
-
-
-
-
-
-
 {/literal}

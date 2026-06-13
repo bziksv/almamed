@@ -278,7 +278,16 @@
                 <li class="piicsl-item">
                     <div class="piicsl-img">
                         <a href="{$sc.url}">
-                            <img class="lazy-fadein" data-src="{if shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="" />
+                            {if class_exists('shopWmimageincatPlugin') && shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}
+                                {$sc_img = shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}
+                            {else}
+                                {$sc_img = "`$wa_theme_url`img/dummy200.png"}
+                            {/if}
+                            {if $sc@iteration <= 2}
+                                <img src="{$sc_img|escape}" alt="{$sc.seo_name|escape}" width="280" height="280" loading="eager"{if $sc@first} fetchpriority="high"{/if} decoding="async" />
+                            {else}
+                                <img class="lazy-fadein" data-src="{$sc_img|escape}" alt="{$sc.seo_name|escape}" width="280" height="280" loading="lazy" decoding="async" />
+                            {/if}
                         </a>
                     </div>
                     <span class="piicsl-title">

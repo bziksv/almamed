@@ -23,14 +23,14 @@
 | 7 | Shop / productbrands | `getBrands()` грузит **все** бренды в память на каждый запрос | ✅ | `getBrandsPage()` + кэш `feature_values_*` 24 ч (cold sorted_ids без повторного getFeatureValues) |
 | 8 | Shop / productbrands | Шаблон брендов в БД: `src` + `data-src` на каждом `<img>` | ✅ | Убран `data-src`, `loading="lazy"` в action |
 | 9 | Shop / sitemap | `sitemap-shop-1.xml` ~3.7 MB | ✅ | Seofilter URL **убраны** из `sitemap-shop-1`; фильтры → `/filter-sitemap.xml` |
-| 28 | Shop / sitemap | `filter-sitemap.xml` в корневом `/sitemap.xml` | ✅ local | `webasystSitemapConfig` + hook; fix `ifset($route,'app',null)` + `$event_params` by ref |
+| — | Shop / sitemap | `filter-sitemap.xml` в корневом `/sitemap.xml` | ✅ local | `webasystSitemapConfig` + hook; fix `ifset($route,'app',null)` + `$event_params` by ref |
 | 10 | Shop / seofilter | 404 на пустой фильтр ~4+ s | ✅ | Ранний exit в routing (`respondIfEmptySeofilterPage`); warm **~0.12 s** (было ~4+ s) |
 | 11 | Shop / категория | `subcategoriesFilters($id)` в цикле при `?brend=` | ✅ | `subcategoriesFiltersByIds()` — 1 SQL |
 | 12 | Shop / категория | `getTagsByCategory()` — params всех подкатегорий дерева | ✅ | 1 SQL вместо N× `get()` при `meta=true` |
 | 13 | Site / page cache | Статические shop-страницы без кэша | ✅ | `shopFrontendPageAction` — full HTML cache 1 ч; warm **~0.03 s** (dostavka) |
 | 14 | Site / шапка | SearchPro: иконка лупы на кнопке | ✅ | Белая на бирюзовом фоне |
 | 15 | Shop / категория | Full HTML cache гостей (15 мин) | ✅ | Fix ключа + readable fallback; warm TTFB **~0.01 s**; `X-Shop-Cache: category-hit` |
-| 16 | Site / frontend | defer JS, third-party после load | ✅ | Metrika/VK/Roistat/Talk-Me; preconnect fonts |
+| 16 | Site / frontend | defer JS, third-party после load | ✅ | Metrika без изменений; Roistat idle+interaction; Talk-Me click/defer |
 | 17 | Site / slider | FOUC баннера при load | ✅ | Sync lightslider CSS/JS; 1-й слайд до init |
 | 18 | Site / шапка | Баннер-слайдер только на главной | ✅ | `lightslider` не грузится на категориях/поиске |
 | 19 | Shop / каталог | Lazy-load превью товаров (после 4-й) | ✅ | `loading=lazy` в `list-thumbs.html` |
@@ -42,8 +42,35 @@
 | 25 | Ops / prod | OPcache audit script | ✅ | `.local/opcache-audit.php` в post-deploy |
 | 26 | Ops / prod | Sitemap smoke script | ✅ | `.local/check-sitemap.sh` — размеры + filter-sitemap |
 | 27 | SearchPro | Legacy templates v1 | ✅ | удалены `FrontendOutput.html`, `FrontendField.html` |
+| 28 | CrUX / CLS | Cookie banner: не скрывать `#footer-pane` до «Принять» | ✅ | desktop CLS origin 0.6 → ожидаем снижение |
+| 29 | Shop / категория | LCP: первые 2 подкатегории — eager + `fetchpriority` | ✅ | не `lazy-fadein opacity:0` для LCP-кандidate |
+| 30 | Site / slider | Резерв высоты `.header-slider-wrap` на mobile | ✅ | меньше CLS до init слайдера |
+| 31 | CrUX / TTFB | Prod: home/category HTML cache (`X-Shop-Cache`) | ⏳ | field TTFB 1.4 s; проверить deploy + warm cache |
+| 32 | CrUX / CLS | Material Icons async → скачок иконок шапки | ⏳ | рассмотреть inline SVG или sync MI только в header |
+| 33 | Lab / images | WebP/next-gen для wmimageincat | ⏳ | PSI «Serve images in next-gen formats» |
+| 34 | Site / 3rd-party | Roistat: idle + first interaction (не сразу на load) | ✅ | returning visit cookie → быстрее (2.5 s idle) |
+| 35 | Site / Talk-Me | Mobile: без автoload в syncTriggerMode; defer 10 s / scroll | ✅ | клик «Напишите нам» — сразу |
 
 **Легенда:** ✅ сделано · 🟡 частично / проверено · ⏳ в очереди
+
+---
+
+## PageSpeed Insights (field data, Jun 2026)
+
+Отчёты: [главная mobile](https://pagespeed.web.dev/analysis/https-almamed-su/66ql6nlt72?form_factor=mobile) · [категория](https://pagespeed.web.dev/analysis/https-almamed-su-category-ginekologiya/gkv4hqt3hc?form_factor=mobile) · [товар](https://pagespeed.web.dev/analysis/https-almamed-su-product-oftalmoskop-ruchnoy-zerkalnyy-orz-01/jy4o3epzkg?form_factor=mobile)
+
+| Метрика | URL главная (mobile) | Origin mobile | Origin desktop | Цель |
+|---------|----------------------|---------------|----------------|------|
+| LCP | **2.1 s** ✅ | 2.3 s 🟡 | 1.4 s ✅ | ≤ 2.5 s |
+| CLS | **0.02** ✅ | **0.13** 🟡 | **0.6** ❌ | ≤ 0.1 |
+| TTFB | n/a | **1.4 s** 🟡 | 1.1 s 🟡 | ≤ 0.8 s |
+| INP | n/a | 124 ms ✅ | 62 ms ✅ | ≤ 200 ms |
+
+Категория/товар в CrUX **без своих данных** — смотрим origin + lab Lighthouse.
+
+**Lab local (warm cache):** главная score ~85, LCP 3.7 s (TTFB 1.7 s cold); категория score ~71, LCP 5.6 s (lazy LCP-картинки — п.29).
+
+**Не трогаем без согласования:** Яндекс.Метрика, Roistat, Talk-Me — см. `.cursor/rules/external-scripts.mdc`.
 
 ---
 
@@ -151,4 +178,4 @@ BASE_URL=https://almamed.su ./.local/verify-deploy.sh
 | 2026-06-12 | П.18 — баннер только на главной; п.19 — lazy превью в list-thumbs |
 | 2026-06-12 | П.20–22 — Roboto 3 начертания, без Font Awesome, SearchPro без дубля шрифта |
 | 2026-06-12 | П.23 — mobile: один SearchPro field; `.local/verify-deploy.sh` для prod smoke |
-| 2026-06-12 | П.25–27 — opcache-audit, check-sitemap, SearchPro legacy templates removed |
+| 2026-06-13 | п.34–35 Roistat/Talk-Me defer (с согласия); п.28–30 CLS/LCP; rule `external-scripts.mdc` |
