@@ -327,7 +327,7 @@
       <name locale="ru_RU">Витрина</name>
     </setting>
     <setting var="sidebar_home" control_type="checkbox">
-      <value/>
+      <value>1</value>
       <name locale="en_US">Show sidebar on the main page of the application "store" (if enabled sidebar)</name>
       <name locale="ru_RU">Показывать боковую панель на главной странице приложения "магазин"(если боковая панель включена)</name>
     </setting>

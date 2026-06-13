@@ -642,8 +642,8 @@ h1 .order-status{font-size:0.75em;margin-left:10px;}
     margin-bottom: 10px;
     box-shadow: inset 0 -1px 0 0 rgba(0,0,0,0.1);
 }
-.piicsl .piicsl-item .piicsl-img{max-height:270px;min-height:270px;border-radius:4px;margin:.8rem;line-height:270px;overflow:hidden;}
-.piicsl .piicsl-item .piicsl-img img{transition:all .8s ease;max-height:100%;display:inline-block;max-width:100%;vertical-align:middle;}
+.piicsl .piicsl-item .piicsl-img{display:flex;align-items:center;justify-content:center;max-height:270px;min-height:270px;border-radius:4px;margin:.8rem;overflow:hidden;}
+.piicsl .piicsl-item .piicsl-img img{transition:all .8s ease;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;display:block;vertical-align:middle;}
 .piicsl .piicsl-item .piicsl-title{
     overflow: hidden;
     text-overflow: ellipsis;
@@ -678,7 +678,7 @@ h1 .order-status{font-size:0.75em;margin-left:10px;}
 .piicsl2 .piicsl-item .piicsl-title{font-weight:bold;}
 @media only screen and (min-width:481px){.piicsl .piicsl-item{width:50%;}.piicsl2 .piicsl-item{width:50%;}}
 @media only screen and (min-width:741px){.piicsl .piicsl-item{width:33.33%;}}
-@media only screen and (min-width:993px){.piicsl .piicsl-item{width:25%;}.without-sidebar .piicsl .piicsl-item{width:33.33%;}.piicsl .piicsl-item .piicsl-img{max-height:270px;min-height:270px;line-height:200px;}.piicsl2 .piicsl-item{width:33.33%;}.without-sidebar .piicsl2 .piicsl-item{width:50%;}}
+@media only screen and (min-width:993px){.piicsl .piicsl-item{width:25%;}.without-sidebar .piicsl .piicsl-item{width:33.33%;}.piicsl .piicsl-item .piicsl-img{max-height:270px;min-height:270px;}.piicsl2 .piicsl-item{width:33.33%;}.without-sidebar .piicsl2 .piicsl-item{width:50%;}}
 @media only screen and (min-width:1281px){.piicsl .piicsl-item{width:20%;}.without-sidebar .piicsl .piicsl-item{width:18%;} /*было 23,9 4 в ряд*/.piicsl2 .piicsl-item{width:25%;}.without-sidebar .piicsl2 .piicsl-item{width:33.33%;}}
 .wm-recallback-plugin-button.button{position:relative;}
 .wm-recallback-plugin-button.button .icon16.loading{position:absolute;left:0;top:0;bottom:0;right:0;margin:0;background-position:center;width:auto;height:auto;background-color:rgba(255,255,255,.65);border-radius:4px;}

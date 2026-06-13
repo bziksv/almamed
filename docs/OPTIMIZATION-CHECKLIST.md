@@ -42,14 +42,15 @@
 | 25 | Ops / prod | OPcache audit script | ✅ | `.local/opcache-audit.php` в post-deploy |
 | 26 | Ops / prod | Sitemap smoke script | ✅ | `.local/check-sitemap.sh` — размеры + filter-sitemap |
 | 27 | SearchPro | Legacy templates v1 | ✅ | удалены `FrontendOutput.html`, `FrontendField.html` |
-| 28 | CrUX / CLS | Cookie banner: не скрывать `#footer-pane` до «Принять» | ✅ | desktop CLS origin 0.6 → ожидаем снижение |
+| 28 | CrUX / CLS | Cookie banner: не скрывать `#footer-pane` до «Принять» | ✅ | убрало микро-сдвиг footer; origin 0.6 — другая причина |
 | 29 | Shop / категория | LCP: первые 2 подкатегории — eager + `fetchpriority` | ✅ | не `lazy-fadein opacity:0` для LCP-кандidate |
 | 30 | Site / slider | Резерв высоты `.header-slider-wrap` на mobile | ✅ | меньше CLS до init слайдера |
 | 31 | CrUX / TTFB | Prod: home/category HTML cache (`X-Shop-Cache`) | ⏳ | field TTFB 1.4 s; проверить deploy + warm cache |
-| 32 | CrUX / CLS | Material Icons async → скачок иконок шапки | ⏳ | рассмотреть inline SVG или sync MI только в header |
+| 32 | CrUX / CLS | Material Icons — sync load (шапка/футер) | ✅ | было async `media=print onload` |
 | 33 | Lab / images | WebP/next-gen для wmimageincat | ⏳ | PSI «Serve images in next-gen formats» |
 | 34 | Site / 3rd-party | Roistat: idle + first interaction (не сразу на load) | ✅ | returning visit cookie → быстрее (2.5 s idle) |
-| 35 | Site / Talk-Me | Mobile: без автoload в syncTriggerMode; defer 10 s / scroll | ✅ | клик «Напишите нам» — сразу |
+| 35 | Site / Talk-Me | Mobile: без autoload в syncTriggerMode; defer 10 s / scroll | ✅ | клик «Напишите нам» — сразу |
+| 36 | CrUX / CLS | `profitbuy.min.css` + `profitbuy.shop.min.css` — sync (не async) | ✅ | lab desktop CLS 0.602 → **0**; tradeoff: LCP +0.5–1 s в lab |
 
 **Легенда:** ✅ сделано · 🟡 частично / проверено · ⏳ в очереди
 
@@ -68,7 +69,9 @@
 
 Категория/товар в CrUX **без своих данных** — смотрим origin + lab Lighthouse.
 
-**Lab local (warm cache):** главная score ~85, LCP 3.7 s (TTFB 1.7 s cold); категория score ~71, LCP 5.6 s (lazy LCP-картинки — п.29).
+**Lab local (desktop, после п.36):** главная CLS **0** (было 0.602), score ~65, LCP ~3.8 s; категория CLS **0**, LCP ~3.3 s. Render-blocking CSS — осознанный tradeoff.
+
+**Lab local (warm cache, до п.36):** главная score ~85, LCP 3.7 s (TTFB 1.7 s cold); категория score ~71, LCP 5.6 s (lazy LCP-картинки — п.29).
 
 **Не трогаем без согласования:** Яндекс.Метрика, Roistat, Talk-Me — см. `.cursor/rules/external-scripts.mdc`.
 
@@ -179,3 +182,4 @@ BASE_URL=https://almamed.su ./.local/verify-deploy.sh
 | 2026-06-12 | П.20–22 — Roboto 3 начертания, без Font Awesome, SearchPro без дубля шрифта |
 | 2026-06-12 | П.23 — mobile: один SearchPro field; `.local/verify-deploy.sh` для prod smoke |
 | 2026-06-13 | п.34–35 Roistat/Talk-Me defer (с согласия); п.28–30 CLS/LCP; rule `external-scripts.mdc` |
+| 2026-06-13 | п.36 sync CSS (profitbuy + shop + MI); lab desktop CLS 0.602→0 |

@@ -73,18 +73,22 @@
                 </div>
             {/if}
 
-            {* 2. Категории *}
+            {* 2. Категории — на mobile в HTML; на desktop клонируем из sidebar при открытии гамбургера (≤1200px) *}
             {$cat_menu = $at['shop']['categories']|default:[]}
             {if !empty($cat_menu)}
                 {$cat_icon = $at['shop']['plugins']['wmimageincat']|default:[]}
                 {$cat_selected = $at['shop']['selected_category']|default:null}
-                {include file="`$wa_parent_theme_path|default:$wa_active_theme_path`/img/category-icons.svg"}
-                <div class="mobile-nav-section">
+                {if $wa->isMobile()}
+                    {include file="`$wa_parent_theme_path|default:$wa_active_theme_path`/img/category-icons.svg"}
+                {/if}
+                <div class="mobile-nav-section mobile-nav-section--categories">
                     <div class="mobile-nav-section__title">[`Categories`]</div>
                     <ul class="mobile-nav-list base-menu type3 mobile-nav-categories">
-                        {foreach $cat_menu as $branch}
-                            {renderMenuItem menu=$branch icon=$cat_icon selected=$cat_selected exclude='not_sidebar' show_cat_icons=true depth=0}
-                        {/foreach}
+                        {if $wa->isMobile()}
+                            {foreach $cat_menu as $branch}
+                                {renderMenuItem menu=$branch icon=$cat_icon selected=$cat_selected exclude='not_sidebar' show_cat_icons=true depth=0}
+                            {/foreach}
+                        {/if}
                     </ul>
                 </div>
             {/if}

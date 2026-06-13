@@ -1,8 +1,7 @@
 {strip}
 
-{* shop app css *}
-<link href="{$wa_active_theme_url}profitbuy.shop.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'" />
-<noscript><link href="{$wa_active_theme_url}profitbuy.shop.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" /></noscript>
+{* shop app css — sync: иначе piicsl/product-list прыгают при onload *}
+<link href="{$wa_active_theme_url}profitbuy.shop.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" />
 <link href="{$wa_active_theme_url}owl.carousel.css?v2.0.0" rel="stylesheet" type="text/css" media="print" onload="this.media='all'" />
 <noscript><link href="{$wa_active_theme_url}owl.carousel.css?v2.0.0" rel="stylesheet" type="text/css" /></noscript>
 

@@ -8,13 +8,14 @@
 
 <link href='//fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic,latin&amp;display=swap' rel='stylesheet' type='text/css' media="print" onload="this.media='all'">
 <noscript><link href='//fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic,latin&amp;display=swap' rel='stylesheet' type='text/css'></noscript>
-<link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=swap" rel="stylesheet" type='text/css' media="print" onload="this.media='all'">
-<noscript><link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=swap" rel="stylesheet" type='text/css'></noscript>
+{* Material Icons — sync: иконки шапки/футера без скачка layout *}
+<link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=block" rel="stylesheet" type="text/css">
+<noscript><link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=block" rel="stylesheet" type="text/css"></noscript>
 {if $wa->shop && $wa->shop->currency() == 'RUB'}<link href="{$wa_url}wa-content/font/ruble/arial/fontface.css" rel="stylesheet" type="text/css">{/if}
 
 {* css — некритичные таблицы стилей уходят в footer через speedup *}
-<link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'"/>
-<noscript><link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/></noscript>
+{* Основной CSS — sync: async давал CLS ~0.6 на desktop (lab) *}
+<link href="{$wa_theme_url}profitbuy.min.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/>
 {if $wa->shop}<link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'"/><noscript><link href="{$wa_theme_url}css/category-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"/></noscript>{/if}
 {$wa->css()} {* links active plugins CSS *}
 

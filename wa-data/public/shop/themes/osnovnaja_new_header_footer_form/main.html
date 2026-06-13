@@ -7,7 +7,7 @@
 {* flag home page *}
 {$is_home_page = $wa->currentUrl(false,true) == $wa_app_url}
 
-{* flag sidebar: на mobile только фильтры, категории — в гамбургере *}
+{* flag sidebar: desktop — категории в sidebar; mobile/tablet — в гамбургере, sidebar только под фильтры *}
 {$is_sidebar =  !empty($theme_settings.sidebar) &&
                 !(
                     ($is_home_page && empty($theme_settings.sidebar_home)) ||

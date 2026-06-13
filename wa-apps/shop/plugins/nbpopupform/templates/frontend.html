@@ -51,13 +51,58 @@
         text-align: center;
     }
 
-    .dialog-window{
-        background: #FFF;
-        padding: 20px 50px;
+    /* Не трогаем глобальный .dialog-window — в теме он full-screen под корзину */
+
+    .dialog.nb-kp-dialog {
+        position: fixed;
+        inset: 0;
+        z-index: 10050;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .dialog.nb-kp-dialog[style*="display: block"],
+    .dialog.nb-kp-dialog:not([style*="display: none"]) {
+        display: flex !important;
+    }
+
+    .dialog.nb-kp-dialog .dialog-background {
+        z-index: 1;
+    }
+
+    .dialog.nb-kp-dialog .dialog-window {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        z-index: 2;
+        width: 100% !important;
+        max-width: 400px;
+        min-width: 0 !important;
+        max-height: min(85vh, 640px);
+        height: auto !important;
+        min-height: 0 !important;
         overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0;
+        background: #fff;
+        padding: 20px 24px 0;
         border: 5px solid #f3f3f3;
-        box-shadow: 0px 0px 70px #bbb;
+        box-shadow: 0 0 70px #bbb;
         border-radius: 15px;
+        box-sizing: border-box;
+    }
+
+    .dialog.nb-kp-dialog .dialog-content-indent {
+        padding-bottom: 8px;
+    }
+
+    .dialog.nb-kp-dialog .dialog-buttons-gradient {
+        text-align: center;
+        padding: 12px 0 16px;
     }
 
     .nb-open-form{
@@ -76,6 +121,15 @@
             line-height: 3rem!important;
         }
 
+        .dialog.nb-kp-dialog {
+            padding: 8px;
+        }
+
+        .dialog.nb-kp-dialog .dialog-window {
+            max-width: none;
+            border-radius: 12px;
+            padding: 16px 16px 0;
+        }
     }
 
 </style>
@@ -83,26 +137,17 @@
 <script>
     $(function(){
 
+        /* waDialog вешает overlay на parent — иначе форма оказывается в колонке корзины (~350px) */
+        $('.nb-popup-form').appendTo('body');
+
         $('#phone-mask').mask('+7 (999) 999-9999');
-
-        var width = $(window).width();
-        var left = "";
-        if(width < 420){
-            width = "250px";
-            left = "0%"
-        }else{
-            width = "400px";
-        }
-
-
 
         $('.nb-open-form').click(function(){
             var id = $('[id^="cart-form"]').attr('data-id');
             $('.nb-popup-form').waDialog({
-                'buttons': '<input type="submit" value="Отправить" style="width: 200px;"/>',
-                'width': width,
-                'height':'80%',
-                'offsetLeft':left,
+                'class': 'nb-kp-dialog',
+                'buttons': '<input type="submit" value="Отправить" style="width: 200px; max-width: 100%;"/>',
+                'width': '400px',
                 onSubmit : function(a){
                     var data = {
                         id : id,
@@ -119,12 +164,12 @@
                                         '<input type="submit" value="Закрыть" style="width: 200px;"/>' +
                                     '</form></div>' +
                             '</div>').waDialog({
+                                'class': 'nb-kp-dialog',
                                 'onSubmit': function (d) {
                                     d.trigger('close');
                                     return false;
                                 },
                                 'width': '300px',
-                                'height':'150px',
                             });
                         }else{
                             alert("Ошибка отправки!");
