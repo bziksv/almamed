@@ -1192,7 +1192,8 @@ body.nav-all-open .mobile-nav-wrapper.nav-all, body.nav-contacts-open .mobile-na
   min-height: 0;
   box-sizing: border-box;
   padding: 0 0 4rem;
-  width: 84.44%;
+  width: 100%;
+  max-width: none;
   background: #fff;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;

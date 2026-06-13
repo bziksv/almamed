@@ -47,8 +47,14 @@
                 </a>
             {/if}
 
-            <a href="#" data-nav="all" class="header-mobile-bar__icon header-mobile-bar__menu mobile-nav-button action" aria-label="[`Menu`]">
-                <i class="material-icons" aria-hidden="true">&#xE5D2;</i>
+            <a href="#"
+               data-nav="all"
+               id="header-mobile-menu-toggle"
+               class="header-mobile-bar__icon header-mobile-bar__menu mobile-nav-button action"
+               aria-label="[`Menu`]"
+               aria-expanded="false"
+               aria-controls="mobile-nav-all">
+                <i class="material-icons header-mobile-bar__menu-icon" aria-hidden="true">&#xE5D2;</i>
             </a>
         </div>
     </div>
@@ -74,6 +80,18 @@
     var icon = toggle.querySelector('.header-mobile-bar__search-icon');
 
     function setOpen(open) {
+        if (open && document.body.classList.contains('nav-all-open')) {
+            document.body.classList.remove('nav-all-open');
+            var menuBtn = document.getElementById('header-mobile-menu-toggle');
+            var menuIcon = menuBtn && menuBtn.querySelector('.header-mobile-bar__menu-icon');
+            if (menuBtn) {
+                menuBtn.setAttribute('aria-expanded', 'false');
+                menuBtn.classList.remove('is-active');
+            }
+            if (menuIcon) {
+                menuIcon.textContent = 'menu';
+            }
+        }
         bar.classList.toggle('is-search-open', open);
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         toggle.classList.toggle('is-active', open);
