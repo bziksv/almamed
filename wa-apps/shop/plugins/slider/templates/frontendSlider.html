@@ -43,30 +43,46 @@
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 10px;
+        bottom: 4px;
         z-index: 5;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 7px;
         margin: 0;
         padding: 0;
         pointer-events: none;
+        -webkit-tap-highlight-color: transparent;
     }
     .almamed-slider-dot {
         pointer-events: auto;
-        width: 8px;
-        height: 8px;
+        box-sizing: content-box;
+        width: 9px;
+        height: 9px;
         border: none;
         border-radius: 50%;
-        padding: 0;
-        background: #d1edf5;
+        padding: 8px;
+        margin: 0;
+        background-color: #d1edf5;
+        background-clip: content-box;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.35));
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        touch-action: manipulation;
     }
-    .almamed-slider-dot.is-active,
+    .almamed-slider-dot.is-active {
+        background-color: #0497C0;
+        filter: drop-shadow(0 1px 2px rgba(4, 151, 192, 0.55));
+        transform: scale(1.15);
+    }
     .almamed-slider-dot:hover {
-        background: #0497C0;
+        background: #b8e4f0;
+    }
+    .almamed-slider-dot.is-active:hover {
+        background: #036884;
+    }
+    .almamed-slider.is-touching {
+        touch-action: pan-y;
     }
 </style>
 
@@ -123,6 +139,10 @@
     var autoTimer = null;
     var trackedViews = {};
     var wrap = root.closest('.header-slider-wrap');
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var swipeBlockedClick = false;
+    var SWIPE_THRESHOLD = 36;
 
     var supportsWebp = (function() {
         try {
@@ -232,6 +252,11 @@
     }
 
     root.addEventListener('click', function(e) {
+        if (swipeBlockedClick) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
         if (e.target.closest('.almamed-slider-dot')) {
             e.preventDefault();
             showSlide(parseInt(e.target.closest('.almamed-slider-dot').getAttribute('data-slide-to'), 10));
@@ -243,6 +268,60 @@
             sendStat(link.getAttribute('data-slide-id'), 'click');
         }
     });
+
+    if (slides.length > 1) {
+        root.addEventListener('touchstart', function(e) {
+            if (!e.changedTouches || !e.changedTouches.length) {
+                return;
+            }
+            touchStartX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
+            swipeBlockedClick = false;
+            root.classList.add('is-touching');
+            stopAutoPlay();
+        }, { passive: true });
+
+        root.addEventListener('touchmove', function(e) {
+            if (!e.changedTouches || !e.changedTouches.length) {
+                return;
+            }
+            var dx = e.changedTouches[0].clientX - touchStartX;
+            var dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 12) {
+                swipeBlockedClick = true;
+            }
+        }, { passive: true });
+
+        root.addEventListener('touchend', function(e) {
+            root.classList.remove('is-touching');
+            if (!e.changedTouches || !e.changedTouches.length) {
+                startAutoPlay();
+                return;
+            }
+            var dx = e.changedTouches[0].clientX - touchStartX;
+            var dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) >= SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+                swipeBlockedClick = true;
+                if (dx < 0) {
+                    showSlide(current + 1);
+                } else {
+                    showSlide(current - 1);
+                }
+                e.preventDefault();
+            }
+            startAutoPlay();
+            if (swipeBlockedClick) {
+                setTimeout(function() {
+                    swipeBlockedClick = false;
+                }, 350);
+            }
+        }, { passive: false });
+
+        root.addEventListener('touchcancel', function() {
+            root.classList.remove('is-touching');
+            startAutoPlay();
+        }, { passive: true });
+    }
 
     if (wrap) {
         wrap.addEventListener('mouseenter', stopAutoPlay);

@@ -79,27 +79,7 @@
         <nav class="nav-wrapper">
             <div class="container">
 
-                <!-- MOBILE NAV -->
-                <div class="row-grid hide-on-large-only">
-                    <div class="col-grid s12">
-                    <div class="mobile-nav-button-wrapper float-left">
-                        <a href="#" data-nav="all" class="mobile-nav-button action"><i class="material-icons mi-3x">&#xE5D2;</i></a>
-                    </div>
-                    {if !empty($theme_settings.phone_1) || !empty($theme_settings.phone_2)}
-                        <div class="mobile-nav-button-wrapper float-left">
-                            <a href="#" data-nav="contacts" class="mobile-nav-button action"><i class="material-icons mi-3x">&#xE0CD;</i></a>
-                        </div>
-                    {/if}
-                    {if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
-                        <div class="mobile-nav-button-wrapper float-right" id="cart-mobile">
-                            {$cart_count = $wa->shop->cart->count()}
-                            <a href="{$wa->getUrl('shop/frontend/cart')}" class="mobile-nav-button{if !$cart_count} empty{/if}">
-                            	<i class="material-icons mi-3x cart-count" data-count="{if $cart_count}{$cart_count}{/if}">&#xE8CC;</i>
-           	     			</a>
-                        </div>
-                    {/if}
-                </div>
-                </div>
+                {include file="header.mobile.html" inline}
 
                 <!-- DESKTOP NAV -->
                 {include file="logo.no.text.html" assign="header_logo" inline}
@@ -107,7 +87,7 @@
                 {include file="links.auth.html" assign="header_auth" inline}
                 {include file="top.phone.head.html" assign="header_phone" inline}
 
-                <div class="row-grid hide-on-med-and-down header-top-bar">
+                <div class="row-grid hide-on-med-and-down header-top-bar header-top-bar--desktop">
                     <div class="header-top-bar__inner">
                         {if !empty($header_logo)}<div class="header-top-bar__item header-logo-col header-logo-col--scroll">{$header_logo}</div>{/if}
                         {if !empty($header1)}<div class="header-top-bar__item header-links-col link-top-not-fix">{$header1}</div>{/if}
@@ -125,7 +105,7 @@
         {include file="phones.top.html" assign="header5" inline}
         {include file="offline.html" assign="header6" inline}
 
-        <div class="header-line alfa-background">
+        <div class="header-line alfa-background header-line--desktop">
             <div class="container">
                 <div class="row-grid">
                     <div class="table-grid">

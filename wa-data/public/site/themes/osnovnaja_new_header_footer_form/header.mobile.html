@@ -1,0 +1,49 @@
+{strip}
+
+<div class="header-mobile-bar hide-on-large-only">
+    <div class="header-mobile-bar__inner">
+        <a href="{$wa_url}" class="header-mobile-bar__brand" id="logo-mobile">
+            {if !empty($theme_settings.logo)}
+                <img src="{$wa_theme_url}{$theme_settings.logo}?v{$wa_theme_version}"
+                     alt="{$theme_settings.logo_title|default:''|escape}"
+                     class="header-mobile-bar__logo"
+                     width="40"
+                     height="20"
+                     decoding="async">
+            {/if}
+            {if !empty($theme_settings.logo_title)}
+                <span class="header-mobile-bar__title">{$theme_settings.logo_title|escape}</span>
+            {/if}
+        </a>
+
+        {if $wa->shop}
+            <div class="header-mobile-bar__search">
+                {include file="searchform.header.html" mobile_search=true inline}
+            </div>
+        {/if}
+
+        {if !empty($theme_settings.phone_1)}
+            <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}"
+               class="header-mobile-bar__icon header-mobile-bar__phone"
+               aria-label="{$theme_settings.phone_1|escape}">
+                <i class="material-icons">&#xE0CD;</i>
+            </a>
+        {/if}
+
+        {if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
+            {$cart_count = $wa->shop->cart->count()}
+            <a href="{$wa->getUrl('shop/frontend/cart')}"
+               class="header-mobile-bar__icon header-mobile-bar__cart mobile-nav-button{if !$cart_count} empty{/if}"
+               id="cart-mobile"
+               aria-label="[`Cart`]">
+                <i class="material-icons cart-count" data-count="{if $cart_count}{$cart_count}{/if}">&#xE8CC;</i>
+            </a>
+        {/if}
+
+        <a href="#" data-nav="all" class="header-mobile-bar__icon header-mobile-bar__menu mobile-nav-button action" aria-label="[`Menu`]">
+            <i class="material-icons">&#xE5D2;</i>
+        </a>
+    </div>
+</div>
+
+{/strip}

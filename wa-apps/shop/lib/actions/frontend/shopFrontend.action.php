@@ -387,8 +387,8 @@ class shopFrontendAction extends waViewAction
             waRequest::getTheme(),
             date('Y-m-d'),
             'head-meta-v4',
-            'slider-live-v4',
-            'layout-sidebar-v4',
+            'slider-live-v7',
+            'layout-sidebar-v6',
             'browser-nocache-v1',
         )));
     }
