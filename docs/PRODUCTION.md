@@ -69,6 +69,29 @@ chown -R almamed.su:almamed.su wa-cache wa-log
 Pull делать **от root** допустимо, но после — **обязательно chown**.  
 `php cli.php webasyst clearCache` — **только от пользователя `almamed.su`**
 
+### Приложение «Лог пользователей» (userlog)
+
+Код в git (`wa-apps/userlog/`, плагины `shop/userlog`, `blog/userlog`), но **`wa-config/` не в git** — на prod после первого деплоя userlog нужно вручную:
+
+1. **git pull** — чтобы появилась папка `wa-apps/userlog/`
+2. **`wa-config/apps.php`** — строка `'userlog' => true` (или включить в *Настройки → Приложения*)
+3. **`wa-config/apps/shop/plugins.php`** и **`blog/plugins.php`** — `'userlog' => true`  
+   (plugmein включает только плагины магазина, не само приложение в шапке)
+4. **Миграции БД** (от `almamed.su`):
+   ```bash
+   php cli.php userlog install
+   ```
+5. **Права** — *Команда* → пользователь → доступ к приложению «Лог пользователей» (backend)
+6. **Кеш**: `php cli.php webasyst clearCache`
+
+Проверка на сервере:
+
+```bash
+php .local/verify-userlog.php
+```
+
+Иконка — в **верхней полосе Webasyst** (рядом с Магазин, Блог, Логи). Прямая ссылка: `https://almamed.su/webasyst/userlog/`
+
 ```bash
 # Проверка кеша категории после деплоя (2-й запрос должен быть category-hit и TTFB < 0.05s)
 curl -s -D - -o /dev/null -H "Host: almamed.su" -k "https://213.139.209.184/category/veterinariya/" | grep -i x-shop-cache
