@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{$wa->appName()} — {$wa->accountName()}</title>
+    {$wa->css()}
+    <link rel="stylesheet" href="{$wa_app_static_url}css/userlog.css?v=1.4.1" />
+    <script src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
+    {$wa->js(false)}
+</head>
+<body>
+<div id="wa">
+    {$wa->header()}
+
+    <div id="userlog-app" class="userlog-app">
+        <header class="userlog-header">
+            <div class="userlog-header__title">
+                <h1>Лог пользователей</h1>
+                <p class="userlog-header__subtitle">Все действия сотрудников в админке · хранение удалённых 365 дней</p>
+            </div>
+            <nav class="userlog-tabs">
+                <a href="?tab=events" class="userlog-tabs__item {if $tab == 'events'}is-active{/if}">
+                    <i class="icon16 clock"></i> Журнал
+                    <span class="userlog-badge">{$events_count}</span>
+                </a>
+                <a href="?tab=trash" class="userlog-tabs__item {if $tab == 'trash'}is-active{/if}">
+                    <i class="icon16 trash"></i> Корзина
+                    <span class="userlog-badge userlog-badge--warn">{$trash_count}</span>
+                </a>
+            </nav>
+        </header>
+
+        {if $tab == 'events'}
+        <section class="userlog-filters">
+            <form method="get" class="userlog-filters__form">
+                <input type="hidden" name="tab" value="events" />
+                <div class="userlog-filters__row">
+                    <input type="search" name="query" value="{$filters.query|escape}" placeholder="Поиск: название, описание или ID…" class="userlog-input userlog-input--wide" />
+                    <select name="user" class="userlog-select">
+                        <option value="0">Все сотрудники</option>
+                        {foreach $users as $u}
+                        <option value="{$u.contact_id}" {if $filters.contact_id == $u.contact_id}selected{/if}>{$u.contact_name|escape}</option>
+                        {/foreach}
+                    </select>
+                    <select name="action" class="userlog-select">
+                        <option value="">Все действия</option>
+                        {foreach $action_labels as $key => $label}
+                        <option value="{$key|escape}" {if $filters.action == $key}selected{/if}>{$label|escape}</option>
+                        {/foreach}
+                    </select>
+                    <select name="entity" class="userlog-select">
+                        <option value="">Все объекты</option>
+                        <option value="product" {if $filters.entity_type == 'product'}selected{/if}>Товары</option>
+                        <option value="category" {if $filters.entity_type == 'category'}selected{/if}>Категории</option>
+                        <option value="post" {if $filters.entity_type == 'post'}selected{/if}>Записи блога</option>
+                        <option value="auth" {if $filters.entity_type == 'auth'}selected{/if}>Входы</option>
+                    </select>
+                    <input type="date" name="from" value="{$filters.date_from|escape}" class="userlog-input" title="С даты" />
+                    <input type="date" name="to" value="{$filters.date_to|escape}" class="userlog-input" title="По дату" />
+                    <label class="userlog-checkbox">
+                        <input type="checkbox" name="show_auth" value="1" {if !$filters.hide_auth}checked{/if} />
+                        Показывать входы
+                    </label>
+                    <button type="submit" class="userlog-btn userlog-btn--primary">Применить</button>
+                    <a href="?tab=events" class="userlog-btn userlog-btn--ghost">Сбросить</a>
+                </div>
+            </form>
+        </section>
+
+        <main class="userlog-timeline">
+            {if $events}
+            {foreach $events as $e}
+            <article class="userlog-event" data-id="{$e.id}" style="--event-color: {$e.color|escape}">
+                <div class="userlog-event__marker"></div>
+                <div class="userlog-event__card">
+                    <div class="userlog-event__head">
+                        <span class="userlog-event__icon"><i class="icon16 {$e.icon|escape}"></i></span>
+                        <div class="userlog-event__meta">
+                            <time datetime="{$e.datetime|escape}">{$e.datetime|wa_datetime:'humandatetime'}</time>
+                            {if $e.contact_name}
+                            <span class="userlog-event__user">{$e.contact_name|escape}</span>
+                            {/if}
+                        </div>
+                        <span class="userlog-event__type">{$e.action_label|escape}</span>
+                        <span class="userlog-event__id">#{$e.id}</span>
+                    </div>
+
+                    {if $e.title}
+                    <h3 class="userlog-event__title">
+                        {if $e.entity_url}
+                        <a href="{$e.entity_url|escape}" target="_blank" class="userlog-event__title-link">{$e.title|escape}</a>
+                        {if $e.entity_id}<span class="userlog-event__entity-id">#{$e.entity_id}</span>{/if}
+                        {else}
+                        {$e.title|escape}
+                        {/if}
+                    </h3>
+                    {/if}
+
+                    {if $e.action == 'rollback' && $e.rollback_of_event_id}
+                    <p class="userlog-event__rollback-note">Отменено действие <strong>#{$e.rollback_of_event_id}</strong></p>
+                    {/if}
+
+                    {if $e.diff}
+                    <div class="userlog-event__diff">
+                        {foreach $e.diff as $line}
+                        <div class="userlog-diff-row">
+                            <span class="userlog-diff-row__label">{$line.label|escape}</span>
+                            <span class="userlog-diff-row__values">
+                                <span class="userlog-diff-row__was">{$line.before|escape}</span>
+                                <span class="userlog-diff-row__arrow">→</span>
+                                <span class="userlog-diff-row__now">{$line.after|escape}</span>
+                            </span>
+                        </div>
+                        {/foreach}
+                    </div>
+                    {elseif $e.summary}
+                    <p class="userlog-event__summary">{$e.summary|escape}</p>
+                    {/if}
+
+                    {if $e.restore_preview}
+                    <div class="userlog-event__restore-preview">
+                        <span class="userlog-event__restore-preview-label">При откате восстановится:</span>
+                        {foreach $e.restore_preview as $line}
+                        <span class="userlog-event__restore-preview-line">{$line|escape}</span>
+                        {/foreach}
+                    </div>
+                    {/if}
+
+                    <div class="userlog-event__actions">
+                        {if $can_rollback && $e.can_rollback && !$e.rolled_back}
+                        <button type="button"
+                                class="userlog-btn userlog-btn--sm userlog-btn--danger js-event-rollback"
+                                data-id="{$e.rollback_event_id}"
+                                {if $e.restore_preview_text}data-restore="{$e.restore_preview_text|escape}"{/if}>Откатить к предыдущей версии</button>
+                        {elseif $e.rolled_back}
+                        <div class="userlog-event__rollback-done">
+                            <span class="userlog-tag userlog-tag--rollback">Откат выполнен</span>
+                            {if $e.rolled_back_at}
+                            <span class="userlog-event__rollback-meta">
+                                {if $e.rolled_back_by_name}{$e.rolled_back_by_name|escape} · {/if}
+                                {$e.rolled_back_at|wa_datetime:'humandatetime'}
+                            </span>
+                            {/if}
+                        </div>
+                        {elseif $e.action == 'product.update' || $e.action == 'post.update' || $e.action == 'category.move' || $e.action == 'category.sort'}
+                        <span class="userlog-tag userlog-tag--muted">Откат недоступен — нет снимка «до»</span>
+                        {/if}
+                    </div>
+                </div>
+            </article>
+            {/foreach}
+            {else}
+            <div class="userlog-empty">
+                <i class="icon48 info"></i>
+                <p>Записей пока нет. Действия начнут фиксироваться после активации плагина в магазине.</p>
+            </div>
+            {/if}
+        </main>
+
+        {else}
+
+        <section class="userlog-filters">
+            <form method="get" class="userlog-filters__form">
+                <input type="hidden" name="tab" value="trash" />
+                <input type="search" name="query" value="{$filters.query|escape}" placeholder="Поиск в корзине…" class="userlog-input userlog-input--wide" />
+                <select name="entity" class="userlog-select">
+                    <option value="">Все типы</option>
+                    <option value="product" {if $smarty.get.entity == 'product'}selected{/if}>Товары</option>
+                    <option value="category" {if $smarty.get.entity == 'category'}selected{/if}>Категории</option>
+                </select>
+                <button type="submit" class="userlog-btn userlog-btn--primary">Найти</button>
+            </form>
+        </section>
+
+        <div class="userlog-trash-grid">
+            {if $trash_items}
+            {foreach $trash_items as $t}
+            <div class="userlog-trash-card" data-id="{$t.id}">
+                <div class="userlog-trash-card__type">{if $t.entity_type == 'product'}Товар{else}Категория{/if}</div>
+                <h3 class="userlog-trash-card__name">{$t.name|escape}</h3>
+                <dl class="userlog-trash-card__meta">
+                    <dt>ID</dt><dd>#{$t.original_id}</dd>
+                    <dt>Удалил</dt><dd>{$t.deleted_by_name|default:'—'|escape}</dd>
+                    <dt>Удалено</dt><dd>{$t.deleted_at|wa_datetime:'humandatetime'}</dd>
+                    <dt>Хранится до</dt><dd>{$t.purge_at|wa_datetime:'humandate'}</dd>
+                </dl>
+                {if $can_trash}
+                <button type="button" class="userlog-btn userlog-btn--primary js-trash-restore" data-id="{$t.id}">Восстановить</button>
+                {/if}
+            </div>
+            {/foreach}
+            {else}
+            <div class="userlog-empty userlog-empty--wide">
+                <i class="icon48 trash"></i>
+                <p>Корзина пуста</p>
+            </div>
+            {/if}
+        </div>
+        {/if}
+    </div>
+</div>
+
+<script>
+    window.userlogCsrf = '{waRequest::cookie("_csrf", "")|escape:"javascript"}';
+</script>
+<script src="{$wa_app_static_url}js/userlog.js?v=1.4.1"></script>
+</body>
+</html>

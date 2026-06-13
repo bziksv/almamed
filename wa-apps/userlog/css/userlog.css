@@ -1,0 +1,457 @@
+.userlog-app {
+    padding: 0 20px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.userlog-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0 20px;
+    border-bottom: 1px solid #e8ecf1;
+    margin-bottom: 20px;
+}
+
+.userlog-header__title h1 {
+    margin: 0 0 4px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #1a1f36;
+}
+
+.userlog-header__subtitle {
+    margin: 0;
+    color: #697386;
+    font-size: 14px;
+}
+
+.userlog-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.userlog-tabs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #4f566b;
+    background: #f7f9fc;
+    font-weight: 500;
+    transition: all .15s ease;
+}
+
+.userlog-tabs__item.is-active {
+    background: #5B6ABF;
+    color: #fff;
+}
+
+.userlog-tabs__item.is-active .icon16 {
+    filter: brightness(10);
+}
+
+.userlog-badge {
+    display: inline-block;
+    min-width: 20px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.08);
+    font-size: 12px;
+    text-align: center;
+}
+
+.userlog-tabs__item.is-active .userlog-badge {
+    background: rgba(255,255,255,.25);
+}
+
+.userlog-badge--warn {
+    background: #ffe8e8;
+    color: #c62828;
+}
+
+.userlog-filters {
+    margin-bottom: 20px;
+}
+
+.userlog-filters__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.userlog-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #555;
+    white-space: nowrap;
+}
+
+.userlog-input,
+.userlog-select {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #d8dee9;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+}
+
+.userlog-input--wide {
+    flex: 1;
+    min-width: 220px;
+}
+
+.userlog-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s ease;
+}
+
+.userlog-btn--primary {
+    background: #5B6ABF;
+    color: #fff;
+}
+
+.userlog-btn--primary:hover {
+    background: #4a58a8;
+}
+
+.userlog-btn--ghost {
+    background: #f0f3f8;
+    color: #4f566b;
+}
+
+.userlog-btn--danger {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.userlog-btn--sm {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
+.userlog-btn.is-loading {
+    opacity: .65;
+    pointer-events: none;
+    cursor: wait;
+}
+
+.userlog-btn.is-loading::after {
+    content: '…';
+    margin-left: 4px;
+}
+
+.userlog-layout {
+    display: block;
+}
+
+.userlog-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 960px;
+}
+
+.userlog-event {
+    display: grid;
+    grid-template-columns: 12px 1fr;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.userlog-event__marker {
+    width: 4px;
+    margin: 8px auto;
+    border-radius: 4px;
+    background: var(--event-color, #7986CB);
+}
+
+.userlog-event__card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, .04);
+}
+
+.userlog-event__card:hover {
+    border-color: #cfd8e8;
+}
+
+.userlog-event__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.userlog-event__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #f4f6fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.userlog-event__meta {
+    flex: 1;
+    font-size: 13px;
+    color: #697386;
+}
+
+.userlog-event__user {
+    margin-left: 8px;
+    font-weight: 500;
+    color: #1a1f36;
+}
+
+.userlog-event__type {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f4f6fb;
+    color: #4f566b;
+}
+
+.userlog-event__id {
+    font-size: 12px;
+    color: #9aa5b5;
+    font-variant-numeric: tabular-nums;
+}
+
+.userlog-event__title {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #1a1f36;
+}
+
+.userlog-event__title-link {
+    color: #5B6ABF;
+    text-decoration: none;
+}
+
+.userlog-event__title-link:hover {
+    text-decoration: underline;
+}
+
+.userlog-event__entity-id {
+    margin-left: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #697386;
+}
+
+.userlog-event__summary {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #4f566b;
+}
+
+.userlog-event__diff {
+    margin: 0 0 14px;
+    border: 1px solid #eef2f7;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fafbfc;
+}
+
+.userlog-diff-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.userlog-diff-row:last-child {
+    border-bottom: none;
+}
+
+.userlog-diff-row__label {
+    min-width: 120px;
+    font-weight: 500;
+    color: #4f566b;
+}
+
+.userlog-diff-row__values {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.userlog-diff-row__was {
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #ffebee;
+    color: #c62828;
+    text-decoration: line-through;
+    text-decoration-color: rgba(198, 40, 40, .45);
+}
+
+.userlog-diff-row__arrow {
+    color: #9aa5b5;
+    font-size: 12px;
+}
+
+.userlog-diff-row__now {
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.userlog-event__restore-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    font-size: 13px;
+}
+
+.userlog-event__restore-preview-label {
+    font-weight: 600;
+    color: #f57f17;
+}
+
+.userlog-event__restore-preview-line {
+    color: #5d4037;
+}
+
+.userlog-event__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.userlog-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.userlog-tag--muted {
+    background: #f0f3f8;
+    color: #697386;
+}
+
+.userlog-tag--rollback {
+    background: #ede7f6;
+    color: #5e35b1;
+}
+
+.userlog-event__rollback-done {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+}
+
+.userlog-event__rollback-meta {
+    font-size: 13px;
+    color: #697386;
+}
+
+.userlog-event__rollback-note {
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #ede7f6;
+    color: #4527a0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.userlog-trash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.userlog-trash-card {
+    background: #fff;
+    border: 1px solid #e8ecf1;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.userlog-trash-card__type {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #697386;
+    margin-bottom: 6px;
+}
+
+.userlog-trash-card__name {
+    margin: 0 0 12px;
+    font-size: 17px;
+}
+
+.userlog-trash-card__meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 12px;
+    font-size: 13px;
+    margin: 0 0 16px;
+}
+
+.userlog-trash-card__meta dt {
+    color: #697386;
+}
+
+.userlog-trash-card__meta dd {
+    margin: 0;
+    color: #1a1f36;
+}
+
+.userlog-empty {
+    padding: 60px 24px;
+    text-align: center;
+    color: #697386;
+    background: #f7f9fc;
+    border-radius: 12px;
+}
+
+.userlog-empty--wide {
+    grid-column: 1 / -1;
+}
+
+.userlog-loading {
+    opacity: .5;
+    pointer-events: none;
+}

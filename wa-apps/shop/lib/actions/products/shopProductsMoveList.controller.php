@@ -41,10 +41,19 @@ class shopProductsMoveListController extends waJsonController
         if ($type == 'category') {
             $category_model = new shopCategoryModel();
 
+            $before = $category_model->getById($id);
+            $before_snapshot = $before ? shopUserlogPlugin::snapshotCategoryMove($before) : null;
 
             if (!$category_model->move($id, $before_id, $parent_id)) {
                 $this->errors = array('Error when move');
             } else {
+                $category_model->repair();
+                if ($before_snapshot && ($plugin = shopUserlogPlugin::getInstance())) {
+                    $after = $category_model->getById($id);
+                    if ($after) {
+                        $plugin->logCategoryMove($id, $before_snapshot, shopUserlogPlugin::snapshotCategoryMove($after));
+                    }
+                }
                 if ($parent_id) {
                     $parent = $category_model->getById($parent_id);
                     $this->response['count'] = array(

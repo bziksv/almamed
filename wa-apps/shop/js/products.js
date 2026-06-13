@@ -262,6 +262,31 @@
             // as well as sort and order for 'All Products' view. Mostly for legacy reasons.
         },
 
+        normalizeFilterParam: function(value) {
+            if (!value) {
+                return value;
+            }
+            var v = String(value);
+            var i = 0;
+            while (i < 3 && /%[0-9A-Fa-f]{2}/.test(v)) {
+                try {
+                    var decoded = decodeURIComponent(v.replace(/\+/g, ' '));
+                    if (decoded === v) {
+                        break;
+                    }
+                    v = decoded;
+                } catch (e) {
+                    break;
+                }
+                i++;
+            }
+            return v;
+        },
+
+        encodeFilterParam: function(value) {
+            return encodeURIComponent(this.normalizeFilterParam(value));
+        },
+
         buildProductsUrlComponent: function (params) {
 
             params = this.paramsFromSession(params);
@@ -276,7 +301,11 @@
                 + (params.edit ? '&edit=' + params.edit : '')
                 + (params.hash ? '&hash=' + params.hash : '')
                 + (params.page ? '&page=' + params.page : '')
-                + (params.type_id ? '&type_id=' + params.type_id : '')).
+                + (params.type_id ? '&type_id=' + params.type_id : '')
+                + (params.filter_sku ? '&filter_sku=' + this.encodeFilterParam(params.filter_sku) : '')
+                + (params.filter_name ? '&filter_name=' + this.encodeFilterParam(params.filter_name) : '')
+                + (params.filter_badge ? '&filter_badge=' + this.encodeFilterParam(params.filter_badge) : '')
+                + (params.filter_brand ? '&filter_brand=' + params.filter_brand : '')).
                 slice(1) // cut of first '&'
             ;
         },
@@ -510,7 +539,21 @@
             $.shop.jsonPost(url, data, success, error);
         },
 
+        /**
+         * Static category forms include thousands of hidden filter inputs.
+         * PHP max_input_vars truncates POST and drops _csrf → 403.
+         */
+        prepareListFormForSubmit: function (form) {
+            var $form = $(form);
+            var $dynamic = $form.find('#s-dynamic-field-group');
+            if ($dynamic.length && !$dynamic.is(':visible')) {
+                $dynamic.find(':input').prop('disabled', true);
+            }
+            return $form;
+        },
+
         _iframePost: function (form, success, error) {
+            $.products.prepareListFormForSubmit(form);
             var form_id = form.attr('id');
             var iframe_id = form_id + '-iframe';
 

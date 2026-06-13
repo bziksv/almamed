@@ -77,6 +77,9 @@ class shopProductsDeleteListController extends waJsonController
         $item = null;
 
         if ($model = $this->getModel($hash[0])) {
+            if ($hash[0] == 'category' && ($plugin = shopUserlogPlugin::getInstance())) {
+                $plugin->beforeCategoryDelete($hash[1]);
+            }
             if (!$model->delete($hash[1])) {
                 return false;
             }
@@ -108,6 +111,10 @@ class shopProductsDeleteListController extends waJsonController
             $not_allowed_ids = array_diff($product_ids, $delete_ids);
             $this->response['deleted'] = $delete_ids;
             $this->response['not_allowed'] = $not_allowed_ids;
+
+            if ($delete_ids && ($plugin = shopUserlogPlugin::getInstance())) {
+                $plugin->beforeProductsDelete($delete_ids);
+            }
 
             $this->logAction('product_delete', $delete_ids);
             return $product_model->delete($delete_ids);

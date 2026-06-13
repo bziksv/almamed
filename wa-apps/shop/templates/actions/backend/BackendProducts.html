@@ -102,8 +102,19 @@
             <i class="icon16 {if $categories->isExpanded()}darr{else}rarr{/if} collapse-handler-ajax" id="s-category-list-handler"></i>[`Categories`]{if $wa->userRights('setscategories') && $categories->count()} <i class="icon16 ss sort-bw" id="s-forcesort-by-name" title="[`Sort by alphabet`]"></i>{/if}
         </h5>
 
-        <div class="hierarchical s-collection-list" id="s-category-list"
+        <div class="s-category-sidebar-tools">
+            <div id="s-category-current-path" class="s-category-current-path hint" style="display:none;"></div>
+            <div class="s-category-search-form">
+                <i class="icon16 ss search-bw"></i>
+                <input type="search" id="s-category-search" class="s-category-search" autocomplete="off" placeholder="{_w('Search categories')|escape:'html'}">
+            </div>
+            <div id="s-category-search-results" class="s-category-search-results" style="display:none;"></div>
+        </div>
+
+        <div id="s-category-list-wrap"
             {if !$categories->isExpanded()}style="display:none;"{/if}
+        >
+        <div class="hierarchical s-collection-list" id="s-category-list"
         >
             {include './include.categories.html' categories=$categories->getList() inline}
             <div class="block s-empty-list" {if $categories->count()}style="display:none;"{/if}>
@@ -115,6 +126,7 @@
                     {/if}
                 </p>
             </div>
+        </div>
         </div>
     </div>
 
@@ -245,7 +257,7 @@
 {% var icons = { category: ['folder', 'funnel'], set: ['ss set', 'funnel'] }; %}
 {% var dynamic = {/literal}'{shopCategoryModel::TYPE_DYNAMIC}'{literal}; %}
 <li class="drag-newposition" data-type="{%#o.type%}"><\/li>
-<li class="dr {% if (o.item.type == dynamic) { %}dynamic{% } %}" id="{%#o.type%}-{%#o.item.id%}" data-type="{%#o.type%}">
+<li class="dr {% if (o.item.type == dynamic) { %}dynamic{% } %}" id="{%#o.type%}-{%#o.item.id%}" data-type="{%#o.type%}"{% if (o.type == 'category') { %} data-parent-id="{%#o.item.parent_id || 0%}"{% } %}>
     <span class="counters">
         <span class="count">{%#''+(o.item.count || 0)%}<\/span>
         {% if (o.type == 'category') { %}

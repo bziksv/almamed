@@ -616,7 +616,12 @@
                 var result = {};
                 for (var i = 0; i < p.length; i++) {
                     var t = p[i].split('=');
-                    result[t[0]] = t.length > 1 ? t[1] : '';
+                    var key = t[0];
+                    var val = t.length > 1 ? t.slice(1).join('=') : '';
+                    try {
+                        val = decodeURIComponent(val.replace(/\+/g, ' '));
+                    } catch (e) { }
+                    result[key] = val;
                 }
                 return result;
             },

@@ -41,7 +41,17 @@ class shopProductMoveController extends waJsonController
     public function moveInsideCategory($product_ids, $before_id = null, $list_id)
     {
         $category_products_model = new shopCategoryProductsModel();
+        $sort_before = array();
+        foreach ($product_ids as $pid) {
+            $row = $category_products_model->getByField(array('category_id' => $list_id, 'product_id' => $pid));
+            if ($row) {
+                $sort_before[$pid] = (int) $row['sort'];
+            }
+        }
         $category_products_model->move($product_ids, $before_id, $list_id);
+        if ($plugin = shopUserlogPlugin::getInstance()) {
+            $plugin->logProductSort($list_id, $product_ids, $before_id, $sort_before);
+        }
     }
 
     public function moveInsideSet($product_ids, $before_id = null, $list_id = 0)

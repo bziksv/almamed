@@ -4,6 +4,7 @@
           action="?module=products&action=saveListSettings&{$type}_id=0&parent_id={if !empty($parent)}{$parent.id}{else}0{/if}"
           enctype="multipart/form-data"
     >
+    {$wa->csrf()}
     <div class="dialog-window">
         <div class="dialog-content">
             <div class="dialog-content-indent">
@@ -64,7 +65,6 @@
                 [`or`] <a class="cancel" href="#">[`cancel`]</a>
             </div>
         </div>
-        {$wa->csrf()}
     </div>
     </form>
 </div>

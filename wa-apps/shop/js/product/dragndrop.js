@@ -28,7 +28,8 @@
 
         initDragProducts: function() {
             var product_list = $('#product-list');
-            var context = product_list.find('.product:not(.s-alien)');
+            var selector = $.product_dragndrop.options.allow_subcategory_sort ? '.product' : '.product:not(.s-alien)';
+            var context = product_list.find(selector);
             context.find('.drag-handle').live('selectstart', function() {
                 document.onselectstart = function() {
                     return false;
@@ -116,7 +117,7 @@
                     
                     // activate item
                     var self = $(this);
-                    if (self.hasClass('s-alien')) {
+                    if (self.hasClass('s-alien') && !$.product_dragndrop.options.allow_subcategory_sort) {
                         return false;
                     }
                     if (!ui.draggable.hasClass('product')) {
@@ -155,8 +156,8 @@
                     }
                     
                     var before_id = null;
-                    // Special case: self is alien (from child categories)
-                    if (self.hasClass('s-alien')) {
+                    // Special case: self is alien (from child categories) when subcategory sort is disabled
+                    if (self.hasClass('s-alien') && !$.product_dragndrop.options.allow_subcategory_sort) {
                         var closest = self.nextAll(':not(.s-alien):first');
                         if (!closest.length) {
                             closest = self.prevAll(':not(.s-alien):first');
@@ -346,6 +347,9 @@
                                     parent_list.parent('li').children('i').remove();
                                     parent_list.remove();
                                     $.categories_tree.setCollapsed(old_parent_id);
+                                }
+                                if ($.categories_tree && $.categories_tree.repairListDom) {
+                                    $.categories_tree.repairListDom();
                                 }
                             },
                             error: function(r) {
@@ -571,6 +575,9 @@
                                     parent_list.parent('li').children('i').remove();
                                     parent_list.remove();
                                     $.categories_tree.setCollapsed(old_parent_id);
+                                }
+                                if ($.categories_tree && $.categories_tree.repairListDom) {
+                                    $.categories_tree.repairListDom();
                                 }
                                 // has children, but not loaded yet
                                 if (!list) {

@@ -269,6 +269,13 @@ class shopEditPricePluginSaveController extends waJsonController
                 }
                 $product_model->updateById($product_id, $update);
 
+                if ($plugin = shopUserlogPlugin::getInstance()) {
+                    $after_snapshot = shopUserlogProductSnapshot::captureForLog($product_id);
+                    if ($after_snapshot) {
+                        $plugin->logEditpriceChange($product_id, ifset($old_data, $product_id, array()), $after_snapshot);
+                    }
+                }
+
                 // save event
                 foreach ($update_skus as $sku_id => $s) {
                     $update_skus[$sku_id]['id'] = $sku_id;

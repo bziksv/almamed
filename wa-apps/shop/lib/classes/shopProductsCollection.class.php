@@ -16,6 +16,7 @@ class shopProductsCollection
     protected $having = array();
     protected $count;
     protected $order_by = 'p.create_datetime DESC';
+    protected $order_by_parsed = null;
     protected $group_by;
     protected $joins;
     protected $join_index = array();
@@ -465,6 +466,7 @@ SQL;
 
         if ($this->info['type'] == shopCategoryModel::TYPE_STATIC) {
             $alias = $this->addJoin('shop_category_products');
+            $descendant_ids = null;
             if (true
                 /* && wa()->getEnv() == 'frontend'*/
                 && $this->info['include_sub_categories']
@@ -478,7 +480,14 @@ SQL;
                 $this->where[] = $alias.".category_id = ".(int)$id;
             }
             if ((empty($this->info['sort_products']) && !waRequest::get('sort')) || waRequest::get('sort') == 'sort') {
-                $this->order_by = $alias.'.sort ASC';
+                $direction = waRequest::get('order') == 'desc' ? 'DESC' : 'ASC';
+                $this->order_by_parsed = array('sort', strtolower($direction) === 'desc' ? 'desc' : 'asc');
+                $category_products_model = new shopCategoryProductsModel();
+                if (!empty($descendant_ids)) {
+                    $this->order_by = $category_products_model->getContextSortOrderExpression((int)$id, $alias, $descendant_ids, $direction);
+                } else {
+                    $this->order_by = $alias.'.sort '.$direction;
+                }
             }
         } else {
             $hash = $this->hash;
@@ -1145,6 +1154,7 @@ SQL;
      */
     public function orderBy($field, $order = 'ASC')
     {
+        $this->order_by_parsed = null;
         if (is_array($field)) {
             if (count($field) > 1) {
                 list($field, $order) = $field;
@@ -1196,6 +1206,9 @@ SQL;
      */
     public function getOrderBy()
     {
+        if ($this->order_by_parsed !== null) {
+            return $this->order_by_parsed;
+        }
         if (!$this->order_by) {
             return array();
         } else {

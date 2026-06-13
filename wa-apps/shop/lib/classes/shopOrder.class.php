@@ -1329,7 +1329,7 @@ class shopOrder implements ArrayAccess
         $parsed = array();
         if ($data) {
             foreach ($data as $k => $v) {
-                if ($k && $k{0} !== '_') {
+                if ($k && $k[0] !== '_') {
                     $parsed['payment_params_'.$k] = $v;
                     $this->data['params']['payment_params_'.$k] = $v;
                 }
@@ -3389,7 +3389,7 @@ HTML;
         $parsed = array();
         if ($data) {
             foreach ($data as $k => $v) {
-                if ($k && $k{0} !== '_') {
+                if ($k && $k[0] !== '_') {
                     $parsed['shipping_params_'.$k] = $v;
                     $this->data['params']['shipping_params_'.$k] = $v;
                 }

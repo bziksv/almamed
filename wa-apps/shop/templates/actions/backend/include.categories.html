@@ -21,13 +21,13 @@
       {if $category.depth == $depth}
           </li>
           <li class="drag-newposition" data-type="category"></li>
-          <li class="{if $categories_rights}dr{/if} {if $category.type == shopCategoryModel::TYPE_DYNAMIC}dynamic{/if}" id="category-{$category.id}" data-type="category">
+          <li class="{if $categories_rights}dr{/if} {if $category.type == shopCategoryModel::TYPE_DYNAMIC}dynamic{/if}" id="category-{$category.id}" data-type="category" data-parent-id="{$category.parent_id|default:0}">
       {/if}
 
       {if $category.depth > $depth}
           <ul class="menu-v with-icons">
               <li class="drag-newposition" data-type="category"></li>
-              <li class="{if $categories_rights}dr{/if} {if $category.type == shopCategoryModel::TYPE_DYNAMIC}dynamic{/if}" id="category-{$category.id}" data-type="category">
+              <li class="{if $categories_rights}dr{/if} {if $category.type == shopCategoryModel::TYPE_DYNAMIC}dynamic{/if}" id="category-{$category.id}" data-type="category" data-parent-id="{$category.parent_id|default:0}">
               {$depth = $category.depth}
       {/if}
         <i class="icon16 loading" style="float:right; display:none;"></i>

@@ -45,6 +45,7 @@ class shopBackendLocAction extends waViewAction
             'is',
             'Stop upload',
             'Please select a category',
+            'No categories found',
             'Processing',
             'All orders',
             'Tag',

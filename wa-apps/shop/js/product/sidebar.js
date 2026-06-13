@@ -21,7 +21,14 @@
                 if (options.before_id) {
                     data.before_id = options.before_id;
                 }
-                $.products.jsonPost('?module=products&action=moveList', data, options.success, options.error);
+                $.products.jsonPost('?module=products&action=moveList', data, function(r) {
+                    if ($.categories_tree && $.categories_tree.repairListDom) {
+                        $.categories_tree.repairListDom();
+                    }
+                    if (typeof options.success === 'function') {
+                        options.success(r);
+                    }
+                }, options.error);
             });
 
             // SIDEBAR CUSTOM EVENT HANDLERS
@@ -315,6 +322,8 @@
                         if ($('#s-category-description-content').length) {
                             $('#s-category-description-content').waEditor('sync');
                         }
+
+                        $.products.prepareListFormForSubmit(form);
 
                         if (form.find('input:file').length) {
                             $.products._iframePost(form, success, error);

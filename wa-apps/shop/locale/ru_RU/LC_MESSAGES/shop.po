@@ -1740,6 +1740,14 @@ msgstr "Наименование"
 msgid "Categories"
 msgstr "Категории"
 
+#: /wa-apps/shop/templates/actions/backend/BackendProducts.html:109
+msgid "Search categories"
+msgstr "Поиск по категориям"
+
+#: /wa-apps/shop/js/backend/categories_tree.js
+msgid "No categories found"
+msgstr "Категории не найдены"
+
 #: /wa-apps/shop/templates/actions/product/Product.html:384
 msgid "Please select a category"
 msgstr "Выберите категорию"
@@ -10861,3 +10869,15 @@ msgstr "Актуальное наименование"
 
 msgid "Quick start"
 msgstr "Быстрый старт"
+
+msgid "All badges"
+msgstr "Все наклейки"
+
+msgid "All brands"
+msgstr "Все бренды"
+
+msgid "Brand"
+msgstr "Бренд"
+
+msgid "%d badges selected"
+msgstr "Выбрано наклеек: %d"

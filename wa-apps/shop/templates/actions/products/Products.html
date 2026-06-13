@@ -279,6 +279,81 @@
             </div>
         {/if}
 
+        <div class="s-product-list-filters" id="s-product-list-filters">
+            <form class="s-product-list-filters__form" id="s-product-list-filters-form">
+                <div class="s-product-list-filters__row">
+                    <label class="s-product-list-filters__field">
+                        <span class="s-product-list-filters__label">[`SKU`]</span>
+                        <input type="search" name="filter_sku" value="{$list_filters.filters.sku|escape}" class="s-product-list-filters__input" placeholder="[`SKU`]">
+                    </label>
+                    <label class="s-product-list-filters__field">
+                        <span class="s-product-list-filters__label">[`Name`]</span>
+                        <input type="search" name="filter_name" value="{$list_filters.filters.name|escape}" class="s-product-list-filters__input" placeholder="[`Name`]">
+                    </label>
+                    <div class="s-product-list-filters__field s-product-list-filters__field--badge">
+                        <span class="s-product-list-filters__label">[`Badge`]</span>
+                        <div class="s-product-list-filters__multiselect" id="s-filter-badge-multiselect">
+                            <button type="button" class="s-product-list-filters__multiselect-btn">
+                                {if $list_filters.selected_badge_options|@count}
+                                    {sprintf(_w('%d badges selected'), $list_filters.selected_badge_options|@count)}
+                                {else}
+                                    [`All badges`]
+                                {/if}
+                                <i class="icon10 uarr"></i>
+                            </button>
+                            <div class="s-product-list-filters__multiselect-panel">
+                                <div class="s-product-list-filters__dropdown-search">
+                                    <input type="search" class="s-product-list-filters__dropdown-search-input js-filter-dropdown-search" placeholder="[`Search`]" autocomplete="off">
+                                </div>
+                                <div class="s-product-list-filters__dropdown-list">
+                                    {foreach $list_filters.options.badges as $badge_id => $badge_name}
+                                    <label class="s-product-list-filters__multiselect-item" data-label="{$badge_name|escape}">
+                                        <input type="checkbox" name="filter_badge[]" form="s-product-list-filters-form" value="{$badge_id|escape}"
+                                            {if in_array($badge_id, $list_filters.selected_badge_options)}checked{/if}>
+                                        <span>{$badge_name|escape}</span>
+                                    </label>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {if $list_filters.options.brands}
+                    <div class="s-product-list-filters__field s-product-list-filters__field--brand">
+                        <span class="s-product-list-filters__label">[`Brand`]</span>
+                        <div class="s-product-list-filters__multiselect" id="s-filter-brand-dropdown">
+                            <input type="hidden" name="filter_brand" value="{$list_filters.filters.brand|escape}">
+                            <button type="button" class="s-product-list-filters__multiselect-btn">
+                                {if $list_filters.filters.brand && isset($list_filters.options.brands[$list_filters.filters.brand])}
+                                    {$list_filters.options.brands[$list_filters.filters.brand]|escape}
+                                {else}
+                                    [`All brands`]
+                                {/if}
+                                <i class="icon10 uarr"></i>
+                            </button>
+                            <div class="s-product-list-filters__multiselect-panel">
+                                <div class="s-product-list-filters__dropdown-search">
+                                    <input type="search" class="s-product-list-filters__dropdown-search-input js-filter-dropdown-search" placeholder="[`Search`]" autocomplete="off">
+                                </div>
+                                <div class="s-product-list-filters__dropdown-list">
+                                    <button type="button" class="s-product-list-filters__dropdown-option{if !$list_filters.filters.brand} is-selected{/if}" data-value="0" data-label="{_w('All brands')|escape}">[`All brands`]</button>
+                                    {foreach $list_filters.options.brands as $brand_id => $brand_name}
+                                    <button type="button" class="s-product-list-filters__dropdown-option{if $list_filters.filters.brand == $brand_id} is-selected{/if}" data-value="{$brand_id}" data-label="{$brand_name|escape}">{$brand_name|escape}</button>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="s-product-list-filters__actions">
+                        <input type="submit" class="button green" value="[`Filter`]">
+                        {if $list_filters.active}
+                        <a href="#" class="s-product-list-filters__reset small">[`Reset`]</a>
+                        {/if}
+                    </div>
+                </div>
+            </form>
+        </div>
+
         {$include_name = './product_list_'|cat:$view:'.html'}
         {include file=$include_name}
 
@@ -351,7 +426,7 @@
                         <li>
                             <hr>
                             <label>
-                                <input type="checkbox" name="s-delete-sub" value="1" checked="checked">
+                                <input type="checkbox" name="s-delete-sub" value="1">
                                 <em>[`Delete all child categories`]</em>
                             </label>
                         </li>
@@ -404,6 +479,7 @@
         category_count: {if $info && $info['hash'] == 'category' && $info['type'] == shopCategoryModel::TYPE_STATIC && !$info['include_sub_categories']}{$info['count']}{else}null{/if},
         edit: '{$wa->get("edit")}',
         sortable: {if $manual && $sort == 'sort'}true{else}false{/if},
+        allow_subcategory_sort: {if $manual && $sort == 'sort' && !empty($info.include_sub_categories)}true{else}false{/if},
         enable_2x: {if $wa->shop->config('enable_2x')}true{else}false{/if},
         text: {$text|default:''|json_encode},
         primary_currency: {$primary_currency|json_encode},
@@ -412,6 +488,10 @@
         currencies: {$currencies|json_encode},
         *}
         stocks: {$stocks|json_encode},
+        filter_params: {$list_filters.url_params|json_encode},
+        badge_filter_all_label: {_w('All badges')|json_encode},
+        badge_filter_selected_label: {_w('%d badges selected')|json_encode},
+        brand_filter_all_label: {_w('All brands')|json_encode},
         {if $lazy_loading}
             lazy_loading: {
                 auto: true,

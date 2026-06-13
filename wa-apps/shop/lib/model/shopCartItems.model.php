@@ -493,7 +493,7 @@ SQL;
         $count_condition = '';
         $count_field = 's.count';
         if ($check_count) {
-            if (is_string($check_count) && $check_count{0} == 'v') {
+            if (is_string($check_count) && $check_count[0] == 'v') {
                 // Virtual stock id: check against sum of several stock counts
                 $virtualsku_id = substr($check_count, 1);
                 if (wa_is_int($virtualsku_id)) {

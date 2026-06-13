@@ -9,6 +9,8 @@ class shopProductsLoadListController extends shopProductListAction
         $total_count = waRequest::get('total_count', 0, waRequest::TYPE_INT);
         $products_per_page = $config->getOption('products_per_page');
 
+        $this->initListFilters();
+
         $columns = self::getEnabledColumns();
         $columns[] = 'image';
         $options = array(

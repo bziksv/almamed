@@ -1,0 +1,20 @@
+Резервная копия патчей Shop-Script (2026-06-09)
+================================================
+
+original/  — файлы ДО изменений (из git HEAD)
+patched/   — текущие изменённые файлы
+all-changes.patch         — все правки (сортировка + наклейка + наличие)
+category-sort-only.patch  — только патч сортировки категорий
+
+Откат ВСЕХ правок из корня проекта:
+  git checkout HEAD -- wa-apps/shop/js/product/dragndrop.js wa-apps/shop/js/product/list.js wa-apps/shop/lib/classes/shopProductListAction.class.php wa-apps/shop/lib/classes/shopProductsCollection.class.php wa-apps/shop/lib/model/shopCategoryProducts.model.php wa-apps/shop/templates/actions/products/Products.html wa-apps/shop/templates/actions/products/product_list_skus.html wa-apps/shop/templates/actions/products/product_list_table.html
+
+Откат только сортировки (скопировать original поверх):
+  cp _backup/shop-patches-2026-06-09/original/wa-apps/shop/lib/model/shopCategoryProducts.model.php wa-apps/shop/lib/model/
+  cp _backup/shop-patches-2026-06-09/original/wa-apps/shop/lib/classes/shopProductsCollection.class.php wa-apps/shop/lib/classes/
+  cp _backup/shop-patches-2026-06-09/original/wa-apps/shop/js/product/dragndrop.js wa-apps/shop/js/product/
+  cp _backup/shop-patches-2026-06-09/original/wa-apps/shop/templates/actions/products/Products.html wa-apps/shop/templates/actions/products/
+  cp _backup/shop-patches-2026-06-09/original/wa-apps/shop/templates/actions/products/product_list_skus.html wa-apps/shop/templates/actions/products/
+
+Важно: данные в БД (shop_category_products.sort) патч сам не меняет.
+Меняются только при перетаскивании в админке.

@@ -40,6 +40,8 @@ class shopProductsAction extends shopProductListAction
         $stock_model = new shopStockModel();
         $stocks = $stock_model->getAll('id');
 
+        $list_filters = $this->initListFilters();
+
         $products = $this->getProducts(array(
             'fields' => '*,'.join(',', $columns),
             'offset' => $offset,
@@ -63,6 +65,7 @@ class shopProductsAction extends shopProductListAction
             'additional_columns' => self::getAdditionalColumns(),
             'additional_columns_autocomplete' => self::isColumnsAutocomplete(),
             'primary_currency' => $config->getCurrency(),
+            'list_filters'     => $list_filters,
             /*
             'use_product_currency' => wa()->getSetting('use_product_currency'),
             'currencies' => $config->getCurrencies()*/

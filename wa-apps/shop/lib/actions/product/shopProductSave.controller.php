@@ -217,7 +217,13 @@ class shopProductSaveController extends waJsonController
             }
         }
         if ($update) {
+            if ($plugin = shopUserlogPlugin::getInstance()) {
+                $plugin->prepareProductSave($id);
+            }
             $product_model->updateById($id, $update);
+            if ($plugin = shopUserlogPlugin::getInstance()) {
+                $plugin->finalizeProductSave($id, $update);
+            }
             $this->logAction('product_edit', $id);
         }
     }

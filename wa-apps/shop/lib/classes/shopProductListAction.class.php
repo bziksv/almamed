@@ -139,6 +139,7 @@ class shopProductListAction extends waViewAction
             if (empty($p['edit_rights'])) {
                 $p['purchase_price'] = null;
             }
+            $p['count_icon_html'] = shopHelper::getStockCountIcon($p['count']);
         }
         unset($p);
 
@@ -280,6 +281,11 @@ class shopProductListAction extends waViewAction
                     'sortable' => false,
                 ),
                 array(
+                    'id'       => 'badge',
+                    'name'     => _w('Badge'),
+                    'sortable' => false,
+                ),
+                array(
                     'id'                 => 'sku_count',
                     'name'               => _w('Number of SKUs'),
                     'sortable'           => true,
@@ -380,9 +386,13 @@ class shopProductListAction extends waViewAction
     {
         $cols = wa('shop')->getSetting('list_columns', null, 'shop');
         if (!$cols) {
-            return array();
+            return array('badge');
         }
-        return explode(',', $cols);
+        $enabled = array_filter(explode(',', $cols));
+        if (!in_array('badge', $enabled, true)) {
+            $enabled[] = 'badge';
+        }
+        return $enabled;
     }
 
     /**
@@ -400,5 +410,36 @@ class shopProductListAction extends waViewAction
             }
         }
         return $auto_complete;
+    }
+
+    protected $list_filter_state;
+
+    /**
+     * Apply backend list filters and return filter state for templates.
+     *
+     * @return array
+     */
+    protected function initListFilters()
+    {
+        if ($this->list_filter_state !== null) {
+            return $this->list_filter_state;
+        }
+
+        $filters = shopProductListFilters::getFromRequest();
+        $options = shopProductListFilters::getOptions($this->collection);
+        if (shopProductListFilters::isActive($filters)) {
+            shopProductListFilters::apply($this->collection, $filters);
+        }
+        $this->list_filter_state = array(
+            'filters'    => $filters,
+            'options'    => $options,
+            'url_params' => shopProductListFilters::buildUrlParams($filters),
+            'active'     => shopProductListFilters::isActive($filters),
+            'selected_badge_options' => shopProductListFilters::getSelectedBadgeOptionKeys(
+                $options['badges'],
+                $filters['badges']
+            ),
+        );
+        return $this->list_filter_state;
     }
 }

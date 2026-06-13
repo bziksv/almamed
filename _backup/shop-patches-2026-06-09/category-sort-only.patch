@@ -1,0 +1,153 @@
+diff --git a/wa-apps/shop/js/product/dragndrop.js b/wa-apps/shop/js/product/dragndrop.js
+index a178140..2993e36 100644
+--- a/wa-apps/shop/js/product/dragndrop.js
++++ b/wa-apps/shop/js/product/dragndrop.js
+@@ -28,7 +28,8 @@
+ 
+         initDragProducts: function() {
+             var product_list = $('#product-list');
+-            var context = product_list.find('.product:not(.s-alien)');
++            var selector = $.product_dragndrop.options.allow_subcategory_sort ? '.product' : '.product:not(.s-alien)';
++            var context = product_list.find(selector);
+             context.find('.drag-handle').live('selectstart', function() {
+                 document.onselectstart = function() {
+                     return false;
+@@ -116,7 +117,7 @@
+                     
+                     // activate item
+                     var self = $(this);
+-                    if (self.hasClass('s-alien')) {
++                    if (self.hasClass('s-alien') && !$.product_dragndrop.options.allow_subcategory_sort) {
+                         return false;
+                     }
+                     if (!ui.draggable.hasClass('product')) {
+@@ -155,8 +156,8 @@
+                     }
+                     
+                     var before_id = null;
+-                    // Special case: self is alien (from child categories)
+-                    if (self.hasClass('s-alien')) {
++                    // Special case: self is alien (from child categories) when subcategory sort is disabled
++                    if (self.hasClass('s-alien') && !$.product_dragndrop.options.allow_subcategory_sort) {
+                         var closest = self.nextAll(':not(.s-alien):first');
+                         if (!closest.length) {
+                             closest = self.prevAll(':not(.s-alien):first');
+diff --git a/wa-apps/shop/lib/classes/shopProductsCollection.class.php b/wa-apps/shop/lib/classes/shopProductsCollection.class.php
+index dded6c0..7d0312b 100644
+--- a/wa-apps/shop/lib/classes/shopProductsCollection.class.php
++++ b/wa-apps/shop/lib/classes/shopProductsCollection.class.php
+@@ -465,6 +465,7 @@ SQL;
+ 
+         if ($this->info['type'] == shopCategoryModel::TYPE_STATIC) {
+             $alias = $this->addJoin('shop_category_products');
++            $descendant_ids = null;
+             if (true
+                 /* && wa()->getEnv() == 'frontend'*/
+                 && $this->info['include_sub_categories']
+@@ -478,7 +479,12 @@ SQL;
+                 $this->where[] = $alias.".category_id = ".(int)$id;
+             }
+             if ((empty($this->info['sort_products']) && !waRequest::get('sort')) || waRequest::get('sort') == 'sort') {
+-                $this->order_by = $alias.'.sort ASC';
++                $category_products_model = new shopCategoryProductsModel();
++                if (!empty($descendant_ids)) {
++                    $this->order_by = $category_products_model->getContextSortOrderExpression((int)$id, $alias, $descendant_ids);
++                } else {
++                    $this->order_by = $alias.'.sort ASC';
++                }
+             }
+         } else {
+             $hash = $this->hash;
+diff --git a/wa-apps/shop/lib/model/shopCategoryProducts.model.php b/wa-apps/shop/lib/model/shopCategoryProducts.model.php
+index 4b33c04..1c5eb75 100644
+--- a/wa-apps/shop/lib/model/shopCategoryProducts.model.php
++++ b/wa-apps/shop/lib/model/shopCategoryProducts.model.php
+@@ -76,6 +76,50 @@ class shopCategoryProductsModel extends waModel implements shopProductStorageInt
+ 
+     }
+ 
++    /**
++     * ORDER BY expression for manual sort in a category that includes subcategories.
++     * Uses sort in the viewed category when set; otherwise falls back to sort in the product's subcategory link.
++     *
++     * @param int $context_category_id Category being viewed
++     * @param string $join_alias Alias of shop_category_products join used for filtering
++     * @param int[] $descendant_category_ids Category id and all static descendant ids
++     * @return string
++     */
++    public function getContextSortOrderExpression($context_category_id, $join_alias, array $descendant_category_ids)
++    {
++        $context_category_id = (int)$context_category_id;
++        if (count($descendant_category_ids) <= 1) {
++            return $join_alias.'.sort ASC';
++        }
++        $ids_sql = implode(',', array_map('intval', $descendant_category_ids));
++        return "IFNULL(
++            (SELECT sort FROM {$this->table} cps_ctx
++                WHERE cps_ctx.product_id = p.id AND cps_ctx.category_id = {$context_category_id}),
++            (SELECT MIN(cp_fb.sort) FROM {$this->table} cp_fb
++                WHERE cp_fb.product_id = p.id AND cp_fb.category_id IN ({$ids_sql}))
++        ) ASC";
++    }
++
++    /**
++     * Ensure products are linked to category so manual sort can be stored per category context.
++     *
++     * @param int|int[] $product_ids
++     * @param int $category_id
++     */
++    public function ensureProductsInCategory($product_ids, $category_id)
++    {
++        $product_ids = array_values(array_filter(array_map('intval', (array)$product_ids)));
++        $category_id = (int)$category_id;
++        if (!$product_ids || !$category_id) {
++            return;
++        }
++        $existing = $this->filterByEnteringInCategories($product_ids, $category_id);
++        $missing = array_diff($product_ids, $existing);
++        if ($missing) {
++            $this->add($missing, $category_id);
++        }
++    }
++
+     public function move($product_ids, $before_id, $category_id = null)
+     {
+         if (!$product_ids || !$category_id) {
+@@ -85,6 +129,12 @@ class shopCategoryProductsModel extends waModel implements shopProductStorageInt
+         $before_id   = (int)$before_id;
+         $category_id = (int)$category_id;
+ 
++        $ensure_ids = $product_ids;
++        if ($before_id) {
++            $ensure_ids[] = $before_id;
++        }
++        $this->ensureProductsInCategory($ensure_ids, $category_id);
++
+         if ($before_id) {
+             $sort = $this->query("
+                 SELECT sort FROM {$this->table}
+diff --git a/wa-apps/shop/templates/actions/products/Products.html b/wa-apps/shop/templates/actions/products/Products.html
+index e3b01d0..429f36a 100644
+--- a/wa-apps/shop/templates/actions/products/Products.html
++++ b/wa-apps/shop/templates/actions/products/Products.html
+@@ -404,6 +404,7 @@
+         category_count: {if $info && $info['hash'] == 'category' && $info['type'] == shopCategoryModel::TYPE_STATIC && !$info['include_sub_categories']}{$info['count']}{else}null{/if},
+         edit: '{$wa->get("edit")}',
+         sortable: {if $manual && $sort == 'sort'}true{else}false{/if},
++        allow_subcategory_sort: {if $manual && $sort == 'sort' && !empty($info.include_sub_categories)}true{else}false{/if},
+         enable_2x: {if $wa->shop->config('enable_2x')}true{else}false{/if},
+         text: {$text|default:''|json_encode},
+         primary_currency: {$primary_currency|json_encode},
+diff --git a/wa-apps/shop/templates/actions/products/product_list_skus.html b/wa-apps/shop/templates/actions/products/product_list_skus.html
+index 2d570b0..bb8e0bd 100644
+--- a/wa-apps/shop/templates/actions/products/product_list_skus.html
++++ b/wa-apps/shop/templates/actions/products/product_list_skus.html
+@@ -161,7 +161,7 @@
+         >
+ 
+             {% if (sort_column) { %}
+-                <td class="min-width drag-handle">{% if (!product.alien) { %}<i class="icon16 sort"></i>{% } %}</td>
++                <td class="min-width drag-handle">{% if (!product.alien || o.allow_subcategory_sort) { %}<i class="icon16 sort"></i>{% } %}</td>
+             {% } %}
+ 
+             <td class="min-width drag-handle">

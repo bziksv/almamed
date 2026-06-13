@@ -718,7 +718,9 @@ SQL;
 
         $events = $event_map[isset($current_data['status']) ? $current_data['status'] : 0][isset($data['status']) ? $data['status'] : 0];
         $data['plugin'] = $plugin;
-
+        if ($id) {
+            $data['id'] = $id;
+        }
 
         /**
          * @event post_prepublish

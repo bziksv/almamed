@@ -76,6 +76,51 @@ class shopCategoryProductsModel extends waModel implements shopProductStorageInt
 
     }
 
+    /**
+     * ORDER BY expression for manual sort in a category that includes subcategories.
+     * Uses sort in the viewed category when set; otherwise falls back to sort in the product's subcategory link.
+     *
+     * @param int $context_category_id Category being viewed
+     * @param string $join_alias Alias of shop_category_products join used for filtering
+     * @param int[] $descendant_category_ids Category id and all static descendant ids
+     * @return string
+     */
+    public function getContextSortOrderExpression($context_category_id, $join_alias, array $descendant_category_ids, $direction = 'ASC')
+    {
+        $context_category_id = (int)$context_category_id;
+        $direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+        if (count($descendant_category_ids) <= 1) {
+            return $join_alias.'.sort '.$direction;
+        }
+        $ids_sql = implode(',', array_map('intval', $descendant_category_ids));
+        return "IFNULL(
+            (SELECT sort FROM {$this->table} cps_ctx
+                WHERE cps_ctx.product_id = p.id AND cps_ctx.category_id = {$context_category_id}),
+            (SELECT MIN(cp_fb.sort) FROM {$this->table} cp_fb
+                WHERE cp_fb.product_id = p.id AND cp_fb.category_id IN ({$ids_sql}))
+        ) ".$direction;
+    }
+
+    /**
+     * Ensure products are linked to category so manual sort can be stored per category context.
+     *
+     * @param int|int[] $product_ids
+     * @param int $category_id
+     */
+    public function ensureProductsInCategory($product_ids, $category_id)
+    {
+        $product_ids = array_values(array_filter(array_map('intval', (array)$product_ids)));
+        $category_id = (int)$category_id;
+        if (!$product_ids || !$category_id) {
+            return;
+        }
+        $existing = $this->filterByEnteringInCategories($product_ids, $category_id);
+        $missing = array_diff($product_ids, $existing);
+        if ($missing) {
+            $this->add($missing, $category_id);
+        }
+    }
+
     public function move($product_ids, $before_id, $category_id = null)
     {
         if (!$product_ids || !$category_id) {
@@ -84,6 +129,12 @@ class shopCategoryProductsModel extends waModel implements shopProductStorageInt
         $product_ids = (array)$product_ids;
         $before_id   = (int)$before_id;
         $category_id = (int)$category_id;
+
+        $ensure_ids = $product_ids;
+        if ($before_id) {
+            $ensure_ids[] = $before_id;
+        }
+        $this->ensureProductsInCategory($ensure_ids, $category_id);
 
         if ($before_id) {
             $sort = $this->query("
