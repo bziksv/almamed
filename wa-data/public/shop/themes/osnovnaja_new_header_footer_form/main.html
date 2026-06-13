@@ -7,9 +7,10 @@
 {* flag home page *}
 {$is_home_page = $wa->currentUrl(false,true) == $wa_app_url}
 
-{* flag sidebar *}
+{* flag sidebar: на mobile только фильтры, категории — в гамбургере *}
 {$is_sidebar =  !empty($theme_settings.sidebar) &&
                 !(
+                    ($is_home_page && empty($theme_settings.sidebar_home)) ||
                     (strpos($action, 'product') !== false && empty($theme_settings.sidebar_product)) ||
                     $action == 'cart' ||
                     $action == 'checkout' ||
@@ -19,7 +20,8 @@
                 strpos($wa->currentUrl(), '/my/') === false &&
                 strpos($wa->currentUrl(), '/login/') === false &&
                 strpos($wa->currentUrl(), '/signup/') === false &&
-                strpos($wa->currentUrl(), '/forgotpassword/') === false}
+                strpos($wa->currentUrl(), '/forgotpassword/') === false &&
+                (!$wa->isMobile() || (!empty($filters) && ($theme_settings.filter_pos|default:'sidebar') == 'sidebar'))}
                 {*strpos($wa->currentUrl(), '/checkout/') === false &&*}
 <div class="row-grid">
 

@@ -754,10 +754,10 @@ $(document).ready(function() {
         });
     }
     
-    $('.base-menu.type3 .selected').parents('ul').each(function(){
+    $('.mobile-nav-categories.base-menu.type3 .selected, .sidebar-group--categories .base-menu.type3 .selected').parents('ul').each(function(){
         $(this).show().prev().find('i').html('&#xE5CE;');
     });
-    $('.base-menu.type3 .selected').children('ul').show().prev().find('i').html('&#xE5CE;');
+    $('.mobile-nav-categories.base-menu.type3 .selected, .sidebar-group--categories .base-menu.type3 .selected').children('ul').show().prev().find('i').html('&#xE5CE;');
     /*
     $.each($.at.shop.category.images, function(i, e){
         if ( e.icon ) {

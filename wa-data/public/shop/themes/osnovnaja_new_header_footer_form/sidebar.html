@@ -7,8 +7,8 @@
     </div>
 {/if}
 
-{if !empty($theme_settings.category_tree_sidebar_show)}{include file="`$wa_parent_theme_path`/links.categories.sidebar.html" inline}{/if}
-{if !empty($theme_settings.pages_sidebar)}{include file="`$wa_parent_theme_path`/links.pages.sidebar.html" inline}{/if}
+{if !empty($theme_settings.category_tree_sidebar_show) && !$wa->isMobile()}{include file="`$wa_parent_theme_path`/links.categories.sidebar.html" inline}{/if}
+{* Информационные страницы — в шапке, гамбургере и футере, не дублируем в sidebar *}
 
 <!-- 'frontend_nav' plugins -->
 {foreach $frontend_nav as $_key => $_}

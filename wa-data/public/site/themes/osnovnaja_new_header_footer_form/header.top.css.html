@@ -1185,14 +1185,35 @@
     }
 }
 
-/* Категории: один список в sidebar. ≤992 — на всю ширину сверху; ≥993 — колонка 25%. */
+/* Категории и «Информация» в sidebar — только desktop. На mobile категории в гамбургере. */
+@media only screen and (max-width: 1200px) {
+    main.maincontent nav.sidebar .sidebar-group--categories,
+    main.maincontent nav.sidebar .sidebar-group--pages {
+        display: none !important;
+    }
+
+    main.maincontent nav.sidebar.col-grid:not(:has(.filters)):not(:has(.sidebar-group:not(.sidebar-group--categories):not(.sidebar-group--pages))) {
+        display: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+    }
+}
+
 @media only screen and (max-width: 992px) {
     main.maincontent > .container > .row-grid {
         display: flex;
         flex-direction: column;
     }
 
-    main.maincontent nav.sidebar.col-grid {
+    main.maincontent nav.sidebar.col-grid:not(:has(.filters)) {
+        display: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: 0 !important;
+    }
+
+    main.maincontent nav.sidebar.col-grid:has(.filters) {
         display: block !important;
         order: -1;
         width: 100% !important;

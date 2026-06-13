@@ -293,7 +293,7 @@
       <description locale="en_US">This setting should be determined in each of the applications.</description>
     </setting>
     <setting var="pages_sidebar" control_type="select">
-      <value>shop</value>
+      <value/>
       <name locale="en_US">Links to the pages in the sidebar</name>
       <name locale="ru_RU">Ссылки на страницы в боковой панели</name>
       <description locale="ru_RU">Эту настройку следует определить в каждом из приложений.</description>
@@ -327,7 +327,7 @@
       <name locale="ru_RU">Витрина</name>
     </setting>
     <setting var="sidebar_home" control_type="checkbox">
-      <value>1</value>
+      <value/>
       <name locale="en_US">Show sidebar on the main page of the application "store" (if enabled sidebar)</name>
       <name locale="ru_RU">Показывать боковую панель на главной странице приложения "магазин"(если боковая панель включена)</name>
     </setting>
