@@ -4,6 +4,10 @@ class userlogLogger
 {
     protected static $product_before = array();
     protected static $post_before = array();
+    protected static $category_before = array();
+    protected static $set_before = array();
+    protected static $order_before = array();
+    protected static $page_before = array();
 
     public static function log(array $data)
     {
@@ -57,6 +61,90 @@ class userlogLogger
         }
         $data = self::$post_before[$post_id];
         unset(self::$post_before[$post_id]);
+        return $data;
+    }
+
+    public static function rememberCategoryBefore($category_id, array $data)
+    {
+        self::$category_before[(int) $category_id] = $data;
+    }
+
+    public static function hasCategoryBefore($category_id)
+    {
+        return isset(self::$category_before[(int) $category_id]);
+    }
+
+    public static function pullCategoryBefore($category_id)
+    {
+        $category_id = (int) $category_id;
+        if (!isset(self::$category_before[$category_id])) {
+            return null;
+        }
+        $data = self::$category_before[$category_id];
+        unset(self::$category_before[$category_id]);
+        return $data;
+    }
+
+    public static function rememberSetBefore($set_id, array $data)
+    {
+        self::$set_before[(string) $set_id] = $data;
+    }
+
+    public static function hasSetBefore($set_id)
+    {
+        return isset(self::$set_before[(string) $set_id]);
+    }
+
+    public static function pullSetBefore($set_id)
+    {
+        $set_id = (string) $set_id;
+        if (!isset(self::$set_before[$set_id])) {
+            return null;
+        }
+        $data = self::$set_before[$set_id];
+        unset(self::$set_before[$set_id]);
+        return $data;
+    }
+
+    public static function rememberOrderBefore($order_id, array $data)
+    {
+        self::$order_before[(int) $order_id] = $data;
+    }
+
+    public static function hasOrderBefore($order_id)
+    {
+        return isset(self::$order_before[(int) $order_id]);
+    }
+
+    public static function pullOrderBefore($order_id)
+    {
+        $order_id = (int) $order_id;
+        if (!isset(self::$order_before[$order_id])) {
+            return null;
+        }
+        $data = self::$order_before[$order_id];
+        unset(self::$order_before[$order_id]);
+        return $data;
+    }
+
+    public static function rememberPageBefore($page_id, array $data)
+    {
+        self::$page_before[(int) $page_id] = $data;
+    }
+
+    public static function hasPageBefore($page_id)
+    {
+        return isset(self::$page_before[(int) $page_id]);
+    }
+
+    public static function pullPageBefore($page_id)
+    {
+        $page_id = (int) $page_id;
+        if (!isset(self::$page_before[$page_id])) {
+            return null;
+        }
+        $data = self::$page_before[$page_id];
+        unset(self::$page_before[$page_id]);
         return $data;
     }
 

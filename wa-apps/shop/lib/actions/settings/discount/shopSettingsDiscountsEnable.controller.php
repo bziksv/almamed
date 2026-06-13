@@ -11,8 +11,19 @@ class shopSettingsDiscountsEnableController extends waJsonController
         if (!$type) {
             return;
         }
+        $userlog = shopUserlogPlugin::getInstance();
+        $settings_before = $userlog ? shopUserlogSettingsSnapshot::captureDiscounts() : null;
+
         $asm = new waAppSettingsModel();
         $asm->set('shop', 'discount_'.$type, waRequest::request('enable') ? 1 : null);
+
+        if ($userlog && $settings_before !== null) {
+            $userlog->logSettingsChange(
+                'Скидки',
+                $settings_before,
+                shopUserlogSettingsSnapshot::captureDiscounts()
+            );
+        }
     }
 }
 

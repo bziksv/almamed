@@ -4,6 +4,9 @@ class shopSettingsConfigSaveController extends waJsonController
 {
     public function execute()
     {
+        $userlog = shopUserlogPlugin::getInstance();
+        $settings_before = $userlog ? shopUserlogSettingsSnapshot::captureShopConfigOptions() : null;
+
         $data = waRequest::post();
 
         // Only certain fields are allowed
@@ -27,6 +30,14 @@ class shopSettingsConfigSaveController extends waJsonController
         }
         if ($save) {
             waUtils::varExportToFile($config, $config_path);
+        }
+
+        if ($userlog && $settings_before !== null && $save) {
+            $userlog->logSettingsChange(
+                'Настройки магазина',
+                $settings_before,
+                shopUserlogSettingsSnapshot::captureShopConfigOptions()
+            );
         }
     }
 }

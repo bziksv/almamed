@@ -80,6 +80,10 @@ class shopProductsSaveListSettingsController extends waJsonController
          * @var shopCategoryModel
          */
         $model = $this->getModel('category');
+        $plugin = shopUserlogPlugin::getInstance();
+        if ($plugin && $id) {
+            $plugin->prepareCategorySave($id);
+        }
         if (!$id) {
             if (empty($data['url'])) {
                 $url = shopHelper::transliterate($data['name'], false);
@@ -156,6 +160,10 @@ class shopProductsSaveListSettingsController extends waJsonController
          * @var shopSetModel $model
          */
         $model = $this->getModel('set');
+        $plugin = shopUserlogPlugin::getInstance();
+        if ($plugin && $id) {
+            $plugin->prepareSetSave($id);
+        }
         if (!$id) {
             if (empty($data['id'])) {
                 $id = shopHelper::transliterate($data['name']);

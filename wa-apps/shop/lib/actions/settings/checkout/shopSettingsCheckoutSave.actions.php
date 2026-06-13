@@ -24,12 +24,19 @@ class shopSettingsCheckoutSaveActions extends waJsonActions
 
     public function guestAction()
     {
+        $plugin = shopUserlogPlugin::getInstance();
+        $before = $plugin ? shopUserlogSettingsSnapshot::captureCheckout() : null;
+
         $value = waRequest::post('value');
         $app_settings_model = new waAppSettingsModel();
         if ($value) {
             $app_settings_model->set('shop', 'guest_checkout', $value);
         } else {
             $app_settings_model->del('shop', 'guest_checkout');
+        }
+
+        if ($plugin && $before !== null) {
+            $plugin->logSettingsChange('Оформление заказа', $before, shopUserlogSettingsSnapshot::captureCheckout());
         }
     }
 
@@ -100,17 +107,32 @@ class shopSettingsCheckoutSaveActions extends waJsonActions
 
     protected function save($data)
     {
+        $plugin = shopUserlogPlugin::getInstance();
+        $before = $plugin ? shopUserlogSettingsSnapshot::captureCheckout() : null;
         waUtils::varExportToFile($data, $this->getConfig()->getConfigPath('checkout.php', true, 'shop'));
+        if ($plugin && $before !== null) {
+            $plugin->logSettingsChange('Оформление заказа', $before, shopUserlogSettingsSnapshot::captureCheckout());
+        }
     }
 
     protected function backendCustomerFormValidationAction()
     {
+        $plugin = shopUserlogPlugin::getInstance();
+        $before = $plugin ? shopUserlogSettingsSnapshot::captureCheckout() : null;
+
         $asm = new waAppSettingsModel();
         $asm->set('shop', 'disable_backend_customer_form_validation', waRequest::post('enable') ? null : '1');
+
+        if ($plugin && $before !== null) {
+            $plugin->logSettingsChange('Оформление заказа', $before, shopUserlogSettingsSnapshot::captureCheckout());
+        }
     }
 
     public function antispamAction()
     {
+        $plugin = shopUserlogPlugin::getInstance();
+        $before = $plugin ? shopUserlogSettingsSnapshot::captureCheckout() : null;
+
         $enabled = waRequest::post('enabled');
         $asm = new waAppSettingsModel();
 
@@ -126,6 +148,10 @@ class shopSettingsCheckoutSaveActions extends waJsonActions
             }
         } else {
             $asm->del('shop', 'checkout_antispam');
+        }
+
+        if ($plugin && $before !== null) {
+            $plugin->logSettingsChange('Оформление заказа', $before, shopUserlogSettingsSnapshot::captureCheckout());
         }
     }
 

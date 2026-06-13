@@ -229,6 +229,15 @@
             this.load('?module=products&action=welcome');
         },
 
+        getListParamsFromHash: function() {
+            var hash = window.location.hash.replace(/(^[^#]*#\/*|\/$)/g, '');
+            var parts = hash.split('/');
+            if (parts[0] !== 'products') {
+                return {};
+            }
+            return $.shop.helper.parseParams(parts.slice(1).join('/'));
+        },
+
         paramsFromSession: function(params) {
             if (!window.sessionStorage || !window.JSON || !window.JSON.stringify || !window.JSON.parse) {
                 return params;

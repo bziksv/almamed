@@ -6,6 +6,9 @@ class shopSettingsAffiliateAction extends waViewAction
     {
         $asm = new waAppSettingsModel();
         if (waRequest::post()) {
+            $userlog = shopUserlogPlugin::getInstance();
+            $settings_before = $userlog ? shopUserlogSettingsSnapshot::captureAffiliateSettings() : null;
+
             $conf = waRequest::post('conf');
             if ($conf && is_array($conf)) {
                 $conf['affiliate_credit_rate'] = str_replace(',', '.', (float) str_replace(',', '.', ifset($conf['affiliate_credit_rate'], '0')));
@@ -13,6 +16,14 @@ class shopSettingsAffiliateAction extends waViewAction
                 foreach($conf as $k => $v) {
                     $asm->set('shop', $k, $v);
                 }
+            }
+
+            if ($userlog && $settings_before !== null) {
+                $userlog->logSettingsChange(
+                    'Партнёрская программа',
+                    $settings_before,
+                    shopUserlogSettingsSnapshot::captureAffiliateSettings()
+                );
             }
         }
 

@@ -17,11 +17,15 @@ class userlogHelper
             'category.delete'      => 'Удаление категории',
             'category.sort'        => 'Порядок категорий',
             'category.move'        => 'Перемещение категории',
+            'set.create'           => 'Создание списка',
+            'set.update'           => 'Изменение списка',
             'post.create'          => 'Создание записи',
             'post.update'          => 'Изменение записи',
             'post.delete'          => 'Удаление записи',
             'order.update'         => 'Изменение заказа',
+            'order.create'         => 'Создание заказа',
             'settings.update'      => 'Изменение настроек',
+            'set.delete'           => 'Удаление списка',
             'rollback'             => 'Откат действия',
         );
     }
@@ -41,9 +45,15 @@ class userlogHelper
             'category.delete'   => 'folder-delete',
             'category.sort'     => 'sort',
             'category.move'     => 'sort',
+            'set.create'        => 'folder-add',
+            'set.update'        => 'folder-edit',
             'post.create'       => 'add',
             'post.update'       => 'edit',
             'post.delete'       => 'delete',
+            'order.create'      => 'add',
+            'order.update'      => 'edit',
+            'set.delete'        => 'folder-delete',
+            'settings.update'   => 'settings',
             'rollback'          => 'undo',
         );
         return ifset($map, $action, 'info');
@@ -84,6 +94,118 @@ class userlogHelper
                 'meta_keywords'    => 'Meta keywords',
                 'meta_description' => 'Meta description',
                 'comments_allowed' => 'Комментарии',
+                'params'           => 'Параметры',
+            );
+            $text_fields = array('text', 'meta_description');
+            foreach ($fields as $key => $label) {
+                $b = ifset($before, $key, null);
+                $a = ifset($after, $key, null);
+                if ($b !== $a && ($b !== null || $a !== null)) {
+                    if (in_array($key, $text_fields, true)) {
+                        $lines[] = array(
+                            'field'  => $key,
+                            'label'  => $label,
+                            'before' => self::plainTextForDisplay((string) $b, 200),
+                            'after'  => self::plainTextForDisplay((string) $a, 200),
+                        );
+                    } else {
+                        $lines[] = array(
+                            'field'  => $key,
+                            'label'  => $label,
+                            'before' => self::formatValue($b),
+                            'after'  => self::formatValue($a),
+                        );
+                    }
+                }
+            }
+            return $lines;
+        }
+        if ($entity_type === 'order') {
+            $fields = array(
+                'state'    => 'Статус',
+                'total'    => 'Итого',
+                'tax'      => 'Налог',
+                'shipping' => 'Доставка',
+                'discount' => 'Скидка',
+                'currency' => 'Валюта',
+                'comment'  => 'Комментарий',
+                'items'    => 'Состав заказа',
+            );
+            $text_fields = array('comment', 'items');
+            foreach ($fields as $key => $label) {
+                $b = ifset($before, $key, null);
+                $a = ifset($after, $key, null);
+                if ($b !== $a && ($b !== null || $a !== null)) {
+                    if (in_array($key, $text_fields, true)) {
+                        $lines[] = array(
+                            'field'  => $key,
+                            'label'  => $label,
+                            'before' => self::plainTextForDisplay((string) $b, 200),
+                            'after'  => self::plainTextForDisplay((string) $a, 200),
+                        );
+                    } else {
+                        $lines[] = array(
+                            'field'  => $key,
+                            'label'  => $label,
+                            'before' => self::formatValue($b),
+                            'after'  => self::formatValue($a),
+                        );
+                    }
+                }
+            }
+            return $lines;
+        }
+        if ($entity_type === 'category') {
+            $fields = array(
+                'name'                   => 'Название',
+                'url'                    => 'URL',
+                'description'            => 'Описание',
+                'meta_title'             => 'Meta title',
+                'meta_keywords'          => 'Meta keywords',
+                'meta_description'       => 'Meta description',
+                'type'                   => 'Тип',
+                'status'                 => 'Видимость',
+                'parent'                 => 'Родитель',
+                'sort_products'          => 'Сортировка товаров',
+                'include_sub_categories' => 'Включать подкатегории',
+                'filter'                 => 'Фильтр',
+                'conditions'             => 'Условия (динам.)',
+                'params'                 => 'Параметры',
+                'routes'                 => 'Витрины',
+                'og'                     => 'Open Graph',
+            );
+            $text_fields = array('description', 'meta_description', 'conditions');
+            foreach ($fields as $key => $label) {
+                $b = ifset($before, $key, null);
+                $a = ifset($after, $key, null);
+                if ($b !== $a && ($b !== null || $a !== null)) {
+                    if (in_array($key, $text_fields, true)) {
+                        $lines[] = array(
+                            'field'  => $key,
+                            'label'  => $label,
+                            'before' => self::plainTextForDisplay((string) $b, 200),
+                            'after'  => self::plainTextForDisplay((string) $a, 200),
+                        );
+                    } else {
+                        $lines[] = array(
+                            'field'  => $key,
+                            'label'  => $label,
+                            'before' => self::formatValue($b),
+                            'after'  => self::formatValue($a),
+                        );
+                    }
+                }
+            }
+            return $lines;
+        }
+        if ($entity_type === 'set') {
+            $fields = array(
+                'name'        => 'Название',
+                'id'          => 'ID списка',
+                'type'        => 'Тип',
+                'status'      => 'Видимость',
+                'rule'        => 'Правило (динам.)',
+                'count'       => 'Кол-во товаров',
             );
             foreach ($fields as $key => $label) {
                 $b = ifset($before, $key, null);
@@ -104,22 +226,76 @@ class userlogHelper
         }
 
         $fields = array(
-            'name'          => 'Название',
-            'price'         => 'Цена (товар)',
-            'compare_price' => 'Зачёркнутая цена',
-            'status'        => 'Статус',
-            'sku'           => 'Артикул (основной)',
+            'name'             => 'Название',
+            'summary'          => 'Краткое описание',
+            'description'      => 'Описание',
+            'meta_title'       => 'Meta title',
+            'meta_keywords'    => 'Meta keywords',
+            'meta_description' => 'Meta description',
+            'url'              => 'URL',
+            'type'             => 'Тип товара',
+            'price'            => 'Цена (товар)',
+            'compare_price'    => 'Зачёркнутая цена',
+            'min_price'        => 'Мин. цена',
+            'max_price'        => 'Макс. цена',
+            'currency'         => 'Валюта',
+            'status'           => 'Статус',
+            'count'            => 'Остаток (товар)',
+            'sku_type'         => 'Тип SKU',
+            'sku'              => 'Артикул (основной)',
+            'categories'       => 'Категории',
+            'sets'             => 'Списки',
+            'tags'             => 'Теги',
+            'params'           => 'Доп. параметры',
+            'images'           => 'Изображения',
         );
+        $text_fields = array('summary', 'description', 'meta_description');
         foreach ($fields as $key => $label) {
             $b = ifset($before, $key, null);
             $a = ifset($after, $key, null);
             if ($b !== $a && ($b !== null || $a !== null)) {
-                $lines[] = array(
-                    'field'  => $key,
-                    'label'  => $label,
-                    'before' => self::formatValue($b),
-                    'after'  => self::formatValue($a),
-                );
+                if (in_array($key, $text_fields, true)) {
+                    $lines[] = array(
+                        'field'  => $key,
+                        'label'  => $label,
+                        'before' => self::plainTextForDisplay((string) $b, 200),
+                        'after'  => self::plainTextForDisplay((string) $a, 200),
+                    );
+                } else {
+                    $lines[] = array(
+                        'field'  => $key,
+                        'label'  => $label,
+                        'before' => self::formatValue($b),
+                        'after'  => self::formatValue($a),
+                    );
+                }
+            }
+        }
+
+        $b_feat = ifset($before, 'features', array());
+        $a_feat = ifset($after, 'features', array());
+        if ($b_feat || $a_feat) {
+            wa('shop');
+            $feature_codes = array_unique(array_merge(array_keys($b_feat), array_keys($a_feat)));
+            sort($feature_codes, SORT_STRING);
+            $feature_labels = array();
+            if ($feature_codes) {
+                foreach ((new shopFeatureModel())->getByCode($feature_codes) as $code => $feature) {
+                    $feature_labels[$code] = ifset($feature, 'name', $code);
+                }
+            }
+            foreach ($feature_codes as $code) {
+                $bv = ifset($b_feat, $code, '');
+                $av = ifset($a_feat, $code, '');
+                if ((string) $bv !== (string) $av) {
+                    $feat_label = ifset($feature_labels, $code, $code);
+                    $lines[] = array(
+                        'field'  => 'feature_'.$code,
+                        'label'  => 'Характеристика «'.$feat_label.'»',
+                        'before' => self::formatValue($bv !== '' ? $bv : null),
+                        'after'  => self::formatValue($av !== '' ? $av : null),
+                    );
+                }
             }
         }
 
@@ -133,11 +309,14 @@ class userlogHelper
             $a = ifset($a_skus, $sid, array());
             $label = ifset($a, 'label', ifset($b, 'label', 'SKU #'.$sid));
             foreach (array(
+                'name'           => 'Название SKU',
                 'price'          => 'Цена',
                 'compare_price'  => 'Зачёркнутая цена SKU',
                 'purchase_price' => 'Закупочная цена',
                 'sku'            => 'Артикул SKU',
                 'available'      => 'Доступность',
+                'status'         => 'Статус SKU',
+                'count'          => 'Остаток SKU',
             ) as $field => $field_label) {
                 $bv = ifset($b, $field, null);
                 $av = ifset($a, $field, null);
@@ -172,6 +351,42 @@ class userlogHelper
         return $lines;
     }
 
+    public static function formatCategoryTreeDiff(array $before, array $after)
+    {
+        $lines = array();
+        $ids = array_unique(array_merge(array_keys($before), array_keys($after)));
+        sort($ids, SORT_NUMERIC);
+        foreach ($ids as $id) {
+            $b = ifset($before, $id, array());
+            $a = ifset($after, $id, array());
+            if (!$b || !$a) {
+                continue;
+            }
+            $name = ifset($a, 'name', ifset($b, 'name', '#'.$id));
+            $bp = (int) ifset($b, 'parent_id', 0);
+            $ap = (int) ifset($a, 'parent_id', 0);
+            $bs = (int) ifset($b, 'sort', 0);
+            $as = (int) ifset($a, 'sort', 0);
+            if ($bp !== $ap) {
+                $lines[] = array(
+                    'field'  => 'parent_'.$id,
+                    'label'  => '«'.$name.'»: родитель',
+                    'before' => $bp ? '#'.$bp : 'Корень',
+                    'after'  => $ap ? '#'.$ap : 'Корень',
+                );
+            }
+            if ($bs !== $as) {
+                $lines[] = array(
+                    'field'  => 'sort_'.$id,
+                    'label'  => '«'.$name.'»: порядок',
+                    'before' => self::formatValue($bs),
+                    'after'  => self::formatValue($as),
+                );
+            }
+        }
+        return $lines;
+    }
+
     public static function formatSortDiff(array $before, array $after, array $names = array())
     {
         $lines = array();
@@ -193,6 +408,20 @@ class userlogHelper
             );
         }
         return $lines;
+    }
+
+    public static function flattenSetForDiff(array $snapshot)
+    {
+        $set = ifset($snapshot, 'set', $snapshot);
+        $type = (int) ifset($set, 'type', 0);
+        return array(
+            'name'   => ifset($set, 'name', ''),
+            'id'     => ifset($set, 'id', ''),
+            'type'   => $type === shopSetModel::TYPE_DYNAMIC ? 'Динамический' : 'Статический',
+            'status' => (int) ifset($set, 'status', 1) ? 'Видим' : 'Скрыт',
+            'rule'   => ifset($set, 'rule', ''),
+            'count'  => ifset($set, 'count', ''),
+        );
     }
 
     public static function formatCategoryMoveDiff(array $before, array $after)
@@ -483,6 +712,11 @@ class userlogHelper
                     return $backend_url.'blog/?module=post&action=edit&id='.$entity_id;
                 }
                 break;
+            case 'order':
+                if (wa()->appExists('shop')) {
+                    return $backend_url.'shop/?action=orders#/order/'.$entity_id.'/';
+                }
+                break;
         }
 
         return null;
@@ -604,6 +838,33 @@ class userlogHelper
                 && !empty($before['id'])
             ) {
                 $diff = self::formatCategoryMoveDiff($before, $after);
+            } elseif ($action === 'category.update' && is_array($before) && is_array($after)
+                && class_exists('shopUserlogCategorySnapshot')
+            ) {
+                $diff = self::formatDiff(
+                    shopUserlogCategorySnapshot::flattenForDiff($before),
+                    shopUserlogCategorySnapshot::flattenForDiff($after),
+                    'category'
+                );
+            } elseif ($action === 'order.update' && is_array($before) && is_array($after)
+                && class_exists('shopUserlogOrderSnapshot')
+                && !empty($before['order'])
+            ) {
+                $diff = self::formatDiff(
+                    shopUserlogOrderSnapshot::flattenForDiff($before),
+                    shopUserlogOrderSnapshot::flattenForDiff($after),
+                    'order'
+                );
+            } elseif ($action === 'category.sort' && is_array($before) && is_array($after)
+                && !empty($before['tree']) && !empty($after['tree'])
+            ) {
+                $diff = self::formatCategoryTreeDiff($before['tree'], $after['tree']);
+            } elseif ($action === 'set.update' && is_array($before) && is_array($after)) {
+                $diff = self::formatDiff(
+                    self::flattenSetForDiff($before),
+                    self::flattenSetForDiff($after),
+                    'set'
+                );
             }
         }
         if (!$diff && wa()->appExists('blog') && $action === 'post.update' && is_array($before) && is_array($after)) {

@@ -10,6 +10,9 @@ class shopSettingsOrderStateSaveController extends waJsonController
 
     public function execute()
     {
+        $userlog = shopUserlogPlugin::getInstance();
+        $workflow_before = $userlog ? shopUserlogSettingsSnapshot::captureOrderWorkflow() : null;
+
         $this->config = shopWorkflow::getConfig();
 
         $add = waRequest::get('id', 'new_state', waRequest::TYPE_STRING_TRIM) == 'new_state';
@@ -23,6 +26,15 @@ class shopSettingsOrderStateSaveController extends waJsonController
             'new_id' => !empty($data['state']['new_id']) ? $data['state']['new_id'] : null,
             'add' => $add
         );
+
+        if ($userlog && $workflow_before !== null) {
+            $state_name = ifset($data, 'state', 'name', $data['state']['id']);
+            $userlog->logSettingsChange(
+                'Статус заказа: '.$state_name,
+                $workflow_before,
+                shopUserlogSettingsSnapshot::captureOrderWorkflow()
+            );
+        }
     }
 
     public function save($data)

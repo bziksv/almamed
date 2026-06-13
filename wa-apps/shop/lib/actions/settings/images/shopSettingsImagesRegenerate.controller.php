@@ -58,6 +58,19 @@ class shopSettingsImagesRegenerateController extends waLongActionController
          * @var shopConfig $shop_config
          */
         $this->data['sizes'] = $shop_config->getImageSizes();
+
+        static $userlog_logged = false;
+        if (!$userlog_logged) {
+            $userlog_logged = true;
+            $userlog = shopUserlogPlugin::getInstance();
+            if ($userlog) {
+                $userlog->logSettingsChange('Изображения', array(), array(
+                    'action'            => 'regenerate',
+                    'create_thumbnails' => waRequest::post('create_thumbnails') ? '1' : '0',
+                    'restore_originals' => waRequest::post('restore_originals') ? '1' : '0',
+                ));
+            }
+        }
     }
 
     protected function isDone()

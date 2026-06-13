@@ -4,7 +4,10 @@ class shopSettingsNotificationsSaveController extends waJsonController
 {
     public function execute()
     {
+        $userlog = shopUserlogPlugin::getInstance();
         $id = waRequest::get('id', null, 'int');
+        $settings_before = $userlog ? shopUserlogSettingsSnapshot::captureNotification($id) : null;
+
         $data = waRequest::post('data', array(), 'array');
         $params = waRequest::post('params', array(), 'array');
         $data['source'] = $data['source'] ? $data['source'] : null;
@@ -66,5 +69,15 @@ class shopSettingsNotificationsSaveController extends waJsonController
         $this->response = $model->getById($id);
         $transports = shopSettingsNotificationsAction::getTransports();
         $this->response['icon'] = $transports[$this->response['transport']]['icon'];
+
+        if ($userlog && $settings_before !== null) {
+            $after = shopUserlogSettingsSnapshot::captureNotification($id);
+            $name = ifset($this->response, 'name', ifset($data, 'name', '#'.$id));
+            $userlog->logSettingsChange(
+                'Уведомление: '.$name,
+                $settings_before,
+                $after
+            );
+        }
     }
 }

@@ -9,8 +9,12 @@ class shopSettingsFeaturesTypeSaveController extends waJsonController
         }
         $model = new shopTypeModel();
 
+        $userlog = shopUserlogPlugin::getInstance();
+        $type_id = waRequest::post('id', 0, waRequest::TYPE_INT);
+        $type_before = $userlog && $type_id ? shopUserlogSettingsSnapshot::captureProductType($type_id) : null;
+
         $data = array();
-        $data['id'] = waRequest::post('id', 0, waRequest::TYPE_INT);
+        $data['id'] = $type_id;
         switch (waRequest::post('source', 'custom')) {
             case 'custom':
                 $data['name'] = waRequest::post('name');
@@ -37,5 +41,14 @@ class shopSettingsFeaturesTypeSaveController extends waJsonController
                     <span class="js-type-name">'.htmlspecialchars($data['name'], ENT_QUOTES, 'utf-8').'</span>';
         }
         $this->response = $data;
+
+        if ($userlog && !empty($data['id'])) {
+            $after = shopUserlogSettingsSnapshot::captureProductType($data['id']);
+            $userlog->logSettingsChange(
+                'Тип товара: '.ifset($after, 'name', ifset($data, 'name', '')),
+                $type_before !== null ? $type_before : array(),
+                $after
+            );
+        }
     }
 }

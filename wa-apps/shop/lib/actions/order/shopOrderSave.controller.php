@@ -4,6 +4,15 @@ class shopOrderSaveController extends waJsonController
 {
     public function execute()
     {
+        $order_id = waRequest::get('id', null, waRequest::TYPE_INT);
+        if ($order_id && ($plugin = shopUserlogPlugin::getInstance())) {
+            try {
+                $plugin->prepareOrderSave($order_id);
+            } catch (Exception $e) {
+                waLog::log('userlog prepareOrderSave: '.$e->getMessage(), 'shop/userlog.log');
+            }
+        }
+
         $data = array(
             'id'                   => waRequest::get('id', null, waRequest::TYPE_INT),
             'contact_id'           => waRequest::post('customer_id', null, waRequest::TYPE_INT),
@@ -44,6 +53,13 @@ class shopOrderSaveController extends waJsonController
         try {
             $saved_order = $order->save();
             $this->response['order'] = $saved_order->getData();
+            if ($order_id && ($plugin = shopUserlogPlugin::getInstance())) {
+                try {
+                    $plugin->finalizeOrderSave($order_id);
+                } catch (Exception $e) {
+                    waLog::log('userlog finalizeOrderSave: '.$e->getMessage(), 'shop/userlog.log');
+                }
+            }
         } catch (waException $ex) {
             $this->errors = $order->errors();
         }

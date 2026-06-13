@@ -32,6 +32,11 @@ class shopSettingsCouriersAction extends waViewAction
         $saved = false;
         $errors = array();
         if (waRequest::post()) {
+            $userlog = shopUserlogPlugin::getInstance();
+            $courier_before = ($userlog && $courier['id'] != 'new')
+                ? shopUserlogSettingsSnapshot::captureCourier($courier['id'])
+                : null;
+
             $regenerate_pin = waRequest::post('regenerate_pin') || $courier['id'] == 'new';
             $data = waRequest::post('courier');
             $data = array_intersect_key($data, $courier) + array(
@@ -129,6 +134,14 @@ class shopSettingsCouriersAction extends waViewAction
                     if ($values) {
                         $courier_storefronts_model->multipleInsert($values);
                     }
+                }
+
+                if ($userlog) {
+                    $userlog->logSettingsChange(
+                        'Курьер: '.ifset($courier, 'name', '#'.$courier['id']),
+                        $courier_before !== null ? $courier_before : array(),
+                        shopUserlogSettingsSnapshot::captureCourier($courier['id'])
+                    );
                 }
             } else {
                 $courier = $data + $courier;

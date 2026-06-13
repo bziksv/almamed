@@ -4,6 +4,11 @@ class shopSeofilterPluginSettingsSaveController extends waJsonController
 {
 	public function execute()
 	{
+		$userlog = shopUserlogPlugin::getInstance();
+		$settings_before = $userlog && shopUserlogSeofilterSnapshot::isAvailable()
+			? shopUserlogSeofilterSnapshot::capturePluginSettings()
+			: null;
+
 		$state_json = waRequest::post('state');
 		$state = json_decode($state_json, true);
 
@@ -12,6 +17,14 @@ class shopSeofilterPluginSettingsSaveController extends waJsonController
 		$this->saveStorefrontFields(ifset($state['storefront_fields'], array()));
 		$this->saveFilterFields(ifset($state['filter_fields'], array()));
 		$this->saveProductfiltersSettings(ifset($state['productfilters_state'], array()));
+
+		if ($userlog && $settings_before !== null) {
+			$userlog->logSettingsChange(
+				'SEO-фильтр (настройки)',
+				$settings_before,
+				shopUserlogSeofilterSnapshot::capturePluginSettings()
+			);
+		}
 	}
 
 	private function saveBasicSettings($basic_settings)

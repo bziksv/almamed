@@ -8,6 +8,13 @@ class shopSettingsSearchSaveController extends waJsonController
          * @var shopConfig $config
          */
         $config = $this->getConfig();
+        $plugin = shopUserlogPlugin::getInstance();
+        $before = $plugin ? array(
+            'search_smart'  => $config->getOption('search_smart'),
+            'search_weights'=> $config->getOption('search_weights'),
+            'search_ignore' => $config->getOption('search_ignore'),
+            'search_by_part'=> $config->getOption('search_by_part'),
+        ) : null;
 
         $settings = $config->getOption(null);
 
@@ -21,5 +28,15 @@ class shopSettingsSearchSaveController extends waJsonController
 
         $config_file = $config->getConfigPath('config.php');
         waUtils::varExportToFile($settings, $config_file);
+
+        if ($plugin && $before !== null) {
+            $after = array(
+                'search_smart'   => ifset($settings, 'search_smart'),
+                'search_weights' => ifset($settings, 'search_weights'),
+                'search_ignore'  => ifset($settings, 'search_ignore'),
+                'search_by_part' => ifset($settings, 'search_by_part'),
+            );
+            $plugin->logSettingsChange('Поиск', $before, $after);
+        }
     }
 }

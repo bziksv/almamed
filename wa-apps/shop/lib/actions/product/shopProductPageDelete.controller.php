@@ -21,6 +21,11 @@ class shopProductPageDeleteController extends waJsonController
             throw new waException(_w("Access denied"));
         }
 
+        $plugin = shopUserlogPlugin::getInstance();
+        if ($plugin) {
+            $plugin->logProductPageDelete($page);
+        }
+
         $product_pages_model->delete($id);
     }
 }

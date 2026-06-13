@@ -9,6 +9,16 @@ class shopSettingsFeaturesFeatureSaveController extends waJsonController
         }
         if ($features = waRequest::post('feature')) {
 
+            $userlog = shopUserlogPlugin::getInstance();
+            $features_before = array();
+            if ($userlog) {
+                foreach ($features as $feature_id => $feature) {
+                    if ((int) $feature_id > 0) {
+                        $features_before[$feature_id] = shopUserlogSettingsSnapshot::captureFeature($feature_id);
+                    }
+                }
+            }
+
             $model = new shopFeatureModel();
             $type_features_model = new shopTypeFeaturesModel();
             foreach ($features as $feature_id => & $feature) {
@@ -62,6 +72,22 @@ class shopSettingsFeaturesFeatureSaveController extends waJsonController
                 }
             }
             unset($feature);
+
+            if ($userlog) {
+                foreach ($features as $feature_id => $feature) {
+                    $saved_id = (int) ifset($feature, 'id', 0);
+                    if (!$saved_id) {
+                        continue;
+                    }
+                    $before = ifset($features_before, $feature_id, array());
+                    $after = shopUserlogSettingsSnapshot::captureFeature($saved_id);
+                    $userlog->logSettingsChange(
+                        'Характеристика: '.ifset($after, 'name', ifset($feature, 'name', '#'.$saved_id)),
+                        $before,
+                        $after
+                    );
+                }
+            }
         }
         $this->response = $features;
     }

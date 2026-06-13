@@ -4,6 +4,11 @@ class shopSeofilterPluginProductfiltersSettingsSaveController extends shopSeofil
 {
 	public function execute()
 	{
+		$userlog = shopUserlogPlugin::getInstance();
+		$settings_before = $userlog && shopUserlogSeofilterSnapshot::isAvailable()
+			? shopUserlogSeofilterSnapshot::captureProductfiltersSettings()
+			: null;
+
 		$state = json_decode(waRequest::post('state'), true);
 
 		$storefront_settings = $state['settings'];
@@ -107,6 +112,14 @@ order by c.left_key
 			//{
 			//	$rules_model->saveRule($storefront, $category_id, $rule);
 			//}
+		}
+
+		if ($userlog && $settings_before !== null) {
+			$userlog->logSettingsChange(
+				'SEO-фильтр (productfilters)',
+				$settings_before,
+				shopUserlogSeofilterSnapshot::captureProductfiltersSettings()
+			);
 		}
 	}
 }

@@ -22,6 +22,11 @@ class shopSettingsCheckoutFieldValuesSaveController extends waJsonController
             throw new waException(_w("Unknown parent field"));
         }
 
+        $userlog = shopUserlogPlugin::getInstance();
+        $values_before = $userlog
+            ? shopUserlogSettingsSnapshot::captureContactFieldValues($field, $parent_field)
+            : null;
+
         $ids = waRequest::post('delete', array(), waRequest::TYPE_ARRAY_INT);
         if (!empty($ids)) {
             $this->delete($ids);
@@ -30,6 +35,14 @@ class shopSettingsCheckoutFieldValuesSaveController extends waJsonController
         $data = $this->getData($field, $parent_field);
         if (!empty($data)) {
             $this->save($data);
+        }
+
+        if ($userlog && $values_before !== null) {
+            $userlog->logSettingsChange(
+                'Checkout: поле '.$field,
+                $values_before,
+                shopUserlogSettingsSnapshot::captureContactFieldValues($field, $parent_field)
+            );
         }
     }
 

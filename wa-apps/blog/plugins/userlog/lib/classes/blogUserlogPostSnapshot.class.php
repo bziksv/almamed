@@ -48,13 +48,39 @@ class blogUserlogPostSnapshot
             'blog'               => ifset($snapshot, 'blog_name', ifset($post, 'blog_id', '')),
             'url'                => ifset($post, 'url', ''),
             'datetime'           => ifset($post, 'datetime', ''),
-            'text'               => self::textExcerpt(ifset($post, 'text', '')),
+            'text'               => self::normalizeText(ifset($post, 'text', '')),
             'meta_title'         => ifset($post, 'meta_title', ''),
             'meta_keywords'      => ifset($post, 'meta_keywords', ''),
             'meta_description'   => ifset($post, 'meta_description', ''),
             'comments_allowed'   => !empty($post['comments_allowed']) ? 'да' : 'нет',
+            'params'             => self::flattenParams(ifset($snapshot, 'params', array())),
         );
         return $flat;
+    }
+
+    protected static function normalizeText($text)
+    {
+        return userlogHelper::plainTextForDisplay((string) $text);
+    }
+
+    protected static function flattenParams(array $params)
+    {
+        if (!$params) {
+            return '';
+        }
+        ksort($params);
+        $parts = array();
+        foreach ($params as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $name = ifset($row, 'name', '');
+            $value = ifset($row, 'value', '');
+            if ($name !== '') {
+                $parts[] = $name.': '.$value;
+            }
+        }
+        return implode('; ', $parts);
     }
 
     protected static function trimPost(array $post)
@@ -126,6 +152,47 @@ class blogUserlogPostSnapshot
         }
 
         $model->updateItem($post_id, array_merge($current, $update));
+        return $post_id;
+    }
+
+    /**
+     * @return int post id
+     */
+    public static function restoreFromDelete(array $snapshot)
+    {
+        wa('blog');
+        $post_data = ifset($snapshot, 'post', array());
+        $post_id = (int) ifset($post_data, 'id', 0);
+        if (!$post_id || !$post_data) {
+            throw new waException('Пустой снимок удалённой записи');
+        }
+
+        $model = new blogPostModel();
+        if ($model->getById($post_id)) {
+            throw new waException('Запись уже существует');
+        }
+
+        $model->insert($post_data);
+
+        $params = ifset($snapshot, 'params', array());
+        if ($params) {
+            $params_model = new blogPostParamsModel();
+            foreach ($params as $row) {
+                if (!is_array($row)) {
+                    continue;
+                }
+                $params_model->insert(array(
+                    'post_id' => $post_id,
+                    'name'    => ifset($row, 'name', ''),
+                    'value'   => ifset($row, 'value', ''),
+                ));
+            }
+        }
+
+        if (!empty($post_data['blog_id'])) {
+            (new blogBlogModel())->recalculate((int) $post_data['blog_id']);
+        }
+
         return $post_id;
     }
 }

@@ -4,12 +4,22 @@ class shopSettingsStockDeleteController extends waJsonController
 {
     public function execute()
     {
+        $userlog = shopUserlogPlugin::getInstance();
+        $stocks_before = $userlog ? shopUserlogSettingsSnapshot::captureStocksSettings() : null;
+
         $vid = waRequest::request('vid', null, waRequest::TYPE_INT);
         if ($vid) {
             $virtualstock_model = new shopVirtualstockModel();
             $virtualstock_model->deleteById($vid);
             $virtualstock_stocks_model = new shopVirtualstockStocksModel();
             $virtualstock_stocks_model->deleteByField('virtualstock_id', $vid);
+            if ($userlog && $stocks_before !== null) {
+                $userlog->logSettingsChange(
+                    'Склады',
+                    $stocks_before,
+                    shopUserlogSettingsSnapshot::captureStocksSettings()
+                );
+            }
             return;
         }
 
@@ -34,6 +44,14 @@ class shopSettingsStockDeleteController extends waJsonController
         if (!$this->errors) {
             $virtualstock_stocks_model = new shopVirtualstockStocksModel();
             $virtualstock_stocks_model->deleteByField('stock_id', $id);
+        }
+
+        if ($userlog && $stocks_before !== null && !$this->errors) {
+            $userlog->logSettingsChange(
+                'Склады',
+                $stocks_before,
+                shopUserlogSettingsSnapshot::captureStocksSettings()
+            );
         }
     }
 }

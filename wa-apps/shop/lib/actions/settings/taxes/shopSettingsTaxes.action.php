@@ -185,6 +185,9 @@ class shopSettingsTaxesAction extends waViewAction
         $tm = $this->tm;
         if (waRequest::post('delete')) {
             if ($old_tax['id']) {
+                $userlog = shopUserlogPlugin::getInstance();
+                $tax_before = $userlog ? shopUserlogSettingsSnapshot::captureTax($old_tax['id']) : null;
+
                 $tm->deleteById($old_tax['id']);
 
                 $search = array(
@@ -203,10 +206,23 @@ class shopSettingsTaxesAction extends waViewAction
 
                 $product_model->updateByField($search, $reset);
                 $service_model->updateByField($search, $reset);
+
+                if ($userlog && $tax_before !== null) {
+                    $userlog->logSettingsChange(
+                        'Налог: '.ifset($old_tax, 'name', '#'.$old_tax['id']),
+                        $tax_before,
+                        array()
+                    );
+                }
             }
             echo json_encode(array('status' => 'ok', 'data' => 'ok'));
             exit;
         }
+
+        $userlog = shopUserlogPlugin::getInstance();
+        $tax_before = ($userlog && !empty($old_tax['id']))
+            ? shopUserlogSettingsSnapshot::captureTax($old_tax['id'])
+            : null;
 
         //
         // Prepare data for shopTaxes::save()
@@ -250,6 +266,14 @@ class shopSettingsTaxesAction extends waViewAction
             }
         }
 
-        return shopTaxes::save($tax_data);
+        $saved_tax = shopTaxes::save($tax_data);
+        if ($userlog && is_array($saved_tax) && !empty($saved_tax['id'])) {
+            $userlog->logSettingsChange(
+                'Налог: '.ifset($saved_tax, 'name', ifset($old_tax, 'name', '#'.$saved_tax['id'])),
+                $tax_before !== null ? $tax_before : array(),
+                shopUserlogSettingsSnapshot::captureTax($saved_tax['id'])
+            );
+        }
+        return $saved_tax;
     }
 }

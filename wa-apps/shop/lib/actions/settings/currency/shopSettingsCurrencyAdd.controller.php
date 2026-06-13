@@ -4,6 +4,9 @@ class shopSettingsCurrencyAddController extends waJsonController
 {
     public function execute()
     {
+        $userlog = shopUserlogPlugin::getInstance();
+        $settings_before = $userlog ? shopUserlogSettingsSnapshot::captureCurrencies() : null;
+
         $code = waRequest::post('code', '', waRequest::TYPE_STRING_TRIM);
 
         if (!$code) {
@@ -15,6 +18,14 @@ class shopSettingsCurrencyAddController extends waJsonController
         if (!$this->response) {
             $this->errors[] = _w("Unknown code");
             return;
+        }
+
+        if ($userlog && $settings_before !== null) {
+            $userlog->logSettingsChange(
+                'Валюты',
+                $settings_before,
+                shopUserlogSettingsSnapshot::captureCurrencies()
+            );
         }
     }
 }

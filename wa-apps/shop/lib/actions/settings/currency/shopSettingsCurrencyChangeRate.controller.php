@@ -4,11 +4,22 @@ class shopSettingsCurrencyChangeRateController extends waJsonController
 {
     public function execute()
     {
+        $userlog = shopUserlogPlugin::getInstance();
+        $settings_before = $userlog ? shopUserlogSettingsSnapshot::captureCurrencies() : null;
+
         $code = waRequest::post('code', '', waRequest::TYPE_STRING_TRIM);
         if ($code) {
             $this->changeSingle($code);
         } else {
             $this->changeMultiple();
+        }
+
+        if ($userlog && $settings_before !== null && !$this->errors) {
+            $userlog->logSettingsChange(
+                'Валюты',
+                $settings_before,
+                shopUserlogSettingsSnapshot::captureCurrencies()
+            );
         }
     }
 

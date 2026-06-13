@@ -25,8 +25,20 @@ class shopProductPageMoveController extends waJsonController
             throw new waException(_w("Access denied"));
         }
 
+        $sort_before = (int) ifset($page, 'sort', 0);
         if (!$product_page_model->move($id, $before_id)) {
             $this->errors[] = _w("Error when move");
+            return;
+        }
+
+        $page_after = $product_page_model->getById($id);
+        $plugin = shopUserlogPlugin::getInstance();
+        if ($plugin && $page_after) {
+            $plugin->logProductPageMove(
+                $page,
+                $sort_before,
+                (int) ifset($page_after, 'sort', 0)
+            );
         }
     }
 }

@@ -10,7 +10,18 @@ class shopSettingsOrderStateMoveController extends waJsonController
             return;
         }
 
+        $userlog = shopUserlogPlugin::getInstance();
+        $workflow_before = $userlog ? shopUserlogSettingsSnapshot::captureOrderWorkflow() : null;
+
         $this->moveState($id);
+
+        if ($userlog && $workflow_before !== null && empty($this->errors)) {
+            $userlog->logSettingsChange(
+                'Статусы заказов',
+                $workflow_before,
+                shopUserlogSettingsSnapshot::captureOrderWorkflow()
+            );
+        }
     }
 
     /**

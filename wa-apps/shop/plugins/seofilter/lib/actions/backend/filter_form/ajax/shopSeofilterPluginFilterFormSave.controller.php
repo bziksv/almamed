@@ -20,6 +20,12 @@ class shopSeofilterPluginFilterFormSaveController extends shopSeofilterBackendFi
 			return;
 		}
 
+		$userlog = shopUserlogPlugin::getInstance();
+		$filter_id = (int) ifset($filter_attributes, 'id', 0);
+		$filter_before = $userlog && shopUserlogSeofilterSnapshot::isAvailable()
+			? shopUserlogSeofilterSnapshot::captureFilter($filter_id)
+			: null;
+
 		$filter = $this->prepareFilter($filter_attributes);
 		$filter->setIsNewRecord(false);
 
@@ -32,5 +38,15 @@ class shopSeofilterPluginFilterFormSaveController extends shopSeofilterBackendFi
 			'redirect_url' => '',
 			'feature_value_id_map' => $this->save_feature_value_id_map,
 		);
+
+		if ($userlog && $filter_before !== null && !$this->validate_only && empty($this->errors)) {
+			$filter_after = shopUserlogSeofilterSnapshot::captureFilter($filter->id);
+			$name = ifset($filter_after, 'seo_name', ifset($filter_before, 'seo_name', '#'.$filter->id));
+			$userlog->logSettingsChange(
+				'SEO-фильтр «'.$name.'»',
+				$filter_before,
+				$filter_after
+			);
+		}
 	}
 }

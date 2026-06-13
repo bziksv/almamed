@@ -18,6 +18,12 @@ class shopSettingsRecommendationsSaveController extends waJsonController
         if (!$this->type) {
             throw new waException("Type not found");
         }
+
+        $userlog = shopUserlogPlugin::getInstance();
+        $settings_before = $userlog
+            ? shopUserlogSettingsSnapshot::captureTypeRecommendations($this->type_id)
+            : null;
+
         if ($setting == 'cross-selling') {
             $this->saveCrossSelling();
         } elseif ($setting == 'upselling') {
@@ -26,6 +32,14 @@ class shopSettingsRecommendationsSaveController extends waJsonController
             throw new waException("Unknown setting");
         }
 
+        if ($userlog && $settings_before !== null) {
+            $section = $setting === 'cross-selling' ? 'Cross-selling' : 'Upselling';
+            $userlog->logSettingsChange(
+                'Рекомендации ('.$section.') — '.ifset($this->type, 'name', '#'.$this->type_id),
+                $settings_before,
+                shopUserlogSettingsSnapshot::captureTypeRecommendations($this->type_id)
+            );
+        }
     }
 
     protected function saveCrossSelling()

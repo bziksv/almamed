@@ -19,10 +19,12 @@ class shopSettingsFollowupsAction extends waViewAction
 
         // Save data when POST came
         if ($id && waRequest::post()) {
+            $userlog = shopUserlogPlugin::getInstance();
             if (waRequest::post('delete')) {
 
                 $f = $fm->getById($id);
                 if ($f) {
+                    $followup_before = $userlog ? shopUserlogSettingsSnapshot::captureFollowup($id) : null;
                     /**
                      * @event followup_delete
                      *
@@ -33,9 +35,20 @@ class shopSettingsFollowupsAction extends waViewAction
                      */
                     wa()->event('followup_delete', $f);
                     $fm->deleteById($id);
+                    if ($userlog && $followup_before !== null) {
+                        $userlog->logSettingsChange(
+                            'Follow-up: '.ifset($f, 'name', '#'.$id),
+                            $followup_before,
+                            array()
+                        );
+                    }
                 }
                 exit;
             }
+
+            $followup_before = ($userlog && $id && $id !== 'new')
+                ? shopUserlogSettingsSnapshot::captureFollowup($id)
+                : null;
 
             $followup = waRequest::post('followup');
             if ($followup && is_array($followup)) {
@@ -91,6 +104,14 @@ class shopSettingsFollowupsAction extends waViewAction
                      * @return void
                      */
                     wa()->event('followup_save', $f);
+                }
+
+                if ($userlog && $id) {
+                    $userlog->logSettingsChange(
+                        'Follow-up: '.ifset($f, 'name', '#'.$id),
+                        $followup_before !== null ? $followup_before : array(),
+                        shopUserlogSettingsSnapshot::captureFollowup($id)
+                    );
                 }
             }
         }

@@ -4,6 +4,9 @@ class shopSettingsSaveStockController extends waJsonController
 {
     public function execute()
     {
+        $plugin = shopUserlogPlugin::getInstance();
+        $settings_before = $plugin ? shopUserlogSettingsSnapshot::captureStocksSettings() : null;
+
         // Read data from POST
         $stocks_add = $this->getAddData();
         $stocks_edit = $this->getEditData();
@@ -107,6 +110,14 @@ class shopSettingsSaveStockController extends waJsonController
         if ($inventory_stock_id) {
             $product_stocks_model = new shopProductStocksModel();
             $product_stocks_model->insertFromSkus($inventory_stock_id);
+        }
+
+        if ($plugin && $settings_before !== null) {
+            $plugin->logSettingsChange(
+                'Склады',
+                $settings_before,
+                shopUserlogSettingsSnapshot::captureStocksSettings()
+            );
         }
     }
 

@@ -25,9 +25,20 @@ class shopSettingsPrintformSetupAction extends waViewAction
                             $settings[$name] = $file;
                         }
                     }
+                    $userlog = shopUserlogPlugin::getInstance();
+                    $settings_before = $userlog
+                        ? shopUserlogSettingsSnapshot::capturePrintformSettings($plugin_id)
+                        : null;
                     try {
                         $plugin->saveSettings($settings);
                         $this->view->assign('saved', true);
+                        if ($userlog && $settings_before !== null) {
+                            $userlog->logSettingsChange(
+                                'Печатная форма: '.$plugin_id,
+                                $settings_before,
+                                shopUserlogSettingsSnapshot::capturePrintformSettings($plugin_id)
+                            );
+                        }
                     } catch (waException $ex) {
                         $this->view->assign('error', $ex->getMessage());
                     }

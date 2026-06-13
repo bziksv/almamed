@@ -26,6 +26,7 @@ class shopProductPageSaveController extends waJsonController
     public function execute()
     {
         $id = waRequest::get('id', null, waRequest::TYPE_INT);
+        $is_new = !$id;
 
         $data    = $this->getData($id);
         if (!isset($data['product_id']) && $id) {
@@ -36,6 +37,11 @@ class shopProductPageSaveController extends waJsonController
         // check rights
         if (!$this->product_model->checkRights($product)) {
             throw new waException(_w("Access denied"));
+        }
+
+        $plugin = shopUserlogPlugin::getInstance();
+        if ($id && $plugin) {
+            $plugin->prepareProductPageSave($id);
         }
 
         if ($id) {
@@ -62,6 +68,10 @@ class shopProductPageSaveController extends waJsonController
         $page['preview_hash'] = $this->pages_model->getPreviewHash();
         $page['url_escaped'] = htmlspecialchars($data['url']);
         $this->response = $page;
+
+        if ($plugin) {
+            $plugin->logProductPageSave($id, $is_new);
+        }
     }
 
     public function getData($id)

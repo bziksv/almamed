@@ -109,6 +109,10 @@ class shopProductImageUploadController extends shopUploadController
 
         shopImage::generateThumbs($data, $config->getImageSizes());
 
+        if ($plugin = shopUserlogPlugin::getInstance()) {
+            $plugin->logProductImageUpload($product_id, $data);
+        }
+
         return array(
             'id'             => $image_id,
             'name'           => $file->name,

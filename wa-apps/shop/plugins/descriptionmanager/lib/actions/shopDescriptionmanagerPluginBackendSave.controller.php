@@ -27,11 +27,17 @@ class shopDescriptionmanagerPluginBackendSaveController extends waJsonController
 
         if (!empty($product)) {
             $model = new shopDescriptionmanagerModel();
+            $before_row = $model->getById($data['product_id']);
 
             if($model->countByField('product_id', $data['product_id']))
                 $model->updateByField('product_id', $data['product_id'], $data);
             else
                 $model->insert($data);
+
+            $after_row = $model->getById($data['product_id']);
+            if ($plugin = shopUserlogPlugin::getInstance()) {
+                $plugin->logDescriptionmanagerChange($data['product_id'], $before_row ?: array(), $after_row ?: array());
+            }
         }
         else {
             $this->setError(_wp('Product not found'));

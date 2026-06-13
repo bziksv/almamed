@@ -4,6 +4,9 @@ class shopSettingsSaveStockRulesController extends waJsonController
 {
     public function execute()
     {
+        $plugin = shopUserlogPlugin::getInstance();
+        $rules_before = $plugin ? shopUserlogSettingsSnapshot::captureStockRules() : null;
+
         $rules_data = self::getRulesData();
 
         $stock_rules_model = new shopStockRulesModel();
@@ -20,6 +23,14 @@ class shopSettingsSaveStockRulesController extends waJsonController
             } else {
                 $stock_rules_model->insert($rule);
             }
+        }
+
+        if ($plugin && $rules_before !== null) {
+            $plugin->logSettingsChange(
+                'Правила складов',
+                $rules_before,
+                shopUserlogSettingsSnapshot::captureStockRules()
+            );
         }
 
         $this->response = 'ok';

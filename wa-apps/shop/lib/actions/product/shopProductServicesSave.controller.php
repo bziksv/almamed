@@ -36,12 +36,21 @@ class shopProductServicesSaveController extends waJsonController
             return;
         }
 
+        $plugin = shopUserlogPlugin::getInstance();
+        $service_before = $plugin
+            ? shopUserlogProductServiceSnapshot::captureForLog($this->product_id, $this->service_id)
+            : null;
+
         $product_services_model = new shopProductServicesModel();
         $product_services_model->save($this->product_id, $this->service_id, $this->getData());
         $this->response = array(
             'status' => $product_services_model->getProductStatus($this->product_id, $this->service_id),
             'count'  => $product_services_model->countServices($this->product_id)
         );
+
+        if ($plugin && $service_before) {
+            $plugin->logProductServiceChange($this->product_id, $this->service_id, $service_before);
+        }
     }
 
     public function getRowData()

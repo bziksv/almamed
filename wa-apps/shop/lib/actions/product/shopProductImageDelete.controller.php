@@ -20,6 +20,10 @@ class shopProductImageDeleteController extends waJsonController
             throw new waException(_w("Access denied"));
         }
 
+        if ($plugin = shopUserlogPlugin::getInstance()) {
+            $plugin->logProductImageDelete($image);
+        }
+
         if (!$product_images_model->delete($id)) {
             throw new waException(_w("Coudn't delete image"));
         }

@@ -72,7 +72,7 @@ class blogUserlogPlugin extends blogPlugin
                 'entity_name'  => $title,
                 'summary'      => 'Удалена запись «'.$title.'»',
                 'before_data'  => $snapshot,
-                'can_rollback' => 0,
+                'can_rollback' => 1,
             ));
             self::$logged_posts[$post_id] = true;
         }

@@ -8,6 +8,9 @@ class shopSettingsGeneralAction extends waViewAction
     public function execute()
     {
         if (waRequest::post()) {
+            $plugin = shopUserlogPlugin::getInstance();
+            $settings_before = $plugin ? shopUserlogSettingsSnapshot::captureGeneralSettings() : null;
+
             $app_settings = new waAppSettingsModel();
             foreach ($this->getData() as $name => $value) {
                 $app_settings->set('shop', $name, $value);
@@ -88,6 +91,14 @@ class shopSettingsGeneralAction extends waViewAction
                         waUtils::varExportToFile($config, $config_file);
                     }
                 }
+            }
+
+            if ($plugin && $settings_before !== null) {
+                $plugin->logSettingsChange(
+                    'Общие',
+                    $settings_before,
+                    shopUserlogSettingsSnapshot::captureGeneralSettings()
+                );
             }
         }
 

@@ -53,7 +53,24 @@ class userlogRollbackService
                 wa('shop');
                 shopUserlogPlugin::setLoggingSuspended(true);
                 try {
-                    $result_id = $this->rollbackCategoryMove((int) $event['entity_id'], $before);
+                    if (!empty($before['tree'])) {
+                        $this->rollbackCategoryTree($before['tree']);
+                        $result_id = 0;
+                    } else {
+                        $result_id = $this->rollbackCategoryMove((int) $event['entity_id'], $before);
+                    }
+                } finally {
+                    shopUserlogPlugin::setLoggingSuspended(false);
+                }
+                break;
+            case 'category.update':
+                wa('shop');
+                shopUserlogPlugin::setLoggingSuspended(true);
+                try {
+                    $result_id = shopUserlogCategorySnapshot::restoreForUpdate(
+                        $before,
+                        (int) $event['entity_id']
+                    );
                 } finally {
                     shopUserlogPlugin::setLoggingSuspended(false);
                 }
@@ -67,6 +84,36 @@ class userlogRollbackService
                     $result_id = $rollback_log['post_id'];
                 } finally {
                     blogUserlogPlugin::setLoggingSuspended(false);
+                }
+                break;
+            case 'post.delete':
+                wa('blog');
+                wa('blog')->getPlugin('userlog');
+                blogUserlogPlugin::setLoggingSuspended(true);
+                try {
+                    $rollback_log = $this->rollbackPostDelete($before);
+                    $result_id = $rollback_log['post_id'];
+                } finally {
+                    blogUserlogPlugin::setLoggingSuspended(false);
+                }
+                break;
+            case 'order.update':
+                wa('shop');
+                shopUserlogPlugin::setLoggingSuspended(true);
+                try {
+                    if (!empty($before['order'])) {
+                        $rollback_log = $this->rollbackOrderUpdate((int) $event['entity_id'], $before);
+                        $result_id = $rollback_log['order_id'];
+                    } elseif (array_key_exists('state_id', $before)) {
+                        $result_id = shopUserlogOrderSnapshot::restoreState(
+                            (int) $event['entity_id'],
+                            $before['state_id']
+                        );
+                    } else {
+                        throw new waException('Нет данных для отката заказа');
+                    }
+                } finally {
+                    shopUserlogPlugin::setLoggingSuspended(false);
                 }
                 break;
             default:
@@ -108,11 +155,31 @@ class userlogRollbackService
                 'Запись «%s» восстановлена. Обновите страницу редактора блога.',
                 $event['entity_name'] ?: '#'.$result_id
             );
-        } elseif (in_array($event['action'], array('category.move', 'category.sort'), true)) {
+        } elseif ($event['action'] === 'post.delete') {
             $message = sprintf(
-                'Категория «%s» возвращена в %s. Обновите страницу магазина.',
-                $event['entity_name'] ?: '#'.$result_id,
-                $this->formatCategoryParentLabel($before)
+                'Запись «%s» восстановлена (#%d). Откройте её в редакторе блога.',
+                $event['entity_name'] ?: 'запись',
+                (int) $result_id
+            );
+        } elseif ($event['action'] === 'order.update') {
+            $message = sprintf(
+                'Заказ #%d восстановлен. Обновите страницу заказа.',
+                (int) $result_id
+            );
+        } elseif (in_array($event['action'], array('category.move', 'category.sort'), true)) {
+            if (!empty($before['tree'])) {
+                $message = 'Порядок категорий в дереве восстановлен. Обновите страницу магазина.';
+            } else {
+                $message = sprintf(
+                    'Категория «%s» возвращена в %s. Обновите страницу магазина.',
+                    $event['entity_name'] ?: '#'.$result_id,
+                    $this->formatCategoryParentLabel($before)
+                );
+            }
+        } elseif ($event['action'] === 'category.update') {
+            $message = sprintf(
+                'Категория «%s» восстановлена. Обновите страницу магазина.',
+                $event['entity_name'] ?: '#'.$result_id
             );
         }
 
@@ -135,6 +202,23 @@ class userlogRollbackService
             return sprintf('Товар «%s» восстановлен (ID %d).', $event['entity_name'], $result_id);
         }
         return 'Действие успешно отменено';
+    }
+
+    protected function rollbackOrderUpdate($order_id, array $before)
+    {
+        if (!$order_id || !$before) {
+            throw new waException('Нет данных для отката заказа');
+        }
+
+        $log_before = shopUserlogOrderSnapshot::captureForLog($order_id);
+        $result_id = shopUserlogOrderSnapshot::restoreForUpdate($before, $order_id);
+        $log_after = shopUserlogOrderSnapshot::captureForLog($order_id);
+
+        return array(
+            'order_id'   => $result_id,
+            'log_before' => $log_before,
+            'log_after'  => $log_after,
+        );
     }
 
     protected function rollbackProductUpdate($product_id, array $before)
@@ -204,6 +288,25 @@ class userlogRollbackService
         );
     }
 
+    protected function rollbackPostDelete(array $before)
+    {
+        if (!$before) {
+            throw new waException('Нет данных для восстановления записи');
+        }
+
+        wa('blog');
+        wa('blog')->getPlugin('userlog');
+
+        $post_id = blogUserlogPostSnapshot::restoreFromDelete($before);
+        $log_after = blogUserlogPostSnapshot::captureForLog($post_id);
+
+        return array(
+            'post_id'    => $post_id,
+            'log_before' => null,
+            'log_after'  => $log_after,
+        );
+    }
+
     protected function rollbackCategoryMove($category_id, array $before)
     {
         if (!$category_id || !$before) {
@@ -221,6 +324,25 @@ class userlogRollbackService
         }
 
         return $category_id;
+    }
+
+    protected function rollbackCategoryTree(array $tree)
+    {
+        if (!$tree) {
+            throw new waException('Нет данных дерева категорий');
+        }
+        $model = new shopCategoryModel();
+        foreach ($tree as $category_id => $row) {
+            $category_id = (int) $category_id;
+            if (!$category_id || !is_array($row)) {
+                continue;
+            }
+            $model->updateById($category_id, array(
+                'parent_id' => (int) ifset($row, 'parent_id', 0),
+                'sort'      => (int) ifset($row, 'sort', 0),
+            ));
+        }
+        $model->repair();
     }
 
     protected function formatCategoryParentLabel(array $snapshot)

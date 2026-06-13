@@ -38,7 +38,19 @@ class shopSettingsPrintformTemplateActions extends waJsonActions
             $this->errors[] = _w("Empty template");
             return;
         }
+        $userlog = shopUserlogPlugin::getInstance();
+        $plugin_id = waRequest::post('id');
+        $before = $userlog ? shopUserlogSettingsSnapshot::capturePrintformTemplate($plugin_id) : null;
+
         $this->plugin->saveTemplate($template);
+
+        if ($userlog && $before !== null) {
+            $userlog->logSettingsChange(
+                'Печатная форма: '.$plugin_id,
+                $before,
+                shopUserlogSettingsSnapshot::capturePrintformTemplate($plugin_id)
+            );
+        }
     }
 
     public function resetAction()

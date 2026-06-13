@@ -382,7 +382,7 @@
 
             $form.on('submit', function(e) {
                 e.preventDefault();
-                var params = $.shop.helper.parseParams(window.location.hash.replace(/^[^\/]*\/?/, ''));
+                var params = $.products.getListParamsFromHash();
                 params.filter_sku = $.products.normalizeFilterParam($.trim($form.find('[name="filter_sku"]').val()));
                 params.filter_name = $.products.normalizeFilterParam($.trim($form.find('[name="filter_name"]').val()));
 
@@ -410,7 +410,7 @@
 
             $form.on('click', '.s-product-list-filters__reset', function(e) {
                 e.preventDefault();
-                var params = $.shop.helper.parseParams(window.location.hash.replace(/^[^\/]*\/?/, ''));
+                var params = $.products.getListParamsFromHash();
                 delete params.filter_sku;
                 delete params.filter_name;
                 delete params.filter_badge;
