@@ -388,7 +388,7 @@ class shopFrontendAction extends waViewAction
             date('Y-m-d'),
             'head-meta-v4',
             'slider-live-v7',
-            'layout-sidebar-v6',
+            'layout-sidebar-v7',
             'browser-nocache-v1',
         )));
     }
