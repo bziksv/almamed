@@ -1,46 +1,116 @@
 {strip}
 
-<div class="header-mobile-bar hide-on-large-only">
+<div class="header-mobile-bar hide-on-large-only" id="header-mobile-bar">
     <div class="header-mobile-bar__inner">
-        <a href="{$wa_url}" class="header-mobile-bar__brand" id="logo-mobile" aria-label="{$theme_settings.logo_title|default:'AlmaMed'|escape}">
+        <a href="{$wa_url}" class="header-mobile-bar__brand" id="logo-mobile">
             {if !empty($theme_settings.logo)}
                 <img src="{$wa_theme_url}{$theme_settings.logo}?v{$wa_theme_version}"
                      alt="{$theme_settings.logo_title|default:''|escape}"
                      class="header-mobile-bar__logo"
-                     width="52"
-                     height="36"
+                     width="48"
+                     height="32"
                      decoding="async">
+            {/if}
+            {if !empty($theme_settings.logo_title)}
+                <span class="header-mobile-bar__title">{$theme_settings.logo_title|escape}</span>
             {/if}
         </a>
 
-        {if $wa->shop}
-            <div class="header-mobile-bar__search">
-                {include file="searchform.header.html" mobile_search=true inline}
-            </div>
-        {/if}
+        <div class="header-mobile-bar__spacer" aria-hidden="true"></div>
 
-        {if !empty($theme_settings.phone_1)}
-            <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}"
-               class="header-mobile-bar__icon header-mobile-bar__phone"
-               aria-label="{$theme_settings.phone_1|escape}">
-                <i class="material-icons" aria-hidden="true">&#xE0CD;</i>
+        <div class="header-mobile-bar__actions">
+            {if $wa->shop}
+                <button type="button"
+                        class="header-mobile-bar__icon header-mobile-bar__search-toggle"
+                        aria-label="[`Search`]"
+                        aria-expanded="false"
+                        aria-controls="header-mobile-search-panel">
+                    <i class="material-icons header-mobile-bar__search-icon" aria-hidden="true">&#xE8B6;</i>
+                </button>
+            {/if}
+
+            {if !empty($theme_settings.phone_1)}
+                <a href="tel:{str_replace(['(', ')', '-', ' '], '', $theme_settings.phone_1)}"
+                   class="header-mobile-bar__icon header-mobile-bar__phone"
+                   aria-label="{$theme_settings.phone_1|escape}">
+                    <i class="material-icons" aria-hidden="true">&#xE0CD;</i>
+                </a>
+            {/if}
+
+            {if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
+                {$cart_count = $wa->shop->cart->count()}
+                <a href="{$wa->getUrl('shop/frontend/cart')}"
+                   class="header-mobile-bar__icon header-mobile-bar__cart"
+                   id="cart-mobile"
+                   aria-label="[`Cart`]">
+                    <i class="material-icons cart-count" data-count="{if $cart_count}{$cart_count}{/if}" aria-hidden="true">&#xE8CC;</i>
+                </a>
+            {/if}
+
+            <a href="#" data-nav="all" class="header-mobile-bar__icon header-mobile-bar__menu mobile-nav-button action" aria-label="[`Menu`]">
+                <i class="material-icons" aria-hidden="true">&#xE5D2;</i>
             </a>
-        {/if}
-
-        {if $wa->shop && strpos($wa->currentUrl(), 'cart') === false && strpos($wa->currentUrl(), 'checkout') === false}
-            {$cart_count = $wa->shop->cart->count()}
-            <a href="{$wa->getUrl('shop/frontend/cart')}"
-               class="header-mobile-bar__icon header-mobile-bar__cart"
-               id="cart-mobile"
-               aria-label="[`Cart`]">
-                <i class="material-icons cart-count" data-count="{if $cart_count}{$cart_count}{/if}" aria-hidden="true">&#xE8CC;</i>
-            </a>
-        {/if}
-
-        <a href="#" data-nav="all" class="header-mobile-bar__icon header-mobile-bar__menu mobile-nav-button action" aria-label="[`Menu`]">
-            <i class="material-icons" aria-hidden="true">&#xE5D2;</i>
-        </a>
+        </div>
     </div>
+
+    {if $wa->shop}
+        <div class="header-mobile-bar__search-panel" id="header-mobile-search-panel" hidden>
+            {include file="searchform.header.html" mobile_search=true inline}
+        </div>
+    {/if}
 </div>
+
+<script>
+(function() {
+    var bar = document.getElementById('header-mobile-bar');
+    if (!bar) {
+        return;
+    }
+    var toggle = bar.querySelector('.header-mobile-bar__search-toggle');
+    var panel = document.getElementById('header-mobile-search-panel');
+    if (!toggle || !panel) {
+        return;
+    }
+    var icon = toggle.querySelector('.header-mobile-bar__search-icon');
+
+    function setOpen(open) {
+        bar.classList.toggle('is-search-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.classList.toggle('is-active', open);
+        panel.hidden = !open;
+        if (icon) {
+            icon.textContent = open ? 'close' : 'search';
+        }
+        if (open) {
+            window.setTimeout(function() {
+                var input = panel.querySelector('.searchpro__field-input');
+                if (input) {
+                    input.focus();
+                }
+            }, 220);
+        }
+    }
+
+    toggle.addEventListener('click', function() {
+        setOpen(!bar.classList.contains('is-search-open'));
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!bar.classList.contains('is-search-open')) {
+            return;
+        }
+        if (bar.contains(e.target)) {
+            return;
+        }
+        setOpen(false);
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && bar.classList.contains('is-search-open')) {
+            setOpen(false);
+        }
+    });
+})();
+</script>
 
 {/strip}

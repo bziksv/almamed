@@ -10,7 +10,7 @@
             <li>
                 <a href="{$sc.url|escape}" class="home-categories__card">
                     <span class="home-categories__image">
-                        <img src="{if class_exists('shopWmimageincatPlugin') && shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="{$sc.name|escape}" loading="lazy" width="200" height="200" />
+                        <img src="{if class_exists('shopWmimageincatPlugin') && shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{shopWmimageincatPlugin::getCategoryImage($sc.id, 'image')}{else}{$wa_theme_url}img/dummy200.png{/if}" alt="{$sc.name|escape}" loading="lazy" width="280" height="280" />
                     </span>
                     <span class="home-categories__name">{$sc.name|escape}</span>
                     {if !empty($sc.count)}

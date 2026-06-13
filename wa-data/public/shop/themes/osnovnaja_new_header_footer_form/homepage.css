@@ -606,6 +606,28 @@
         grid-template-columns: 1fr;
     }
 
+    .home-categories__card {
+        padding: 1rem 0.85rem 1.05rem;
+    }
+
+    .home-categories__image {
+        height: 190px;
+        margin-bottom: 0.75rem;
+    }
+
+    .home-categories__image img {
+        max-height: 180px;
+        max-width: 92%;
+    }
+
+    .home-categories__name {
+        font-size: 0.95rem;
+    }
+
+    .home-categories__count {
+        font-size: 0.8rem;
+    }
+
     .home-section-title--left {
         text-align: center;
     }
