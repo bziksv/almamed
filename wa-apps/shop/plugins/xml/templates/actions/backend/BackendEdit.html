@@ -1,56 +1,626 @@
-<div class="sidebar right15px">
-    <div class="block s-nolevel2-sidebar"></div>
-</div>
-<div class="sidebar left15px">
-    <div class="block s-nolevel2-sidebar"></div>
-</div>
+<link href="{$wa_app_static_url}plugins/xml/css/xml-export.css?v=1.1.2" rel="stylesheet" type="text/css">
 
-<div class="content left15px right15px s-nolevel2-box">
+<div class="content s-nolevel2-box xml-export-layout">
 
-    <div class="sidebar left300px blank">
-        <div class="block double-padded">
-            <p>Бренды</p>
-            <form method="post" action="">
-				{$wa->csrf()}
+<div class="xml-export-page">
 
-                {foreach from=$brand item=b}
-                <input type="checkbox" name="brand[]" value="{$b.id}"/>{$b.name} id:({$b.id})<br>
-                {/foreach}
-                <br>
-
+    <div class="xml-export-hero">
+        <h1>Экспорт XML для Битрикс</h1>
+        <p>Формирует каталог товаров в формате CommerceML: файл <code>import.xml</code> и архив изображений <code>import_files.zip</code> в корне сайта.</p>
+        <div class="xml-export-hero-meta">
+            <span>{$brand_count} брендов</span>
+            <span>{$cat_count} корневых категорий</span>
+            <span>Пакетная выгрузка с прогрессом</span>
         </div>
-
     </div>
 
-    <div class="content left200px blank bordered-left">
+    <div class="xml-export-steps" role="tablist">
+        <button type="button" class="xml-export-step-tab is-active" data-step="1" aria-selected="true">
+            <span class="xml-export-step-num">1</span>
+            <span>
+                <span class="xml-export-step-label">Режим</span>
+                <span class="xml-export-step-hint">Категории или бренды</span>
+            </span>
+        </button>
+        <button type="button" class="xml-export-step-tab" data-step="2" disabled>
+            <span class="xml-export-step-num">2</span>
+            <span>
+                <span class="xml-export-step-label">Настройка</span>
+                <span class="xml-export-step-hint">Цены и отбор</span>
+            </span>
+        </button>
+        <button type="button" class="xml-export-step-tab" data-step="3" disabled>
+            <span class="xml-export-step-num">3</span>
+            <span>
+                <span class="xml-export-step-label">Экспорт</span>
+                <span class="xml-export-step-hint">Запуск и результат</span>
+            </span>
+        </button>
+    </div>
 
-        <div class="block double-padded">
-            <div style="border: 1px solid red;padding: 10px;max-width: 475px;margin-left: 80px;margin-bottom: 20px;">
-                Количество процента из цен всех товаров:
-                <input type="number" name="percent" step="0.1" min="-100" max="100" value="0.1" style="text-align: center"> %
+    <div class="xml-export-guide" id="xml-export-guide">
+        <button type="button" class="xml-export-guide-toggle" id="xml-export-guide-toggle">
+            <span>📖 Краткий гайд: как пользоваться экспортом</span>
+            <span class="xml-export-guide-chevron">▼</span>
+        </button>
+        <div class="xml-export-guide-body">
+            <ol>
+                <li><strong>Выберите режим.</strong> «По категориям» — выгружаются все товары из корневых веток каталога (можно исключить ненужные). «По брендам» — только товары выбранных производителей.</li>
+                <li><strong>Задайте наценку или скидку</strong> в процентах. Например, <code>0.1</code> увеличит цену на 0,1%, <code>-5</code> уменьшит на 5%. Значение <code>0</code> — цены без изменений.</li>
+                <li><strong>Отметьте исключения или бренды</strong> на шаге 2. Для категорий галочка означает «не включать эту ветку в экспорт».</li>
+                <li><strong>Запустите экспорт</strong> на шаге 3. Процесс идёт пакетами — не закрывайте вкладку до появления ссылки на файлы.</li>
+                <li><strong>Импорт в 1С-Битрикс:</strong> в админке Битрикс → Магазин → Настройки → Импорт данных укажите URL <code>https://ваш-сайт.ru/import.xml</code> или загрузите файлы вручную с сервера.</li>
+            </ol>
+            <div class="xml-export-guide-files">
+                <span class="xml-export-guide-file">📄 import.xml — каталог и цены</span>
+                <span class="xml-export-guide-file">🗜 import_files.zip — изображения</span>
+            </div>
+            <div class="xml-export-guide-note">
+                <strong>Важно:</strong> после экспорта файлы перезаписываются в корне сайта. Для регулярного обновления можно настроить cron с CLI-командой плагина или повторять экспорт вручную по расписанию.
+            </div>
+        </div>
+    </div>
+
+    <form method="post" action="" id="xml-export-form">
+        {$wa->csrf()}
+        <input type="hidden" name="mode" id="xml-export-mode" value="category">
+
+        {* ——— STEP 1: Mode ——— *}
+        <div class="xml-export-panel is-visible" data-panel="1">
+            <div class="xml-export-card">
+                <h2 class="xml-export-card-title">Как выгружать товары?</h2>
+                <div class="xml-export-mode-grid">
+                    <label class="xml-export-mode-card is-selected" data-mode="category">
+                        <input type="radio" name="mode_radio" value="category" checked>
+                        <div class="xml-export-mode-icon">📂</div>
+                        <div class="xml-export-mode-name">По категориям</div>
+                        <p class="xml-export-mode-desc">Все товары из корневых разделов каталога. Отметьте ветки, которые нужно <em>исключить</em> из выгрузки.</p>
+                    </label>
+                    <label class="xml-export-mode-card" data-mode="brand">
+                        <input type="radio" name="mode_radio" value="brand">
+                        <div class="xml-export-mode-icon">🏷</div>
+                        <div class="xml-export-mode-name">По брендам</div>
+                        <p class="xml-export-mode-desc">Только товары выбранных брендов. Подходит для точечной выгрузки ассортимента поставщика.</p>
+                    </label>
+                </div>
+            </div>
+            <div class="xml-export-nav">
+                <span></span>
+                <button type="button" class="xml-export-btn xml-export-btn--primary" id="xml-export-next-1">Далее →</button>
+            </div>
+        </div>
+
+        {* ——— STEP 2: Settings ——— *}
+        <div class="xml-export-panel" data-panel="2">
+            <div class="xml-export-card">
+                <h2 class="xml-export-card-title">Наценка / скидка к ценам</h2>
+                <div class="xml-export-price-row">
+                    <input type="number" name="percent" id="xml-export-percent" step="0.1" min="-100" max="100" value="0.1">
+                    <span class="xml-export-price-suffix">%</span>
+                    <span class="hint">Положительное значение увеличивает цену, отрицательное — уменьшает. Ноль — без изменений.</span>
+                </div>
             </div>
 
-            <p>Категории</p>
+            <div class="xml-export-card xml-export-selection-category is-active" id="xml-export-panel-categories">
+                <h2 class="xml-export-card-title">
+                    Категории
+                    <span class="hint">— отметьте ветку, чтобы <strong>исключить</strong> из экспорта</span>
+                </h2>
+                <div class="xml-export-list-toolbar">
+                    <input type="search" class="xml-export-search" id="xml-cat-search" placeholder="Поиск категории…" autocomplete="off">
+                    <div class="xml-export-list-actions">
+                        <button type="button" id="xml-cat-check-all">Исключить все</button>
+                        <button type="button" id="xml-cat-uncheck-all">Сбросить</button>
+                    </div>
+                    <span class="xml-export-list-count" id="xml-cat-count"></span>
+                </div>
+                <div class="xml-export-list" id="xml-export-categories">
+                    {foreach from=$cat item=c}
+                    <label class="xml-export-list-item" data-search="{$c.name|escape|lower}">
+                        <input type="checkbox" name="del_cat[]" value="{$c.id}" class="xml-cat-checkbox">
+                        <span class="xml-export-list-item-label">
+                            <span class="xml-export-list-item-name">{$c.name|escape}</span>
+                            <span class="xml-export-list-item-meta">ID {$c.id}{if $c.count} · {$c.count} товар(ов){/if}</span>
+                        </span>
+                    </label>
+                    <input type="hidden" name="all_cat[]" value="{$c.id}">
+                    {/foreach}
+                </div>
+            </div>
 
-                {foreach from=$cat item=c}
-                <input type="checkbox" name="del_cat[]" value="{$c.id}"/>{$c.name}<br>
-                <input type="hidden" name="all_cat[]" value="{$c.id}">
-                {/foreach}
-                <br>
-                <input type="submit" value="экспорт">
-            </form>
+            <div class="xml-export-card xml-export-selection-brand" id="xml-export-panel-brands">
+                <h2 class="xml-export-card-title">
+                    Бренды
+                    <span class="hint">— выберите один или несколько для экспорта</span>
+                </h2>
+                <div class="xml-export-list-toolbar">
+                    <input type="search" class="xml-export-search" id="xml-brand-search" placeholder="Поиск бренда…" autocomplete="off">
+                    <div class="xml-export-list-actions">
+                        <button type="button" id="xml-brand-check-all">Выбрать все</button>
+                        <button type="button" id="xml-brand-uncheck-all">Сбросить</button>
+                    </div>
+                    <span class="xml-export-list-count" id="xml-brand-count"></span>
+                </div>
+                <div class="xml-export-list" id="xml-export-brands">
+                    {foreach from=$brand item=b}
+                    <label class="xml-export-list-item" data-search="{$b.name|escape|lower}">
+                        <input type="checkbox" name="brand[]" value="{$b.id}" class="xml-brand-checkbox">
+                        <span class="xml-export-list-item-label">
+                            <span class="xml-export-list-item-name">{$b.name|escape}</span>
+                            <span class="xml-export-list-item-meta">ID {$b.id}</span>
+                        </span>
+                    </label>
+                    {/foreach}
+                </div>
+            </div>
 
-            {if $import == true}
-                <p>Экспорт успешно завершён!</p>
-                <a href="/import.xml" download>Скачать файл импорта</a> |
-                <a href="/import_files.zip" download>Скачать импорт картинок</a>
-            {/if}
-
+            <div class="xml-export-nav">
+                <button type="button" class="xml-export-btn xml-export-btn--secondary" id="xml-export-back-2">← Назад</button>
+                <button type="button" class="xml-export-btn xml-export-btn--primary" id="xml-export-next-2">Далее →</button>
+            </div>
         </div>
 
+        {* ——— STEP 3: Export ——— *}
+        <div class="xml-export-panel" data-panel="3">
+            <div class="xml-export-card">
+                <h2 class="xml-export-card-title">Проверьте параметры и запустите</h2>
 
+                <div class="xml-export-summary" id="xml-export-summary">
+                    <dl>
+                        <dt>Режим</dt>
+                        <dd id="xml-summary-mode">—</dd>
+                        <dt>Наценка / скидка</dt>
+                        <dd id="xml-summary-percent">—</dd>
+                        <dt>Отбор</dt>
+                        <dd id="xml-summary-selection">—</dd>
+                    </dl>
+                </div>
 
+                <div class="xml-export-stage-pills" id="xml-export-stage-pills">
+                    <span class="xml-export-stage-pill" data-stage="prepare">Подготовка</span>
+                    <span class="xml-export-stage-pill" data-stage="products">Товары</span>
+                    <span class="xml-export-stage-pill" data-stage="finalize">Сборка</span>
+                    <span class="xml-export-stage-pill" data-stage="done">Готово</span>
+                </div>
 
-    </div>
+                <div class="xml-export-ready-actions">
+                    <button type="button" class="xml-export-btn xml-export-btn--primary" id="xml-export-start">
+                        <span class="xml-export-btn-icon" aria-hidden="true">▶</span>
+                        <span>Запустить экспорт</span>
+                    </button>
+                    <span class="hint">Экспорт может занять несколько минут при большом каталоге</span>
+                </div>
+
+                <div class="xml-export-progress-wrap" id="xml-export-progress" style="display:none;">
+                    <div class="xml-export-progress-header">
+                        <span class="xml-export-progress-percent xml-export-progress-label">0.000%</span>
+                        <span class="xml-export-progress-stage xml-export-stage"></span>
+                    </div>
+                    <div class="xml-export-progress-bar">
+                        <div class="xml-export-progress-bar-fill"></div>
+                    </div>
+                    <div class="xml-export-progress-stats">
+                        <span>⏱ <span class="xml-export-time">00:00:00</span></span>
+                        <span>📦 <span class="xml-export-counter">0 / 0</span></span>
+                    </div>
+                    <pre class="xml-export-log" id="xml-export-log"></pre>
+                </div>
+
+                <div id="xml-export-report" style="display:none;margin-top:16px;"></div>
+                <div class="errormsg" id="xml-export-error" style="display:none;"></div>
+            </div>
+
+            <div class="xml-export-nav">
+                <button type="button" class="xml-export-btn xml-export-btn--secondary" id="xml-export-back-3">← Назад</button>
+                <span></span>
+            </div>
+        </div>
+    </form>
 
 </div>
+</div>
+
+<script>
+$(function () {
+    var runUrl = '{$run_url|escape:javascript}';
+    var $form = $('#xml-export-form');
+    var $progress = $('#xml-export-progress');
+    var $report = $('#xml-export-report');
+    var $error = $('#xml-export-error');
+    var $log = $('#xml-export-log');
+    var timers = [];
+    var processId = null;
+    var lastLogLen = 0;
+    var currentStep = 1;
+    var currentMode = 'category';
+    var exportRunning = false;
+
+    var stageLabels = {
+        prepare: 'Подготовка',
+        products: 'Запись товаров',
+        finalize: 'Сборка файлов',
+        done: 'Готово'
+    };
+
+    function setStartButtonLabel(label, withIcon) {
+        var $btn = $('#xml-export-start');
+        if (withIcon) {
+            $btn.html('<span class="xml-export-btn-icon" aria-hidden="true">▶</span><span>' + label + '</span>');
+        } else {
+            $btn.html('<span>' + label + '</span>');
+        }
+    }
+
+    function clearTimers() {
+        while (timers.length) {
+            clearTimeout(timers.pop());
+        }
+    }
+
+    function goToStep(step) {
+        currentStep = step;
+        $('.xml-export-panel').removeClass('is-visible');
+        $('.xml-export-panel[data-panel="' + step + '"]').addClass('is-visible');
+
+        $('.xml-export-step-tab').each(function () {
+            var s = parseInt($(this).data('step'), 10);
+            $(this).toggleClass('is-active', s === step);
+            $(this).toggleClass('is-done', s < step);
+            $(this).prop('disabled', s > step && !exportRunning);
+        });
+
+        if (step === 3) {
+            updateSummary();
+        }
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        $('#xml-export-mode').val(mode);
+        $('.xml-export-mode-card').removeClass('is-selected');
+        $('.xml-export-mode-card[data-mode="' + mode + '"]').addClass('is-selected');
+        $('.xml-export-mode-card input[value="' + mode + '"]').prop('checked', true);
+
+        $('#xml-export-panel-categories').toggleClass('is-active', mode === 'category');
+        $('#xml-export-panel-brands').toggleClass('is-active', mode === 'brand');
+
+        if (mode === 'category') {
+            $form.find('.xml-brand-checkbox').prop('checked', false);
+            syncListItemStyles('#xml-export-brands');
+            updateBrandCount();
+        } else {
+            $form.find('.xml-cat-checkbox').prop('checked', false);
+            syncListItemStyles('#xml-export-categories');
+            updateCatCount();
+        }
+    }
+
+    function updateListCount(listSelector, checkboxSelector, countEl, labelFn) {
+        var $items = $(listSelector + ' .xml-export-list-item:not(.is-hidden)');
+        var $checked = $items.find(checkboxSelector + ':checked');
+        $(countEl).text(labelFn($checked.length, $items.length));
+    }
+
+    function updateCatCount() {
+        updateListCount('#xml-export-categories', '.xml-cat-checkbox', '#xml-cat-count', function (c, t) {
+            return 'Исключено: ' + c + ' из ' + t;
+        });
+    }
+
+    function updateBrandCount() {
+        updateListCount('#xml-export-brands', '.xml-brand-checkbox', '#xml-brand-count', function (c, t) {
+            return 'Выбрано: ' + c + ' из ' + t;
+        });
+    }
+
+    function filterList(searchInput, listSelector) {
+        var q = $(searchInput).val().toLowerCase().trim();
+        $(listSelector + ' .xml-export-list-item').each(function () {
+            var hay = $(this).data('search') || '';
+            $(this).toggleClass('is-hidden', q && hay.indexOf(q) === -1);
+        });
+        if (listSelector === '#xml-export-categories') {
+            updateCatCount();
+        } else {
+            updateBrandCount();
+        }
+    }
+
+    function toggleChecked(listSelector, checkboxSelector, checked) {
+        $(listSelector + ' .xml-export-list-item:not(.is-hidden)').find(checkboxSelector).prop('checked', checked);
+        syncListItemStyles(listSelector);
+        if (listSelector === '#xml-export-categories') {
+            updateCatCount();
+        } else {
+            updateBrandCount();
+        }
+    }
+
+    function syncListItemStyles(listSelector) {
+        $(listSelector + ' .xml-export-list-item').each(function () {
+            $(this).toggleClass('is-checked', $(this).find('input[type=checkbox]').is(':checked'));
+        });
+    }
+
+    function validateStep2() {
+        if (currentMode === 'brand') {
+            if (!$form.find('input[name="brand[]"]:checked').length) {
+                $error.text('Выберите хотя бы один бренд').show();
+                return false;
+            }
+        } else {
+            var total = $form.find('input[name="all_cat[]"]').length;
+            var excluded = $form.find('input[name="del_cat[]"]:checked').length;
+            if (excluded >= total) {
+                $error.text('Нельзя исключить все категории — оставьте хотя бы одну ветку').show();
+                return false;
+            }
+        }
+        $error.hide();
+        return true;
+    }
+
+    function updateSummary() {
+        var modeLabel = currentMode === 'brand' ? 'По брендам' : 'По категориям';
+        var pct = parseFloat($('#xml-export-percent').val()) || 0;
+        var pctLabel = (pct > 0 ? '+' : '') + pct + '%';
+        if (pct === 0) {
+            pctLabel = 'Без изменений (0%)';
+        }
+
+        var selectionLabel;
+        if (currentMode === 'brand') {
+            var names = [];
+            $form.find('input[name="brand[]"]:checked').each(function () {
+                names.push($(this).closest('.xml-export-list-item').find('.xml-export-list-item-name').text());
+            });
+            selectionLabel = names.length ? names.slice(0, 5).join(', ') + (names.length > 5 ? '… (+' + (names.length - 5) + ')' : '') : '—';
+        } else {
+            var excluded = $form.find('input[name="del_cat[]"]:checked').length;
+            var total = $form.find('input[name="all_cat[]"]').length;
+            selectionLabel = 'Включено ' + (total - excluded) + ' из ' + total + ' корневых категорий';
+            if (excluded) {
+                selectionLabel += ' (исключено: ' + excluded + ')';
+            }
+        }
+
+        $('#xml-summary-mode').text(modeLabel);
+        $('#xml-summary-percent').text(pctLabel);
+        $('#xml-summary-selection').text(selectionLabel);
+    }
+
+    function setStagePill(stage) {
+        var order = ['prepare', 'products', 'finalize', 'done'];
+        var idx = order.indexOf(stage);
+        $('#xml-export-stage-pills .xml-export-stage-pill').each(function () {
+            var s = $(this).data('stage');
+            var si = order.indexOf(s);
+            $(this).removeClass('is-active is-done');
+            if (si < idx || (stage === 'done' && s === 'done')) {
+                $(this).addClass('is-done');
+            } else if (si === idx) {
+                $(this).addClass('is-active');
+            }
+        });
+    }
+
+    function appendLog(lines) {
+        if (!lines || !lines.length) {
+            return;
+        }
+        var text = $log.text();
+        $log.text(text + (text ? "\n" : '') + lines.join("\n"));
+        $log.scrollTop($log[0].scrollHeight);
+    }
+
+    function updateUi(r) {
+        if (r.log && r.log.length > lastLogLen) {
+            appendLog(r.log.slice(lastLogLen));
+            lastLogLen = r.log.length;
+        }
+        if (r.progress) {
+            var p = parseFloat(String(r.progress).replace(',', '.'));
+            $progress.find('.xml-export-progress-bar-fill').css('width', p + '%');
+            $progress.find('.xml-export-progress-label').text(r.progress);
+        }
+        if (r.stage) {
+            setStagePill(r.stage);
+            $progress.find('.xml-export-stage').text(stageLabels[r.stage] || r.stage);
+        }
+        if (r.time) {
+            $progress.find('.xml-export-time').text(r.time);
+        }
+        if (r.processed !== undefined && r.total !== undefined) {
+            $progress.find('.xml-export-counter').text(r.processed + ' / ' + r.total);
+        }
+    }
+
+    function cleanup() {
+        exportRunning = false;
+        $.post(runUrl, { processId: processId, cleanup: 1 }, function (r) {
+            $progress.find('.xml-export-progress-bar-fill').css('width', '100%');
+            setStagePill('done');
+            if (r && r.report) {
+                $report.html(r.report).show();
+                $report.find('.close').on('click', function () {
+                    $report.hide().empty();
+                });
+            }
+            clearTimers();
+            setStartButtonLabel('Запустить снова', true);
+            $('.xml-export-step-tab').prop('disabled', false);
+        }, 'json');
+    }
+
+    function step(delay) {
+        delay = delay || 1500;
+        timers.push(setTimeout(function () {
+            $.post(runUrl, { processId: processId }, function (r) {
+                if (!r) {
+                    step(2500);
+                    return;
+                }
+                if (r.error) {
+                    $error.text(r.error).show();
+                    clearTimers();
+                    exportRunning = false;
+                    setStartButtonLabel('Запустить экспорт', true);
+                    $('#xml-export-start').prop('disabled', false);
+                    $('.xml-export-step-tab').prop('disabled', false);
+                    return;
+                }
+                updateUi(r);
+                if (r.ready) {
+                    cleanup();
+                } else {
+                    step();
+                }
+            }, 'json').fail(function () {
+                step(3000);
+            });
+        }, delay));
+    }
+
+    function startExport() {
+        clearTimers();
+        $error.hide().empty();
+        $report.hide().empty();
+        $log.text('');
+        lastLogLen = 0;
+        $progress.show();
+        $progress.find('.xml-export-progress-bar-fill').css('width', '0');
+        $progress.find('.xml-export-progress-label').text('0.000%');
+        $progress.find('.xml-export-stage').text('Подготовка…');
+        $progress.find('.xml-export-time').text('00:00:00');
+        $progress.find('.xml-export-counter').text('0 / 0');
+        setStagePill('prepare');
+
+        exportRunning = true;
+        setStartButtonLabel('Экспорт…', false);
+        $('#xml-export-start').prop('disabled', true);
+        $('.xml-export-step-tab').prop('disabled', true);
+
+        var data = $form.serializeArray();
+
+        $.post(runUrl, data, function (r) {
+            if (r && r.processId) {
+                processId = r.processId;
+                step(500);
+                step();
+            } else if (r && r.error) {
+                $error.text(r.error).show();
+                exportRunning = false;
+                setStartButtonLabel('Запустить экспорт', true);
+                $('#xml-export-start').prop('disabled', false);
+                $('.xml-export-step-tab').prop('disabled', false);
+            } else {
+                $error.text('Ошибка запуска экспорта').show();
+                exportRunning = false;
+                setStartButtonLabel('Запустить экспорт', true);
+                $('#xml-export-start').prop('disabled', false);
+                $('.xml-export-step-tab').prop('disabled', false);
+            }
+        }, 'json').fail(function () {
+            $error.text('Сервер не ответил').show();
+            exportRunning = false;
+            setStartButtonLabel('Запустить экспорт', true);
+            $('#xml-export-start').prop('disabled', false);
+            $('.xml-export-step-tab').prop('disabled', false);
+        });
+    }
+
+    // Mode cards
+    $('.xml-export-mode-card').on('click', function () {
+        setMode($(this).data('mode'));
+    });
+
+    // Guide toggle
+    $('#xml-export-guide-toggle').on('click', function () {
+        $('#xml-export-guide').toggleClass('is-open');
+    });
+
+    // Step navigation
+    $('#xml-export-next-1').on('click', function () {
+        goToStep(2);
+        $('.xml-export-step-tab[data-step="2"]').prop('disabled', false);
+    });
+
+    $('#xml-export-back-2').on('click', function () {
+        goToStep(1);
+    });
+
+    $('#xml-export-next-2').on('click', function () {
+        $error.hide();
+        if (validateStep2()) {
+            goToStep(3);
+            $('.xml-export-step-tab[data-step="3"]').prop('disabled', false);
+        }
+    });
+
+    $('#xml-export-back-3').on('click', function () {
+        if (!exportRunning) {
+            goToStep(2);
+        }
+    });
+
+    $('.xml-export-step-tab').on('click', function () {
+        if ($(this).prop('disabled') || exportRunning) {
+            return;
+        }
+        var step = parseInt($(this).data('step'), 10);
+        if (step < currentStep) {
+            goToStep(step);
+        } else if (step === 2 && currentStep === 1) {
+            goToStep(2);
+            $('.xml-export-step-tab[data-step="2"]').prop('disabled', false);
+        } else if (step === 3 && currentStep === 2 && validateStep2()) {
+            goToStep(3);
+            $('.xml-export-step-tab[data-step="3"]').prop('disabled', false);
+        }
+    });
+
+    // Search & bulk actions
+    $('#xml-cat-search').on('input', function () {
+        filterList(this, '#xml-export-categories');
+    });
+    $('#xml-brand-search').on('input', function () {
+        filterList(this, '#xml-export-brands');
+    });
+
+    $('#xml-cat-check-all').on('click', function () {
+        toggleChecked('#xml-export-categories', '.xml-cat-checkbox', true);
+    });
+    $('#xml-cat-uncheck-all').on('click', function () {
+        toggleChecked('#xml-export-categories', '.xml-cat-checkbox', false);
+    });
+    $('#xml-brand-check-all').on('click', function () {
+        toggleChecked('#xml-export-brands', '.xml-brand-checkbox', true);
+    });
+    $('#xml-brand-uncheck-all').on('click', function () {
+        toggleChecked('#xml-export-brands', '.xml-brand-checkbox', false);
+    });
+
+    $('#xml-export-categories, #xml-export-brands').on('change', 'input[type=checkbox]', function () {
+        syncListItemStyles('#' + $(this).closest('.xml-export-list').attr('id'));
+        if ($(this).hasClass('xml-cat-checkbox')) {
+            updateCatCount();
+        } else {
+            updateBrandCount();
+        }
+    });
+
+    $('#xml-export-start').on('click', function () {
+        if (!validateStep2()) {
+            return;
+        }
+        startExport();
+    });
+
+    // Init
+    setMode('category');
+    syncListItemStyles('#xml-export-categories');
+    syncListItemStyles('#xml-export-brands');
+    updateCatCount();
+    updateBrandCount();
+});
+</script>

@@ -3,9 +3,11 @@
 {* Header search: always SearchPro from shop theme, not blog search *}
 {if $wa->app() == 'shop'}
     {$_header_searchform_theme = $wa_active_theme_path}
+    {$_header_searchform_theme_url = $wa_active_theme_url}
 {else}
     {$_header_searchform_theme = ($wa_parent_theme_path|default:$wa_active_theme_path)|replace:'/site/themes/':'/shop/themes/'}
+    {$_header_searchform_theme_url = $wa_active_theme_url|replace:'/site/themes/':'/shop/themes/'}
 {/if}
-{include file="`$_header_searchform_theme`/searchform.html" mobile_search=$mobile_search|default:false inline}
+{include file="`$_header_searchform_theme`/searchform.html" mobile_search=$mobile_search|default:false searchform_theme_url=$_header_searchform_theme_url inline}
 
 {/strip}

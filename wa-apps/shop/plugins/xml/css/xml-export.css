@@ -1,0 +1,737 @@
+/* XML Export for Bitrix — backend UI */
+
+.xml-export-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1a1a1a;
+}
+
+.xml-export-hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 100%);
+    color: #fff;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(30, 58, 95, 0.25);
+}
+
+.xml-export-hero h1 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    padding: 0;
+}
+
+.xml-export-hero p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 14px;
+    max-width: 640px;
+}
+
+.xml-export-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 13px;
+}
+
+.xml-export-hero-meta span {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+/* Steps navigation */
+.xml-export-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 24px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.xml-export-step-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border: none;
+    background: #fafafa;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: 13px;
+    color: #666;
+    border-right: 1px solid #e8e8e8;
+    transition: background 0.15s, color 0.15s;
+}
+
+.xml-export-step-tab:last-child {
+    border-right: none;
+}
+
+.xml-export-step-tab:hover:not(:disabled) {
+    background: #f0f4f8;
+    color: #333;
+}
+
+.xml-export-step-tab:disabled {
+    cursor: default;
+    opacity: 0.55;
+}
+
+.xml-export-step-tab.is-active {
+    background: #fff;
+    color: #1e3a5f;
+    font-weight: 600;
+    box-shadow: inset 0 -3px 0 #2d6a9f;
+}
+
+.xml-export-step-tab.is-done .xml-export-step-num {
+    background: #4caf50;
+    color: #fff;
+}
+
+.xml-export-step-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ddd;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.xml-export-step-tab.is-active .xml-export-step-num {
+    background: #2d6a9f;
+    color: #fff;
+}
+
+.xml-export-step-label {
+    display: block;
+    font-weight: inherit;
+}
+
+.xml-export-step-hint {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+
+/* Panels */
+.xml-export-panel {
+    display: none;
+    animation: xmlFadeIn 0.25s ease;
+}
+
+.xml-export-panel.is-visible {
+    display: block;
+}
+
+@keyframes xmlFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.xml-export-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.xml-export-card-title {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.xml-export-card-title .hint {
+    font-weight: 400;
+    font-size: 13px;
+}
+
+/* Mode cards */
+.xml-export-mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 640px) {
+    .xml-export-mode-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.xml-export-mode-card {
+    position: relative;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    background: #fafafa;
+}
+
+.xml-export-mode-card:hover {
+    border-color: #90caf9;
+    background: #f5f9ff;
+}
+
+.xml-export-mode-card.is-selected {
+    border-color: #2d6a9f;
+    background: #eef4fb;
+    box-shadow: 0 0 0 1px #2d6a9f;
+}
+
+.xml-export-mode-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.xml-export-mode-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.xml-export-mode-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+    color: #1e3a5f;
+}
+
+.xml-export-mode-desc {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+/* Guide accordion */
+.xml-export-guide {
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #fff;
+}
+
+.xml-export-guide-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border: none;
+    background: #f8f9fa;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e3a5f;
+    text-align: left;
+}
+
+.xml-export-guide-toggle:hover {
+    background: #eef2f6;
+}
+
+.xml-export-guide-toggle .xml-export-guide-chevron {
+    transition: transform 0.2s;
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.xml-export-guide.is-open .xml-export-guide-chevron {
+    transform: rotate(180deg);
+}
+
+.xml-export-guide-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid #eee;
+}
+
+.xml-export-guide.is-open .xml-export-guide-body {
+    display: block;
+}
+
+.xml-export-guide-body ol {
+    margin: 16px 0 0;
+    padding-left: 20px;
+}
+
+.xml-export-guide-body li {
+    margin-bottom: 12px;
+}
+
+.xml-export-guide-body li strong {
+    color: #1e3a5f;
+}
+
+.xml-export-guide-note {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 16px;
+    font-size: 13px;
+}
+
+.xml-export-guide-files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.xml-export-guide-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef4fb;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #1e3a5f;
+}
+
+/* Price field */
+.xml-export-price-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.xml-export-price-row input[type="number"] {
+    width: 100px;
+    text-align: center;
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.xml-export-price-row input[type="number"]:focus {
+    border-color: #2d6a9f;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(45, 106, 159, 0.2);
+}
+
+.xml-export-price-suffix {
+    font-size: 18px;
+    font-weight: 600;
+    color: #666;
+}
+
+/* List toolbar */
+.xml-export-list-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.xml-export-search {
+    flex: 1;
+    min-width: 180px;
+    padding: 8px 12px 8px 32px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") 10px center no-repeat;
+}
+
+.xml-export-search:focus {
+    border-color: #2d6a9f;
+    outline: none;
+}
+
+.xml-export-list-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.xml-export-list-actions button {
+    padding: 6px 12px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #555;
+}
+
+.xml-export-list-actions button:hover {
+    background: #f5f5f5;
+    border-color: #bbb;
+}
+
+.xml-export-list-count {
+    font-size: 12px;
+    color: #888;
+    margin-left: auto;
+}
+
+/* Checkbox lists */
+.xml-export-list {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 8px;
+    background: #fafafa;
+}
+
+.xml-export-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    margin: 2px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.xml-export-list-item:hover {
+    background: #fff;
+}
+
+.xml-export-list-item.is-hidden {
+    display: none;
+}
+
+.xml-export-list-item input {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.xml-export-list-item-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.xml-export-list-item-name {
+    display: block;
+    font-size: 13px;
+    color: #333;
+}
+
+.xml-export-list-item-meta {
+    display: block;
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+}
+
+.xml-export-list-item.is-checked {
+    background: #eef4fb;
+}
+
+/* Selection block visibility */
+.xml-export-selection-brand,
+.xml-export-selection-category {
+    display: none;
+}
+
+.xml-export-selection-brand.is-active,
+.xml-export-selection-category.is-active {
+    display: block;
+}
+
+/* Buttons — override legacy Webasyst .button (fixed 34px height, gradients) */
+.xml-export-page .xml-export-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+    min-height: 42px;
+    height: auto;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-shadow: none;
+    white-space: nowrap;
+    cursor: pointer;
+    vertical-align: middle;
+    box-shadow: none;
+    background-image: none;
+    filter: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.xml-export-page .xml-export-btn:hover {
+    text-shadow: none;
+}
+
+.xml-export-page .xml-export-btn:active {
+    box-shadow: none;
+    background-image: none;
+    filter: none;
+}
+
+.xml-export-page .xml-export-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.xml-export-page .xml-export-btn--primary {
+    background: #43a047;
+    color: #fff;
+}
+
+.xml-export-page .xml-export-btn--primary:hover:not(:disabled) {
+    background: #388e3c;
+    color: #fff;
+}
+
+.xml-export-page .xml-export-btn--primary:active:not(:disabled) {
+    background: #2e7d32;
+    color: #fff;
+}
+
+.xml-export-page .xml-export-btn--secondary {
+    background: #fff;
+    color: #444;
+    border: 1px solid #d0d0d0;
+}
+
+.xml-export-page .xml-export-btn--secondary:hover:not(:disabled) {
+    background: #f5f5f5;
+    color: #222;
+}
+
+.xml-export-page .xml-export-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    line-height: 1;
+    transform: translateY(0);
+}
+
+/* Footer nav */
+.xml-export-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.xml-export-nav .xml-export-btn {
+    min-width: 120px;
+}
+
+/* Progress */
+.xml-export-progress-wrap {
+    margin-top: 8px;
+}
+
+.xml-export-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.xml-export-progress-percent {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d6a9f;
+    font-variant-numeric: tabular-nums;
+}
+
+.xml-export-progress-stage {
+    font-size: 13px;
+    color: #666;
+}
+
+.xml-export-progress-bar {
+    position: relative;
+    height: 10px;
+    background: #e8e8e8;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.xml-export-progress-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #2d6a9f, #4caf50);
+    border-radius: 5px;
+    transition: width 0.4s ease;
+}
+
+.xml-export-progress-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+.xml-export-progress-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.xml-export-log {
+    margin: 0;
+    max-height: 240px;
+    overflow: auto;
+    background: #1a1d23;
+    color: #b8c5d6;
+    padding: 16px;
+    font-size: 12px;
+    line-height: 1.6;
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    border-radius: 8px;
+    border: 1px solid #2d333b;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.xml-export-log:empty::before {
+    content: "Лог появится после запуска экспорта…";
+    color: #6e7681;
+    font-style: italic;
+}
+
+/* Stage pills during export */
+.xml-export-stage-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.xml-export-stage-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    background: #f0f0f0;
+    color: #888;
+    transition: all 0.2s;
+}
+
+.xml-export-stage-pill.is-active {
+    background: #2d6a9f;
+    color: #fff;
+    font-weight: 600;
+}
+
+.xml-export-stage-pill.is-done {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Summary before export */
+.xml-export-summary {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.xml-export-summary dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 20px;
+    font-size: 13px;
+}
+
+.xml-export-summary dt {
+    color: #666;
+    font-weight: 500;
+}
+
+.xml-export-summary dd {
+    margin: 0;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.xml-export-ready-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.xml-export-ready-actions .xml-export-btn--primary {
+    font-size: 15px;
+    min-height: 46px;
+    padding: 12px 28px;
+}
+
+#xml-export-error {
+    margin-top: 16px;
+}
+
+#xml-export-report .successmsg {
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14px;
+}
+
+#xml-export-report .successmsg a {
+    font-weight: 600;
+}
+
+/* Empty sidebar cleanup — full width */
+.content.s-nolevel2-box.xml-export-layout {
+    float: none;
+    width: auto;
+    margin: 0 20px;
+}
+
+.content.s-nolevel2-box.xml-export-layout + .clear-both,
+.sidebar.s-nolevel2-sidebar {
+    display: none;
+}

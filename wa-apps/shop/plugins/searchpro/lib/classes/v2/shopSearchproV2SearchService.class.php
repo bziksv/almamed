@@ -351,19 +351,7 @@ class shopSearchproV2SearchService
 			return array();
 		}
 
-		$images_by_category = array();
-		foreach ($products as $product) {
-			$category_id = (int) ifset($product, 'category_id', 0);
-			if (!$category_id || isset($images_by_category[$category_id]) || empty($product['image_id'])) {
-				continue;
-			}
-			$images_by_category[$category_id] = shopImage::getUrl(array(
-				'product_id' => (int) ifset($product, 'id', 0),
-				'id' => (int) $product['image_id'],
-				'filename' => ifset($product, 'image_filename', ''),
-				'ext' => ifset($product, 'ext', 'jpg'),
-			), '48x48');
-		}
+		$images_by_category = $this->buildDropdownCategoryImages($products);
 
 		foreach ($categories as &$category) {
 			$category_id = (int) ifset($category, 'id', 0);
@@ -391,5 +379,76 @@ class shopSearchproV2SearchService
 		}
 
 		return $categories;
+	}
+
+	/**
+	 * Thumbnail per category from the first suggest product linked via shop_category_products.
+	 *
+	 * @param array $products
+	 * @return array<int, string>
+	 */
+	private function buildDropdownCategoryImages(array $products)
+	{
+		$images_by_category = array();
+		$product_images = array();
+		$product_ids = array();
+
+		foreach ($products as $product) {
+			$product_id = (int) ifset($product, 'id', 0);
+			if (!$product_id || empty($product['image_id']) || isset($product_images[$product_id])) {
+				continue;
+			}
+
+			$product_ids[] = $product_id;
+			$product_images[$product_id] = shopImage::getUrl(array(
+				'product_id' => $product_id,
+				'id' => (int) $product['image_id'],
+				'filename' => ifset($product, 'image_filename', ''),
+				'ext' => ifset($product, 'ext', 'jpg'),
+			), '48x48');
+		}
+
+		if (!$product_ids) {
+			return $images_by_category;
+		}
+
+		$category_products_model = new shopCategoryProductsModel();
+		$rows = $category_products_model->query(
+			'SELECT product_id, category_id FROM ' . $category_products_model->getTableName()
+			. ' WHERE product_id IN (i:ids)',
+			array('ids' => $product_ids)
+		)->fetchAll();
+
+		$category_ids_by_product = array();
+		foreach ($rows as $row) {
+			$product_id = (int) ifset($row, 'product_id', 0);
+			$category_id = (int) ifset($row, 'category_id', 0);
+			if ($product_id && $category_id) {
+				$category_ids_by_product[$product_id][] = $category_id;
+			}
+		}
+
+		foreach ($products as $product) {
+			$product_id = (int) ifset($product, 'id', 0);
+			if (!$product_id || !isset($product_images[$product_id])) {
+				continue;
+			}
+
+			$linked_category_ids = ifset($category_ids_by_product, $product_id, array());
+			if (!$linked_category_ids) {
+				$primary_category_id = (int) ifset($product, 'category_id', 0);
+				if ($primary_category_id) {
+					$linked_category_ids = array($primary_category_id);
+				}
+			}
+
+			foreach ($linked_category_ids as $category_id) {
+				if (!isset($images_by_category[$category_id])) {
+					$images_by_category[$category_id] = $product_images[$product_id];
+				}
+			}
+		}
+
+		return $images_by_category;
 	}
 }

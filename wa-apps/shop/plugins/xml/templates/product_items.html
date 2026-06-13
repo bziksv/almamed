@@ -1,0 +1,119 @@
+    {$features = $wa->shop->features($product)}
+
+    {foreach $product as $key => $prod}
+    {$_product = $wa->shop->product($prod.id)}
+    {$sku = $_product.skus[$_product.sku_id]}
+    {$comp = array_shift($_product.pages)}
+
+    <Товар>
+
+        <Ид>{$prod.id}</Ид>
+        <Артикул>{$sku.sku|strip_tags}</Артикул>
+        <ПометкаУдаления>false</ПометкаУдаления>
+        <Наименование>{shopXmlPlugin::cleanText($prod.name)}</Наименование>
+
+        <Группы>
+            {foreach $prod.id_category as $cat}
+                <Ид>{$cat.category_id}</Ид>
+            {/foreach}
+        </Группы>
+
+        <Картинка>import_files/{$prod.image_id}.{$prod.ext}</Картинка>
+
+        <ХарактеристикиТовара>
+
+            {foreach $_product.features as $key => $features_val}
+            <ХарактеристикаТовара>
+                <Наименование>{shopXmlPlugin::cleanText($features.$key.name)}</Наименование>
+                <Значение>
+                    {if $features_val|is_array}
+						{shopXmlPlugin::cleanText(implode(", ", $features_val))}
+                    {else}
+						{shopXmlPlugin::cleanText($features_val)}
+                    {/if}
+                </Значение>
+            </ХарактеристикаТовара>
+            {/foreach}
+
+        </ХарактеристикиТовара>
+
+
+        <ЗначенияСвойств>
+
+            <ЗначенияСвойства>
+                <Ид>CML2_COMPLECT</Ид>
+                <Значение>{shopXmlPlugin::cleanText($comp.content)}</Значение>
+            </ЗначенияСвойства>
+
+            <ЗначенияСвойства>
+                <Ид>ARTICLS</Ид>
+                {foreach $_product.skus as $key => $skus}
+                <Значение>{$skus.sku|strip_tags}</Значение>
+                <ЗначениеСвойства>
+                    <Значение>{$skus.sku|strip_tags}</Значение>
+                    <Описание>{$skus.name|strip_tags}</Описание>
+                </ЗначениеСвойства>
+                {/foreach}
+            </ЗначенияСвойства>
+
+            <ЗначенияСвойства>
+                <Ид>PRICES</Ид>
+                {foreach $_product.skus as $key => $skus}
+                <Значение>{shopCustom::xmlPercent(ceil($skus.price),$percent)}</Значение>
+                <ЗначениеСвойства>
+                    <Значение>{shopCustom::xmlPercent(ceil($skus.price),$percent)}</Значение>
+                    <Описание>{$skus.sku|strip_tags}</Описание>
+                </ЗначениеСвойства>
+                {/foreach}
+            </ЗначенияСвойства>
+
+            <ЗначенияСвойства>
+                <Ид>BEST_OFFER</Ид>
+                <Значение></Значение>
+            </ЗначенияСвойства>
+
+            <ЗначенияСвойства>
+                <Ид>RECOMMEND</Ид>
+                {$related = $_product->userValueRelated(100)}
+                {for $i=1 to shopCustom::get_root_config('related')}
+                    {foreach $related.$i as $r}
+                    <Значение>{$r.id}</Значение>
+                    <ЗначениеСвойства>
+                        <Значение>{$r.id}</Значение>
+                        <Описание></Описание>
+                    </ЗначениеСвойства>
+                    {/foreach}
+                {/for}
+            </ЗначенияСвойства>
+
+            <ЗначенияСвойства>
+                <Ид>CML2_PICTURES</Ид>
+                {foreach $_product.images as $key => $image}
+                <Значение>import_files/{$image.id}.{$image.ext}</Значение>
+                <ЗначениеСвойства>
+                    <Значение>import_files/{$image.id}.{$image.ext}</Значение>
+                    <Описание></Описание>
+                </ЗначениеСвойства>
+                {/foreach}
+            </ЗначенияСвойства>
+            
+            <ЗначенияСвойства>
+                <Ид>CML2_CODE</Ид>
+                <Значение>{$prod.url}</Значение>
+            </ЗначенияСвойства>
+
+        </ЗначенияСвойств>
+
+        <Цены>
+            <Цена>
+                <ИдТипаЦены>BASE</ИдТипаЦены>
+                <ЦенаЗаЕдиницу>{shopCustom::xmlPercent(ceil($prod.price),$percent)}</ЦенаЗаЕдиницу>
+                <Валюта>RUB</Валюта>
+                <Единица>796</Единица>
+                <КоличествоОт></КоличествоОт>
+                <КоличествоДо></КоличествоДо>
+            </Цена>
+        </Цены>
+
+    </Товар>
+    {/foreach}

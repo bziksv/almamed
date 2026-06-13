@@ -92,15 +92,19 @@
     $('.delete').click(function(){
         var self = $(this);
         var name = $(this).attr('name-del');
-        if(name){
-            $.get( "/wa-apps/shop/plugins/xml/ajax.php", { name: name } )
-                    .done(function( data ) {
-                        if(data == 1){
-                            self.remove();
-                        }
-                        console.log(data);
-                    });
+        if(!name){
+            return false;
         }
+        $.post('?plugin=xml&action=deleteProfile', {
+            name: name,
+            _csrf: '{/literal}{$wa->csrf()|escape:'javascript'}{literal}'
+        }).done(function(data) {
+            if (data && data.status === 'ok' && data.data && data.data.deleted) {
+                self.closest('.value').remove();
+            } else if (data && data.errors) {
+                alert(data.errors[0][0] || 'Ошибка удаления');
+            }
+        });
         return false;
     });
 

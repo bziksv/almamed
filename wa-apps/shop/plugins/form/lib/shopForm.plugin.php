@@ -10,13 +10,18 @@ class shopFormPlugin extends shopPlugin
 {
     public static function getFormApp(){
 
+        if (!class_exists('shopFormRuCities', false)) {
+            require_once wa()->getAppPath('plugins/form/lib/classes/shopFormRuCities.class.php', 'shop');
+        }
+
         $shop_email = wa()->getConfig()->getGeneralSettings('email');
+        $form_static_url = wa()->getAppStaticUrl('shop') . 'plugins/form/';
 
         $arFields = array(
             array("type" => "text","label" => "ФИО","name" => "name","required" => true),
             array("type" => "text","label" => "Телефон","name" => "phone","required" => true),
             array("type" => "text","label" => "E-mail","name" => "email","required" => true),
-            array("type" => "text","label" => "Город","name" => "city","required" => true),
+            array("type" => "city_select","label" => "Город","name" => "city","required" => true),
             array("type" => "text","label" => "Укажите наименование клиники","name" => "clinic","required" => true),
             array("type" => "text","label" => "ИНН клиники","name" => "clinic_inn","required" => false),
             array("type" => "textarea","label" => "Ваш вопрос","name" => "question","required" => false),
@@ -28,7 +33,25 @@ class shopFormPlugin extends shopPlugin
 
             $arPost = array();
             $error = false;
+            $city_resolved = shopFormRuCities::resolveFromPost(
+                waRequest::post('city'),
+                waRequest::post('city_custom')
+            );
+
             foreach($arFields as &$fields){
+                if ($fields['name'] === 'city') {
+                    if ($fields['required'] && !$city_resolved) {
+                        $fields['error_msg'] = "Выберите город из списка или укажите свой";
+                        $error = true;
+                    } else {
+                        unset($fields['error_msg']);
+                        if ($city_resolved) {
+                            $arPost['city'] = $city_resolved['value'];
+                        }
+                    }
+                    continue;
+                }
+
                 if($fields['required'] and empty(waRequest::post($fields['name']))){
                     $fields['error_msg'] = "Это поле обязательное";
                     $error = true;
@@ -40,6 +63,7 @@ class shopFormPlugin extends shopPlugin
                     $arPost[$fields['name']] = strip_tags(waRequest::post($fields['name']));
                 }
             }
+            unset($fields);
 
             if($arPost and !$error){
 
@@ -201,6 +225,7 @@ class shopFormPlugin extends shopPlugin
                 overflow: hidden;
             }
         </style>
+        <link href="<?= htmlspecialchars($form_static_url) ?>css/form-city.css?v=1.2" rel="stylesheet" type="text/css">
 
     <?
     if(waRequest::get('send') == "ok"):
@@ -228,7 +253,32 @@ class shopFormPlugin extends shopPlugin
                         <div class="wa-field <?=($val['required']) ? "wa-required" : ""?>">
                             <div class="wa-name"><?=$val['label']?></div>
                             <div class="wa-value">
-                                <input name="<?=$val['name']?>" type="<?=$val['type']?>" class="<?=(isset($val['error_msg'])) ? "error" : ""?>" value="<?=waRequest::post($val['name'])?>" />
+                                <input name="<?=$val['name']?>" type="<?=$val['type']?>" class="<?=(isset($val['error_msg'])) ? "error" : ""?>" value="<?=htmlspecialchars(waRequest::post($val['name']), ENT_QUOTES, 'UTF-8')?>" />
+                                <? if(isset($val['error_msg'])): ?>
+                                    <em class="wa-error-msg"><?=$val['error_msg']?></em>
+                                <? endif; ?>
+                            </div>
+                        </div>
+
+                    <? elseif($val['type'] == "city_select"): ?>
+                        <?
+                        $posted_city = waRequest::post('city', '', waRequest::TYPE_STRING_TRIM);
+                        $posted_city_custom = waRequest::post('city_custom', '', waRequest::TYPE_STRING_TRIM);
+                        ?>
+                        <div class="wa-field <?=($val['required']) ? "wa-required" : ""?>">
+                            <div class="wa-name"><?=$val['label']?></div>
+                            <div class="wa-value">
+                                <div class="form-city-select" id="form-app-city">
+                                    <input type="hidden" name="city" class="form-city-value" value="<?=htmlspecialchars($posted_city, ENT_QUOTES, 'UTF-8')?>">
+                                    <div class="form-city-combobox">
+                                        <input type="text" class="form-city-input <?=isset($val['error_msg']) ? 'error' : ''?>" placeholder="Начните вводить название города" autocomplete="off" value="">
+                                        <button type="button" class="form-city-toggle" tabindex="-1" aria-label="Открыть список городов"></button>
+                                    </div>
+                                    <ul class="form-city-dropdown" role="listbox"></ul>
+                                    <div class="form-city-custom" style="<?=($posted_city === shopFormRuCities::OTHER_VALUE) ? '' : 'display:none;'?>">
+                                        <input type="text" name="city_custom" class="form-city-custom-input" placeholder="Укажите ваш город" value="<?=htmlspecialchars($posted_city_custom, ENT_QUOTES, 'UTF-8')?>">
+                                    </div>
+                                </div>
                                 <? if(isset($val['error_msg'])): ?>
                                     <em class="wa-error-msg"><?=$val['error_msg']?></em>
                                 <? endif; ?>
@@ -289,6 +339,8 @@ class shopFormPlugin extends shopPlugin
             </form>
         </div>
 
+        <script type="text/javascript">window.formAppCityData = <?= shopFormRuCities::getJsonForJs() ?>;</script>
+        <script type="text/javascript" src="<?= htmlspecialchars($form_static_url) ?>js/form-city.js?v=1.2"></script>
         <script type="text/javascript">
             ;(function($) { 'use strict';
                 var $checkbox = $('#form-app-license-agreement');
