@@ -125,7 +125,7 @@
                         url_part = 'shop/?action=storefronts#/pages/' + id;
                         break;
                     case 'category':
-                        url_part = 'shop/?action=products#/products/category_id=' + id;
+                        url_part = 'shop/?action=products&quickeditor=1#/products/category_id=' + id;
                         break;
                     case 'plugins':
                         url_part = 'shop/?action=plugins';

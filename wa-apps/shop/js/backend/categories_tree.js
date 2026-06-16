@@ -113,8 +113,15 @@
         return $('<div>').text(str || '').html();
     };
 
+    var shouldSkipCategoryScroll = function() {
+        var hash = window.location.hash || '';
+        var search = window.location.search || '';
+        return /quickeditor=1(?:&|$)/.test(hash)
+            || /(?:^|[?&])quickeditor=1(?:&|$)/.test(search);
+    };
+
     var scrollCategoryIntoView = function($li) {
-        if (!$li.length) {
+        if (!$li.length || shouldSkipCategoryScroll()) {
             return;
         }
         var $scrollContainer = $('#s-category-list-block');
