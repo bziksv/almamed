@@ -50,7 +50,8 @@ $map = wa('shop')->getConfig()->getClasses();
 $required = array(
     'shopUserlogPlugin', 'shopUserlogOrderSnapshot', 'shopUserlogProductSnapshot',
     'shopUserlogCategorySnapshot', 'shopUserlogSettingsSnapshot', 'shopUserlogProductPageSnapshot',
-    'shopUserlogProductServiceSnapshot', 'shopUserlogSeoSnapshot', 'shopUserlogSeofilterSnapshot',
+    'shopUserlogProductServiceSnapshot', 'shopUserlogSeoSnapshot',     'shopUserlogSeofilterSnapshot',
+    'shopUserlogSliderSnapshot',
 );
 foreach ($required as $class) {
     isset($map[$class]) ? $ok("autoload {$class}") : $bad("autoload missing {$class}");
@@ -231,6 +232,39 @@ if (wa()->appExists('blog')) {
     }
 } else {
     $skip('blog app not installed');
+}
+
+// --- Slider ---
+$setSection('slider');
+try {
+    $snap = $plugin->captureSliderForLog();
+    if ($snap) {
+        $count = count(ifset($snap, 'slides', array()));
+        ($count > 0) ? $ok("slider capture ({$count} slides)") : $bad('slider capture empty');
+        if ($count > 0) {
+            $modified = $snap;
+            $modified['slides'][0] = $snap['slides'][0];
+            $modified['slides'][0]['link'] = 'http://userlog-test.example/';
+            $diff = shopUserlogSettingsSnapshot::diff(
+                shopUserlogSliderSnapshot::flattenForDiff($snap),
+                shopUserlogSliderSnapshot::flattenForDiff($modified)
+            );
+            $diff ? $ok('slider diff detects link change') : $bad('slider diff empty on link change');
+        }
+    } else {
+        $bad('captureSliderForLog failed');
+    }
+    if (method_exists($plugin, 'logSliderChange')) {
+        $ok('logSliderChange method');
+    } else {
+        $bad('logSliderChange missing');
+    }
+    $slider_cfg = include wa()->getAppPath('plugins/slider/lib/config/plugin.php', 'shop');
+    (!empty($slider_cfg['handlers']['backend_menu']))
+        ? $ok('slider backend_menu in plugin.php')
+        : $bad('slider backend_menu handler missing');
+} catch (Exception $e) {
+    $bad('slider: '.$e->getMessage());
 }
 
 // --- Event handlers ---

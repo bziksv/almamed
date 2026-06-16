@@ -10,5 +10,8 @@ return array(
     'icons'=>array(
         16 => 'img/brands.png',
     ),
+    'handlers' => array(
+        'backend_menu' => 'backendMenu',
+    ),
 );
 

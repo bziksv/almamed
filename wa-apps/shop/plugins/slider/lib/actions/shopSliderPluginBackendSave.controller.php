@@ -6,6 +6,16 @@ class shopSliderPluginBackendSaveController extends waJsonController
     {
         $model = new shopSliderModel();
 
+        $slider_before = null;
+        $userlog = shopUserlogPlugin::getInstance();
+        if ($userlog) {
+            try {
+                $slider_before = $userlog->captureSliderForLog();
+            } catch (Exception $e) {
+                waLog::log('userlog slider before: '.$e->getMessage(), 'shop/userlog.log');
+            }
+        }
+
         $ids = waRequest::post('id');
         $sort = waRequest::post('sort');
         $link = waRequest::post('link');
@@ -93,6 +103,17 @@ class shopSliderPluginBackendSaveController extends waJsonController
         }
 
         self::clearHomepageCache();
+
+        if ($slider_before !== null && $userlog) {
+            try {
+                $after = $userlog->captureSliderForLog();
+                if ($after) {
+                    $userlog->logSliderChange($slider_before, $after);
+                }
+            } catch (Exception $e) {
+                waLog::log('userlog slider save: '.$e->getMessage(), 'shop/userlog.log');
+            }
+        }
 
         $this->redirect('/webasyst/shop/?action=plugins#/slider/');
     }

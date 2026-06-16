@@ -7,6 +7,5 @@ return array(
     'version' => '1.0.0',
     'frontend' => true,
     'handlers' => array(
-        'backend_menu' => 'backend_menu'
     )
 );

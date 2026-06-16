@@ -157,6 +157,27 @@ class shopSliderPlugin extends shopPlugin
         return $selected;
     }
 
+    /**
+     * @event backend_menu
+     * @return array
+     */
+    public function backendMenu()
+    {
+        if (!wa()->getUser()->getRights('shop', 'settings')) {
+            return array();
+        }
+
+        $this->addJs('js/menu-tab.js');
+
+        return array(
+            'core_li' => '<li class="no-tab slider-topmenu-li">'
+                .'<a href="?action=plugins#/slider/">'
+                .'<img src="'.$this->getPluginStaticUrl().'img/brands.png" alt="" style="width:16px;height:16px;vertical-align:-3px;margin-right:2px;"> '
+                .'Слайдер'
+                .'</a></li>',
+        );
+    }
+
     protected static function resolveSlideImages(array $slide)
     {
         $desktop = ifset($slide, 'img', '');

@@ -897,6 +897,45 @@ class shopUserlogPlugin extends shopPlugin
         ));
     }
 
+    public function logSliderChange(array $before_snapshot, array $after_snapshot)
+    {
+        if (self::isLoggingSuspended() || !$this->ensureUserlogReady()) {
+            return;
+        }
+        $before = shopUserlogSliderSnapshot::flattenForDiff($before_snapshot);
+        $after = shopUserlogSliderSnapshot::flattenForDiff($after_snapshot);
+        $diff = shopUserlogSettingsSnapshot::diff($before, $after);
+        if (!$diff) {
+            return;
+        }
+        $parts = array();
+        foreach (array_slice($diff, 0, 5) as $line) {
+            $parts[] = $line['label'].': '.$line['before'].' → '.$line['after'];
+        }
+        userlogLogger::log(array(
+            'app_id'       => 'shop',
+            'action'       => 'settings.update',
+            'entity_type'  => 'settings',
+            'entity_id'    => 0,
+            'entity_name'  => 'Слайдер',
+            'summary'      => 'Слайдер — '.implode('; ', $parts),
+            'before_data'  => $before_snapshot,
+            'after_data'   => $after_snapshot,
+            'can_rollback' => 0,
+        ));
+    }
+
+    /**
+     * @return array|null
+     */
+    public function captureSliderForLog()
+    {
+        if (!$this->ensureUserlogReady()) {
+            return null;
+        }
+        return shopUserlogSliderSnapshot::captureAll();
+    }
+
     public function productDuplicate($params)
     {
         if (self::isLoggingSuspended() || !$this->ensureUserlogReady()) {
