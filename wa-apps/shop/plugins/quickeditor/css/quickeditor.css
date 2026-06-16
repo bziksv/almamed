@@ -200,6 +200,12 @@ li .quickeditor-button.quickeditor-product-page {
     box-shadow: -1px 1px 1px #ccc;
     z-index: 1000;
     border: 1px solid #c60000;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .quickeditor-fixed-link-img {

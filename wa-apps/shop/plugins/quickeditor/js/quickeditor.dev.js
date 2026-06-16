@@ -18,7 +18,11 @@
                 if (settings && settings.quick_access_location !== 'hidden') {
                     $.QuickEditor.addQuickAccessButton();
                 }
+                $.QuickEditor.bindEvents();
                 $.QuickEditor.relocateFixedLinks();
+                $(window).on('load.quickeditor', function () {
+                    $.QuickEditor.relocateFixedLinks();
+                });
 
                 $(window).keydown(function (event) {
                     if (event.key === 'Shift') {
@@ -51,10 +55,50 @@
                     }
                     $el.data('quickeditor-moved', true);
                     $('body').append($el);
-                    $el.on('mousedown.quickeditor', function (e) {
-                        e.preventDefault();
-                    });
                 });
+            },
+            bindEvents: function () {
+                if (this._eventsBound) {
+                    return;
+                }
+                this._eventsBound = true;
+
+                $(document).on('mousedown.quickeditor', '.quickeditor-fixed-link[data-quickeditor-action]', function (e) {
+                    e.preventDefault();
+                });
+                $(document).on('click.quickeditor', '.quickeditor-fixed-link[data-quickeditor-action]', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var action = $(this).data('quickeditor-action');
+                    var id = $(this).data('quickeditor-id');
+
+                    if (action === 'category') {
+                        $.QuickEditor.showEditCategoryDialog(id);
+                    } else if (action === 'product') {
+                        $.QuickEditor.showEditProductDialog(id);
+                    } else if (action === 'page') {
+                        $.QuickEditor.showEditPageDialog(id);
+                    }
+
+                    return false;
+                });
+            },
+            preservePageScroll: function (callback) {
+                var scrollX = window.pageXOffset || document.documentElement.scrollLeft || 0;
+                var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+                var restoreScroll = function () {
+                    window.scrollTo(scrollX, scrollY);
+                };
+
+                callback();
+
+                restoreScroll();
+                setTimeout(restoreScroll, 0);
+                if (window.requestAnimationFrame) {
+                    window.requestAnimationFrame(restoreScroll);
+                }
+                setTimeout(restoreScroll, 50);
             },
             showEditPageDialog: function (id) {
                 $.QuickEditor.showEditDialog(id, 'page');
@@ -111,8 +155,10 @@
                         url_part = 'shop/?action=products#/product/' + id + ($.QuickEditor.settings.always_edit_page ? '/edit/' + tab_id : '');
                 }
                 //Open window
-                var wa_window = window.open($.QuickEditor.settings.wa_backend_url + url_part, '', wndParams);
-                $.QuickEditor.injectButtons(wa_window, action);
+                $.QuickEditor.preservePageScroll(function () {
+                    var wa_window = window.open($.QuickEditor.settings.wa_backend_url + url_part, '', wndParams);
+                    $.QuickEditor.injectButtons(wa_window, action);
+                });
             },
             injectButtons: function (wa_window, action) {
                 switch (action) {
@@ -246,19 +292,18 @@
                 }
             },
             addPageEditButton: function (id) {
-                var divObj = $('<div></div>');
-                divObj.addClass('quickeditor-fixed-link');
+                var btnObj = $('<button type="button"></button>');
+                btnObj.addClass('quickeditor-fixed-link');
+                btnObj.attr('data-quickeditor-action', 'page');
+                btnObj.attr('data-quickeditor-id', id);
                 if ($.QuickEditor.settings.page_link_location === 'right') {
-                    divObj.addClass('quickeditor-fixed-link-right');
+                    btnObj.addClass('quickeditor-fixed-link-right');
                 }
                 var iconObj = $('<i></i>');
                 iconObj.addClass('icon-quickeditor-list');
-                divObj.append(iconObj);
-                divObj.attr('title', $.QuickEditor.strings.str_edit_page);
-                divObj.click(function () {
-                    $.QuickEditor.showEditPageDialog(id);
-                });
-                $('body').prepend(divObj);
+                btnObj.append(iconObj);
+                btnObj.attr('title', $.QuickEditor.strings.str_edit_page);
+                $('body').prepend(btnObj);
             },
             qaMenuItems: ['settings', 'plugins', 'orders', 'products', 'customers', 'reports', 'storefronts'],
             addQuickAccessButton: function () {

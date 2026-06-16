@@ -1,5 +1,5 @@
 <!-- QuickEditor plugin -->
-<div class="quickeditor-fixed-link {if $location=='right'}quickeditor-fixed-link-right{/if}" onclick="$.QuickEditor.showEditProductDialog('{$product_id}')" title="[`Edit product`]: «{$product_name|escape}»">
+<button type="button" class="quickeditor-fixed-link {if $location=='right'}quickeditor-fixed-link-right{/if}" data-quickeditor-action="product" data-quickeditor-id="{$product_id}" title="[`Edit product`]: «{$product_name|escape}»">
     <i class="icon-quickeditor-list"></i>
-</div>
+</button>
 <!-- QuickEditor plugin -->
