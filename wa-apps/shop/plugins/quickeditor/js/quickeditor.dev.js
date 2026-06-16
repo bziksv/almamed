@@ -18,6 +18,7 @@
                 if (settings && settings.quick_access_location !== 'hidden') {
                     $.QuickEditor.addQuickAccessButton();
                 }
+                $.QuickEditor.relocateFixedLinks();
 
                 $(window).keydown(function (event) {
                     if (event.key === 'Shift') {
@@ -41,6 +42,19 @@
                         $.cookie("quickeditor_wnd_pos", 0);
                     }
                 }
+            },
+            relocateFixedLinks: function () {
+                $('.quickeditor-fixed-link').each(function () {
+                    var $el = $(this);
+                    if ($el.data('quickeditor-moved')) {
+                        return;
+                    }
+                    $el.data('quickeditor-moved', true);
+                    $('body').append($el);
+                    $el.on('mousedown.quickeditor', function (e) {
+                        e.preventDefault();
+                    });
+                });
             },
             showEditPageDialog: function (id) {
                 $.QuickEditor.showEditDialog(id, 'page');

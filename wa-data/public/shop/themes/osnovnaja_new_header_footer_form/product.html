@@ -112,7 +112,7 @@
             <nav>
                 <ul id="product-tabs-nav">
                     {if $product.description}<li class="selected"><a data-name="description" href="{$wa->shop->productUrl($product)}">[`Description`]</a></li>{/if}
-                    {if $product.features}<li><a data-name="features" href="{$wa->shop->productUrl($product)}">[`Features`]</a></li>{/if}
+                    {if $product.features}<li{if !$product.description} class="selected"{/if}><a data-name="features" href="{$wa->shop->productUrl($product)}">[`Features`]</a></li>{/if}
                     {if !empty($theme_settings.reviews)}<li><a data-name="reviews" href="{$wa->shop->productUrl($product, 'reviews')}">[`Reviews`]</a></li>{/if}
                     {if !empty($theme_settings.reviews_vk)}<li><a data-name="reviews_vk" href="{$wa->shop->productUrl($product)}">[`Reviews`] VK</a></li>{/if}
                     {if !empty($theme_settings.reviews_fb)}<li><a data-name="reviews_fb" href="{$wa->shop->productUrl($product)}">[`Reviews`] Facebook</a></li>{/if}

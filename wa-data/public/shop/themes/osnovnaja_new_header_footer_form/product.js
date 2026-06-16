@@ -413,7 +413,8 @@ $(function () {
     });
     
     // product images
-    $(".more-images a").not('#product-image-video').click(function () {
+    $(".more-images a").not('#product-image-video').click(function (e) {
+        e.preventDefault();
         var that = $(this).closest('.product-gallery');
         that.find('.image').removeClass('selected');
         $(this).parent().addClass('selected');
@@ -421,23 +422,29 @@ $(function () {
         $('#product-core-image').show();
         $('#video-container').hide();
 
-        that.find("#product-image").addClass('blurred');
+        var mainImg = that.find("#product-image");
+        var mainLink = mainImg.closest('a');
+        var mainPicture = mainImg.closest('picture');
+        var thumbHref = $(this).attr('href');
+        var displaySizeMatch = (mainImg.attr('src') || '').match(/\.(\d+(?:x\d+)?)\.[^./]+$/);
+        var displaySize = displaySizeMatch ? displaySizeMatch[1] : '750';
+        var displaySrc = thumbHref.replace(/(\d+(?:x\d+)?)(\.[^./]+)$/, displaySize + '$2');
+
+        mainImg.addClass('blurred');
         that.find("#switching-image").show();
 
-        var img = $(this).find('img');
-        var size = that.find("#product-image").attr('src').replace(/^.*\/[^\/]+\.(.*)\.[^\.]*$/, '$1');
-        var src = img.attr('src').replace(/^(.*\/[^\/]+\.)(.*)(\.[^\.]*)$/, '$1' + size + '$3');
-        $('<img>').attr('src', src).load(function () {
-            that.find("#product-image").attr('src', src);
-            that.find("#product-image").removeClass('blurred');
+        $('<img>').attr('src', displaySrc).on('load', function () {
+            mainImg.attr('src', displaySrc);
+            if (mainPicture.length) {
+                mainPicture.find('source[type="image/webp"]').attr('srcset', displaySrc.replace(/\.(jpe?g|png)(\?.*)?$/i, '.webp$2'));
+            }
+            mainImg.removeClass('blurred');
             that.find("#switching-image").hide();
         }).each(function() {
             //ensure image load is fired. Fixes opera loading bug
             if (this.complete) { $(this).trigger("load"); }
         });
-        var size = that.find("#product-image").parent().attr('href').replace(/^.*\/[^\/]+\.(.*)\.[^\.]*$/, '$1');
-        var href = img.attr('src').replace(/^(.*\/[^\/]+\.)(.*)(\.[^\.]*)$/, '$1' + size + '$3');
-        that.find("#product-image").parent().attr('href', href);
+        mainLink.attr('href', thumbHref);
         return false;
     });
 

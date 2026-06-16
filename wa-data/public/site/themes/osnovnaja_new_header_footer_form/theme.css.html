@@ -774,9 +774,14 @@ i.cart-count:after {
         box-shadow: inset 0 0 0 1px {$scheme.background_button2};
         border-color: {$scheme.background_button2};
     }
-    #product-tabs-nav li.selected a {
+    #product-tabs-nav li.selected a,
+    #product-tabs-nav li.selected:hover a,
+    #product-tabs-nav li.selected a:hover {
         background: {$scheme.background_button};
         color: {$scheme.color_button};
+    }
+    #product-tabs-nav li:not(.selected):hover a {
+        color: rgba(0, 0, 0, 0.87);
     }
     {if !empty($theme_settings.badge_new_background)}
         .badge.new {
