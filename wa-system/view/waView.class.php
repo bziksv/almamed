@@ -239,6 +239,11 @@ abstract class waView
             $this->assign('wa_parent_theme_url', $this->getStaticUrl($parent_theme->url));
             $this->assign('wa_real_parent_theme_url', $parent_theme->url);
             $this->assign('wa_parent_theme_path', $parent_theme->path);
+            // Child theme files (e.g. product.min.js) must share combined edition in ?v=
+            $combined_version = $parent_theme->version($edition);
+            if (version_compare($combined_version, $version, '>')) {
+                $version = $combined_version;
+            }
         }
         $this->assign('wa_theme_version', $version);
         $this->assign('theme_settings', $theme_settings);

@@ -61,10 +61,13 @@ curl -sS -L -o /dev/null -w "HTTPS %{http_code}\n" \
 cd /var/www/almamed.su/data/www/almamed.su
 git pull origin main
 chown -R almamed.su:almamed.su .
+php .local/bump-theme-edition.php   # новый ?v= для CSS/JS темы (обязательно!)
 find wa-cache -mindepth 1 -delete
 sudo -u almamed.su php cli.php webasyst clearCache
 chown -R almamed.su:almamed.su wa-cache wa-log
 ```
+
+**Почему `bump-theme-edition.php`:** nginx кэширует `/wa-data/public/` на **1 год** (`immutable`). Браузер обновит JS/CSS только если в HTML новый `?v=`. Версия берётся из `edition` в `theme.xml` — при деплое через git/rsync она **сама не растёт** (только через редактор тем в админке). Консоль с «Disable cache» обходит кэш — отсюда иллюзия, что «помогает только F12».
 
 Pull делать **от root** допустимо, но после — **обязательно chown**.  
 `php cli.php webasyst clearCache` — **только от пользователя `almamed.su`**

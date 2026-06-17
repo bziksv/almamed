@@ -15,9 +15,19 @@ run_as_owner() {
 
 echo "=== post-deploy PageSpeed ==="
 
+if [[ -x .local/bump-theme-edition.php ]] || [[ -f .local/bump-theme-edition.php ]]; then
+  echo "--- bump theme edition (JS/CSS ?v=) ---"
+  run_as_owner php .local/bump-theme-edition.php
+fi
+
 THEME_VER=$(grep -oE 'version="[0-9]+\.[0-9]+\.[0-9]+"' \
   wa-data/public/site/themes/osnovnaja_new_header_footer_form/theme.xml | head -1 | tr -d 'version="')
-echo "theme version in theme.xml: ${THEME_VER:-unknown}"
+SITE_ED=$(grep -oE 'edition="[0-9]+"' \
+  wa-data/public/site/themes/osnovnaja_new_header_footer_form/theme.xml | head -1 | tr -d 'edition="')
+SHOP_ED=$(grep -oE 'edition="[0-9]+"' \
+  wa-data/public/shop/themes/osnovnaja_new_header_footer_form/theme.xml | head -1 | tr -d 'edition="')
+COMBINED_ED=$(( ${SITE_ED:-0} + ${SHOP_ED:-0} ))
+echo "theme cache-bust: v${THEME_VER:-?}.${COMBINED_ED}"
 
 # WebP plugin autoload
 run_as_owner php -r "
@@ -69,8 +79,8 @@ if [[ -n "${THEME_VER:-}" ]]; then
       | grep -oE 'profitbuy\.min\.css\?v[0-9.]+' | head -1 || true)
   fi
   echo "live CSS URL: ${LIVE:-curl failed}"
-  if [[ -n "$LIVE" && "$LIVE" != *"?v${THEME_VER}"* && "$LIVE" != *"?v${THEME_VER}."* ]]; then
-    echo "WARN: HTML still serves old ?v= — check theme.xml deployed and clearCache ran"
+  if [[ -n "$LIVE" && "$LIVE" != *"?v${THEME_VER}.${COMBINED_ED}"* && "$LIVE" != *"?v${THEME_VER}"* ]]; then
+    echo "WARN: HTML still serves old ?v= — expected v${THEME_VER}.${COMBINED_ED}, got ${LIVE}"
   fi
 fi
 

@@ -161,6 +161,7 @@ class shopFrontendProductAction extends shopFrontendAction
 
     public function execute()
     {
+        $this->applyBrowserNoCacheHeaders();
         $this->setLayout(new shopFrontendLayout());
         if ($this->params) {
             $product = $this->params;
