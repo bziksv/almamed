@@ -133,6 +133,36 @@ cp wa-config/db.php.local wa-config/db.php
 **Не удаляется:** `wa-data/public/*/themes/` (в git).  
 **Proxy не покрывает:** `wa-data/protected/` (скачивания через PHP) — для них нужен rsync при необходимости.
 
+### Git vs prod
+
+| Что | В git | На prod после `git pull` |
+|-----|-------|---------------------------|
+| `.local/setup-light-dev.sh`, `.local/nginx/nginx.conf`, `start-dev.sh` | ✅ | **Не используется** — только local dev |
+| Код плагинов (`wa-apps/shop/plugins/…`) | ✅ | Работает после pull + clearCache |
+| `wa-config/apps/shop/plugins.php` | ❌ | Включение плагинов вручную на сервере |
+| `wa-data/public/shop/products/` и др. медиа | ❌ | **На prod не трогать** — там свой полный `wa-data` |
+
+⚠️ **`setup-light-dev.sh` на prod не запускать** — скрипт удаляет локальные картинки; на сервере это сломает витрину.
+
+Коммит light-dev в git нужен **команде** (одинаковый local dev у всех), а не деплою медиа на prod.
+
+### Как работает proxy картинок
+
+1. HTML отдаёт **относительные** URL: `/wa-data/public/shop/products/...`
+2. Браузер запрашивает `http://localhost:8080/wa-data/...`
+3. Nginx (`.local/nginx/nginx.conf`): файл есть локально → с диска; **нет** → proxy на `https://almamed.su` (`PROD_MEDIA_HOST` в `.local/sync-prod.env`)
+4. Темы (`wa-data/public/*/themes/`) — **только локально**, proxy не применяется
+
+Проверка после `setup-light-dev` + `start-dev.sh`:
+
+```bash
+# локального файла нет, но 200 — тянется с prod
+curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
+  "http://localhost:8080/wa-data/public/shop/products/99/15/1599/images/75162/75162.750.jpg"
+```
+
+В выводе `start-dev.sh` должно быть: `OK: media proxy … → HTTP 200`.
+
 ---
 
 ## БД
