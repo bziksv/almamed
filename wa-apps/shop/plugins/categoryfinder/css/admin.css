@@ -1,0 +1,217 @@
+.categoryfinder-admin__intro {
+    margin-bottom: 16px;
+}
+
+.categoryfinder-status {
+    clear: none;
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #555;
+    background: #f7f7f7;
+    border: 1px solid #e3e3e3;
+    border-radius: 3px;
+}
+
+.categoryfinder-status[hidden] {
+    display: none !important;
+}
+
+.categoryfinder-status--loading {
+    color: #666;
+    background: #f7f7f7;
+}
+
+.categoryfinder-status--ok {
+    color: #2d6a2d;
+    background: #f0fff0;
+    border-color: #b8dfb8;
+}
+
+.categoryfinder-status--empty {
+    color: #8a6d3b;
+    background: #fff8e5;
+    border-color: #f0d080;
+}
+
+.categoryfinder-status--error {
+    color: #a94442;
+    background: #fff0f0;
+    border-color: #ebccd1;
+}
+
+.categoryfinder-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-end;
+    clear: none;
+}
+
+.categoryfinder-table-wrap {
+    clear: none;
+    max-height: calc(100vh - 280px);
+    overflow: auto;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.categoryfinder-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 120px;
+    flex: 1 1 140px;
+}
+
+.categoryfinder-filter label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #777;
+}
+
+.cf-tip {
+    cursor: help;
+    color: #aaa;
+    font-size: 11px;
+    line-height: 1;
+    position: relative;
+    outline: none;
+}
+
+.cf-tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    width: 280px;
+    max-width: 70vw;
+    padding: 8px 10px;
+    background: #333;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.45;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    z-index: 10000;
+    white-space: normal;
+    font-weight: normal;
+    text-align: left;
+}
+
+.cf-tip::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease;
+    z-index: 10001;
+}
+
+.cf-tip:hover::after,
+.cf-tip:hover::before,
+.cf-tip:focus::after,
+.cf-tip:focus::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.categoryfinder-filter select,
+.categoryfinder-filter input[type="number"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.categoryfinder-filter--action {
+    flex: 0 0 auto;
+    min-width: auto;
+}
+
+.categoryfinder-filter--similarity.is-disabled {
+    opacity: 0.45;
+}
+
+.categoryfinder-filter--similarity.is-disabled input {
+    cursor: not-allowed;
+}
+
+#cf-category-table th {
+    white-space: nowrap;
+    overflow: visible;
+    position: relative;
+    vertical-align: middle;
+}
+
+#cf-category-table th .cf-th-wrap,
+#cf-category-table th .dt-column-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.2;
+    vertical-align: middle;
+}
+
+#cf-category-table th .cf-th-text {
+    line-height: 1.2;
+}
+
+#cf-category-table th .cf-tip--th {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.cf-tip--th::after {
+    bottom: auto;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cf-tip--th::before {
+    bottom: auto;
+    top: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-color: transparent;
+    border-bottom-color: #333;
+}
+
+/* DataTables ставит clear:both — из-за float-сайдбара плагинов таблица уезжает вниз */
+.categoryfinder-admin .dt-container,
+.categoryfinder-admin #cf-category-table_wrapper {
+    clear: none !important;
+}
+
+.categoryfinder-admin .dt-buttons {
+    margin-bottom: 10px;
+    clear: none !important;
+}
+
+.categoryfinder-admin .dt-scroll-head,
+.categoryfinder-admin .dt-scroll-body {
+    clear: none !important;
+}
+
+.categoryfinder-admin .dt-buttons .dt-button {
+    margin-right: 8px;
+}

@@ -1,0 +1,103 @@
+<div class="categoryfinder-admin"
+     data-list-url="{$plugin_url|escape}&module=list"
+     data-update-url="{$plugin_url|escape}&module=update">
+
+    <h1>Поиск категорий</h1>
+
+    <p class="hint categoryfinder-admin__intro">
+        Поиск категорий по уровню вложенности и количеству товаров. Поле «Свои» — товары, привязанные напрямую к категории; на витрине могут также показываться товары из подкатегорий (опция «Включать подкатегории» в настройках категории).
+    </p>
+
+    <div class="categoryfinder-filters">
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-level">
+                Уровень
+                <span class="cf-tip" tabindex="0" data-tip="Уровень вложенности, с которого начинается поиск. Категории с меньшим уровнем не попадут в результат.">(?)</span>
+            </label>
+            <input type="number" min="1" id="cf-filter-level" value="1">
+        </div>
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-cnt">
+                Свои товары
+                <span class="cf-tip" tabindex="0" data-tip="Число товаров, напрямую привязанных к категории (поле count в Shop-Script). Не учитывает товары подкатегорий, даже если они выводятся на витрине.">(?)</span>
+            </label>
+            <input type="number" min="0" id="cf-filter-cnt" value="0">
+        </div>
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-storefront">
+                На витрине
+                <span class="cf-tip" tabindex="0" data-tip="Как категория выглядит для покупателя. «Из подкат.» — своих товаров 0, но включена опция «Включать подкатегории» и в поддереве есть товары. «Пусто» — на странице категории товаров не будет.">(?)</span>
+            </label>
+            <select id="cf-filter-storefront">
+                <option value="">Все</option>
+                <option value="empty">Пусто</option>
+                <option value="from_sub">Из подкат.</option>
+                <option value="own">Есть свои</option>
+                <option value="any">Есть товары</option>
+            </select>
+        </div>
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-active">
+                Активность
+                <span class="cf-tip" tabindex="0" data-tip="Да — только опубликованные категории. Нет — только скрытые. Все — без фильтра по статусу.">(?)</span>
+            </label>
+            <select id="cf-filter-active">
+                <option value="">Все</option>
+                <option value="1" selected>Да</option>
+                <option value="0">Нет</option>
+            </select>
+        </div>
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-redirect">
+                Без редиректа
+                <span class="cf-tip" tabindex="0" data-tip="Да — исключить категории-редиректы (URL заканчивается на «-r»). Нет — показать только редиректы.">(?)</span>
+            </label>
+            <select id="cf-filter-redirect">
+                <option value="">Все</option>
+                <option value="1" selected>Да</option>
+                <option value="0">Нет</option>
+            </select>
+        </div>
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-without-prod">
+                Без товаров
+                <span class="cf-tip" tabindex="0" data-tip="Фильтр по отметке «Без товаров» в доп. параметрах категории. Так помечают родительские категории, где товары выводятся из подкатегорий.">(?)</span>
+            </label>
+            <select id="cf-filter-without-prod">
+                <option value="">Все</option>
+                <option value="1">Да</option>
+                <option value="0">Нет</option>
+            </select>
+        </div>
+        <div class="categoryfinder-filter">
+            <label for="cf-filter-duplicate">
+                Дубликаты
+                <span class="cf-tip" tabindex="0" data-tip="По названию — одинаковые названия. По URL — схожие символьные коды (ЧПУ). Совместный — совпадает и название, и схожий URL.">(?)</span>
+            </label>
+            <select id="cf-filter-duplicate">
+                <option value="">Нет</option>
+                <option value="name">По названию</option>
+                <option value="url">По URL</option>
+                <option value="both">Совместный</option>
+            </select>
+        </div>
+        <div class="categoryfinder-filter categoryfinder-filter--similarity">
+            <label for="cf-filter-duplicate-similarity">
+                Схожесть URL, %
+                <span class="cf-tip" tabindex="0" data-tip="Порог схожести символьного кода для режимов «По URL» и «Совместный». 100 — только полное совпадение slug.">(?)</span>
+            </label>
+            <input type="number" min="50" max="100" id="cf-filter-duplicate-similarity" value="85">
+        </div>
+        <div class="categoryfinder-filter categoryfinder-filter--action">
+            <button type="button" class="button green" id="cf-filter-btn">Найти</button>
+        </div>
+    </div>
+
+    <div class="categoryfinder-status" id="cf-status" aria-live="polite" hidden></div>
+
+    <div class="categoryfinder-table-wrap">
+        <table id="cf-category-table" class="zebra" style="width:100%"></table>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{$wa_app_static_url}plugins/categoryfinder/css/admin.css?v={$plugin_version|escape}">
