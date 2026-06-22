@@ -59,6 +59,18 @@
         return assetsLoading;
     }
 
+    var FILTER_DEFAULTS = {
+        level: '1',
+        cnt: '0',
+        storefront: '',
+        name: '',
+        active: '1',
+        redirect: '1',
+        without_prod: '',
+        duplicate: '',
+        duplicate_similarity: '85'
+    };
+
     function collectFilters($root) {
         return {
             filter_level: $root.find('#cf-filter-level').val(),
@@ -66,6 +78,7 @@
             filter_active: $root.find('#cf-filter-active').val(),
             filter_redirect: $root.find('#cf-filter-redirect').val(),
             filter_without_prod: $root.find('#cf-filter-without-prod').val(),
+            filter_name: $.trim($root.find('#cf-filter-name').val()),
             filter_storefront: $root.find('#cf-filter-storefront').val(),
             filter_duplicate: $root.find('#cf-filter-duplicate').val(),
             filter_duplicate_similarity: $root.find('#cf-filter-duplicate-similarity').val()
@@ -77,6 +90,19 @@
         var enabled = mode === 'url' || mode === 'both';
         $root.find('#cf-filter-duplicate-similarity').prop('disabled', !enabled);
         $root.find('.categoryfinder-filter--similarity').toggleClass('is-disabled', !enabled);
+    }
+
+    function resetFiltersToDefaults($root) {
+        $root.find('#cf-filter-level').val(FILTER_DEFAULTS.level);
+        $root.find('#cf-filter-cnt').val(FILTER_DEFAULTS.cnt);
+        $root.find('#cf-filter-storefront').val(FILTER_DEFAULTS.storefront);
+        $root.find('#cf-filter-name').val(FILTER_DEFAULTS.name);
+        $root.find('#cf-filter-active').val(FILTER_DEFAULTS.active);
+        $root.find('#cf-filter-redirect').val(FILTER_DEFAULTS.redirect);
+        $root.find('#cf-filter-without-prod').val(FILTER_DEFAULTS.without_prod);
+        $root.find('#cf-filter-duplicate').val(FILTER_DEFAULTS.duplicate);
+        $root.find('#cf-filter-duplicate-similarity').val(FILTER_DEFAULTS.duplicate_similarity);
+        toggleDuplicateSimilarity($root);
     }
 
     function renderCheckbox(data) {
@@ -121,8 +147,93 @@
         {
             title: columnTitle('Без товаров', 'Отметка without_prod в доп. параметрах категории. Помечает родительские категории-контейнеры, где товары выводятся из подкатегорий. Можно изменить прямо в таблице.'),
             render: renderCheckbox
-        }
+        },
+        { visible: false, orderable: false, searchable: false, title: '' }
     ];
+
+    var DUPLICATE_COLOR_COUNT = 12;
+
+    function duplicateColorClass(group) {
+        group = parseInt(group, 10);
+        if (!group) {
+            return '';
+        }
+        return 'cf-dup-g-' + ((group - 1) % DUPLICATE_COLOR_COUNT + 1);
+    }
+
+    function updateDuplicateLegend($root, resp, rows) {
+        var $legend = $root.find('#cf-dup-legend');
+        var mode = resp && resp.duplicateMode ? resp.duplicateMode : $root.find('#cf-filter-duplicate').val();
+
+        if (!mode) {
+            $legend.prop('hidden', true).empty();
+            $root.removeClass('categoryfinder-admin--dup-mode');
+            return;
+        }
+
+        var groupCount = resp && resp.duplicateGroupCount ? parseInt(resp.duplicateGroupCount, 10) : 0;
+        if (!groupCount && rows.length) {
+            var groups = {};
+            rows.forEach(function (row) {
+                var g = parseInt(row[13], 10);
+                if (g) {
+                    groups[g] = true;
+                }
+            });
+            groupCount = Object.keys(groups).length;
+        }
+
+        var modeLabel = {
+            name: 'по названию',
+            url: 'по URL',
+            both: 'совместный'
+        }[mode] || mode;
+
+        $legend.html(
+            '<strong>Подсветка дубликатов (' + modeLabel + '):</strong> ' +
+            groupCount + ' ' + pluralGroups(groupCount) + '. ' +
+            'Строки одного цвета — одна группа. Наведите на строку, чтобы выделить группу. ' +
+            'Клик по ID в колонке «Дубликаты» — перейти к паре.'
+        );
+        $legend.prop('hidden', false);
+        $root.addClass('categoryfinder-admin--dup-mode');
+    }
+
+    function pluralGroups(count) {
+        var n = Math.abs(count) % 100;
+        var n1 = n % 10;
+        if (n > 10 && n < 20) {
+            return 'групп';
+        }
+        if (n1 > 1 && n1 < 5) {
+            return 'группы';
+        }
+        if (n1 === 1) {
+            return 'группа';
+        }
+        return 'групп';
+    }
+
+    function applyDuplicateRowStyle(row, data) {
+        var $row = $(row);
+        var group = parseInt(data[13], 10);
+        var categoryId = parseInt(data[2], 10);
+
+        $row.removeClass(function (index, className) {
+            return (className.match(/(^|\s)cf-dup-g-\S+/g) || []).join(' ');
+        }).removeClass('cf-dup-focus cf-dup-flash');
+
+        if (group) {
+            $row.addClass(duplicateColorClass(group));
+            $row.attr('data-cf-dup-group', group);
+        } else {
+            $row.removeAttr('data-cf-dup-group');
+        }
+
+        if (categoryId) {
+            $row.attr('data-cf-id', categoryId);
+        }
+    }
 
     function setStatus($root, message, state) {
         var $status = $root.find('#cf-status');
@@ -174,6 +285,7 @@
                         table.rows.add(rows);
                     }
                     table.draw(false);
+                    updateDuplicateLegend($root, resp, rows);
                     if (rows.length) {
                         setStatus($root, 'Найдено: ' + rows.length, 'ok');
                     } else {
@@ -213,6 +325,9 @@
                     }
                 ],
                 columns: TABLE_COLUMNS,
+                createdRow: function (row, data) {
+                    applyDuplicateRowStyle(row, data);
+                },
                 initComplete: function () {
                     var api = this.api();
                     api.columns().every(function (index) {
@@ -235,6 +350,53 @@
             $root.on('click', '#cf-filter-btn', function (e) {
                 e.preventDefault();
                 loadRows();
+            });
+
+            $root.on('click', '#cf-filter-reset-btn', function (e) {
+                e.preventDefault();
+                resetFiltersToDefaults($root);
+                loadRows();
+            });
+
+            $root.on('keydown', '#cf-filter-name', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    loadRows();
+                }
+            });
+
+            $root.on('mouseenter', '#cf-category-table tbody tr[data-cf-dup-group]', function () {
+                var group = $(this).attr('data-cf-dup-group');
+                var $tbody = $(this).closest('tbody');
+                $tbody.addClass('cf-dup-hovering');
+                $tbody.find('tr').removeClass('cf-dup-focus');
+                $tbody.find('tr[data-cf-dup-group="' + group + '"]').addClass('cf-dup-focus');
+            });
+
+            $root.on('mouseleave', '#cf-category-table tbody', function () {
+                $(this).removeClass('cf-dup-hovering');
+                $(this).find('tr').removeClass('cf-dup-focus');
+            });
+
+            $root.on('click', '.cf-dup-link', function (e) {
+                e.preventDefault();
+                var id = $(this).data('cf-id');
+                var $target = $root.find('#cf-category-table tbody tr[data-cf-id="' + id + '"]');
+                if (!$target.length) {
+                    return;
+                }
+                var group = $target.attr('data-cf-dup-group');
+                var $tbody = $target.closest('tbody');
+                $tbody.addClass('cf-dup-hovering');
+                $tbody.find('tr').removeClass('cf-dup-focus cf-dup-flash');
+                if (group) {
+                    $tbody.find('tr[data-cf-dup-group="' + group + '"]').addClass('cf-dup-focus');
+                }
+                $target.addClass('cf-dup-flash');
+                $target[0].scrollIntoView({ block: 'center', behavior: 'smooth' });
+                window.setTimeout(function () {
+                    $target.removeClass('cf-dup-flash');
+                }, 2200);
             });
 
             $root.on('change', '.cf-without-prod-check', function () {

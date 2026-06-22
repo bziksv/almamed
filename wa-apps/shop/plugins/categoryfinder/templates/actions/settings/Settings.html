@@ -36,6 +36,13 @@
                 <option value="any">Есть товары</option>
             </select>
         </div>
+        <div class="categoryfinder-filter categoryfinder-filter--name">
+            <label for="cf-filter-name">
+                Название
+                <span class="cf-tip" tabindex="0" data-tip="Поиск по части названия категории. Регистр не важен. Например: «плакат» найдёт «Анатомические плакаты».">(?)</span>
+            </label>
+            <input type="text" id="cf-filter-name" value="" placeholder="Часть названия…">
+        </div>
         <div class="categoryfinder-filter">
             <label for="cf-filter-active">
                 Активность
@@ -89,11 +96,16 @@
             <input type="number" min="50" max="100" id="cf-filter-duplicate-similarity" value="85">
         </div>
         <div class="categoryfinder-filter categoryfinder-filter--action">
-            <button type="button" class="button green" id="cf-filter-btn">Найти</button>
+            <div class="categoryfinder-filter__actions">
+                <button type="button" class="button green" id="cf-filter-btn">Найти</button>
+                <button type="button" class="button light-gray" id="cf-filter-reset-btn">По умолчанию</button>
+            </div>
         </div>
     </div>
 
     <div class="categoryfinder-status" id="cf-status" aria-live="polite" hidden></div>
+
+    <div class="categoryfinder-dup-legend" id="cf-dup-legend" hidden></div>
 
     <div class="categoryfinder-table-wrap">
         <table id="cf-category-table" class="zebra" style="width:100%"></table>

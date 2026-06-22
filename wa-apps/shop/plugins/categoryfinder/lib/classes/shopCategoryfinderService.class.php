@@ -28,6 +28,7 @@ class shopCategoryfinderService
         $active = ifset($filters, 'active', '');
         $redirect = ifset($filters, 'redirect', '');
         $without_prod = ifset($filters, 'without_prod', '');
+        $name_filter = trim((string) ifset($filters, 'name', ''));
         $storefront = (string) ifset($filters, 'storefront', '');
         $duplicate_mode = (string) ifset($filters, 'duplicate', '');
         $duplicate_similarity = (int) ifset($filters, 'duplicate_similarity', self::DEFAULT_URL_SIMILARITY);
@@ -59,6 +60,9 @@ class shopCategoryfinderService
             if (!$this->matchesWithoutProdFilter($id, $without_prod_map, $without_prod)) {
                 continue;
             }
+            if (!$this->matchesNameFilter($cat, $name_filter)) {
+                continue;
+            }
 
             $count = (int) ifset($cat, 'count', 0);
             $by_count[$count][] = (int) $id;
@@ -82,13 +86,18 @@ class shopCategoryfinderService
         }
 
         $duplicate_labels = array();
+        $duplicate_groups = array();
+        $duplicate_matches = array();
         if ($duplicate_mode !== self::DUPLICATE_NONE) {
-            $duplicate_labels = $this->findDuplicateMatches(
+            $duplicate_result = $this->findDuplicateMatches(
                 $categories,
                 $ids,
                 $duplicate_mode,
                 $duplicate_similarity
             );
+            $duplicate_labels = $duplicate_result['labels'];
+            $duplicate_groups = $duplicate_result['groups'];
+            $duplicate_matches = $duplicate_result['matches'];
             $ids = array_keys($duplicate_labels);
             if (!$ids) {
                 return array();
@@ -121,6 +130,8 @@ class shopCategoryfinderService
                 'public_url' => $this->buildCategoryPublicUrl($cat, $public_url_prefix, $public_url_type),
                 'without_prod' => !empty($without_prod_map[$id]),
                 'duplicate_label' => ifset($duplicate_labels, $id, ''),
+                'duplicate_group' => (int) ifset($duplicate_groups, $id, 0),
+                'duplicate_matches' => ifset($duplicate_matches, $id, array()),
                 'sort_name' => $this->normalizeName(ifset($cat, 'name', '')),
             );
         }
@@ -229,6 +240,24 @@ class shopCategoryfinderService
         }
 
         return true;
+    }
+
+    protected function matchesNameFilter(array $cat, $name_filter)
+    {
+        if ($name_filter === '') {
+            return true;
+        }
+
+        $name = (string) ifset($cat, 'name', '');
+        if ($name === '') {
+            return false;
+        }
+
+        if (function_exists('mb_stripos')) {
+            return mb_stripos($name, $name_filter, 0, 'UTF-8') !== false;
+        }
+
+        return stripos($name, $name_filter) !== false;
     }
 
     /**
@@ -383,12 +412,18 @@ class shopCategoryfinderService
      * @param int[] $ids
      * @param string $mode
      * @param int $similarity_threshold
-     * @return array<int, string> category_id => match label
+     * @return array{labels: array<int,string>, groups: array<int,int>, matches: array<int,array<int,array{id:int,reason:string}>>}
      */
     protected function findDuplicateMatches(array $categories, array $ids, $mode, $similarity_threshold)
     {
         $ids = array_values(array_unique(array_map('intval', $ids)));
-        $result = array();
+        $labels = array();
+        $matches = array();
+        $parent = array();
+
+        foreach ($ids as $id) {
+            $parent[$id] = $id;
+        }
 
         $name_groups = array();
         foreach ($ids as $id) {
@@ -412,7 +447,7 @@ class shopCategoryfinderService
             }
         }
 
-        $url_similarity_map = null;
+        $url_similarity_map = array();
         if ($mode === self::DUPLICATE_URL) {
             $url_similarity_map = $this->buildUrlSimilarityMap($categories, $ids, $similarity_threshold);
         }
@@ -422,7 +457,7 @@ class shopCategoryfinderService
                 continue;
             }
 
-            $labels = array();
+            $row_matches = array();
 
             if ($mode === self::DUPLICATE_NAME) {
                 if (empty($name_duplicate_map[$id])) {
@@ -432,7 +467,8 @@ class shopCategoryfinderService
                     if ($other_id === $id) {
                         continue;
                     }
-                    $labels[] = $this->formatDuplicateLabel($other_id, 'имя');
+                    $row_matches[] = array('id' => $other_id, 'reason' => 'имя');
+                    $this->mergeDuplicateGroups($parent, $id, $other_id);
                 }
             } elseif ($mode === self::DUPLICATE_URL) {
                 if (empty($url_similarity_map[$id])) {
@@ -440,7 +476,11 @@ class shopCategoryfinderService
                 }
                 arsort($url_similarity_map[$id]);
                 foreach ($url_similarity_map[$id] as $other_id => $percent) {
-                    $labels[] = $this->formatDuplicateLabel($other_id, 'URL ' . round($percent) . '%');
+                    $row_matches[] = array(
+                        'id' => $other_id,
+                        'reason' => 'URL ' . round($percent) . '%',
+                    );
+                    $this->mergeDuplicateGroups($parent, $id, $other_id);
                 }
             } elseif ($mode === self::DUPLICATE_BOTH) {
                 if (empty($name_duplicate_map[$id])) {
@@ -454,22 +494,94 @@ class shopCategoryfinderService
                     $other_url = $this->normalizeUrl(ifset($categories[$other_id], 'url', ''));
                     $percent = $this->getUrlSimilarity($my_url, $other_url);
                     if ($percent >= $similarity_threshold) {
-                        $labels[] = $this->formatDuplicateLabel($other_id, 'имя+URL ' . round($percent) . '%');
+                        $row_matches[] = array(
+                            'id' => $other_id,
+                            'reason' => 'имя+URL ' . round($percent) . '%',
+                        );
+                        $this->mergeDuplicateGroups($parent, $id, $other_id);
                     }
                 }
-                if (!$labels) {
+                if (!$row_matches) {
                     continue;
                 }
             } else {
                 continue;
             }
 
-            if ($labels) {
-                $result[$id] = $this->truncateDuplicateLabels($labels);
+            if ($row_matches) {
+                $label_parts = array();
+                foreach ($row_matches as $match) {
+                    $label_parts[] = $this->formatDuplicateLabel($match['id'], $match['reason']);
+                }
+                $matches[$id] = $row_matches;
+                $labels[$id] = $this->truncateDuplicateLabels($label_parts);
             }
         }
 
-        return $result;
+        return array(
+            'labels' => $labels,
+            'groups' => $this->normalizeDuplicateGroups($parent, array_keys($labels)),
+            'matches' => $matches,
+        );
+    }
+
+    /**
+     * @param array<int, int> $parent
+     * @param int $a
+     * @param int $b
+     */
+    protected function mergeDuplicateGroups(array &$parent, $a, $b)
+    {
+        $root_a = $this->findDuplicateRoot($parent, $a);
+        $root_b = $this->findDuplicateRoot($parent, $b);
+        if ($root_a !== $root_b) {
+            $parent[$root_b] = $root_a;
+        }
+    }
+
+    /**
+     * @param array<int, int> $parent
+     * @param int $id
+     * @return int
+     */
+    protected function findDuplicateRoot(array &$parent, $id)
+    {
+        if (!isset($parent[$id])) {
+            $parent[$id] = $id;
+        }
+        if ($parent[$id] !== $id) {
+            $parent[$id] = $this->findDuplicateRoot($parent, $parent[$id]);
+        }
+
+        return $parent[$id];
+    }
+
+    /**
+     * @param array<int, int> $parent
+     * @param int[] $ids
+     * @return array<int, int>
+     */
+    protected function normalizeDuplicateGroups(array $parent, array $ids)
+    {
+        $clusters = array();
+        foreach ($ids as $id) {
+            $root = $this->findDuplicateRoot($parent, $id);
+            $clusters[$root][] = $id;
+        }
+
+        $groups = array();
+        $index = 1;
+        foreach ($clusters as $members) {
+            if (count($members) < 2) {
+                continue;
+            }
+            foreach ($members as $id) {
+                $groups[$id] = $index;
+            }
+            $index++;
+        }
+
+        return $groups;
     }
 
     /**
