@@ -43,6 +43,7 @@ cd ~/Documents/projects/almamed
   - `cp .local/sync-prod.env.example .local/sync-prod.env` + SSH-ключ на `root@45.90.35.63`
   - `./.local/sync-from-prod.sh` — remote БД + папки товаров, которых нет local
   - `./.local/sync-wa-data-from-prod.sh missing|recent|webp|products` — см. `docs/GIT-WORKFLOW.md`
+  - `./.local/setup-light-dev.sh` — удалить ~28 GB wa-data локально, картинки с prod через nginx proxy
 
 ---
 

@@ -27,7 +27,13 @@ sleep 1
 # Generate configs with absolute paths
 USER_NAME="$(whoami)"
 USER_GROUP="$(id -gn)"
-sed "s|PROJECT_ROOT|$PROJECT|g; s|RUN_DIR|$RUN_DIR|g" "$PROJECT/.local/nginx/nginx.conf" \
+PROD_MEDIA_HOST="${PROD_MEDIA_HOST:-almamed.su}"
+if [ -f "$PROJECT/.local/sync-prod.env" ]; then
+  # shellcheck disable=SC1090
+  . "$PROJECT/.local/sync-prod.env"
+  PROD_MEDIA_HOST="${PROD_MEDIA_HOST:-almamed.su}"
+fi
+sed "s|PROJECT_ROOT|$PROJECT|g; s|RUN_DIR|$RUN_DIR|g; s|PROD_MEDIA_HOST|$PROD_MEDIA_HOST|g" "$PROJECT/.local/nginx/nginx.conf" \
   > "$RUN_DIR/nginx.conf"
 sed "s|RUN_DIR|$RUN_DIR|g; s|POOL_CONF|$RUN_DIR/pool.conf|g" "$PROJECT/.local/php/fpm.conf" \
   > "$RUN_DIR/fpm.conf"
@@ -64,6 +70,21 @@ fi
 if [ "$CAT" != "200" ]; then
   echo "FAIL: категория HTTP $CAT (ожидали 200) — nginx PATH_INFO, см. $RUN_DIR/nginx-error.log"
   exit 1
+fi
+
+# Media proxy (light dev): локального файла нет → nginx тянет с prod
+if [ -f "$PROJECT/.local/run/media-proxy-test.path" ]; then
+  TEST_PATH="$(tr -d '\n' < "$PROJECT/.local/run/media-proxy-test.path")"
+  if [ -n "$TEST_PATH" ]; then
+    PROXY=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 "http://localhost:8080$TEST_PATH" 2>/dev/null || echo 000)
+    if [ "$PROXY" = "200" ]; then
+      echo "OK: media proxy $TEST_PATH → HTTP $PROXY (prod: $PROD_MEDIA_HOST)"
+    else
+      echo "WARN: media proxy $TEST_PATH → HTTP $PROXY (нет сети или файл недоступен на prod)"
+    fi
+  fi
+elif [ ! -d "$PROJECT/wa-data/public/shop/products" ] || [ -z "$(ls -A "$PROJECT/wa-data/public/shop/products" 2>/dev/null)" ]; then
+  echo "TIP: ./.local/setup-light-dev.sh — удалить тяжёлые wa-data и включить proxy картинок с prod"
 fi
 
 echo "OK: http://localhost:8080/ → HTTP $HTTP ($(wc -c </tmp/almamed-check.html | tr -d ' ') bytes), категория → $CAT"

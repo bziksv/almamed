@@ -110,6 +110,31 @@ cp wa-config/db.php.local wa-config/db.php
 
 ---
 
+## Облегчённый local dev (~25+ GB)
+
+Удалить локальные картинки/uploads, оставить темы. Nginx отдаёт отсутствующие файлы из `wa-data/public/` с prod.
+
+```bash
+./.local/setup-light-dev.sh              # интерактивно
+./.local/setup-light-dev.sh --yes        # без подтверждения
+./.local/setup-light-dev.sh --dry-run    # только показать объём
+
+./start-dev.sh                           # proxy: PROD_MEDIA_HOST=almamed.su
+./.local/use-db-remote.sh                # опционально: prod БД
+```
+
+Точечно вернуть файлы офлайн:
+
+```bash
+./.local/sync-wa-data-from-prod.sh missing
+./.local/sync-wa-data-from-prod.sh recent --limit 20
+```
+
+**Не удаляется:** `wa-data/public/*/themes/` (в git).  
+**Proxy не покрывает:** `wa-data/protected/` (скачивания через PHP) — для них нужен rsync при необходимости.
+
+---
+
 ## БД
 
 | Файл | Назначение |
@@ -120,6 +145,7 @@ cp wa-config/db.php.local wa-config/db.php
 | `.local/use-db-remote.sh` | переключить на prod БД + clearCache |
 | `.local/use-db-local.sh` | вернуть local MySQL |
 | `.local/sync-wa-data-from-prod.sh` | rsync картинок/webp с prod |
+| `.local/setup-light-dev.sh` | удалить тяжёлые wa-data + proxy медиа с prod |
 | `.local/sync-from-prod.sh` | remote БД + missing product dirs |
 | `.db-dump/almamed_su_db.sql.gz` | дамп ~91 MB |
 
