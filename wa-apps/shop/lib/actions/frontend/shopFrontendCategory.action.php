@@ -393,44 +393,53 @@ class shopFrontendCategoryAction extends shopFrontendAction
 
     public function display($clear_assign = true)
     {
-        $cached_html = $this->getCachedCategoryHtml();
-        if ($cached_html !== null) {
+        $cached = $this->getCachedCategoryData();
+        if ($cached !== null) {
             $this->applyBrowserNoCacheHeaders();
+            // Кэш хранит только внутренний фрагмент категории; <head> с title/meta
+            // рисует обёртка site-темы из response. На cache-hit тяжёлый рендер
+            // (где SEO-плагин выставляет meta) пропущен → восстанавливаем meta из кэша.
+            $this->restoreResponseMeta(ifset($cached, 'meta', array()));
             wa()->getResponse()->addHeader('X-Shop-Cache', 'category-hit');
-            return $this->patchCategoryHtmlHead($cached_html);
+            return $cached['html'];
         }
         $this->applyBrowserNoCacheHeaders();
         wa()->getResponse()->addHeader('X-Shop-Cache', 'category-miss');
 
         $html = parent::display(false);
-        $html = $this->patchCategoryHtmlHead($html);
-        $this->setCachedCategoryHtml($html);
+        $meta = $this->captureResponseMeta();
+        $this->setCachedCategoryData($html, $meta);
 
         return $html;
     }
 
     /**
-     * Full-page cache хранит старый &lt;head&gt;; title/meta задаются в execute() + SEO-плагин.
+     * Снимок meta (title/keywords/description/canonical/og) из response после рендера.
      *
-     * @param string $html
-     * @return string
+     * @return array
      */
-    protected function patchCategoryHtmlHead($html)
+    protected function captureResponseMeta()
     {
+        $meta = wa()->getResponse()->getMeta();
+
+        return is_array($meta) ? $meta : array();
+    }
+
+    /**
+     * Восстанавливает meta из кэша в response, не перетирая уже выставленные значения.
+     *
+     * @param array $meta
+     */
+    protected function restoreResponseMeta($meta)
+    {
+        if (!is_array($meta) || !$meta) {
+            return;
+        }
+
         $response = wa()->getResponse();
-        $category = $this->view->getVars('category');
-
-        if (!$response->getTitle() && !empty($category['id'])) {
-            $response->setTitle(shopCategoryModel::getDefaultMetaTitle($category));
-        }
-        if (!$response->getMeta('keywords') && !empty($category['id'])) {
-            $response->setMeta('keywords', shopCategoryModel::getDefaultMetaKeywords($category));
-        }
-        if (!$response->getMeta('description') && !empty($category['meta_description'])) {
-            $response->setMeta('description', $category['meta_description']);
-        }
-
-        return $this->patchHtmlHeadFromResponse($html);
+        $current = (array) $response->getMeta();
+        // Уже выставленные значения (если есть) имеют приоритет, кэш дополняет недостающее.
+        $response->setMeta($current + $meta);
     }
 
     protected function canUseCategoryCache()
@@ -511,7 +520,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
      * файлы часто root-owned и чтение молча не срабатывает.
      *
      * @param string $key
-     * @return string|null
+     * @return array|null
      */
     protected function readCategoryCacheValue($key)
     {
@@ -521,7 +530,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
         }
 
         $info = @unserialize(file_get_contents($file));
-        if (!is_array($info) || !isset($info['value']) || !is_string($info['value']) || $info['value'] === '') {
+        if (!is_array($info) || !isset($info['value'])) {
             return null;
         }
         if (!empty($info['ttl']) && $info['ttl'] >= 0 && time() - $info['time'] >= $info['ttl']) {
@@ -532,9 +541,24 @@ class shopFrontendCategoryAction extends shopFrontendAction
     }
 
     /**
-     * @return string|null
+     * Кэш валиден только если есть html и непустой title в meta.
+     * Без title — считаем битым (самовосстановление: будет перегенерирован).
+     *
+     * @param mixed $data
+     * @return bool
      */
-    protected function getCachedCategoryHtml()
+    protected function isValidCategoryCacheData($data)
+    {
+        return is_array($data)
+            && !empty($data['html'])
+            && is_string($data['html'])
+            && !empty($data['meta']['title']);
+    }
+
+    /**
+     * @return array|null bundle ['html' => string, 'meta' => array]
+     */
+    protected function getCachedCategoryData()
     {
         if (!$this->canUseCategoryCache()) {
             return null;
@@ -550,27 +574,21 @@ class shopFrontendCategoryAction extends shopFrontendAction
             self::CATEGORY_CACHE_TTL,
             self::CATEGORY_CACHE_GROUP
         );
-        $html = $cache->isCached() ? $cache->get() : null;
-        if (!is_string($html) || $html === '') {
-            $html = $this->readCategoryCacheValue($key);
+        $data = $cache->isCached() ? $cache->get() : null;
+        if (!$this->isValidCategoryCacheData($data)) {
+            $data = $this->readCategoryCacheValue($key);
         }
 
-        if (!is_string($html) || $html === '') {
-            return null;
-        }
-
-        // Битый кэш (пустой <title>) не отдаём — пусть перегенерируется.
-        // Защита от застрявшего/root-owned файла кэша на prod.
-        if (preg_match('/<title[^>]*>\s*<\/title>/i', $html)) {
-            return null;
-        }
-
-        return $html;
+        return $this->isValidCategoryCacheData($data) ? $data : null;
     }
 
-    protected function setCachedCategoryHtml($html)
+    protected function setCachedCategoryData($html, $meta)
     {
         if (!$this->canUseCategoryCache() || !is_string($html) || $html === '') {
+            return;
+        }
+        // Без title не кэшируем — иначе закэшируем битый <head>.
+        if (empty($meta['title'])) {
             return;
         }
 
@@ -584,7 +602,7 @@ class shopFrontendCategoryAction extends shopFrontendAction
             self::CATEGORY_CACHE_TTL,
             self::CATEGORY_CACHE_GROUP
         );
-        if ($cache->set($html)) {
+        if ($cache->set(array('html' => $html, 'meta' => $meta))) {
             $file = $this->getCategoryCacheFilePath($key);
             if (file_exists($file)) {
                 @chmod($file, 0664);
