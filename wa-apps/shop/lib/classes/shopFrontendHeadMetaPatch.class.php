@@ -27,8 +27,16 @@ class shopFrontendHeadMetaPatch
             );
         }
 
-        $html = self::patchMetaName($html, 'Keywords', (string) $response->getMeta('keywords'));
-        $html = self::patchMetaName($html, 'Description', (string) $response->getMeta('description'));
+        // На cache-hit шаблон/SEO-плагин не отрабатывают, у response пустые meta.
+        // Пустым значением НЕЛЬЗЯ затирать корректные meta, уже зашитые в кэше.
+        $keywords = (string) $response->getMeta('keywords');
+        if ($keywords !== '') {
+            $html = self::patchMetaName($html, 'Keywords', $keywords);
+        }
+        $description = (string) $response->getMeta('description');
+        if ($description !== '') {
+            $html = self::patchMetaName($html, 'Description', $description);
+        }
 
         $og = $response->getMeta('og');
         if (is_array($og)) {

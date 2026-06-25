@@ -555,7 +555,17 @@ class shopFrontendCategoryAction extends shopFrontendAction
             $html = $this->readCategoryCacheValue($key);
         }
 
-        return is_string($html) && $html !== '' ? $html : null;
+        if (!is_string($html) || $html === '') {
+            return null;
+        }
+
+        // Битый кэш (пустой <title>) не отдаём — пусть перегенерируется.
+        // Защита от застрявшего/root-owned файла кэша на prod.
+        if (preg_match('/<title[^>]*>\s*<\/title>/i', $html)) {
+            return null;
+        }
+
+        return $html;
     }
 
     protected function setCachedCategoryHtml($html)
