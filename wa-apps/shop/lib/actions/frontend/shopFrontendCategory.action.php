@@ -444,6 +444,14 @@ class shopFrontendCategoryAction extends shopFrontendAction
 
     protected function canUseCategoryCache()
     {
+        // Full-page кэш категории ОТКЛЮЧЁН: SEO-плагин формирует title/description/og
+        // и расширенное имя категории во время полного рендера (события frontend_category
+        // → applyInner и frontend_head → applyOuter в layout). Кэш фрагмента пропускает
+        // этот пайплайн → на cache-hit мета пустая/базовая. Корректность SEO важнее
+        // выигрыша кэша; остальные оптимизации (batch SQL, sidebar/home/searchpro cache)
+        // продолжают работать. Не включать обратно без решения проблемы SEO-меты.
+        return false;
+
         if (waSystemConfig::isDebug() || waRequest::isXMLHttpRequest()) {
             return false;
         }
