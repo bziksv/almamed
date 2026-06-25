@@ -41,7 +41,16 @@ cd /var/www/almamed.su/data/www/almamed.su
 git pull origin main
 chown -R almamed.su:almamed.su .
 find wa-cache -mindepth 1 -delete
+
+# ⚠️ При правках PHP — ОБЯЗАТЕЛЬНО сброс OPcache (clearCache его не чистит!)
+printf '%s' '<?php opcache_reset(); echo "ok";' > _opc.php \
+  && chown almamed.su:almamed.su _opc.php \
+  && curl -s -A Mozilla -k -H "Host: almamed.su" https://213.139.209.184/_opc.php \
+  && rm -f _opc.php
 ```
+
+> 🔴 OPcache на prod не перечитывает файлы по mtime → без сброса исполняется
+> старый код после `git pull`. Подробности и альтернативы — `docs/PRODUCTION.md` → Деплой.
 
 SSH ключ на prod (root): отдельный, добавлен в GitHub.
 

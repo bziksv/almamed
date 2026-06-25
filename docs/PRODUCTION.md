@@ -65,7 +65,22 @@ php .local/bump-theme-edition.php   # новый ?v= для CSS/JS темы (о�
 find wa-cache -mindepth 1 -delete
 sudo -u almamed.su php cli.php webasyst clearCache
 chown -R almamed.su:almamed.su wa-cache wa-log
+
+# ⚠️ ОБЯЗАТЕЛЬНО при правках PHP — сброс OPcache (clearCache его НЕ чистит!)
+printf '%s' '<?php opcache_reset(); echo "ok";' > _opc.php \
+  && chown almamed.su:almamed.su _opc.php \
+  && curl -s -A Mozilla -k -H "Host: almamed.su" https://213.139.209.184/_opc.php \
+  && rm -f _opc.php
+# Альтернатива: systemctl restart php-fpm
 ```
+
+> 🔴 **OPcache — главная грабля деплоя.** `webasyst clearCache` и `find wa-cache`
+> чистят только app-кэш. PHP-байткод живёт в **OPcache** (validate_timestamps=0
+> на prod → файлы НЕ перечитываются по mtime). После `git pull` без сброса OPcache
+> **исполняется старый код** — правка «не применяется», сколько кэш ни три.
+> Сброс — `opcache_reset()` через web-запрос (zero-downtime, проверено) или
+> `systemctl restart php-fpm`. CLI `php -r 'opcache_reset()'` **не поможет** —
+> у CLI отдельный OPcache, не тот, что обслуживает сайт.
 
 **Почему `bump-theme-edition.php`:** nginx кэширует `/wa-data/public/` на **1 год** (`immutable`). Браузер обновит JS/CSS только если в HTML новый `?v=`. Версия берётся из `edition` в `theme.xml` — при деплое через git/rsync она **сама не растёт** (только через редактор тем в админке). Консоль с «Disable cache» обходит кэш — отсюда иллюзия, что «помогает только F12».
 
