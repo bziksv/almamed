@@ -95,10 +95,18 @@ php .local/verify-userlog.php
 
 Иконка — в **верхней полосе Webasyst** (рядом с Магазин, Блог, Логи). Прямая ссылка: `https://almamed.su/webasyst/userlog/`
 
+> ⚠️ **Full-page кэш категории ОТКЛЮЧЁН** (`canUseCategoryCache()` → `false`).
+> Причина: SEO-плагин формирует `<title>`/description/og и расширенное имя
+> категории во время полного рендера (события `frontend_category`→`applyInner`,
+> `frontend_head`→`applyOuter` в layout). Кэш хранил только внутренний фрагмент
+> без `<head>` → на cache-hit мета была пустая (`<title></title>`). Отдача всегда
+> `category-miss`, TTFB ~0.3–0.6s (прочие оптимизации держат скорость).
+> **Не включать обратно** без решения проблемы SEO-меты на cache-hit.
+
 ```bash
-# Проверка кеша категории после деплоя (2-й запрос должен быть category-hit и TTFB < 0.05s)
-curl -s -D - -o /dev/null -H "Host: almamed.su" -k "https://213.139.209.184/category/veterinariya/" | grep -i x-shop-cache
-curl -s -D - -o /dev/null -H "Host: almamed.su" -k "https://213.139.209.184/category/veterinariya/" | grep -i x-shop-cache
+# После деплоя: мета категории должна быть заполнена (title/desc/keywords/og)
+curl -s -A "Mozilla/5.0" "https://almamed.su/category/veterinariya/" \
+  | grep -oiE '<title>[^<]*</title>|<meta name="(Description|Keywords)" content="[^"]{0,40}'
 ```
 
 ### После деплоя — smoke + TTFB
