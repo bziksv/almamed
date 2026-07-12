@@ -33,6 +33,7 @@ class shopSliderPluginSettingsAction extends waViewAction
         $this->view->assign('forms', $records);
         $this->view->assign('active_count', $active_count);
         $this->view->assign('max_visible_slides', shopSliderPlugin::MAX_VISIBLE_SLIDES);
+        $this->view->assign('slider_sizes', shopSliderResponsiveImages::adminSizeHints());
         $this->view->assign(
             'contact_autocomplete_url',
             wa()->getAppUrl('shop') . '?action=autocomplete&type=contact'

@@ -13,6 +13,27 @@ class shopSliderResponsiveImages
     const WIDE_STRIP_RATIO = 3.0;
     const MOBILE_COLUMNS = 3;
 
+    /**
+     * Подписи размеров для админки (из констант, не дублировать в шаблоне).
+     *
+     * @return array{desktop: string, tablet: string, mobile: string, desktop_css: string, tablet_bp: int, mobile_bp: int}
+     */
+    public static function adminSizeHints()
+    {
+        $desktop_h = (int) round(220 * (self::DESKTOP_WIDTH / 1300));
+        $tablet_h = (int) round(660 * (self::TABLET_WIDTH / 992));
+        $mobile_h = (int) round(870 * (self::MOBILE_WIDTH / 576));
+
+        return array(
+            'desktop' => self::DESKTOP_WIDTH . '×' . $desktop_h,
+            'tablet' => self::TABLET_WIDTH . '×' . $tablet_h,
+            'mobile' => self::MOBILE_WIDTH . '×' . $mobile_h,
+            'desktop_css' => '1300×220',
+            'tablet_bp' => 1200,
+            'mobile_bp' => 480,
+        );
+    }
+
     public static function imgDir()
     {
         return wa()->getConfig()->getPath('data') . '/public/shop/slider/img';

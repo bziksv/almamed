@@ -2,12 +2,13 @@
     <h1>Слайдер</h1>
 
     <div class="slider-admin__intro">
-        <p>Загрузите баннеры для компьютера, планшета и телефона. Планшет и телефон можно не загружать — они создадутся из десктопного. При загрузке изображения сжимаются автоматически.</p>
+        <p>Загрузите баннеры для компьютера, планшета и телефона. Планшет и телефон можно не загружать — они создадутся из десктопного. При загрузке изображения сжимаются автоматически (retina 2×).</p>
         <ul class="slider-admin__sizes">
-            <li><strong>Компьютер</strong> — 1300×220 px</li>
-            <li><strong>Планшет</strong> — 992×660 px (до 1200 px)</li>
-            <li><strong>Телефон</strong> — 576×870 px (до 480 px)</li>
+            <li><strong>Компьютер</strong> — {$slider_sizes.desktop|escape} px (на экране ~{$slider_sizes.desktop_css|escape}, Retina)</li>
+            <li><strong>Планшет</strong> — {$slider_sizes.tablet|escape} px (экран до {$slider_sizes.tablet_bp|escape} px)</li>
+            <li><strong>Телефон</strong> — {$slider_sizes.mobile|escape} px (экран до {$slider_sizes.mobile_bp|escape} px)</li>
         </ul>
+        <p class="hint">Слайды, загруженные раньше в 1300 px, нужно перезалить из исходника ~{$slider_sizes.desktop|escape} px — иначе на Retina-экранах будут мылить.</p>
     </div>
 
     <div class="slider-admin__summary">
@@ -157,7 +158,7 @@
                             <div class="slider-banner">
                                 <div class="slider-banner__head">
                                     <span class="slider-banner__device">Компьютер</span>
-                                    <span class="slider-banner__size">1300×220</span>
+                                    <span class="slider-banner__size">{$slider_sizes.desktop|escape}</span>
                                 </div>
                                 <div class="slider-banner__preview">
                                     {if !empty($form.img)}
@@ -175,7 +176,7 @@
                             <div class="slider-banner">
                                 <div class="slider-banner__head">
                                     <span class="slider-banner__device">Планшет</span>
-                                    <span class="slider-banner__size">992×660</span>
+                                    <span class="slider-banner__size">{$slider_sizes.tablet|escape}</span>
                                 </div>
                                 <div class="slider-banner__preview">
                                     {if !empty($form.img_tablet)}
@@ -193,7 +194,7 @@
                             <div class="slider-banner">
                                 <div class="slider-banner__head">
                                     <span class="slider-banner__device">Телефон</span>
-                                    <span class="slider-banner__size">576×870</span>
+                                    <span class="slider-banner__size">{$slider_sizes.mobile|escape}</span>
                                 </div>
                                 <div class="slider-banner__preview">
                                     {if !empty($form.img_mobile)}
@@ -681,19 +682,19 @@
             <h3 class="slider-section__title">Изображения</h3>
             <div class="slider-banners">
                 <div class="slider-banner">
-                    <div class="slider-banner__head"><span class="slider-banner__device">Компьютер</span><span class="slider-banner__size">1300×220</span></div>
+                    <div class="slider-banner__head"><span class="slider-banner__device">Компьютер</span><span class="slider-banner__size">{$slider_sizes.desktop|escape}</span></div>
                     <div class="slider-banner__preview"><span class="slider-banner__empty">Нет файла</span></div>
                     <label class="slider-banner__upload button light-gray"><span>Выбрать файл</span><input type="file" name="img[]" accept="image/png,image/jpeg"></label>
                     <input type="hidden" name="img_path[]" value="">
                 </div>
                 <div class="slider-banner">
-                    <div class="slider-banner__head"><span class="slider-banner__device">Планшет</span><span class="slider-banner__size">992×660</span></div>
+                    <div class="slider-banner__head"><span class="slider-banner__device">Планшет</span><span class="slider-banner__size">{$slider_sizes.tablet|escape}</span></div>
                     <div class="slider-banner__preview"><span class="slider-banner__empty">Авто из десктопа</span></div>
                     <label class="slider-banner__upload button light-gray"><span>Выбрать файл</span><input type="file" name="img_tablet[]" accept="image/png,image/jpeg"></label>
                     <input type="hidden" name="img_tablet_path[]" value="">
                 </div>
                 <div class="slider-banner">
-                    <div class="slider-banner__head"><span class="slider-banner__device">Телефон</span><span class="slider-banner__size">576×870</span></div>
+                    <div class="slider-banner__head"><span class="slider-banner__device">Телефон</span><span class="slider-banner__size">{$slider_sizes.mobile|escape}</span></div>
                     <div class="slider-banner__preview"><span class="slider-banner__empty">Авто из десктопа</span></div>
                     <label class="slider-banner__upload button light-gray"><span>Выбрать файл</span><input type="file" name="img_mobile[]" accept="image/png,image/jpeg"></label>
                     <input type="hidden" name="img_mobile_path[]" value="">
