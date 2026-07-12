@@ -43,27 +43,35 @@ class shopSliderPlugin extends shopPlugin
         $mobile = ifset($first, 'img_mobile_webp', '') ?: ifset($first, 'img_mobile', '');
         $tablet = ifset($first, 'img_tablet_webp', '') ?: ifset($first, 'img_tablet', '');
         $desktop = ifset($first, 'img_webp', '') ?: ifset($first, 'img', '');
+        $mobile_w = (int) ifset($first, 'img_mobile_w', 0);
+        $tablet_w = (int) ifset($first, 'img_tablet_w', 0);
+        $desktop_w = (int) ifset($first, 'img_w', 0);
 
         if ($mobile) {
-            $links[] = self::preloadLink($mobile, '(max-width: 480px)');
+            $links[] = self::preloadLink($mobile, '(max-width: 480px)', $mobile_w);
         }
         if ($tablet) {
-            $links[] = self::preloadLink($tablet, '(max-width: 1200px) and (min-width: 481px)');
+            $links[] = self::preloadLink($tablet, '(max-width: 1200px) and (min-width: 481px)', $tablet_w);
         }
         if ($desktop) {
-            $links[] = self::preloadLink($desktop, '(min-width: 1201px)');
+            $links[] = self::preloadLink($desktop, '(min-width: 1201px)', $desktop_w);
         }
 
         return implode("\n    ", $links);
     }
 
-    protected static function preloadLink($url, $media)
+    protected static function preloadLink($url, $media, $width = 0)
     {
         $type = preg_match('/\.webp(\?|$)/i', $url) ? ' type="image/webp"' : '';
+        $srcset = $width > 0
+            ? sprintf(' imagesrcset="%s %dw"', htmlspecialchars($url, ENT_QUOTES, 'UTF-8'), $width)
+            : '';
+
         return sprintf(
-            '<link rel="preload" as="image" href="%s"%s media="%s" fetchpriority="high">',
+            '<link rel="preload" as="image" href="%s"%s%s media="%s" fetchpriority="high">',
             htmlspecialchars($url, ENT_QUOTES, 'UTF-8'),
             $type,
+            $srcset,
             htmlspecialchars($media, ENT_QUOTES, 'UTF-8')
         );
     }
@@ -196,6 +204,16 @@ class shopSliderPlugin extends shopPlugin
         $slide['img_webp'] = shopSliderResponsiveImages::publicWebpUrl($desktop);
         $slide['img_tablet_webp'] = shopSliderResponsiveImages::publicWebpUrl($tablet);
         $slide['img_mobile_webp'] = shopSliderResponsiveImages::publicWebpUrl($mobile);
+
+        $desktop_dims = shopSliderResponsiveImages::publicImageDimensions($desktop);
+        $tablet_dims = shopSliderResponsiveImages::publicImageDimensions($tablet);
+        $mobile_dims = shopSliderResponsiveImages::publicImageDimensions($mobile);
+        $slide['img_w'] = $desktop_dims['width'];
+        $slide['img_h'] = $desktop_dims['height'];
+        $slide['img_tablet_w'] = $tablet_dims['width'] ?: $desktop_dims['width'];
+        $slide['img_tablet_h'] = $tablet_dims['height'] ?: $desktop_dims['height'];
+        $slide['img_mobile_w'] = $mobile_dims['width'] ?: $desktop_dims['width'];
+        $slide['img_mobile_h'] = $mobile_dims['height'] ?: $desktop_dims['height'];
 
         return $slide;
     }

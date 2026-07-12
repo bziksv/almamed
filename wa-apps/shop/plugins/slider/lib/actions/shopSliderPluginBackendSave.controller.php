@@ -165,7 +165,7 @@ class shopSliderPluginBackendSaveController extends waJsonController
                 );
             } else {
                 $image = waImage::factory($_FILES[$field]['tmp_name'][$key]);
-                $image->save($files_root, 85);
+                $image->save($files_root, shopSliderResponsiveImages::JPEG_QUALITY);
             }
 
             if ($field === 'img') {

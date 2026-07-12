@@ -2,8 +2,14 @@
 
 class shopSliderResponsiveImages
 {
-    const TABLET_WIDTH = 992;
-    const MOBILE_WIDTH = 576;
+    /** Max CSS ~1300px × DPR 2 for desktop retina */
+    const DESKTOP_WIDTH = 2600;
+    /** Tablet breakpoint 1200px × DPR 2 */
+    const TABLET_WIDTH = 1984;
+    /** Mobile breakpoint 576px × DPR 2 */
+    const MOBILE_WIDTH = 1152;
+    const JPEG_QUALITY = 92;
+    const WEBP_QUALITY = 90;
     const WIDE_STRIP_RATIO = 3.0;
     const MOBILE_COLUMNS = 3;
 
@@ -102,6 +108,27 @@ class shopSliderResponsiveImages
     }
 
     /**
+     * @return array{width: int, height: int}
+     */
+    public static function publicImageDimensions($public_url)
+    {
+        $result = array('width' => 0, 'height' => 0);
+        if (!$public_url) {
+            return $result;
+        }
+
+        $info = self::getImageInfo(self::desktopFilesystemPath($public_url));
+        if (!$info) {
+            return $result;
+        }
+
+        return array(
+            'width' => (int) $info['width'],
+            'height' => (int) $info['height'],
+        );
+    }
+
+    /**
      * @return string filesystem path or empty string
      */
     public static function ensureWebp($filesystem_path, $force = false)
@@ -131,7 +158,7 @@ class shopSliderResponsiveImages
             imagesavealpha($image, true);
         }
 
-        imagewebp($image, $webp_path, 85);
+        imagewebp($image, $webp_path, self::WEBP_QUALITY);
         imagedestroy($image);
 
         return $webp_path;
@@ -518,7 +545,7 @@ class shopSliderResponsiveImages
     {
         switch ($type) {
             case IMAGETYPE_JPEG:
-                imagejpeg($image, $path, 92);
+                imagejpeg($image, $path, self::JPEG_QUALITY);
                 break;
             case IMAGETYPE_PNG:
                 imagepng($image, $path, 8);

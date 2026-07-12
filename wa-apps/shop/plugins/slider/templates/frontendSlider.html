@@ -92,17 +92,30 @@
             <div class="almamed-slider__slide{if $smarty.foreach.slider_slides.first} is-active{/if}"
                  data-slide-id="{$s.id|escape}">
                 <a href="{$s.link|escape}" class="slider-slide-link" data-slide-id="{$s.id|escape}">
-                    <img src="{$s.img|escape}"
-                         alt="{$s.alt|escape}"
-                         width="1300"
-                         height="220"
-                         decoding="async"{if $smarty.foreach.slider_slides.first} fetchpriority="high"{else} loading="lazy"{/if}
-                         data-desktop-src="{$s.img|escape}"
-                         data-desktop-webp="{$s.img_webp|escape}"
-                         data-tablet-src="{$s.img_tablet|escape}"
-                         data-tablet-webp="{$s.img_tablet_webp|escape}"
-                         data-mobile-src="{$s.img_mobile|escape}"
-                         data-mobile-webp="{$s.img_mobile_webp|escape}">
+                    <picture>
+                        {if $s.img_mobile_webp}
+                        <source media="(max-width: 480px)" type="image/webp" srcset="{$s.img_mobile_webp|escape}{if $s.img_mobile_w} {$s.img_mobile_w|escape}w{/if}">
+                        {/if}
+                        {if $s.img_mobile}
+                        <source media="(max-width: 480px)" srcset="{$s.img_mobile|escape}{if $s.img_mobile_w} {$s.img_mobile_w|escape}w{/if}">
+                        {/if}
+                        {if $s.img_tablet_webp}
+                        <source media="(max-width: 1200px)" type="image/webp" srcset="{$s.img_tablet_webp|escape}{if $s.img_tablet_w} {$s.img_tablet_w|escape}w{/if}">
+                        {/if}
+                        {if $s.img_tablet}
+                        <source media="(max-width: 1200px)" srcset="{$s.img_tablet|escape}{if $s.img_tablet_w} {$s.img_tablet_w|escape}w{/if}">
+                        {/if}
+                        {if $s.img_webp}
+                        <source type="image/webp" srcset="{$s.img_webp|escape}{if $s.img_w} {$s.img_w|escape}w{/if}">
+                        {/if}
+                        <img src="{$s.img|escape}"
+                             srcset="{$s.img|escape}{if $s.img_w} {$s.img_w|escape}w{/if}"
+                             sizes="(max-width: 480px) 100vw, (max-width: 1200px) 100vw, min(100vw, 1300px)"
+                             alt="{$s.alt|escape}"
+                             width="{$s.img_w|default:1300|escape}"
+                             height="{$s.img_h|default:220|escape}"
+                             decoding="async"{if $smarty.foreach.slider_slides.first} fetchpriority="high"{else} loading="lazy"{/if}>
+                    </picture>
                 </a>
             </div>
         {/foreach}
@@ -122,8 +135,6 @@
 
 <script>
 (function() {
-    var TABLET_BREAKPOINT = 1200;
-    var MOBILE_BREAKPOINT = 480;
     var AUTOPLAY_MS = 5000;
     var STAT_URL = {$stat_url};
 
@@ -143,44 +154,6 @@
     var touchStartY = 0;
     var swipeBlockedClick = false;
     var SWIPE_THRESHOLD = 36;
-
-    var supportsWebp = (function() {
-        try {
-            var canvas = document.createElement('canvas');
-            canvas.width = 1;
-            canvas.height = 1;
-            return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-        } catch (e) {
-            return false;
-        }
-    })();
-
-    function pickSrc(img) {
-        var width = window.innerWidth || document.documentElement.clientWidth;
-        var src = img.getAttribute('data-desktop-src');
-        var webp = img.getAttribute('data-desktop-webp');
-        if (width <= MOBILE_BREAKPOINT && img.getAttribute('data-mobile-src')) {
-            src = img.getAttribute('data-mobile-src');
-            webp = img.getAttribute('data-mobile-webp');
-        } else if (width <= TABLET_BREAKPOINT && img.getAttribute('data-tablet-src')) {
-            src = img.getAttribute('data-tablet-src');
-            webp = img.getAttribute('data-tablet-webp');
-        }
-        if (supportsWebp && webp) {
-            return webp;
-        }
-        return src;
-    }
-
-    function applyResponsiveSrc() {
-        var imgs = root.querySelectorAll('img');
-        for (var i = 0; i < imgs.length; i++) {
-            var src = pickSrc(imgs[i]);
-            if (src && imgs[i].getAttribute('src') !== src) {
-                imgs[i].setAttribute('src', src);
-            }
-        }
-    }
 
     function sendStat(slideId, type) {
         if (!STAT_URL || !slideId || !window.fetch) {
@@ -328,13 +301,6 @@
         wrap.addEventListener('mouseleave', startAutoPlay);
     }
 
-    var resizeTimer;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(applyResponsiveSrc, 200);
-    });
-
-    applyResponsiveSrc();
     showSlide(0);
     startAutoPlay();
 })();
