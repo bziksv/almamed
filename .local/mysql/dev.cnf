@@ -1,0 +1,18 @@
+[mysqld]
+datadir=/opt/homebrew/var/mysql@8.0
+port=3306
+bind-address=127.0.0.1
+socket=/tmp/mysql.sock
+
+pid-file=/Users/stanislav/Documents/projects/almamed/.local/run/almamed-mysqld.pid
+log-error=/Users/stanislav/Documents/projects/almamed/.local/run/mysql.err
+
+# Mac dev: меньше RAM (~200–350 MB вместо 500+)
+innodb_buffer_pool_size=128M
+max_connections=20
+performance_schema=OFF
+skip-name-resolve
+
+[client]
+port=3306
+socket=/tmp/mysql.sock

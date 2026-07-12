@@ -9,13 +9,8 @@ OPCACHE_SO="$(find /opt/homebrew/Cellar/php@7.2 -path '*/opcache.so' 2>/dev/null
 
 mkdir -p "$RUN_DIR"
 
-# MySQL 8.0
-if ! "$PHP72/bin/mysql" -u almamed -plocaldev -e "SELECT 1" almamed_su_db >/dev/null 2>&1; then
-  if ! lsof -i:3306 -sTCP:LISTEN >/dev/null 2>&1; then
-    "$PHP72/bin/mysqld_safe" --datadir=/opt/homebrew/var/mysql@8.0 --port=3306 >/dev/null 2>&1 &
-    sleep 2
-  fi
-fi
+# MySQL 8.0 (PHP 7.2 не работает с MySQL 9.x)
+"$PROJECT/.local/start-mysql-dev.sh" || exit 1
 
 # Stop built-in PHP server / old nginx on 8080
 lsof -ti:8080 2>/dev/null | xargs kill -9 2>/dev/null || true
@@ -89,3 +84,9 @@ fi
 
 echo "OK: http://localhost:8080/ → HTTP $HTTP ($(wc -c </tmp/almamed-check.html | tr -d ' ') bytes), категория → $CAT"
 echo "nginx + php-fpm 7.2 (opcache), stop: ./stop-dev.sh"
+
+# Watchdog: если MySQL упал — поднимет за ~3s
+chmod +x "$PROJECT/.local/mysql-watch.sh" 2>/dev/null || true
+[ -f "$RUN_DIR/mysql-watch.pid" ] && kill "$(cat "$RUN_DIR/mysql-watch.pid")" 2>/dev/null || true
+nohup "$PROJECT/.local/mysql-watch.sh" >>"$RUN_DIR/mysql-watch.log" 2>&1 &
+echo "mysql-watch: ON (лог $RUN_DIR/mysql-watch.log)"
