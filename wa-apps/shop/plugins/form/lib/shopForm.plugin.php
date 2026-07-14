@@ -8,6 +8,48 @@
  */
 class shopFormPlugin extends shopPlugin
 {
+    /**
+     * Чекбокс согласия на обработку ПД + блокировка submit до галочки.
+     *
+     * @param array $options name, id, submit (jQuery selector)
+     * @return string
+     */
+    protected static function renderPdConsentField(array $options = array())
+    {
+        $input_name = ifset($options, 'name', 'rule');
+        $input_id = ifset($options, 'id', 'form-license-agreement');
+        $submit_selector = ifset($options, 'submit', 'input[type="submit"]');
+
+        ob_start();
+        ?>
+        <div class="wa-field wa-required">
+            <label class="at-stylize-label">
+                <input id="<?= htmlspecialchars($input_id, ENT_QUOTES, 'UTF-8') ?>"
+                       name="<?= htmlspecialchars($input_name, ENT_QUOTES, 'UTF-8') ?>"
+                       value="Y"
+                       class="agreement at-stylize-input"
+                       type="checkbox"
+                       autocomplete="off"/>
+                <span class="at-stylize-box"></span>
+            </label>
+            <span class="obr wa-required">
+                Нажимая на эту кнопку, я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.
+            </span>
+        </div>
+        <script type="text/javascript">
+            ;(function($) { 'use strict';
+                var $checkbox = $('#<?= htmlspecialchars($input_id, ENT_QUOTES, 'UTF-8') ?>');
+                var $submit = $('<?= htmlspecialchars($submit_selector, ENT_QUOTES, 'UTF-8') ?>');
+                $checkbox.prop('checked', false);
+                $checkbox.on('change', function() {
+                    $submit.prop('disabled', !$checkbox.prop('checked'));
+                }).trigger('change');
+            })(jQuery);
+        </script>
+        <?php
+        return ob_get_clean();
+    }
+
     public static function getFormApp(){
 
         if (!class_exists('shopFormRuCities', false)) {
@@ -314,17 +356,10 @@ class shopFormPlugin extends shopPlugin
 
                     <? elseif($val['type'] == "checkbox"):;?>
 
-                        <div class="wa-field <?=($val['required']) ? "wa-required" : ""?>">
-
-                            <label class="at-stylize-label">
-                                <input id="form-app-license-agreement" name="<?=$val['name']?>" value="Y" class="agreement at-stylize-input" type="checkbox" autocomplete="off"/>
-                                <span class="at-stylize-box"></span>
-                            </label>
-                            <span class="obr wa-required">
-                                Нажимая на эту кнопку, я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.
-                            </span>
-
-                        </div>
+                        <?= self::renderPdConsentField(array(
+                            'id' => 'form-app-license-agreement',
+                            'submit' => 'input[name="send_app"]',
+                        )) ?>
 
                     <? endif;?>
 
@@ -341,16 +376,6 @@ class shopFormPlugin extends shopPlugin
 
         <script type="text/javascript">window.formAppCityData = <?= shopFormRuCities::getJsonForJs() ?>;</script>
         <script type="text/javascript" src="<?= htmlspecialchars($form_static_url) ?>js/form-city.js?v=1.2"></script>
-        <script type="text/javascript">
-            ;(function($) { 'use strict';
-                var $checkbox = $('#form-app-license-agreement');
-                var $submit = $('input[name="send_app"]');
-                $checkbox.prop('checked', false);
-                $checkbox.on('change', function() {
-                    $submit.prop('disabled', !$checkbox.prop('checked'));
-                }).trigger('change');
-            })(jQuery);
-        </script>
 
         <?
 
@@ -365,7 +390,9 @@ class shopFormPlugin extends shopPlugin
         $name = waRequest::post('name');
         $phone = waRequest::post('phone');
         $mess = waRequest::post('messages');
+        $rule = waRequest::post('rule');
         $btn = waRequest::post('send');
+        $send = false;
 
         $plugin = wa('shop')->getPlugin('form');
         $settings = $plugin->getSettings();
@@ -383,6 +410,8 @@ class shopFormPlugin extends shopPlugin
   .wa-form .wa-field .wa-value.wa-submit { margin-top: 0px; }
   .wa-form .wa-field .wa-value input[type="text"], .wa-form .wa-field .wa-value input[type="email"], .wa-form .wa-field .wa-value input[type="password"] { width: 30%; min-width: 200px; margin: 0; }
   .wa-form .wa-field .wa-value textarea { min-width: 300px; height: 70px; }
+  .wa-form .wa-field .at-stylize-label { float: left; }
+  .wa-form .wa-field span.obr { display: block; margin-left: 35px; overflow: hidden; }
   input, textarea { font-size: 1em; color: black; font-family: "Georgia", Times, serif; }
   .wa-form .wa-captcha { padding: 7px 0 10px; }
   .wa-form .wa-captcha p { clear: left; margin: 0; }
@@ -390,8 +419,8 @@ class shopFormPlugin extends shopPlugin
   .wa-captcha .wa-captcha-refresh { color: #AAAAAA; font-size: 0.8em; text-decoration: underline; }
 </style>
 <? if(!empty($btn)){?>
-        <? if(empty($name) OR empty($phone) OR empty($mess)){ ?>
-<p><em style="color: red;" class="wa-error-msg">Заполните все поля</em></p>
+        <? if(empty($name) OR empty($phone) OR empty($mess) OR empty($rule)){ ?>
+<p><em style="color: red;" class="wa-error-msg">Заполните все поля и подтвердите согласие на обработку персональных данных</em></p>
         <? }else{ ?>
             <?
             $to = $email_admin;
@@ -448,9 +477,14 @@ class shopFormPlugin extends shopPlugin
     </div>
   </div>
 
+  <?= self::renderPdConsentField(array(
+      'id' => 'form-simple-license-agreement',
+      'submit' => 'input[name="send"]',
+  )) ?>
+
   <div class="wa-field">
     <div class="wa-value wa-submit">
-      <input type="submit" value="Отправить" name="send">
+      <input type="submit" value="Отправить" name="send" disabled="disabled">
     </div>
   </div>
   </form>
