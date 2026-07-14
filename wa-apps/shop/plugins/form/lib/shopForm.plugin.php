@@ -18,7 +18,6 @@ class shopFormPlugin extends shopPlugin
     {
         $input_name = ifset($options, 'name', 'rule');
         $input_id = ifset($options, 'id', 'form-license-agreement');
-        $submit_selector = ifset($options, 'submit', 'input[type="submit"]');
 
         ob_start();
         ?>
@@ -38,12 +37,17 @@ class shopFormPlugin extends shopPlugin
         </div>
         <script type="text/javascript">
             ;(function($) { 'use strict';
-                var $checkbox = $('#<?= htmlspecialchars($input_id, ENT_QUOTES, 'UTF-8') ?>');
-                var $submit = $('<?= htmlspecialchars($submit_selector, ENT_QUOTES, 'UTF-8') ?>');
-                $checkbox.prop('checked', false);
-                $checkbox.on('change', function() {
-                    $submit.prop('disabled', !$checkbox.prop('checked'));
-                }).trigger('change');
+                $(function() {
+                    var $checkbox = $('#<?= htmlspecialchars($input_id, ENT_QUOTES, 'UTF-8') ?>');
+                    var $submit = $checkbox.closest('form').find('input[type="submit"]');
+                    if (!$checkbox.length || !$submit.length) {
+                        return;
+                    }
+                    $checkbox.prop('checked', false);
+                    $checkbox.on('change', function() {
+                        $submit.prop('disabled', !$checkbox.prop('checked'));
+                    }).trigger('change');
+                });
             })(jQuery);
         </script>
         <?php
@@ -358,7 +362,6 @@ class shopFormPlugin extends shopPlugin
 
                         <?= self::renderPdConsentField(array(
                             'id' => 'form-app-license-agreement',
-                            'submit' => 'input[name="send_app"]',
                         )) ?>
 
                     <? endif;?>
@@ -479,7 +482,6 @@ class shopFormPlugin extends shopPlugin
 
   <?= self::renderPdConsentField(array(
       'id' => 'form-simple-license-agreement',
-      'submit' => 'input[name="send"]',
   )) ?>
 
   <div class="wa-field">
