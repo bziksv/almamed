@@ -575,7 +575,7 @@ class shopSearchproProductsCollection extends shopProductsCollection
 		$joins = $this->getSuggestProductJoins();
 
 		return $this->getProducts(
-			'id,name,url,category_id,currency,price,compare_price,image_id,image_filename,ext',
+			'id,name,url,category_id,currency,price,compare_price,image_id,image_filename,ext,sku_id,sku_count',
 			0,
 			$limit,
 			array(

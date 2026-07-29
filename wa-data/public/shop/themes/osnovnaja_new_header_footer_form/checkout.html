@@ -120,14 +120,475 @@
 
 </div>
 
+<style type="text/css">
+    .checkout .almamed-notice-block {
+        margin: 12px 0 0;
+        max-width: 100%;
+    }
+    .checkout .almamed-notice-block__inner {
+        display: flex;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 1px solid #ffcdd2;
+        border-radius: 6px;
+        background: #fff5f5;
+    }
+    .checkout .almamed-notice-block__icon {
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #f44336;
+        color: #fff;
+        font-weight: 700;
+        line-height: 28px;
+        text-align: center;
+    }
+    .checkout .almamed-notice-block__title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+    .checkout .almamed-notice-block__text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: rgba(0,0,0,.87);
+    }
+    .checkout .almamed-notice-block__text p { margin: 0 0 8px; }
+    .checkout .almamed-notice-block__text p:last-child { margin-bottom: 0; }
+    .checkout .almamed-notice-block__legal { font-size: 12px; color: rgba(0,0,0,.65); }
+    .checkout .almamed-notice-block__text a { color: #006bd8; }
+    .checkout .wa-field-email input.wa-error,
+    .checkout .wa-field-email input.error {
+        border-color: #f44336;
+    }
+    .checkout .checkout-consent-error {
+        color: #f44336;
+        display: block;
+        margin-top: 6px;
+        font-size: 13px;
+    }
+</style>
+
+{* Smarty {strip} eats JS `{if ...}` / `{$...}` — keep config outside literal, logic inside. *}
+<script type="text/javascript">
+    window.almamedCheckout = {
+        checkoutStepUrl: "{$wa->getUrl('/frontend/checkout')|escape:'javascript'}",
+        msgSelectPayment: "[`Please select payment option`]",
+        msgSelectShipping: "[`Please select shipping option`]"
+    };
+</script>
+{literal}
 <script type="text/javascript">
     $(function () {
+        var SUPPORT_PHONE = '8-800-100-37-97';
+        var SUPPORT_EMAIL = 'info@almamed.su';
+        var RU_PROVIDERS = [
+            'mail.ru', 'inbox.ru', 'list.ru', 'bk.ru', 'internet.ru',
+            'yandex.ru', 'ya.ru', 'yandex.com', 'yandex.by', 'yandex.kz', 'yandex.ua',
+            'rambler.ru', 'lenta.ru', 'autorambler.ru', 'ro.ru', 'pochta.ru', 'e-mail.ru', 'qip.ru', 'live.ru'
+        ];
+        var CONSENT_TEXT = 'Нажимая на эту кнопку, я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.';
+        var checkoutCfg = window.almamedCheckout || {};
 
-		$('#checkout-contact-form .wa-form .wa-field p .wa-field-address-soglasie-na-obr > label input').prop("checked", true);
+        function getEmailDomain(email) {
+            email = $.trim(email || '').toLowerCase();
+            var parts = email.split('@');
+            return parts.length > 1 ? parts.pop() : '';
+        }
 
-        var text = "Нажимая на эту кнопку, я даю согласие на обработку своих персональных данных в соответствии с условиями <a target=\"_blank\" href=\"/rules/politics-almamed.jpg\">политики конфиденциальности</a>.";
-        $('#checkout-contact-form .wa-form .wa-field p .wa-field-address-soglasie-na-obr > span').html(text);
+        function isRuProviderDomain(domain) {
+            for (var i = 0; i < RU_PROVIDERS.length; i++) {
+                var provider = RU_PROVIDERS[i];
+                if (domain === provider || domain.slice(-('.' + provider).length) === '.' + provider) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
+        function isAllowedCheckoutEmail(email) {
+            var domain = getEmailDomain(email);
+            if (!domain) {
+                return false;
+            }
+            if (/\.(ru|su)$/i.test(domain)) {
+                return true;
+            }
+            return isRuProviderDomain(domain);
+        }
+
+        function buildEmailPolicyNotice() {
+            return '<div class="almamed-notice-block signup-email-policy-notice">'
+                + '<div class="almamed-notice-block__inner">'
+                + '<div class="almamed-notice-block__icon" aria-hidden="true">!</div>'
+                + '<div class="almamed-notice-block__content">'
+                + '<div class="almamed-notice-block__title">Оформление заказа: требования к e-mail</div>'
+                + '<div class="almamed-notice-block__text">'
+                + '<p>Оформление заказа на сайте доступно только с адресом электронной почты в доменных зонах <strong>.ru</strong> или <strong>.su</strong>, '
+                + 'либо на российском почтовом сервисе (например, '
+                + '<a href="https://360.yandex.ru/mail/" target="_blank" rel="noopener">Яндекс</a> или '
+                + '<a href="https://mail.ru/" target="_blank" rel="noopener">Mail.ru</a>). '
+                + 'Адреса зарубежных почтовых сервисов и доменов других зон не принимаются.</p>'
+                + '<p>Вы можете отправить нам заявку с любого почтового ящика на '
+                + '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a>.</p>'
+                + '<p class="almamed-notice-block__legal">Данная мера применяется в соответствии с Федеральным законом от 31.07.2023 № 406-ФЗ, '
+                + 'а также в связи с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» '
+                + '(в том числе в части локализации баз данных на территории Российской Федерации).</p>'
+                + '<p>Если вы считаете, что это ошибка, позвоните нам: '
+                + '<a href="tel:88001003797">' + SUPPORT_PHONE + '</a>.</p>'
+                + '</div></div></div></div>';
+        }
+
+        function getConsentCheckbox($root) {
+            $root = $root || $(document);
+            return $root.find('.wa-field-address-soglasie-na-obr input[type="checkbox"], input[name*="[soglasie-na-obr]"]').first();
+        }
+
+        function getPrimaryEmailInput($form) {
+            $form = $form || $('form.checkout-form');
+            return $form.find('input[name="customer[email]"]').first();
+        }
+
+        function getEmailInputs($root) {
+            $root = $root || $(document);
+            return $root.find('input[name="customer[email]"], #create-user-div input[name="login"]');
+        }
+
+        function syncCheckoutEmails($form, forceFromCustomer) {
+            $form = $form || $('form.checkout-form');
+            var $customer = $form.find('input[name="customer[email]"]');
+            var $login = $form.find('#create-user-div input[name="login"]');
+            if (!$customer.length || !$login.length || !$('#create-user').is(':checked')) {
+                return;
+            }
+            if ($login.is(':disabled')) {
+                return;
+            }
+            if (forceFromCustomer) {
+                $login.val($customer.val());
+                return;
+            }
+            var active = document.activeElement;
+            if (active === $login[0]) {
+                $customer.val($login.val());
+            } else {
+                $login.val($customer.val());
+            }
+        }
+
+        function scrollToCheckoutField($el) {
+            if (!$el || !$el.length || !$el[0] || typeof $el[0].scrollIntoView !== 'function') {
+                return;
+            }
+            $el[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            try { $el.trigger('focus'); } catch (e) {}
+        }
+
+        function clearAllEmailPolicyNotices() {
+            $('.signup-email-policy-notice, .checkout-email-policy-error').remove();
+            $('input[name="customer[email]"], #create-user-div input[name="login"]').removeClass('wa-error error');
+            $('#checkout-email-policy-server-error').remove();
+        }
+
+        // Always one notice — under the main customer Email field only.
+        function showEmailPolicyNotice($form, opts) {
+            opts = opts || {};
+            $form = $form || $('form.checkout-form');
+            var $email = getPrimaryEmailInput($form);
+            if (!$email.length) {
+                return;
+            }
+            var $wrap = $email.closest('.wa-value');
+            if (!$wrap.length) {
+                $wrap = $email.parent();
+            }
+            var hasNotice = $wrap.find('.signup-email-policy-notice').length > 0;
+            if (!hasNotice) {
+                clearAllEmailPolicyNotices();
+                $wrap.append(buildEmailPolicyNotice());
+            }
+            $email.addClass('wa-error error');
+            if (opts.scroll) {
+                scrollToCheckoutField($email);
+            }
+        }
+
+        function looksLikeCompleteEmail(email) {
+            email = $.trim(email || '');
+            var at = email.lastIndexOf('@');
+            if (at < 1 || at === email.length - 1) {
+                return false;
+            }
+            var domain = email.slice(at + 1).toLowerCase();
+            var dot = domain.lastIndexOf('.');
+            if (dot < 1 || dot === domain.length - 1) {
+                return false;
+            }
+            var tld = domain.slice(dot + 1);
+            if (tld.length < 2) {
+                return false;
+            }
+            if (domain.indexOf('..') !== -1) {
+                return false;
+            }
+            if (domain.charAt(0) === '.' || domain.charAt(domain.length - 1) === '.') {
+                return false;
+            }
+            return /^[a-z0-9.-]+$/i.test(domain);
+        }
+
+        function isConsentChecked($checkbox) {
+            if (!$checkbox || !$checkbox.length) {
+                return true;
+            }
+            if ($checkbox.prop('checked') || $checkbox.is(':checked')) {
+                return true;
+            }
+            if ($checkbox.next('.at-stylize-box').hasClass('checked')) {
+                return true;
+            }
+            if ($checkbox.closest('label').find('.at-stylize-box').hasClass('checked')) {
+                return true;
+            }
+            return false;
+        }
+
+        function getAuthoritativeCheckoutEmail($form) {
+            syncCheckoutEmails($form, true);
+            return $.trim(getPrimaryEmailInput($form).val() || '');
+        }
+
+        function refreshEmailPolicyForInput($input) {
+            if (!$input || !$input.length) {
+                return;
+            }
+            var $form = $input.closest('form');
+            if (!$form.length) {
+                $form = $('form.checkout-form');
+            }
+            if ($input.is('input[name="customer[email]"]')) {
+                syncCheckoutEmails($form, true);
+            } else {
+                syncCheckoutEmails($form, false);
+            }
+
+            var email = getAuthoritativeCheckoutEmail($form);
+
+            // Immediately after a complete foreign email — show notice under Email.
+            // Clear as soon as empty / incomplete / became .ru/.su.
+            if (email && looksLikeCompleteEmail(email) && !isAllowedCheckoutEmail(email)) {
+                showEmailPolicyNotice($form, { scroll: false });
+            } else {
+                clearAllEmailPolicyNotices();
+            }
+        }
+
+        function validateCheckoutEmails($form) {
+            var email = getAuthoritativeCheckoutEmail($form);
+            if (email && looksLikeCompleteEmail(email) && !isAllowedCheckoutEmail(email)) {
+                showEmailPolicyNotice($form, { scroll: true });
+                return false;
+            }
+            clearAllEmailPolicyNotices();
+            return true;
+        }
+
+        // First problem in DOM order → scroll there. Email policy notice only under Email.
+        function validateContactinfoBeforeSubmit($form) {
+            syncCheckoutEmails($form, true);
+            clearAllEmailPolicyNotices();
+            $form.find('.checkout-consent-error, .checkout-address-autofill-error').remove();
+            getAddressInputs($form).removeClass('error wa-error');
+
+            var $first = null;
+            var needEmailNotice = false;
+
+            $form.find(':input:visible').not('[type=hidden],[disabled],button,[type=submit],[type=button]').each(function () {
+                var $el = $(this);
+                var name = $el.attr('name') || '';
+                var val = $.trim($el.val() || '');
+                var $field = $el.closest('.wa-field');
+                var required = $field.hasClass('wa-required') || !!$el.prop('required');
+
+                if ($el.is(':checkbox')) {
+                    if (name.indexOf('soglasie-na-obr') !== -1 && !isConsentChecked($el)) {
+                        $first = $el;
+                        return false;
+                    }
+                    return;
+                }
+
+                if (name === 'customer[email]') {
+                    if (required && !val) {
+                        $first = $el;
+                        return false;
+                    }
+                    if (val && looksLikeCompleteEmail(val) && !isAllowedCheckoutEmail(val)) {
+                        $first = $el;
+                        needEmailNotice = true;
+                        return false;
+                    }
+                    return;
+                }
+
+                if (name === 'login' && $('#create-user').is(':checked')) {
+                    // login mirrors customer email — skip duplicate policy check
+                    return;
+                }
+
+                if (name === 'password' && $('#create-user').is(':checked') && !val) {
+                    $first = $el;
+                    return false;
+                }
+
+                if ((name.indexOf('[region]') !== -1 || name.indexOf('[city]') !== -1 || name.indexOf('[street]') !== -1) && val.indexOf('@') !== -1) {
+                    $el.val('').addClass('error wa-error');
+                    $first = $el;
+                    return false;
+                }
+
+                if (required && !val && name !== 'password') {
+                    $first = $el;
+                    return false;
+                }
+            });
+
+            if (needEmailNotice) {
+                showEmailPolicyNotice($form, { scroll: true });
+                return false;
+            }
+
+            if ($first) {
+                if (($first.attr('name') || '').indexOf('soglasie-na-obr') !== -1) {
+                    $first.prop('checked', false);
+                    var $consentWrap = $first.closest('.wa-field-address-soglasie-na-obr');
+                    if (!$consentWrap.length) {
+                        $consentWrap = $first.closest('.wa-value');
+                    }
+                    var $after = $first.closest('label');
+                    if ($after.next('span').length) {
+                        $after = $after.next('span');
+                    }
+                    $('<em class="checkout-consent-error errormsg">Подтвердите согласие на обработку персональных данных</em>').insertAfter($after);
+                } else if (($first.attr('name') || '').indexOf('[region]') !== -1
+                    || ($first.attr('name') || '').indexOf('[city]') !== -1
+                    || ($first.attr('name') || '').indexOf('[street]') !== -1) {
+                    var $wrap = $first.closest('.wa-value');
+                    if ($wrap.length && !$wrap.find('.checkout-address-autofill-error').length) {
+                        $wrap.append('<em class="errormsg checkout-address-autofill-error">В поля адреса попал e-mail. Укажите регион, город и улицу.</em>');
+                    }
+                } else {
+                    $first.addClass('error wa-error');
+                }
+                scrollToCheckoutField($first);
+                return false;
+            }
+
+            var $consentOk = getConsentCheckbox($form);
+            if ($consentOk.length && isConsentChecked($consentOk)) {
+                $consentOk.prop('checked', true);
+            }
+            return true;
+        }
+
+        function getAddressInputs($root) {
+            $root = $root || $(document);
+            return $root.find(
+                'input[name="customer[address.shipping][region]"],' +
+                'input[name="customer[address.shipping][city]"],' +
+                'input[name="customer[address.shipping][street]"],' +
+                'input[name="customer[address][region]"],' +
+                'input[name="customer[address][city]"],' +
+                'input[name="customer[address][street]"]'
+            );
+        }
+
+        function applyCheckoutAutocomplete($root) {
+            $root = $root || $(document);
+            $root.find('input[name="customer[email]"]').attr({ autocomplete: 'email', inputmode: 'email' });
+            $root.find('#create-user-div input[name="login"]').attr({ autocomplete: 'username', inputmode: 'email' });
+            $root.find('#create-user-div input[name="password"]').attr('autocomplete', 'new-password');
+            $root.find('input[name="customer[address.shipping][region]"], input[name="customer[address][region]"]').attr('autocomplete', 'address-level1');
+            $root.find('input[name="customer[address.shipping][city]"], input[name="customer[address][city]"]').attr('autocomplete', 'address-level2');
+            $root.find('input[name="customer[address.shipping][street]"], input[name="customer[address][street]"]').attr('autocomplete', 'street-address');
+            $root.find('input[name="customer[firstname]"]').attr('autocomplete', 'given-name');
+            $root.find('input[name="customer[lastname]"]').attr('autocomplete', 'family-name');
+            $root.find('input[name="customer[phone]"]').attr('autocomplete', 'tel');
+        }
+
+        function sanitizeCheckoutAddress($form) {
+            var $bad = $();
+            getAddressInputs($form).each(function () {
+                var $el = $(this);
+                var val = $.trim($el.val() || '');
+                if (val.indexOf('@') !== -1) {
+                    $el.val('').addClass('error wa-error');
+                    $bad = $bad.add($el);
+                } else {
+                    $el.removeClass('error wa-error');
+                }
+            });
+            $form.find('.checkout-address-autofill-error').remove();
+            if ($bad.length) {
+                var $first = $bad.first();
+                var $wrap = $first.closest('.wa-value');
+                if (!$wrap.length) {
+                    $wrap = $first.parent();
+                }
+                $wrap.append('<em class="errormsg checkout-address-autofill-error">В поля адреса попал e-mail (часто из автозаполнения браузера). Укажите регион, город и улицу.</em>');
+                scrollToCheckoutField($first);
+                return false;
+            }
+            return true;
+        }
+
+        function initConsentAndEmail($root) {
+            $root = $root || $(document);
+            applyCheckoutAutocomplete($root);
+            var $checkbox = getConsentCheckbox($root);
+            if ($checkbox.length) {
+                var $span = $checkbox.closest('label').siblings('span').first();
+                if (!$span.length) {
+                    $span = $checkbox.closest('.wa-field-address-soglasie-na-obr').find('span').not('.at-stylize-box').first();
+                }
+                if ($span.length && $span.text().indexOf('политик') === -1) {
+                    $span.html(CONSENT_TEXT);
+                }
+                $checkbox.off('change.checkoutConsent').on('change.checkoutConsent', function() {
+                    $(this).closest('.wa-field-address-soglasie-na-obr, .wa-value, label')
+                        .find('.checkout-consent-error').remove();
+                });
+            }
+
+            getEmailInputs($root)
+                .off('blur.checkoutEmailPolicy change.checkoutEmailPolicy input.checkoutEmailPolicy keyup.checkoutEmailPolicy paste.checkoutEmailPolicy')
+                .on('input.checkoutEmailPolicy keyup.checkoutEmailPolicy paste.checkoutEmailPolicy', function() {
+                    var $el = $(this);
+                    setTimeout(function () {
+                        refreshEmailPolicyForInput($el);
+                    }, 0);
+                })
+                .on('change.checkoutEmailPolicy blur.checkoutEmailPolicy', function() {
+                    refreshEmailPolicyForInput($(this));
+                });
+
+            // Server returned policy error → show once under main Email
+            if ($('#checkout-email-policy-server-error').length) {
+                var $form = $('form.checkout-form').has('.checkout-content[data-step-id="contactinfo"]').first();
+                if (!$form.length) {
+                    $form = $('form.checkout-form').first();
+                }
+                showEmailPolicyNotice($form, { scroll: true });
+            } else {
+                // Already filled (autofill / back from errors) — validate immediately
+                getEmailInputs($root).each(function () {
+                    refreshEmailPolicyForInput($(this));
+                });
+            }
+        }
+
+        initConsentAndEmail($(document));
 
         $('input[name="customer[phone]"]').on('keydown', function(e){
             if(e.key.length == 1 && e.key.match(/[^0-9'".]/)){
@@ -135,8 +596,13 @@
             };
         });
 
+        function afterStepContentLoaded($scope) {
+            $('input[type=checkbox],input[type=radio]').stylizeInput();
+            initConsentAndEmail($scope && $scope.length ? $scope : $(document));
+        }
+
         function checkoutStep(step_id) {
-            $.get("{$wa->getUrl('/frontend/checkout')}" + step_id + '/', function (response) {
+            $.get((checkoutCfg.checkoutStepUrl || '/checkout/') + step_id + '/', function (response) {
                 var current = $(".checkout-step .checkout-step-content:visible");
                 var current_step_id =  current.find(".checkout-content").data('step-id');
                 if (current_step_id != step_id) {
@@ -158,7 +624,7 @@
                 if ($(".checkout-step.step-" + step_id + ' .auth').length) {
                     $("input[name='user_type']").change();
                 }
-                $('input[type=checkbox],input[type=radio]').stylizeInput();
+                afterStepContentLoaded($(".checkout-step.step-" + step_id));
             });
         }
         $(".checkout h2 a").click(function () {
@@ -178,11 +644,20 @@
         $("form.checkout-form").on('submit', function () {
             var f = $(this);
             var step = f.find('.checkout-content').data('step-id');
+
+            if (step == 'contactinfo') {
+                if (!validateContactinfoBeforeSubmit(f)) {
+                    return false;
+                }
+            }
+
             if (step == 'payment' || step == 'shipping') {
                 if (!f.find('input[name="' + step + '_id"]:checked').not(':disabled').length) {
                     if (!f.find('em.errormsg').length) {
-                    $('<em class="errormsg inline">' + (step == 'payment' ? '[`Please select payment option`]' :
-                            '[`Please select shipping option`]') + '</em>').insertAfter(f.find('input:submit:last'));
+                    $('<em class="errormsg inline">' + (step == 'payment'
+                            ? (checkoutCfg.msgSelectPayment || 'Выберите вариант оплаты')
+                            : (checkoutCfg.msgSelectShipping || 'Выберите вариант доставки'))
+                        + '</em>').insertAfter(f.find('input:submit:last'));
                     }
                     return false;
                 } else {
@@ -190,15 +665,36 @@
                 }
             }
             if (f.hasClass('last') || ($("#login-form").length && !$("#login-form input:submit").attr('disabled'))) {
+                // Final step: native submit (server redirects to /checkout/success/)
+                syncCheckoutEmails(f, true);
+                clearAllEmailPolicyNotices();
                 $('<span class="loading"> <i class="icon24 loading"></i></span>').insertBefore(f.find('input:submit:last').attr('disabled', 'disabled'));
                 return true;
             }
             $('<span class="loading"> <i class="icon24 loading"></i></span>').insertAfter(f.find('input:submit:last').attr('disabled', 'disabled'));
-            $.post(f.attr('action') || window.location, f.serialize(), function (response) {
+            $.post(f.attr('action') || window.location, f.serialize(), function (response, textStatus, xhr) {
+                var finalUrl = (xhr && xhr.responseURL) ? xhr.responseURL : '';
+                if (finalUrl && finalUrl.indexOf('/checkout/success') !== -1) {
+                    window.location.href = finalUrl;
+                    return;
+                }
+                if (typeof response === 'string' && response.indexOf('checkout-result success') !== -1) {
+                    window.location.href = '/checkout/success/';
+                    return;
+                }
                 var content = $(response);
+                if (content.hasClass('checkout-result') || content.find('.checkout-result.success').length) {
+                    window.location.href = '/checkout/success/';
+                    return;
+                }
                 var step_id = content.data('step-id');
                 if (!step_id) {
                     step_id = content.filter('.checkout-content').data('step-id');
+                }
+                if (!step_id) {
+                    // Unexpected empty/redirect response — reload checkout
+                    window.location.href = f.attr('action') || window.location.href;
+                    return;
                 }
                 var current = $(".checkout-step .checkout-step-content:visible");
                 var current_step_id =  current.find(".checkout-content").data('step-id');
@@ -224,7 +720,7 @@
                 $(".checkout-step.step-" + step_id).prev('.checkout-step').each(function () {
                     $(this).find('h2').removeClass('upcoming');
                 });
-                $('input[type=checkbox],input[type=radio]').stylizeInput();
+                afterStepContentLoaded($(".checkout-step.step-" + step_id));
             }).always(function () {
                 f.find('span.loading').remove();
                 f.find('input:submit:last').removeAttr('disabled');
@@ -233,5 +729,6 @@
         });
     });
 </script>
+{/literal}
 
 {/strip}

@@ -12,6 +12,13 @@ class shopCheckoutContactinfo extends shopCheckout
      */
     protected $form;
 
+    protected function loadEmailPolicy()
+    {
+        if (!class_exists('shopSignupEmailPolicy', false)) {
+            require_once wa()->getAppPath('lib/classes/shopSignupEmailPolicy.class.php', 'shop');
+        }
+    }
+
     public function display()
     {
         if (!$this->form) {
@@ -85,6 +92,26 @@ class shopCheckoutContactinfo extends shopCheckout
                 $errors[] = _w('Oops! For some reason your contact information was lost during the checkout. Please return to the contact information checkout step to finalize your order.');
             }
         }
+
+        $this->loadEmailPolicy();
+        $email = '';
+        if (!empty($contact_info['email'])) {
+            $raw = $contact_info['email'];
+            if (is_array($raw)) {
+                $raw = reset($raw);
+                if (is_array($raw) && isset($raw['value'])) {
+                    $raw = $raw['value'];
+                }
+            }
+            $email = (string) $raw;
+        }
+        if ($email === '' && $contact) {
+            $email = (string) $contact->get('email', 'default');
+        }
+        if ($email !== '' && !shopSignupEmailPolicy::isAllowed($email)) {
+            $errors[] = 'Оформление заказа доступно только с e-mail в зоне .ru/.su или на российском почтовом сервисе. Вернитесь к шагу контактных данных.';
+        }
+
         return $errors;
     }
 
@@ -180,6 +207,36 @@ class shopCheckoutContactinfo extends shopCheckout
             }
         }
 
+        $this->loadEmailPolicy();
+        $email_to_check = '';
+        $posted_login = waRequest::post('create_user') ? trim((string) waRequest::post('login')) : '';
+        $posted_customer_email = '';
+        if (!empty($data['email'])) {
+            $posted_customer_email = is_array($data['email']) ? trim((string) reset($data['email'])) : trim((string) $data['email']);
+        }
+        if ($posted_login !== '') {
+            // Prefer customer email when it is allowed and login still has an old foreign domain
+            if ($posted_customer_email !== ''
+                && shopSignupEmailPolicy::isAllowed($posted_customer_email)
+                && !shopSignupEmailPolicy::isAllowed($posted_login)
+            ) {
+                $email_to_check = $posted_customer_email;
+                $_POST['login'] = $posted_customer_email;
+            } else {
+                $email_to_check = $posted_login;
+            }
+        } elseif ($posted_customer_email !== '') {
+            $email_to_check = $posted_customer_email;
+        } elseif ($contact) {
+            $email_to_check = (string) $contact->get('email', 'default');
+        }
+        if ($email_to_check !== '' && !shopSignupEmailPolicy::isAllowed($email_to_check)) {
+            $this->assign('errors', array(
+                'email' => shopSignupEmailPolicy::getErrorMessage($email_to_check, 'checkout'),
+            ));
+            return false;
+        }
+
         if ($shipping = $this->getSessionData('shipping') && !waRequest::post('ignore_shipping_error')) {
             $shipping_step = new shopCheckoutShipping();
             $rate_id = isset($shipping['rate_id']) ? $shipping['rate_id'] : null;
@@ -206,28 +263,42 @@ class shopCheckoutContactinfo extends shopCheckout
         } else {
             $errors = array();
             if (waRequest::post('create_user')) {
-                $login = waRequest::post('login');
+                $login = trim((string) waRequest::post('login'));
+                $customer_email = '';
+                if (!empty($data['email'])) {
+                    $customer_email = is_array($data['email']) ? trim((string) reset($data['email'])) : trim((string) $data['email']);
+                }
+                if ($customer_email !== ''
+                    && shopSignupEmailPolicy::isAllowed($customer_email)
+                    && ($login === '' || !shopSignupEmailPolicy::isAllowed($login))
+                ) {
+                    $login = $customer_email;
+                }
                 if (!$login) {
                     $errors['email'][] = _ws('Required');
                 }
-                if (!waRequest::post('password')) {
-                    $errors['password'] = _ws('Required');
-                }
                 $email_validator = new waEmailValidator();
-                if (!$email_validator->isValid($login)) {
+                if (!$errors && !$email_validator->isValid($login)) {
                     $errors['email'] = $email_validator->getErrors();
                 }
+                if (!$errors && !shopSignupEmailPolicy::isAllowed($login)) {
+                    $errors['email'] = shopSignupEmailPolicy::getErrorMessage($login, 'checkout');
+                }
+                // If this email already has an account, do not block the order —
+                // continue as guest (registration checkbox is ignored).
+                $already_registered = false;
                 if (!$errors) {
                     $contact_model = new waContactModel();
-                    if ($contact_model->getByEmail($login, true)) {
-                        $errors['email'][] = _w('Email already registered');
-                    }
+                    $already_registered = (bool) $contact_model->getByEmail($login, true);
                 }
-                if (!$errors) {
+                if (!$errors && !$already_registered && !waRequest::post('password')) {
+                    $errors['password'] = _ws('Required');
+                }
+                if (!$errors && !$already_registered) {
                     $contact->set('email', $login);
                     $contact->set('password', waRequest::post('password'));
-                } else {
-                    if (isset($errors['email'])) {
+                } elseif ($errors) {
+                    if (isset($errors['email']) && is_array($errors['email'])) {
                         $errors['email'] = implode(', ', $errors['email']);
                     }
                     $this->assign('errors', $errors);

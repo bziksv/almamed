@@ -157,13 +157,37 @@ class shopSearchproV2SuggestPresenter
 			'href' => $this->getProductHref($entity),
 		);
 
+		$product_id = (int) ifset($entity, 'id', 0);
+		if ($product_id > 0) {
+			$item['id'] = $product_id;
+		}
+		$sku_id = (int) ifset($entity, 'sku_id', 0);
+		if ($sku_id > 0) {
+			$item['sku_id'] = $sku_id;
+		}
+		$sku_count = (int) ifset($entity, 'sku_count', 1);
+		$item['sku_count'] = $sku_count > 0 ? $sku_count : 1;
+
+		$category_id = (int) ifset($entity, 'category_id', 0);
+		if ($category_id > 0) {
+			$item['category_id'] = $category_id;
+		}
+		$category_full_url = ifset($entity, 'category_full_url', ifset($entity, 'category_url', ''));
+		if ($category_full_url !== '') {
+			$item['category_full_url'] = $category_full_url;
+		}
+		$category_name = ifset($entity, 'category_name', '');
+		if ($category_name !== '') {
+			$item['subname'] = $category_name;
+		}
+
 		if ($show_image && !empty($entity['image_id'])) {
 			$item['image'] = shopImage::getUrl(array(
-				'product_id' => (int) ifset($entity, 'id', 0),
+				'product_id' => $product_id,
 				'id' => (int) $entity['image_id'],
 				'filename' => ifset($entity, 'image_filename', ''),
 				'ext' => ifset($entity, 'ext', 'jpg'),
-			), '48x48');
+			), '120x120');
 		}
 
 		if ($show_price) {
@@ -180,6 +204,15 @@ class shopSearchproV2SuggestPresenter
 			}
 		}
 
+		// Quick add from dropdown (single SKU). Multi-SKU opens product cart dialog.
+		if ($product_id > 0 && empty($item['price_on_request'])) {
+			$item['can_add_to_cart'] = true;
+			if ($item['sku_count'] > 1 && !empty($item['href'])) {
+				$sep = (strpos($item['href'], '?') !== false) ? '&' : '?';
+				$item['cart_dialog_url'] = $item['href'] . $sep . 'cart=1';
+			}
+		}
+
 		return $item;
 	}
 
@@ -190,12 +223,23 @@ class shopSearchproV2SuggestPresenter
 			return null;
 		}
 
+		$encoded_query = shopSearchproUtil::encodeQueryUrl($query);
 		$category_url = ifset($entity, 'category_results_url', '');
 		if ($category_url === '') {
-			$category_url = $this->env->getRouteUrl('shop/frontend/category', array(
-				'category_url' => ifset($entity, 'url', ifset($entity, 'full_url', '')),
-			));
+			$results_route_url = $this->env->getRouteUrl('shop/frontend/page/', array('plugin' => 'searchpro'));
+			$entity_id = (int) ifset($entity, 'id', 0);
+			if ($entity_id > 0 && $encoded_query !== '') {
+				$category_url = $results_route_url . '/' . $entity_id . '/' . $encoded_query . '/';
+			} else {
+				$category_url = $this->env->getRouteUrl('shop/frontend/category', array(
+					'category_url' => ifset($entity, 'url', ifset($entity, 'full_url', '')),
+				));
+			}
 		}
+
+		$catalog_url = $this->env->getRouteUrl('shop/frontend/category', array(
+			'category_url' => ifset($entity, 'url', ifset($entity, 'full_url', '')),
+		));
 
 		$item = array(
 			'type' => 'categories',
@@ -203,7 +247,17 @@ class shopSearchproV2SuggestPresenter
 			'action' => 'goto:data-link',
 			'href' => $category_url,
 			'data_link' => $category_url,
+			'catalog_url' => $catalog_url,
 		);
+
+		$entity_id = (int) ifset($entity, 'id', 0);
+		if ($entity_id > 0) {
+			$item['id'] = $entity_id;
+		}
+		$full_url = ifset($entity, 'full_url', ifset($entity, 'url', ''));
+		if ($full_url !== '') {
+			$item['full_url'] = $full_url;
+		}
 
 		if ((bool) $this->settings->get('dropdown_products_image_status') && !empty($entity['image_url'])) {
 			$item['image'] = $entity['image_url'];
@@ -212,6 +266,7 @@ class shopSearchproV2SuggestPresenter
 		$count = (int) ifset($entity, 'count', 0);
 		if ($count > 0) {
 			$item['count_label'] = $count . ' шт.';
+			$item['count'] = $count;
 		}
 
 		if (!empty($entity['existing_name']) && !empty($entity['parent_id'])) {
@@ -261,12 +316,7 @@ class shopSearchproV2SuggestPresenter
 			$item['data_link'] = $url;
 		}
 
-		if (!empty($entity['category_id'])) {
-			$subname = $this->getCategoryName($entity['category_id'], $entity);
-			if ($subname !== null) {
-				$item['subname'] = $subname;
-			}
-		}
+		// Keep chips as query text only — category name as subname looks broken in the dropdown.
 
 		return $item;
 	}

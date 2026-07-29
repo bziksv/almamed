@@ -35,43 +35,20 @@ class shopSearchproV2PageService
 		$category_id = (int) $category_id;
 		$products = $this->findProducts($query, $category_id);
 
-		if ($query !== '') {
-			$typo_fixed = $this->tryTypoCandidates($query, $category_id, $products);
-			if ($typo_fixed !== null) {
-				return $typo_fixed;
-			}
-		}
-
-		if (!$products->isEmpty() || $query === '') {
+		if ($query === '') {
 			return array($query, $products);
 		}
 
-		foreach (shopSearchproV2KeyboardLayoutHelper::candidates($query) as $corrected_query) {
-			if ($corrected_query === $query) {
-				continue;
-			}
-			$this->finder = null;
-			$retry = $this->findProducts($corrected_query, $category_id);
-			if (!$retry->isEmpty()) {
-				return array($corrected_query, $retry);
-			}
+		$initial = array_values($products->getInitial());
+		$strong = !$products->isEmpty() && !shopSearchproV2TypoHelper::isWeakMatch($query, $initial);
+		if ($strong) {
+			return array($query, $products);
 		}
 
-		return array($query, $products);
-	}
+		$best_query = $query;
+		$best = $products;
 
-	/**
-	 * @param shopSearchproResult|null $current
-	 * @return array{0: string, 1: shopSearchproResult}|null
-	 */
-	private function tryTypoCandidates($query, $category_id, shopSearchproResult $current = null)
-	{
-		$initial = $current ? array_values($current->getInitial()) : array();
-		if ($current && !$current->isEmpty() && !shopSearchproV2TypoHelper::isWeakMatch($query, $initial)) {
-			return null;
-		}
-
-		foreach (shopSearchproV2TypoHelper::candidates($query, $this->settings) as $corrected_query) {
+		foreach ($this->buildFallbackQueries($query) as $corrected_query) {
 			$this->finder = null;
 			$retry = $this->findProducts($corrected_query, $category_id);
 			if ($retry->isEmpty()) {
@@ -80,9 +57,51 @@ class shopSearchproV2PageService
 			if (!shopSearchproV2TypoHelper::isWeakMatch($corrected_query, array_values($retry->getInitial()))) {
 				return array($corrected_query, $retry);
 			}
+			if ($best->isEmpty()) {
+				$best_query = $corrected_query;
+				$best = $retry;
+			}
 		}
 
-		return null;
+		return array($best_query, $best);
+	}
+
+	/**
+	 * @return string[]
+	 */
+	private function buildFallbackQueries($query)
+	{
+		$query = trim((string) $query);
+		$out = array();
+		$seen = array($query => true);
+
+		$push = function ($candidate) use (&$out, &$seen) {
+			$candidate = trim((string) $candidate);
+			if ($candidate === '' || isset($seen[$candidate])) {
+				return;
+			}
+			$seen[$candidate] = true;
+			$out[] = $candidate;
+		};
+
+		$typo = shopSearchproV2TypoHelper::candidates($query, $this->settings);
+		$layout = shopSearchproV2KeyboardLayoutHelper::candidates($query);
+
+		foreach (array_slice($typo, 0, 20) as $ty) {
+			$push($ty);
+			foreach (array_slice(shopSearchproV2KeyboardLayoutHelper::candidates($ty), 0, 3) as $c) {
+				$push($c);
+			}
+		}
+
+		foreach (array_slice($layout, 0, 6) as $kb) {
+			$push($kb);
+			foreach (array_slice(shopSearchproV2TypoHelper::candidates($kb, $this->settings), 0, 8) as $c) {
+				$push($c);
+			}
+		}
+
+		return array_slice($out, 0, 28);
 	}
 
 	public function findProducts($query, $category_id = 0)

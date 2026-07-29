@@ -24,6 +24,18 @@
         box-sizing: border-box;
     }
 
+    /* Chrome/Safari: native type=search clear + searchpro clear-button → два крестика */
+    .searchpro__field-input::-webkit-search-cancel-button,
+    .searchpro__field-input::-webkit-search-decoration {
+        -webkit-appearance: none;
+        appearance: none;
+        display: none;
+    }
+    .searchpro__field-input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
     .content-search-bar .search-pro,
     .content-search-bar .searchpro__field,
     .content-search-bar .js-searchpro__field-wrapper {

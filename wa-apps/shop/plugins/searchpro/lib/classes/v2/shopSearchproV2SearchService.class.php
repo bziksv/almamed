@@ -27,24 +27,28 @@ class shopSearchproV2SearchService
 	{
 		$result = $this->suggestOnce($query, $category_id);
 
-		if ($query !== '') {
-			$typo_fixed = $this->tryTypoCandidates($query, $category_id, $result);
-			if ($typo_fixed !== null) {
-				return $typo_fixed;
-			}
-		}
-
-		if ($result->count > 0 || $query === '') {
+		if ($query === '') {
 			return $result;
 		}
 
-		foreach (shopSearchproV2KeyboardLayoutHelper::candidates($query) as $corrected_query) {
-			if ($corrected_query === $query) {
+		$products = ifset($result->results, 'products', array());
+		$strong = $result->count > 0 && !shopSearchproV2TypoHelper::isWeakMatch($query, $products);
+		if ($strong) {
+			return $result;
+		}
+
+		foreach ($this->buildFallbackQueries($query) as $corrected_query) {
+			$retry = $this->suggestOnce($corrected_query, $category_id);
+			if ($retry->count <= 0) {
 				continue;
 			}
-			$retry = $this->suggestOnce($corrected_query, $category_id);
-			if ($retry->count > 0) {
+			$retry_products = ifset($retry->results, 'products', array());
+			if (!shopSearchproV2TypoHelper::isWeakMatch($corrected_query, $retry_products)) {
 				return $retry;
+			}
+			// Keep first non-empty weak hit only if original was empty.
+			if ($result->count <= 0) {
+				$result = $retry;
 			}
 		}
 
@@ -52,27 +56,44 @@ class shopSearchproV2SearchService
 	}
 
 	/**
-	 * @param shopSearchproV2SuggestResult|null $current
-	 * @return shopSearchproV2SuggestResult|null
+	 * Typo + keyboard-layout (+ combos). Bounded list for suggest latency.
+	 *
+	 * @return string[]
 	 */
-	private function tryTypoCandidates($query, $category_id, shopSearchproV2SuggestResult $current = null)
+	private function buildFallbackQueries($query)
 	{
-		$products = $current ? ifset($current->results, 'products', array()) : array();
-		if ($current && !shopSearchproV2TypoHelper::isWeakMatch($query, $products)) {
-			return null;
+		$query = trim((string) $query);
+		$out = array();
+		$seen = array($query => true);
+
+		$push = function ($candidate) use (&$out, &$seen) {
+			$candidate = trim((string) $candidate);
+			if ($candidate === '' || isset($seen[$candidate])) {
+				return;
+			}
+			$seen[$candidate] = true;
+			$out[] = $candidate;
+		};
+
+		$typo = shopSearchproV2TypoHelper::candidates($query, $this->settings);
+		$layout = shopSearchproV2KeyboardLayoutHelper::candidates($query);
+
+		// Typo first, and right after each — layout flip («отоскоп лфцу» → «отоскоп kawe»).
+		foreach (array_slice($typo, 0, 20) as $ty) {
+			$push($ty);
+			foreach (array_slice(shopSearchproV2KeyboardLayoutHelper::candidates($ty), 0, 3) as $c) {
+				$push($c);
+			}
 		}
 
-		foreach (shopSearchproV2TypoHelper::candidates($query, $this->settings) as $corrected_query) {
-			$retry = $this->suggestOnce($corrected_query, $category_id);
-			if ($retry->count <= 0) {
-				continue;
-			}
-			if (!shopSearchproV2TypoHelper::isWeakMatch($corrected_query, ifset($retry->results, 'products', array()))) {
-				return $retry;
+		foreach (array_slice($layout, 0, 6) as $kb) {
+			$push($kb);
+			foreach (array_slice(shopSearchproV2TypoHelper::candidates($kb, $this->settings), 0, 8) as $c) {
+				$push($c);
 			}
 		}
 
-		return null;
+		return array_slice($out, 0, 28);
 	}
 
 	private function suggestOnce($query, $category_id = 0)
@@ -222,6 +243,8 @@ class shopSearchproV2SearchService
 			'price' => true,
 			'compare_price' => true,
 			'currency' => true,
+			'sku_id' => true,
+			'sku_count' => true,
 			'sku_price' => true,
 			'sku_compare_price' => true,
 			'image_id' => true,

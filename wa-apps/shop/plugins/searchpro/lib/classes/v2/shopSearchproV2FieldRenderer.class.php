@@ -84,6 +84,7 @@ class shopSearchproV2FieldRenderer
 			'dropdown_url' => $suggest_url,
 			'suggest_url' => $suggest_url,
 			'results_url' => $this->env->getRouteUrl('shop/frontend/page', array('plugin' => 'searchpro'), true),
+			'cart_add_url' => $this->env->getRouteUrl('shop/frontendCart/add'),
 			'version' => $plugin->getVersion(),
 		);
 	}

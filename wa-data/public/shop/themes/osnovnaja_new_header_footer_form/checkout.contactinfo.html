@@ -73,10 +73,9 @@
                         [`Email`]
                     </div>
                     <div class="wa-value">
-                        {if !empty($errors.email)}<p>{/if}
-                        <input {if !empty($errors.email)}class="error"{/if} name="login" type="text" value="{$wa->post('login', $customer->get('email', 'default'))|escape}">
-                        {if !empty($errors.email)}</p>
-                        <em class="errormsg">{$errors.email}</em>
+                        <input {if !empty($errors.email) && !$errors.email|strstr:'signup-email-policy-notice'}class="error"{/if} name="login" type="text" value="{$wa->post('login', $customer->get('email', 'default'))|escape}">
+                        {if !empty($errors.email) && !$errors.email|strstr:'signup-email-policy-notice'}
+                            <em class="errormsg">{$errors.email}</em>
                         {/if}
                     </div>
                 </div>
@@ -93,15 +92,23 @@
             <script type="text/javascript">
                 $(function () {
                     var e = $('input[name="customer[email]"]');
+                    var sync = function (fromLogin) {
+                        if (!$("#create-user-div").is(':visible')) {
+                            return;
+                        }
+                        var $login = $('#create-user-div input[name="login"]');
+                        if (!$login.length || $login.is(':disabled')) {
+                            return;
+                        }
+                        if (fromLogin) {
+                            e.val($login.val());
+                        } else if (e.length) {
+                            $login.val(e.val());
+                        }
+                    };
                     if (e.length) {
-                        e.on('keyup', function () {
-                           if ($("#create-user-div").is(':visible')) {
-                               $('#create-user-div input[name="login"]').val($(this).val());
-                           }
-                        });
-                        $('#create-user-div input[name="login"]').on('keyup', function () {
-                            e.val($(this).val());
-                        })
+                        e.on('input keyup change', function () { sync(false); });
+                        $('#create-user-div input[name="login"]').on('input keyup change', function () { sync(true); });
                     }
                     $("#create-user").change(function () {
                         if ($(this).is(':checked')) {
@@ -122,6 +129,11 @@
             {/if}
         </div>
     </div>
+
+    {* One-shot flag: JS shows a single policy notice under customer[email] *}
+    {if !empty($errors.email) && $errors.email|strstr:'signup-email-policy-notice'}
+    <input type="hidden" id="checkout-email-policy-server-error" value="1">
+    {/if}
 
     <!-- plugin hook: 'frontend_checkout' -->
     {* @event frontend_checkout.%plugin_id% *}

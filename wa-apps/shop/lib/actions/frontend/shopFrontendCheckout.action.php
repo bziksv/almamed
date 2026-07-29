@@ -47,6 +47,11 @@ class shopFrontendCheckoutAction extends waViewAction
                         } elseif ($redirect === false) {
                             break;
                         }
+                        // Current step already failed in execute() — field-level errors are enough.
+                        // getErrors() "return to contact step" summary is for later steps only.
+                        if ($step_id === $current_step && $redirect === false) {
+                            continue;
+                        }
                         if ($e = $step_instance->getErrors()) {
                             $errors = array_merge($errors, $e);
                         }
