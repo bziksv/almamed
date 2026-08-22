@@ -30,6 +30,13 @@ wa-data/public/shop/*
 !/wa-data/public/shop/themes/
 !/wa-data/public/shop/themes/**
 
+# robots.txt almamed.su — в git (деплой через git pull)
+!/wa-data/public/site/data/
+wa-data/public/site/data/*
+!/wa-data/public/site/data/almamed.su/
+wa-data/public/site/data/almamed.su/*
+!/wa-data/public/site/data/almamed.su/robots.txt
+
 # --- Локальная разработка ---
 .local/run/
 .local/sync-prod.env
