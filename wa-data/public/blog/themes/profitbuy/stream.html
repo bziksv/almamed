@@ -31,11 +31,11 @@
 
 {if !$is_lazyloading}
 </div>
-<ul class="menu-h" id="stream-paging">
-    {for $p=1 to $pages}
-        <li{if $p eq $page} class="selected"{/if}><a href="{if $p eq $page}#page_{$page}{else}?page={$p}{/if}">{$p}</a></li>
-    {/for}
-</ul>
+{if $pages > 1}
+<div class="block paging-nav blog-stream-paging">
+    {wa_pagination total=$pages page=$page nb=2 prev='‹' next='›' attrs=['class' => 'menu-h', 'id' => 'stream-paging']}
+</div>
+{/if}
 {/if}
 
 {if $page eq 1 && !$wa->globals('disable_pageless')}

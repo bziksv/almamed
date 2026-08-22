@@ -1,19 +1,28 @@
 {strip}
 
-<div class="fill-background">
+{$_legal_prefix = 'pravovye-dokumenty-almamed/'}
+{$_is_legal = ($page.full_url|substr:0:strlen($_legal_prefix) == $_legal_prefix)}
+
+{if $_is_legal}
+<link rel="stylesheet" href="{$wa_theme_url}legal-page.css?v{$wa_theme_version}">
+{/if}
+
+<div class="fill-background{if $_is_legal} legal-page-wrap{/if}">
 
     <h1>{$page.name}</h1>
     
-    {$subpages = $wa->shop->pages($page.id)}
-    {if $subpages}
-        <ul class="sub-links">
-            {foreach $subpages as $p}
-                <li><a href="{$p.url}">{$p.name}</a></li>
-            {/foreach}
-        </ul>
+    {if !$_is_legal}
+        {$subpages = $wa->shop->pages($page.id)}
+        {if $subpages}
+            <ul class="sub-links">
+                {foreach $subpages as $p}
+                    <li><a href="{$p.url}">{$p.name}</a></li>
+                {/foreach}
+            </ul>
+        {/if}
     {/if}
     
-    <div id="page" role="main">
+    <div id="page" role="main"{if $_is_legal} class="legal-page"{/if}>
         {$page.content|strip}
     </div>
 

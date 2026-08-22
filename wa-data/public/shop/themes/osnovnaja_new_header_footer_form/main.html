@@ -7,8 +7,12 @@
 {* flag home page *}
 {$is_home_page = $wa->currentUrl(false,true) == $wa_app_url}
 
+{$_legal_page_prefix = 'pravovye-dokumenty-almamed/'}
+{$is_legal_page = ($action == 'page' && !empty($page.full_url) && $page.full_url|substr:0:strlen($_legal_page_prefix) == $_legal_page_prefix)}
+
 {* flag sidebar: desktop — категории в sidebar; mobile/tablet — в гамбургере, sidebar только под фильтры *}
 {$is_sidebar =  !empty($theme_settings.sidebar) &&
+                !$is_legal_page &&
                 !(
                     ($is_home_page && empty($theme_settings.sidebar_home)) ||
                     (strpos($action, 'product') !== false && empty($theme_settings.sidebar_product)) ||

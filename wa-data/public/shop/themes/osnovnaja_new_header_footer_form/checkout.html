@@ -162,11 +162,69 @@
     .checkout .wa-field-email input.error {
         border-color: #f44336;
     }
-    .checkout .checkout-consent-error {
+    .checkout .checkout-consent-error,
+    .checkout em.checkout-field-error {
         color: #f44336;
         display: block;
         margin-top: 6px;
         font-size: 13px;
+    }
+    .checkout #checkout-contact-form .wa-form .wa-field .wa-value input.error,
+    .checkout #checkout-contact-form .wa-form .wa-field .wa-value input.wa-error,
+    .checkout #checkout-contact-form .wa-form .wa-field .wa-value textarea.error,
+    .checkout #checkout-contact-form .wa-form .wa-field .wa-value textarea.wa-error {
+        border: 2px solid #f44336;
+        box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.12);
+    }
+    /* Согласие ПД и «Зарегистрироваться» — один шрифт; галка слева (в DOM текст раньше чекбокса) */
+    .checkout #checkout-contact-form .wa-form .wa-field .wa-value > label,
+    .checkout #checkout-contact-form .wa-field-address-soglasie-na-obr > span:not(.at-stylize-box) {
+        color: rgba(0, 0, 0, 0.87);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    .checkout #checkout-contact-form .wa-form .wa-field p .wa-field-address-soglasie-na-obr,
+    .checkout #checkout-contact-form .wa-field-address-soglasie-na-obr {
+        display: flex !important;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 14px 0 !important;
+        width: 100% !important;
+        float: none !important;
+    }
+    .checkout #checkout-contact-form .wa-field-address-soglasie-na-obr > span:not(.at-stylize-box) {
+        width: auto !important;
+        float: none !important;
+        flex: 1;
+    }
+    .checkout #checkout-contact-form .wa-field-address-soglasie-na-obr .at-stylize-label {
+        width: auto !important;
+        flex: 0 0 auto;
+        order: -1;
+        margin: 0;
+    }
+    .checkout #checkout-contact-form .wa-field-address-soglasie-na-obr .at-stylize-box {
+        flex: 0 0 20px;
+        min-width: 20px;
+    }
+    .checkout #checkout-contact-form .wa-field-address-soglasie-na-obr > span:not(.at-stylize-box) a {
+        color: #006bd8;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+    /* p в адресе даёт margin-bottom:23px — лишний зазор под согласием */
+    .checkout #checkout-contact-form .wa-form .wa-field.wa-field-address .wa-value > p {
+        margin-bottom: 0 !important;
+    }
+    .checkout #checkout-contact-form .wa-form .wa-field.wa-field-address .wa-value > p input[name*="[street]"] {
+        margin-bottom: 0 !important;
+    }
+    .checkout #checkout-contact-form .wa-form .wa-field-checkout-create-user {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    .checkout #checkout-contact-form .wa-form .wa-field-checkout-create-user .wa-value {
+        margin-bottom: 0 !important;
     }
 </style>
 
@@ -188,7 +246,7 @@
             'yandex.ru', 'ya.ru', 'yandex.com', 'yandex.by', 'yandex.kz', 'yandex.ua',
             'rambler.ru', 'lenta.ru', 'autorambler.ru', 'ro.ru', 'pochta.ru', 'e-mail.ru', 'qip.ru', 'live.ru'
         ];
-        var CONSENT_TEXT = 'Нажимая на эту кнопку, я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.';
+        var CONSENT_TEXT = 'Нажимая на эту кнопку, я даю <a target="_blank" rel="noopener" href="/pravovye-dokumenty-almamed/soglasie-na-obrabotku-pd/">согласие на обработку персональных данных</a> и соглашаюсь с условиями <a target="_blank" rel="noopener" href="/pravovye-dokumenty-almamed/politika-personalnyh-dannyh/">политики обработки персональных данных</a>.';
         var checkoutCfg = window.almamedCheckout || {};
 
         function getEmailDomain(email) {
@@ -275,6 +333,46 @@
             } else {
                 $login.val($customer.val());
             }
+        }
+
+        function isCheckoutFieldRequired($el) {
+            if ($el.prop('required')) {
+                return true;
+            }
+            var $waField = $el.closest('.wa-field');
+            if ($waField.hasClass('wa-required')) {
+                return true;
+            }
+            var $addrPart = $el.closest('[class*="wa-field-address-"]');
+            return $addrPart.length && ($addrPart.hasClass('wa-required') || $addrPart.hasClass('required'));
+        }
+
+        function clearCheckoutFieldError($el) {
+            $el.removeClass('error wa-error');
+            $el.next('em.checkout-field-error').remove();
+        }
+
+        function setCheckoutFieldError($el, message) {
+            message = message || 'Заполните это поле';
+            $el.addClass('error wa-error');
+            if (!$el.next('em.checkout-field-error').length) {
+                $('<em class="errormsg checkout-field-error"></em>').text(message).insertAfter($el);
+            }
+        }
+
+        function clearCheckoutConsentError($checkbox) {
+            $checkbox.closest('.wa-field-address-soglasie-na-obr, .wa-value, label')
+                .find('.checkout-consent-error').remove();
+        }
+
+        function setCheckoutConsentError($checkbox) {
+            clearCheckoutConsentError($checkbox);
+            var $after = $checkbox.closest('label');
+            if ($after.next('span').length) {
+                $after = $after.next('span');
+            }
+            $('<em class="checkout-consent-error errormsg">Подтвердите согласие на обработку персональных данных</em>')
+                .insertAfter($after);
         }
 
         function scrollToCheckoutField($el) {
@@ -394,93 +492,83 @@
             return true;
         }
 
-        // First problem in DOM order → scroll there. Email policy notice only under Email.
+        // Как в nbpopupform/signup: все пустые обязательные поля, не только первое.
         function validateContactinfoBeforeSubmit($form) {
             syncCheckoutEmails($form, true);
             clearAllEmailPolicyNotices();
             $form.find('.checkout-consent-error, .checkout-address-autofill-error').remove();
-            getAddressInputs($form).removeClass('error wa-error');
+            $form.find('#checkout-contact-form :input:visible').each(function () {
+                clearCheckoutFieldError($(this));
+            });
 
             var $first = null;
             var needEmailNotice = false;
+            var valid = true;
 
-            $form.find(':input:visible').not('[type=hidden],[disabled],button,[type=submit],[type=button]').each(function () {
-                var $el = $(this);
-                var name = $el.attr('name') || '';
-                var val = $.trim($el.val() || '');
-                var $field = $el.closest('.wa-field');
-                var required = $field.hasClass('wa-required') || !!$el.prop('required');
+            $form.find('#checkout-contact-form :input:visible')
+                .not('[type=hidden],[disabled],button,[type=submit],[type=button]')
+                .each(function () {
+                    var $el = $(this);
+                    var name = $el.attr('name') || '';
+                    var val = $.trim($el.val() || '');
 
-                if ($el.is(':checkbox')) {
-                    if (name.indexOf('soglasie-na-obr') !== -1 && !isConsentChecked($el)) {
-                        $first = $el;
-                        return false;
+                    if ($el.is(':checkbox')) {
+                        if (name.indexOf('soglasie-na-obr') !== -1 && !isConsentChecked($el)) {
+                            valid = false;
+                            $el.prop('checked', false);
+                            setCheckoutConsentError($el);
+                            $first = $first || $el;
+                        }
+                        return;
                     }
-                    return;
-                }
 
-                if (name === 'customer[email]') {
-                    if (required && !val) {
-                        $first = $el;
-                        return false;
+                    if (name === 'customer[email]') {
+                        if (isCheckoutFieldRequired($el) && !val) {
+                            valid = false;
+                            setCheckoutFieldError($el);
+                            $first = $first || $el;
+                            return;
+                        }
+                        if (val && looksLikeCompleteEmail(val) && !isAllowedCheckoutEmail(val)) {
+                            valid = false;
+                            $first = $first || $el;
+                            needEmailNotice = true;
+                        }
+                        return;
                     }
-                    if (val && looksLikeCompleteEmail(val) && !isAllowedCheckoutEmail(val)) {
-                        $first = $el;
-                        needEmailNotice = true;
-                        return false;
+
+                    if (name === 'login' && $('#create-user').is(':checked')) {
+                        return;
                     }
-                    return;
-                }
 
-                if (name === 'login' && $('#create-user').is(':checked')) {
-                    // login mirrors customer email — skip duplicate policy check
-                    return;
-                }
+                    if (name === 'password' && $('#create-user').is(':checked') && !val) {
+                        valid = false;
+                        setCheckoutFieldError($el);
+                        $first = $first || $el;
+                        return;
+                    }
 
-                if (name === 'password' && $('#create-user').is(':checked') && !val) {
-                    $first = $el;
-                    return false;
-                }
+                    if ((name.indexOf('[region]') !== -1 || name.indexOf('[city]') !== -1 || name.indexOf('[street]') !== -1) && val.indexOf('@') !== -1) {
+                        valid = false;
+                        $el.val('');
+                        setCheckoutFieldError($el, 'В поле адреса попал e-mail. Укажите регион, город и улицу.');
+                        $first = $first || $el;
+                        return;
+                    }
 
-                if ((name.indexOf('[region]') !== -1 || name.indexOf('[city]') !== -1 || name.indexOf('[street]') !== -1) && val.indexOf('@') !== -1) {
-                    $el.val('').addClass('error wa-error');
-                    $first = $el;
-                    return false;
-                }
-
-                if (required && !val && name !== 'password') {
-                    $first = $el;
-                    return false;
-                }
-            });
+                    if (isCheckoutFieldRequired($el) && !val && name !== 'password') {
+                        valid = false;
+                        setCheckoutFieldError($el);
+                        $first = $first || $el;
+                    }
+                });
 
             if (needEmailNotice) {
                 showEmailPolicyNotice($form, { scroll: true });
                 return false;
             }
 
-            if ($first) {
-                if (($first.attr('name') || '').indexOf('soglasie-na-obr') !== -1) {
-                    $first.prop('checked', false);
-                    var $consentWrap = $first.closest('.wa-field-address-soglasie-na-obr');
-                    if (!$consentWrap.length) {
-                        $consentWrap = $first.closest('.wa-value');
-                    }
-                    var $after = $first.closest('label');
-                    if ($after.next('span').length) {
-                        $after = $after.next('span');
-                    }
-                    $('<em class="checkout-consent-error errormsg">Подтвердите согласие на обработку персональных данных</em>').insertAfter($after);
-                } else if (($first.attr('name') || '').indexOf('[region]') !== -1
-                    || ($first.attr('name') || '').indexOf('[city]') !== -1
-                    || ($first.attr('name') || '').indexOf('[street]') !== -1) {
-                    var $wrap = $first.closest('.wa-value');
-                    if ($wrap.length && !$wrap.find('.checkout-address-autofill-error').length) {
-                        $wrap.append('<em class="errormsg checkout-address-autofill-error">В поля адреса попал e-mail. Укажите регион, город и улицу.</em>');
-                    }
-                } else {
-                    $first.addClass('error wa-error');
-                }
+            if (!valid && $first) {
                 scrollToCheckoutField($first);
                 return false;
             }
@@ -543,6 +631,22 @@
             return true;
         }
 
+        function fixConsentCheckboxLayout($root) {
+            var $checkbox = getConsentCheckbox($root);
+            if (!$checkbox.length) {
+                return;
+            }
+            var $wrap = $checkbox.closest('.wa-field-address-soglasie-na-obr');
+            if (!$wrap.length) {
+                return;
+            }
+            var $label = $checkbox.closest('.at-stylize-label');
+            var $text = $wrap.children('span').not('.at-stylize-box').first();
+            if ($label.length && $text.length && $text.index() < $label.index()) {
+                $text.detach().insertAfter($label);
+            }
+        }
+
         function initConsentAndEmail($root) {
             $root = $root || $(document);
             applyCheckoutAutocomplete($root);
@@ -555,11 +659,31 @@
                 if ($span.length && $span.text().indexOf('политик') === -1) {
                     $span.html(CONSENT_TEXT);
                 }
+                fixConsentCheckboxLayout($root);
+                setTimeout(function () {
+                    fixConsentCheckboxLayout($root);
+                }, 0);
                 $checkbox.off('change.checkoutConsent').on('change.checkoutConsent', function() {
-                    $(this).closest('.wa-field-address-soglasie-na-obr, .wa-value, label')
-                        .find('.checkout-consent-error').remove();
+                    if (isConsentChecked($(this))) {
+                        clearCheckoutConsentError($(this));
+                    }
                 });
             }
+
+            $('form.checkout-form').off('input.checkoutValidate change.checkoutValidate')
+                .on('input.checkoutValidate change.checkoutValidate', '#checkout-contact-form :input:not([type=hidden]):not([type=submit]):not([type=button])', function() {
+                    var $el = $(this);
+                    var name = $el.attr('name') || '';
+                    if ($el.is(':checkbox')) {
+                        if (name.indexOf('soglasie-na-obr') !== -1 && isConsentChecked($el)) {
+                            clearCheckoutConsentError($el);
+                        }
+                        return;
+                    }
+                    if ($.trim($el.val() || '')) {
+                        clearCheckoutFieldError($el);
+                    }
+                });
 
             getEmailInputs($root)
                 .off('blur.checkoutEmailPolicy change.checkoutEmailPolicy input.checkoutEmailPolicy keyup.checkoutEmailPolicy paste.checkoutEmailPolicy')

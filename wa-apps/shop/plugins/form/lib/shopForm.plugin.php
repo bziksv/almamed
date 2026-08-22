@@ -32,7 +32,7 @@ class shopFormPlugin extends shopPlugin
                 <span class="at-stylize-box"></span>
             </label>
             <span class="obr wa-required">
-                Нажимая на эту кнопку, я даю согласие на обработку своих персональных данных в соответствии с условиями <a target="_blank" href="/rules/politics-almamed.jpg">политики конфиденциальности</a>.
+                Нажимая на эту кнопку, я даю <a target="_blank" rel="noopener" href="/pravovye-dokumenty-almamed/soglasie-na-obrabotku-pd/">согласие на обработку персональных данных</a> и соглашаюсь с условиями <a target="_blank" rel="noopener" href="/pravovye-dokumenty-almamed/politika-personalnyh-dannyh/">политики обработки персональных данных</a>.
             </span>
         </div>
         <script type="text/javascript">
