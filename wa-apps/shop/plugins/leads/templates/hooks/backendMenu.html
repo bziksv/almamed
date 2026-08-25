@@ -11,17 +11,16 @@
     function placeLeadsAfterOrders() {
         var orders = document.getElementById('mainmenu-orders-tab');
         var leads = document.getElementById('mainmenu-leads-tab');
-        if (orders && leads && orders.parentNode && leads.parentNode === orders.parentNode) {
-            if (orders.nextSibling !== leads) {
-                orders.parentNode.insertBefore(leads, orders.nextSibling);
-            }
+        if (!orders || !leads || !orders.parentNode || leads.parentNode !== orders.parentNode) {
+            return;
+        }
+        if (orders.nextSibling !== leads) {
+            orders.parentNode.insertBefore(leads, orders.nextSibling);
         }
     }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', placeLeadsAfterOrders);
-    } else {
-        placeLeadsAfterOrders();
-    }
+    // Sync: must run BEFORE $.shop.initElasticMenu (later in Backend.html).
+    // DOMContentLoaded is too late — ElasticMenu already cloned tabs into «Ещё».
+    placeLeadsAfterOrders();
 })();
 </script>
 {/if}
