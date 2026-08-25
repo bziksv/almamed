@@ -327,10 +327,9 @@
                         id : id,
                         data : $dialog.find('form').serializeArray()
                     };
-                    $.post('/nbpopupform/send/',data,function(data){
-
-                        if(data.data.response){
-                            yaCounter34079080.reachGoal('Zapros_KP_na_tovare_20220101',false,goalCallback);
+                    $.post('/nbpopupform/send/', data, function(resp) {
+                        if (resp.status === 'ok' && resp.data && resp.data.response) {
+                            yaCounter34079080.reachGoal('Zapros_KP_na_tovare_20220101', false, goalCallback);
                             a.trigger('close');
                             $('<div><form>' +
                                 '<div class="dialog-content" style="text-align: center;margin-bottom: 20px">Спасибо за обращение, Ваша заявка в обработке. Мы обрабатываем заявки по очередности, средний срок обработки от часа до  1 рабочего дня.</div>' +
@@ -345,10 +344,16 @@
                                 },
                                 'width': '300px',
                             });
-                        }else{
-                            alert("Ошибка отправки!");
+                        } else {
+                            var msg = 'Ошибка отправки!';
+                            if (resp.errors && resp.errors.length && resp.errors[0][0]) {
+                                msg = resp.errors[0][0];
+                            }
+                            alert(msg);
                         }
-                    },"json");
+                    }, 'json').fail(function() {
+                        alert('Ошибка отправки!');
+                    });
                     return false;
                 }
             });
