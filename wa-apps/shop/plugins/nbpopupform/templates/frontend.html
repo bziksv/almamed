@@ -317,20 +317,21 @@
                 onLoad: function() {
                     initNbKpDialog($(this));
                 },
-                onSubmit : function(a){
-                    var $dialog = $(this);
-                    if (!validateNbPopupForm($dialog)) {
+                onSubmit : function(dialog){
+                    // waDialog: this = <form>, dialog = outer .dialog wrapper
+                    var $form = $(this);
+                    if (!validateNbPopupForm($form)) {
                         return false;
                     }
 
                     var data = {
                         id : id,
-                        data : $dialog.find('form').serializeArray()
+                        data : $form.serializeArray()
                     };
                     $.post('/nbpopupform/send/', data, function(resp) {
                         if (resp.status === 'ok' && resp.data && resp.data.response) {
                             yaCounter34079080.reachGoal('Zapros_KP_na_tovare_20220101', false, goalCallback);
-                            a.trigger('close');
+                            dialog.trigger('close');
                             $('<div><form>' +
                                 '<div class="dialog-content" style="text-align: center;margin-bottom: 20px">Спасибо за обращение, Ваша заявка в обработке. Мы обрабатываем заявки по очередности, средний срок обработки от часа до  1 рабочего дня.</div>' +
                                     '<div class="dialog-buttons" style="text-align: center">' +
