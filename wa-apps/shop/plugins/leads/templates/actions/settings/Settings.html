@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="{$plugin_url}css/leads.css?v=1.2.2">
+
+<div class="blank clear-both s-leads-wrap">
+    <div class="block bordered-bottom">
+        <a href="?plugin=leads&module=report" class="back">&larr; К списку заявок</a>
+        <h1>Настройки — Заявки</h1>
+    </div>
+
+    <div class="block double-padded">
+        {if !empty($saved)}
+            <p class="green"><i class="icon16 yes"></i> Сохранено</p>
+        {/if}
+
+        <form method="post" action="?plugin=leads&module=settings" style="max-width:640px">
+            <div class="fields">
+                <div class="field">
+                    <div class="name">Каналы</div>
+                    <div class="value">
+                        <label><input type="checkbox" name="leads[log_kp]" value="1"{if $settings.log_kp} checked{/if}> Запросить КП</label><br>
+                        <label><input type="checkbox" name="leads[log_zayavka]" value="1"{if $settings.log_zayavka} checked{/if}> Оставить заявку</label><br>
+                        <label><input type="checkbox" name="leads[log_404]" value="1"{if $settings.log_404} checked{/if}> Форма 404</label><br>
+                        <label><input type="checkbox" name="leads[log_wait]" value="1"{if $settings.log_wait} checked{/if}> Окно при уходе</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Данные</div>
+                    <div class="value">
+                        <label><input type="checkbox" name="leads[store_payload]" value="1"{if $settings.store_payload} checked{/if}> Хранить сырой JSON (payload)</label><br>
+                        <label><input type="checkbox" name="leads[show_badge]" value="1"{if $settings.show_badge} checked{/if}> Badge «новых» в меню</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Антидубли (мин)</div>
+                    <div class="value">
+                        <input type="number" min="0" name="leads[duplicate_minutes]" value="{$settings.duplicate_minutes|escape}" style="width:80px">
+                        <span class="hint">0 = выкл.</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Хранить (мес.)</div>
+                    <div class="value">
+                        <input type="number" min="0" name="leads[retention_months]" value="{$settings.retention_months|escape}" style="width:80px">
+                        <span class="hint">Для кнопки «Очистить старые». 0 = не удалять</span>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="value">
+                        <input type="submit" class="button green" value="Сохранить">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

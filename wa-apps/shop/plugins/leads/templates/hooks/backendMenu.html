@@ -1,10 +1,28 @@
 {strip}
 {$u = $wa->user()}
 {if $u->isAdmin('shop') || $u->getRights('shop', 'settings')}
-<li class="{if $wa->get('plugin') == 'leads'}selected{else}no-tab{/if}">
+<li class="{if $wa->get('plugin') == 'leads'}selected{else}no-tab{/if}" id="mainmenu-leads-tab">
     <a href="?plugin=leads&module=report">
         Заявки{if $new_count > 0} <span class="red" style="font-weight:700">({$new_count})</span>{/if}
     </a>
 </li>
+<script>
+(function() {
+    function placeLeadsAfterOrders() {
+        var orders = document.getElementById('mainmenu-orders-tab');
+        var leads = document.getElementById('mainmenu-leads-tab');
+        if (orders && leads && orders.parentNode && leads.parentNode === orders.parentNode) {
+            if (orders.nextSibling !== leads) {
+                orders.parentNode.insertBefore(leads, orders.nextSibling);
+            }
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', placeLeadsAfterOrders);
+    } else {
+        placeLeadsAfterOrders();
+    }
+})();
+</script>
 {/if}
 {/strip}

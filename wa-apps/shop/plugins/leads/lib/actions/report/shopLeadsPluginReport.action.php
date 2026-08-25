@@ -7,6 +7,9 @@ class shopLeadsPluginReportAction extends waViewAction
         $this->checkRights();
 
         $this->getResponse()->setTitle('Заявки');
+        $this->getResponse()->addHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $this->getResponse()->addHeader('Pragma', 'no-cache');
+        $this->getResponse()->addHeader('Expires', '0');
 
         $layout = new shopBackendLayout();
         $layout->assign('no_level2', true);
