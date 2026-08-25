@@ -6,22 +6,18 @@
         Заявки{if $new_count > 0} <span class="red" style="font-weight:700">({$new_count})</span>{/if}
     </a>
 </li>
+{/if}
+{/strip}
+{* outside strip: // comments + strip newlines would comment-out the call *}
+{if $wa->user()->isAdmin('shop') || $wa->user()->getRights('shop', 'settings')}
 <script>
-(function() {
-    function placeLeadsAfterOrders() {
-        var orders = document.getElementById('mainmenu-orders-tab');
-        var leads = document.getElementById('mainmenu-leads-tab');
-        if (!orders || !leads || !orders.parentNode || leads.parentNode !== orders.parentNode) {
-            return;
-        }
-        if (orders.nextSibling !== leads) {
-            orders.parentNode.insertBefore(leads, orders.nextSibling);
-        }
+(function () {
+    var orders = document.getElementById('mainmenu-orders-tab');
+    var leads = document.getElementById('mainmenu-leads-tab');
+    if (orders && leads && orders.parentNode === leads.parentNode && orders.nextSibling !== leads) {
+        /* must run before $.shop.initElasticMenu */
+        orders.parentNode.insertBefore(leads, orders.nextSibling);
     }
-    // Sync: must run BEFORE $.shop.initElasticMenu (later in Backend.html).
-    // DOMContentLoaded is too late — ElasticMenu already cloned tabs into «Ещё».
-    placeLeadsAfterOrders();
 })();
 </script>
 {/if}
-{/strip}
