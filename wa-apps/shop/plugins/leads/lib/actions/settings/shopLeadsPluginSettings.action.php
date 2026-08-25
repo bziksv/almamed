@@ -32,9 +32,12 @@ class shopLeadsPluginSettingsAction extends waViewAction
         $this->getResponse()->addHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
         $this->getResponse()->addHeader('Pragma', 'no-cache');
 
-        $layout = new shopBackendLayout();
-        $layout->assign('no_level2', true);
-        $this->setLayout($layout);
+        // Full chrome only for standalone URL; plugins SPA loads this via AJAX.
+        if (!waRequest::isXMLHttpRequest()) {
+            $layout = new shopBackendLayout();
+            $layout->assign('no_level2', true);
+            $this->setLayout($layout);
+        }
 
         $this->view->assign(array(
             'settings'   => $plugin->getSettings(),

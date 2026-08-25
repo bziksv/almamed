@@ -22,17 +22,19 @@
 - CSV, массовая смена статуса
 - Антидубли (минуты в настройках; 0 = выкл.)
 - «Скрыть дубли», «Очистить старые» (по `retention_months`)
-- Ссылка «Настройки» → `?action=plugins#/leads/`
+- Ссылка «Настройки» → `?plugin=leads&module=settings` (также Плагины → `#/leads`)
 
 ## Настройки плагина
 
-Плагины → Заявки (или кнопка в списке заявок):
+Плагины → Заявки (`#/leads`) или кнопка в списке заявок → `?plugin=leads&module=settings`:
 
 - вкл/выкл каналов
 - хранить payload JSON
 - badge в меню
 - окно антидублей (мин)
 - срок хранения (мес.) для очистки
+
+**404 на `#/leads`:** обычно устаревший `wa-cache/.../autoload.php` без `shopLeadsPluginSettingsAction`. Лечится `find wa-cache -mindepth 1 -delete` (+ OPcache на prod).
 
 ## Local / prod
 
