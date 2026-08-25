@@ -17,9 +17,9 @@
     flex: 0 0 auto;
 }
 .s-leads-wrap .s-leads-head-actions .button,
-.s-leads-wrap .s-leads-head-actions button.button {
+.s-leads-wrap .s-leads-head-actions button.button,
+.s-leads-wrap .s-leads-head-actions a.button {
     margin: 0;
-    vertical-align: middle;
 }
 .s-leads-wrap .s-leads-title {
     display: inline-flex;
@@ -48,36 +48,22 @@
 .s-leads-filters select,
 .s-leads-filters input[type="date"],
 .s-leads-filters input[type="search"],
-.s-leads-filters input[type="text"],
+.s-leads-filters input[type="text"] {
+    box-sizing: border-box;
+    height: 28px;
+    margin: 0;
+    padding: 0 8px;
+    font-size: 13px;
+    line-height: 26px;
+    vertical-align: middle;
+}
 .s-leads-filters .button,
 .s-leads-filters a.button,
-.s-leads-filters input.button {
-    box-sizing: border-box;
-    height: 32px;
+.s-leads-filters input.button,
+.s-leads-bulk-bar .button,
+.s-leads-bulk-bar button.button {
     margin: 0;
     vertical-align: middle;
-    line-height: 30px;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-.s-leads-filters select,
-.s-leads-filters input[type="date"],
-.s-leads-filters input[type="search"],
-.s-leads-filters input[type="text"] {
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 13px;
-}
-.s-leads-filters .button,
-.s-leads-filters a.button,
-.s-leads-filters input.button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 14px;
-    padding-right: 14px;
-    line-height: 1;
-    white-space: nowrap;
 }
 .s-leads-filters .s-leads-q {
     min-width: 220px;
@@ -87,7 +73,6 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 32px;
     margin: 0;
     font-size: 13px;
     color: #5c6b7a;
