@@ -1,0 +1,129 @@
+<link rel="stylesheet" href="{$plugin_url}css/leads.css?v=1.0.0">
+
+<div class="blank clear-both s-leads-wrap">
+    <div class="block bordered-bottom">
+        <a href="?plugin=leads&module=report" class="back">&larr; К списку заявок</a>
+        <h1>Заявка #{$lead.id}</h1>
+    </div>
+
+    <div class="block double-padded">
+        <div class="s-leads-view-grid">
+            <div class="s-leads-view-main">
+                <table class="zebra">
+                    <tr>
+                        <th>Дата</th>
+                        <td>{$lead.created_at|wa_datetime:"humandatetime"}</td>
+                    </tr>
+                    <tr>
+                        <th>Источник</th>
+                        <td>
+                            {if isset($source_labels[$lead.source])}{$source_labels[$lead.source]|escape}{else}{$lead.source|escape}{/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ФИО</th>
+                        <td class="bold">{$lead.name|escape|default:"—"}</td>
+                    </tr>
+                    <tr>
+                        <th>Телефон</th>
+                        <td>{if $lead.phone}<a href="tel:{$lead.phone|escape}">{$lead.phone|escape}</a>{else}—{/if}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail</th>
+                        <td>{if $lead.email}<a href="mailto:{$lead.email|escape}">{$lead.email|escape}</a>{else}—{/if}</td>
+                    </tr>
+                    <tr>
+                        <th>Город</th>
+                        <td>{$lead.city|escape|default:"—"}</td>
+                    </tr>
+                    <tr>
+                        <th>Клиника</th>
+                        <td>{$lead.clinic|escape|default:"—"}</td>
+                    </tr>
+                    <tr>
+                        <th>ИНН</th>
+                        <td>{$lead.clinic_inn|escape|default:"—"}</td>
+                    </tr>
+                    <tr>
+                        <th>Комментарий</th>
+                        <td>{if $lead.comment}{$lead.comment|escape|nl2br}{else}—{/if}</td>
+                    </tr>
+                    <tr>
+                        <th>Товар</th>
+                        <td>
+                            {if $lead.product_url}
+                                <a href="{$lead.product_url|escape}" target="_blank" rel="noopener">{$lead.product_name|escape}</a>
+                                {if $lead.product_id}<div class="hint">ID {$lead.product_id}</div>{/if}
+                            {elseif $lead.product_name}
+                                {$lead.product_name|escape}
+                            {else}
+                                —
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Страница отправки</th>
+                        <td>{$lead.page_send|escape|default:"—"}</td>
+                    </tr>
+                    <tr>
+                        <th>Roistat</th>
+                        <td>{$lead.roistat|escape|default:"—"}</td>
+                    </tr>
+                    <tr>
+                        <th>IP / UA</th>
+                        <td>
+                            {$lead.ip|escape|default:"—"}
+                            <div class="hint">{$lead.user_agent|escape}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Почта менеджеру</th>
+                        <td>
+                            {if $lead.mail_ok}Ушла{else}Не ушла{/if}
+                            {if $lead.mail_error}<div class="hint errormsg">{$lead.mail_error|escape}</div>{/if}
+                        </td>
+                    </tr>
+                    {if $lead.attachment_name}
+                    <tr>
+                        <th>Вложение</th>
+                        <td>{$lead.attachment_name|escape}</td>
+                    </tr>
+                    {/if}
+                    {if $lead.duplicate_of}
+                    <tr>
+                        <th>Дубль</th>
+                        <td>Повтор заявки <a href="?plugin=leads&module=report&action=view&id={$lead.duplicate_of}">#{$lead.duplicate_of}</a></td>
+                    </tr>
+                    {/if}
+                </table>
+
+                {if $lead.payload}
+                    <details class="s-leads-payload">
+                        <summary>Сырые данные (JSON)</summary>
+                        <pre>{$lead.payload|escape}</pre>
+                    </details>
+                {/if}
+            </div>
+
+            <div class="s-leads-view-side">
+                <form method="post" action="?plugin=leads&module=report&action=view&id={$lead.id}">
+                    <div class="field">
+                        <div class="name">Статус</div>
+                        <div class="value">
+                            <select name="status">
+                                {foreach $status_labels as $key => $label}
+                                    <option value="{$key|escape}"{if $lead.status == $key} selected{/if}>{$label|escape}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="value">
+                            <input type="submit" name="save_status" class="button green" value="Сохранить статус">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

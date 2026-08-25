@@ -1,0 +1,38 @@
+<?php
+
+return array(
+    'shop_leads_plugin_lead' => array(
+        'id'              => array('int', 11, 'null' => 0, 'autoincrement' => 1),
+        'created_at'      => array('datetime', 'null' => 0),
+        'source'          => array('varchar', 32, 'null' => 0, 'default' => ''),
+        'status'          => array('varchar', 16, 'null' => 0, 'default' => 'new'),
+        'name'            => array('varchar', 255, 'null' => 0, 'default' => ''),
+        'phone'           => array('varchar', 64, 'null' => 0, 'default' => ''),
+        'email'           => array('varchar', 255, 'null' => 0, 'default' => ''),
+        'city'            => array('varchar', 255, 'null' => 0, 'default' => ''),
+        'clinic'          => array('varchar', 255, 'null' => 0, 'default' => ''),
+        'clinic_inn'      => array('varchar', 32, 'null' => 0, 'default' => ''),
+        'comment'         => array('text'),
+        'product_id'      => array('int', 11),
+        'product_name'    => array('varchar', 512, 'null' => 0, 'default' => ''),
+        'product_url'     => array('varchar', 512, 'null' => 0, 'default' => ''),
+        'page_send'       => array('varchar', 512, 'null' => 0, 'default' => ''),
+        'roistat'         => array('varchar', 64, 'null' => 0, 'default' => ''),
+        'ip'              => array('varchar', 45, 'null' => 0, 'default' => ''),
+        'user_agent'      => array('varchar', 512, 'null' => 0, 'default' => ''),
+        'mail_ok'         => array('tinyint', 1, 'null' => 0, 'default' => 0),
+        'mail_error'      => array('varchar', 255),
+        'payload'         => array('mediumtext'),
+        'attachment_name' => array('varchar', 255),
+        'duplicate_of'    => array('int', 11),
+        ':keys'           => array(
+            'PRIMARY'     => 'id',
+            'created_at'  => 'created_at',
+            'source_created' => array('source', 'created_at'),
+            'status'      => 'status',
+            'phone'       => 'phone',
+            'email'       => 'email',
+            'duplicate_of' => 'duplicate_of',
+        ),
+    ),
+);

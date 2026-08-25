@@ -72,7 +72,30 @@ class shopNbpopupformPluginFrontendSendController extends waJsonController
         $mail_message->setFrom($shop_email, 'АльмаМед');
         $mail_message->setTo($manager_email, 'АльмаМед');
 
-        if (!$mail_message->send()) {
+        $mail_ok = $mail_message->send();
+
+        if (!empty(wa('shop')->getConfig()->getPlugins()['leads'])) {
+            wa('shop')->getPlugin('leads');
+            shopLeadsPlugin::logLead(array(
+                'source'       => shopLeadsPlugin::SOURCE_KP,
+                'name'         => ifset($values, 'ФИО', ''),
+                'phone'        => ifset($values, 'Телефон', ''),
+                'email'        => ifset($values, 'E-mail', ''),
+                'city'         => ifset($values, 'Город', ''),
+                'clinic'       => ifset($values, 'Укажите наименование клиники', ''),
+                'clinic_inn'   => ifset($values, 'ИНН клиники', ''),
+                'comment'      => ifset($values, 'Комментарий', ''),
+                'product_id'   => (int) $product->getId(),
+                'product_name' => (string) $product['name'],
+                'product_url'  => $data['url'],
+                'roistat'      => $data['roistat'],
+                'mail_ok'      => $mail_ok ? 1 : 0,
+                'mail_error'   => $mail_ok ? null : 'waMailMessage send failed',
+                'payload'      => $values,
+            ));
+        }
+
+        if (!$mail_ok) {
             $this->setError('Не удалось отправить заявку');
             return;
         }

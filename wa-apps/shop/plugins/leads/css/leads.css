@@ -1,0 +1,108 @@
+.s-leads-wrap .s-leads-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 6px;
+}
+.s-leads-badge {
+    display: inline-block;
+    min-width: 1.4em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #e53935;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+}
+.s-leads-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+.s-leads-filters .s-leads-q {
+    min-width: 220px;
+}
+.s-leads-table-wrap {
+    overflow-x: auto;
+}
+.s-leads-table td,
+.s-leads-table th {
+    vertical-align: top;
+}
+.s-leads-row-new td {
+    background: #f7fff8;
+}
+.s-leads-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.s-leads-chip-kp {
+    background: #eef4ff;
+    color: #3538cd;
+}
+.s-leads-chip-zayavka {
+    background: #f4ebff;
+    color: #6941c6;
+}
+.s-leads-chip-wait {
+    background: #fff7ed;
+    color: #c2410c;
+}
+.s-leads-row-dup td {
+    opacity: 0.72;
+}
+.s-leads-bulk-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.s-leads-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #5c6b7a;
+}
+.s-leads-status {
+    font-size: 12px;
+    font-weight: 600;
+}
+.s-leads-status-new { color: #0d7a4f; }
+.s-leads-status-in_progress { color: #b54708; }
+.s-leads-status-done { color: #475467; }
+.s-leads-status-spam { color: #b42318; }
+.s-leads-pager {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.s-leads-view-grid {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 24px;
+}
+@media (max-width: 900px) {
+    .s-leads-view-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.s-leads-payload {
+    margin-top: 20px;
+}
+.s-leads-payload pre {
+    background: #f8fafc;
+    border: 1px solid #e2e8ef;
+    border-radius: 8px;
+    padding: 12px;
+    overflow: auto;
+    font-size: 12px;
+}

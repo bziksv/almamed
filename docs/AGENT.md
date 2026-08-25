@@ -112,6 +112,7 @@ git push origin main
 | Главная shop | `wa-data/public/shop/themes/osnovnaja_new_header_footer_form/home.html` |
 | Список товаров | `wa-data/public/shop/themes/.../list-thumbs.html` |
 | **Params категорий** | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) — **не ломать** |
+| **Заявки (админка)** | [LEADS.md](LEADS.md) — плагин `shop/plugins/leads`, URL `?plugin=leads&module=report` |
 | Кастом PHP shop | `wa-apps/shop/lib/classes/shopCustom.class.php` |
 | Маршруты доменов | `wa-config/routing.php` |
 | SSL редирект | `wa-config/apps/site/domains/almamed.su.php` |
@@ -195,6 +196,7 @@ N+1 `$wa->shop->product($p.id)` в `list-thumbs.html` заменён на `shopC
 | [GIT-WORKFLOW.md](GIT-WORKFLOW.md) | Git local ↔ prod |
 | [PRODUCTION.md](PRODUCTION.md) | Prod-сервер, FastPanel, IP |
 | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) | Доп. параметры категорий (plitka, rec, h1, …) |
+| [LEADS.md](LEADS.md) | Плагин «Заявки» — журнал форм КП / ostavit-zayavku |
 | [OPTIMIZATION-CHECKLIST.md](OPTIMIZATION-CHECKLIST.md) | **Чеклист оптимизации** (живой, обновлять при находках) |
 | `.cursor/rules/category-params.mdc` | Защита params категорий (always apply) |
 | `.cursor/rules/external-scripts.mdc` | **Не трогать Метрику**; другие внешние скрипты — только после согласования |

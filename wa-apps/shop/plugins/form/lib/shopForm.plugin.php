@@ -150,6 +150,30 @@ class shopFormPlugin extends shopPlugin
                 }
                 $mail = $mail_message->send();
 
+                $attachment_name = '';
+                if (!empty($_FILES['app_file']['name'])) {
+                    $attachment_name = (string) $_FILES['app_file']['name'];
+                }
+                if (!empty(wa('shop')->getConfig()->getPlugins()['leads'])) {
+                    wa('shop')->getPlugin('leads');
+                    shopLeadsPlugin::logLead(array(
+                        'source'          => shopLeadsPlugin::SOURCE_ZAYAVKA,
+                        'name'            => ifset($arPost, 'name', ''),
+                        'phone'           => ifset($arPost, 'phone', ''),
+                        'email'           => ifset($arPost, 'email', ''),
+                        'city'            => ifset($arPost, 'city', ''),
+                        'clinic'          => ifset($arPost, 'clinic', ''),
+                        'clinic_inn'      => ifset($arPost, 'clinic_inn', ''),
+                        'comment'         => ifset($arPost, 'question', ''),
+                        'page_send'       => (string) waRequest::get('page-send', ''),
+                        'roistat'         => $roistat,
+                        'mail_ok'         => $mail ? 1 : 0,
+                        'mail_error'      => $mail ? null : 'waMailMessage send failed',
+                        'attachment_name' => $attachment_name,
+                        'payload'         => $arPost,
+                    ));
+                }
+
                 if(!$mail){
                     echo 'Письмо не отправлено';
                     die;
@@ -451,6 +475,23 @@ class shopFormPlugin extends shopPlugin
             $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 
             $send = mail($to, $subject, $message, $headers);
+
+            if (!empty(wa('shop')->getConfig()->getPlugins()['leads'])) {
+                wa('shop')->getPlugin('leads');
+                shopLeadsPlugin::logLead(array(
+                    'source'     => shopLeadsPlugin::SOURCE_404,
+                    'name'       => $name,
+                    'phone'      => $phone,
+                    'comment'    => $mess,
+                    'mail_ok'    => $send ? 1 : 0,
+                    'mail_error' => $send ? null : 'mail() failed',
+                    'payload'    => array(
+                        'name'     => $name,
+                        'phone'    => $phone,
+                        'messages' => $mess,
+                    ),
+                ));
+            }
 
             ?>
 <h1>Спасибо!</h1>

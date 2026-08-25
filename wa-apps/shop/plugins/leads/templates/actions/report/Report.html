@@ -1,0 +1,202 @@
+<link rel="stylesheet" href="{$plugin_url}css/leads.css?v=1.2.0">
+
+<div class="blank clear-both s-leads-wrap">
+    <div class="block bordered-bottom">
+        <div class="float-right">
+            <a class="button" href="{$export_url|escape}">Скачать CSV</a>
+            <a class="button" href="?action=plugins#/leads/">Настройки</a>
+            {if $retention_months > 0}
+                <button type="button" class="button" id="s-leads-purge" title="Удалить заявки старше {$retention_months} мес.">Очистить старые</button>
+            {/if}
+        </div>
+        <h1 class="s-leads-title">
+            Заявки
+            {if $new_count > 0}
+                <span class="s-leads-badge">{$new_count}</span>
+            {/if}
+        </h1>
+        <p class="hint">Журнал заявок с форм сайта. Письма на Planfix уходят как раньше.</p>
+    </div>
+
+    <div class="block">
+        <form method="get" action="?plugin=leads&module=report" class="s-leads-filters" id="s-leads-filters">
+            <input type="hidden" name="plugin" value="leads">
+            <input type="hidden" name="module" value="report">
+
+            <select name="source">
+                <option value="">Все источники</option>
+                {foreach $source_labels as $key => $label}
+                    <option value="{$key|escape}"{if $filters.source == $key} selected{/if}>{$label|escape}</option>
+                {/foreach}
+            </select>
+
+            <select name="status">
+                <option value="">Все статусы</option>
+                {foreach $status_labels as $key => $label}
+                    <option value="{$key|escape}"{if $filters.status == $key} selected{/if}>{$label|escape}</option>
+                {/foreach}
+            </select>
+
+            <input type="date" name="date_from" value="{$filters.date_from|escape}" title="С даты">
+            <input type="date" name="date_to" value="{$filters.date_to|escape}" title="По дату">
+            <input type="search" name="q" value="{$filters.q|escape}" placeholder="ФИО, телефон, email, клиника…" class="s-leads-q">
+            <label class="s-leads-check">
+                <input type="checkbox" name="hide_duplicates" value="1"{if $filters.hide_duplicates} checked{/if}>
+                Скрыть дубли
+            </label>
+            <input type="submit" class="button green" value="Найти">
+            <a href="?plugin=leads&module=report" class="button">Сбросить</a>
+        </form>
+    </div>
+
+    <div class="block">
+        <p class="hint">Найдено: <b>{$total}</b></p>
+
+        {if !$leads}
+            <div class="block double-padded align-center gray">Заявок пока нет</div>
+        {else}
+            <form id="s-leads-bulk" class="s-leads-bulk">
+                <div class="s-leads-bulk-bar">
+                    <label><input type="checkbox" id="s-leads-check-all"> Выбрать все</label>
+                    <select name="bulk_status" id="s-leads-bulk-status">
+                        <option value="">Статус…</option>
+                        {foreach $status_labels as $key => $label}
+                            <option value="{$key|escape}">{$label|escape}</option>
+                        {/foreach}
+                    </select>
+                    <button type="button" class="button" id="s-leads-bulk-apply">Применить</button>
+                    <span class="hint" id="s-leads-bulk-msg"></span>
+                </div>
+
+                <div class="s-leads-table-wrap">
+                    <table class="zebra s-leads-table">
+                        <thead>
+                        <tr>
+                            <th style="width:28px"></th>
+                            <th>Дата</th>
+                            <th>Источник</th>
+                            <th>Контакт</th>
+                            <th>Город</th>
+                            <th>Клиника</th>
+                            <th>Товар</th>
+                            <th>Roistat</th>
+                            <th>Статус</th>
+                            <th>Почта</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $leads as $lead}
+                            <tr class="{if $lead.status == 'new'}s-leads-row-new{/if}{if $lead.duplicate_of} s-leads-row-dup{/if}">
+                                <td><input type="checkbox" name="ids[]" value="{$lead.id}" class="s-leads-row-check"></td>
+                                <td class="nowrap">
+                                    <a href="?plugin=leads&module=report&action=view&id={$lead.id}">{$lead.created_at|wa_datetime:"humandatetime"}</a>
+                                    {if $lead.duplicate_of}
+                                        <div class="hint">дубль #{$lead.duplicate_of}</div>
+                                    {/if}
+                                </td>
+                                <td>
+                                    <span class="s-leads-chip s-leads-chip-{$lead.source|escape}">
+                                        {if isset($source_labels[$lead.source])}{$source_labels[$lead.source]|escape}{else}{$lead.source|escape}{/if}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="?plugin=leads&module=report&action=view&id={$lead.id}" class="bold">{$lead.name|escape|default:"—"}</a>
+                                    <div class="hint">
+                                        {if $lead.phone}<a href="tel:{$lead.phone|escape}">{$lead.phone|escape}</a>{/if}
+                                        {if $lead.phone && $lead.email}, {/if}
+                                        {if $lead.email}<a href="mailto:{$lead.email|escape}">{$lead.email|escape}</a>{/if}
+                                        {if !$lead.phone && !$lead.email}—{/if}
+                                    </div>
+                                </td>
+                                <td>{$lead.city|escape|default:"—"}</td>
+                                <td>
+                                    {$lead.clinic|escape|default:"—"}
+                                    {if $lead.clinic_inn}<div class="hint">ИНН {$lead.clinic_inn|escape}</div>{/if}
+                                </td>
+                                <td>
+                                    {if $lead.product_url}
+                                        <a href="{$lead.product_url|escape}" target="_blank" rel="noopener">{$lead.product_name|escape|truncate:60}</a>
+                                    {elseif $lead.product_name}
+                                        {$lead.product_name|escape|truncate:60}
+                                    {else}
+                                        —
+                                    {/if}
+                                </td>
+                                <td class="hint">{$lead.roistat|escape|default:"—"}</td>
+                                <td>
+                                    <span class="s-leads-status s-leads-status-{$lead.status|escape}" data-status-cell="{$lead.id}">
+                                        {if isset($status_labels[$lead.status])}{$status_labels[$lead.status]|escape}{else}{$lead.status|escape}{/if}
+                                    </span>
+                                </td>
+                                <td class="align-center">
+                                    {if $lead.mail_ok}<i class="icon16 yes" title="Письмо ушло"></i>{else}<i class="icon16 no" title="Письмо не ушло"></i>{/if}
+                                </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+
+            {if $pages > 1}
+                <div class="block s-leads-pager">
+                    {for $p=1 to $pages}
+                        {if $p == $page}
+                            <b>{$p}</b>
+                        {else}
+                            <a href="?plugin=leads&module=report&page={$p}&source={$filters.source|escape:'url'}&status={$filters.status|escape:'url'}&date_from={$filters.date_from|escape:'url'}&date_to={$filters.date_to|escape:'url'}&q={$filters.q|escape:'url'}&hide_duplicates={$filters.hide_duplicates}">{$p}</a>
+                        {/if}
+                    {/for}
+                </div>
+            {/if}
+        {/if}
+    </div>
+</div>
+
+<script>
+(function($) {
+    var statusLabels = {$status_labels_json};
+    $('#s-leads-check-all').on('change', function() {
+        $('.s-leads-row-check').prop('checked', this.checked);
+    });
+    $('#s-leads-bulk-apply').on('click', function() {
+        var ids = [];
+        $('.s-leads-row-check:checked').each(function() { ids.push($(this).val()); });
+        var status = $('#s-leads-bulk-status').val();
+        var $msg = $('#s-leads-bulk-msg');
+        if (!ids.length) { $msg.text('Выберите заявки'); return; }
+        if (!status) { $msg.text('Выберите статус'); return; }
+        $msg.text('Сохраняю…');
+        $.post('?plugin=leads&module=report&action=status', { ids: ids, status: status }, function(r) {
+            if (r && r.status === 'ok') {
+                var updated = (r.data && r.data.updated) ? r.data.updated : 0;
+                $msg.text('Обновлено: ' + updated);
+                ids.forEach(function(id) {
+                    var $cell = $('[data-status-cell="'+id+'"]');
+                    $cell.attr('class', 's-leads-status s-leads-status-' + status)
+                         .text(statusLabels[status] || status);
+                });
+            } else {
+                $msg.text('Ошибка');
+            }
+        }, 'json').fail(function() { $msg.text('Ошибка сети'); });
+    });
+    $('#s-leads-purge').on('click', function() {
+        if (!confirm('Удалить заявки старше срока хранения из настроек?')) {
+            return;
+        }
+        var $btn = $(this).prop('disabled', true);
+        $.post('?plugin=leads&module=report&action=purge', {}, function(r) {
+            $btn.prop('disabled', false);
+            var msg = (r && r.data && r.data.message) ? r.data.message : 'Готово';
+            alert(msg);
+            if (r && r.data && r.data.deleted > 0) {
+                location.reload();
+            }
+        }, 'json').fail(function() {
+            $btn.prop('disabled', false);
+            alert('Ошибка сети');
+        });
+    });
+})(jQuery);
+</script>

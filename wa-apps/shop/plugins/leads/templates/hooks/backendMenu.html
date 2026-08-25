@@ -1,0 +1,10 @@
+{strip}
+{$u = $wa->user()}
+{if $u->isAdmin('shop') || $u->getRights('shop', 'settings')}
+<li class="{if $wa->get('plugin') == 'leads'}selected{else}no-tab{/if}">
+    <a href="?plugin=leads&module=report">
+        Заявки{if $new_count > 0} <span class="red" style="font-weight:700">({$new_count})</span>{/if}
+    </a>
+</li>
+{/if}
+{/strip}

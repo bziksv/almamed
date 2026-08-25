@@ -66,6 +66,25 @@ class shopWaitPluginFrontendWaitsendemailController extends waJsonController
                 $mail->setFrom($from);
                 $send = $mail->send();
 
+                if (!empty(wa('shop')->getConfig()->getPlugins()['leads'])) {
+                    wa('shop')->getPlugin('leads');
+                    shopLeadsPlugin::logLead(array(
+                        'source'     => shopLeadsPlugin::SOURCE_WAIT,
+                        'name'       => $name,
+                        'phone'      => $phone,
+                        'email'      => $email,
+                        'page_send'  => $urlReferer,
+                        'mail_ok'    => $send ? 1 : 0,
+                        'mail_error' => $send ? null : 'waMailMessage send failed',
+                        'payload'    => array(
+                            'name'       => $name,
+                            'email'      => $email,
+                            'phone'      => $phone,
+                            'urlReferer' => $urlReferer,
+                        ),
+                    ));
+                }
+
                 $this->response = array(
                     'status' => $send,
                     'result_text' => $result_text
