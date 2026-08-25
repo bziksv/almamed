@@ -40,7 +40,7 @@
 - Таблица: `php wa-apps/shop/plugins/leads/lib/config/install_table.php`
 - После появления `duplicate_of`:  
   `ALTER TABLE shop_leads_plugin_lead ADD COLUMN duplicate_of INT(11) NULL, ADD KEY duplicate_of (duplicate_of);`
-- Prod: **пока не выкатывали** — при деплое: код плагина + правки form/nbpopupform/wait, включить в `plugins.php`, создать/alter таблицу, `wa-cache` + OPcache
+- Prod (выкатили **2026-08-25**, commit `0368f6a`): `'leads' => true` в `plugins.php`, таблица создана, OPcache сброшен.
 
 ## Важно
 
