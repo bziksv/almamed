@@ -1,3 +1,26 @@
+.s-leads-wrap .s-leads-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px 24px;
+}
+.s-leads-wrap .s-leads-head-main {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+.s-leads-wrap .s-leads-head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+.s-leads-wrap .s-leads-head-actions .button,
+.s-leads-wrap .s-leads-head-actions button.button {
+    margin: 0;
+    vertical-align: middle;
+}
 .s-leads-wrap .s-leads-title {
     display: inline-flex;
     align-items: center;
@@ -19,11 +42,59 @@
 .s-leads-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
     align-items: center;
+    gap: 8px;
+}
+.s-leads-filters select,
+.s-leads-filters input[type="date"],
+.s-leads-filters input[type="search"],
+.s-leads-filters input[type="text"],
+.s-leads-filters .button,
+.s-leads-filters a.button,
+.s-leads-filters input.button {
+    box-sizing: border-box;
+    height: 32px;
+    margin: 0;
+    vertical-align: middle;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.s-leads-filters select,
+.s-leads-filters input[type="date"],
+.s-leads-filters input[type="search"],
+.s-leads-filters input[type="text"] {
+    padding-left: 8px;
+    padding-right: 8px;
+    font-size: 13px;
+}
+.s-leads-filters .button,
+.s-leads-filters a.button,
+.s-leads-filters input.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 14px;
+    padding-right: 14px;
+    line-height: 1;
+    white-space: nowrap;
 }
 .s-leads-filters .s-leads-q {
     min-width: 220px;
+    flex: 1 1 200px;
+}
+.s-leads-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    margin: 0;
+    font-size: 13px;
+    color: #5c6b7a;
+    white-space: nowrap;
+}
+.s-leads-check input {
+    margin: 0;
 }
 .s-leads-table-wrap {
     overflow-x: auto;
@@ -51,6 +122,10 @@
     background: #f4ebff;
     color: #6941c6;
 }
+.s-leads-chip-404 {
+    background: #f2f4f7;
+    color: #475467;
+}
 .s-leads-chip-wait {
     background: #fff7ed;
     color: #c2410c;
@@ -64,13 +139,6 @@
     gap: 10px;
     align-items: center;
     margin-bottom: 12px;
-}
-.s-leads-check {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: #5c6b7a;
 }
 .s-leads-status {
     font-size: 12px;

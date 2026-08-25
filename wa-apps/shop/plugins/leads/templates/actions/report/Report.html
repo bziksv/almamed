@@ -1,21 +1,23 @@
-<link rel="stylesheet" href="{$plugin_url}css/leads.css?v=1.2.0">
+<link rel="stylesheet" href="{$plugin_url}css/leads.css?v=1.2.1">
 
 <div class="blank clear-both s-leads-wrap">
-    <div class="block bordered-bottom">
-        <div class="float-right">
+    <div class="block bordered-bottom s-leads-head">
+        <div class="s-leads-head-main">
+            <h1 class="s-leads-title">
+                Заявки
+                {if $new_count > 0}
+                    <span class="s-leads-badge">{$new_count}</span>
+                {/if}
+            </h1>
+            <p class="hint">Журнал заявок с форм сайта. Письма на Planfix уходят как раньше.</p>
+        </div>
+        <div class="s-leads-head-actions">
             <a class="button" href="{$export_url|escape}">Скачать CSV</a>
             <a class="button" href="?action=plugins#/leads/">Настройки</a>
             {if $retention_months > 0}
                 <button type="button" class="button" id="s-leads-purge" title="Удалить заявки старше {$retention_months} мес.">Очистить старые</button>
             {/if}
         </div>
-        <h1 class="s-leads-title">
-            Заявки
-            {if $new_count > 0}
-                <span class="s-leads-badge">{$new_count}</span>
-            {/if}
-        </h1>
-        <p class="hint">Журнал заявок с форм сайта. Письма на Planfix уходят как раньше.</p>
     </div>
 
     <div class="block">

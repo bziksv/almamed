@@ -4,7 +4,7 @@ return array(
     'name'        => 'Заявки',
     'description' => 'Журнал заявок с форм сайта (КП, «Оставить заявку»)',
     'img'         => 'img/leads.png',
-    'version'     => '1.2.0',
+    'version'     => '1.2.1',
     'vendor'      => 'almamed',
     'frontend'    => false,
     'shop_settings' => true,
