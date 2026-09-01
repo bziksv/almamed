@@ -157,11 +157,27 @@ class shopProductListFilters
         if (!empty($filters['badges'])) {
             $standard = shopProductModel::badges();
             $conditions = array();
+            $hashes = array();
             foreach ($filters['badges'] as $badge_key) {
+                if (strpos($badge_key, 'c:') === 0) {
+                    $payload = substr($badge_key, 2);
+                    if (self::isBadgeHashPayload($payload)) {
+                        $hashes[] = $payload;
+                        continue;
+                    }
+                }
                 $condition = self::badgeFilterCondition($badge_key, $standard, $model);
                 if ($condition) {
                     $conditions[] = $condition;
                 }
+            }
+            if ($hashes) {
+                $hashes = array_values(array_unique($hashes));
+                $escaped = array();
+                foreach ($hashes as $hash) {
+                    $escaped[] = "'".$model->escape($hash)."'";
+                }
+                $conditions[] = 'MD5(p.badge) IN ('.implode(',', $escaped).')';
             }
             if ($conditions) {
                 $collection->addWhere('('.implode(' OR ', $conditions).')');
@@ -324,9 +340,13 @@ class shopProductListFilters
         return null;
     }
 
+    /**
+     * Short stable id for custom badge HTML (avoids 414 on long filter URLs).
+     * Legacy base64 payloads are still accepted in badgeFilterCondition().
+     */
     protected static function encodeBadgePayload($value)
     {
-        return rtrim(strtr(base64_encode($value), '+/', '-_'), '=');
+        return md5((string) $value);
     }
 
     protected static function decodeBadgePayload($payload)
@@ -343,6 +363,11 @@ class shopProductListFilters
         return $decoded === false ? null : $decoded;
     }
 
+    protected static function isBadgeHashPayload($payload)
+    {
+        return (bool) preg_match('/^[a-f0-9]{32}$/', (string) $payload);
+    }
+
     protected static function badgeFilterCondition($badge_key, array $standard, waModel $model)
     {
         if (strpos($badge_key, 's:') === 0) {
@@ -354,7 +379,12 @@ class shopProductListFilters
                 ." OR p.badge = '".$model->escape($id)."')";
         }
         if (strpos($badge_key, 'c:') === 0) {
-            $html = self::decodeBadgePayload(substr($badge_key, 2));
+            $payload = substr($badge_key, 2);
+            if (self::isBadgeHashPayload($payload)) {
+                return "MD5(p.badge) = '".$model->escape($payload)."'";
+            }
+            // Legacy: full badge HTML was base64url-encoded in the URL.
+            $html = self::decodeBadgePayload($payload);
             if ($html === null) {
                 return null;
             }
