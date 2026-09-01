@@ -344,6 +344,14 @@
                         </div>
                     </div>
                     {/if}
+                    <label class="s-product-list-filters__field s-product-list-filters__field--status">
+                        <span class="s-product-list-filters__label">[`Видимость`]</span>
+                        <select name="filter_status" class="s-product-list-filters__select">
+                            <option value=""{if $list_filters.filters.status == ''} selected{/if}>[`Все`]</option>
+                            <option value="0"{if $list_filters.filters.status == '0'} selected{/if}>[`Только скрытые`]</option>
+                            <option value="1"{if $list_filters.filters.status == '1'} selected{/if}>[`Только видимые`]</option>
+                        </select>
+                    </label>
                     <div class="s-product-list-filters__actions">
                         <input type="submit" class="button green" value="[`Filter`]">
                         {if $list_filters.active}

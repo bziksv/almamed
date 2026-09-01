@@ -985,6 +985,10 @@ table#product-list td.editor-on form { overflow: visible; }
     width: 200px;
     max-width: 200px;
 }
+.s-product-list-filters__field--status {
+    flex: 0 1 160px;
+    max-width: 180px;
+}
 
 .s-product-list-filters__multiselect {
     position: relative;

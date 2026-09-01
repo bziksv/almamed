@@ -314,7 +314,8 @@
                 + (params.filter_sku ? '&filter_sku=' + this.encodeFilterParam(params.filter_sku) : '')
                 + (params.filter_name ? '&filter_name=' + this.encodeFilterParam(params.filter_name) : '')
                 + (params.filter_badge ? '&filter_badge=' + this.encodeFilterParam(params.filter_badge) : '')
-                + (params.filter_brand ? '&filter_brand=' + params.filter_brand : '')).
+                + (params.filter_brand ? '&filter_brand=' + params.filter_brand : '')
+                + (params.filter_status === '0' || params.filter_status === '1' ? '&filter_status=' + params.filter_status : '')).
                 slice(1) // cut of first '&'
             ;
         },

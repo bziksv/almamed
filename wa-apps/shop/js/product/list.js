@@ -74,6 +74,9 @@
             if (fp.filter_brand) {
                 canonical_hash.push('filter_brand=' + fp.filter_brand);
             }
+            if (fp.filter_status === '0' || fp.filter_status === '1') {
+                canonical_hash.push('filter_status=' + fp.filter_status);
+            }
         },
 
         buildFilterRequestParams: function(filter_params) {
@@ -93,6 +96,9 @@
             }
             if (fp.filter_brand) {
                 parts.push('filter_brand=' + fp.filter_brand);
+            }
+            if (fp.filter_status === '0' || fp.filter_status === '1') {
+                parts.push('filter_status=' + fp.filter_status);
             }
             return parts.join('&');
         },
@@ -397,10 +403,12 @@
                 }
 
                 params.filter_brand = $form.find('[name="filter_brand"]').val() || '';
+                params.filter_status = $form.find('[name="filter_status"]').val() || '';
 
                 if (!params.filter_sku) { delete params.filter_sku; }
                 if (!params.filter_name) { delete params.filter_name; }
                 if (!params.filter_brand || params.filter_brand === '0') { delete params.filter_brand; }
+                if (params.filter_status !== '0' && params.filter_status !== '1') { delete params.filter_status; }
 
                 delete params.page;
                 var urlComponent = $.products.buildProductsUrlComponent(params);
@@ -415,6 +423,7 @@
                 delete params.filter_name;
                 delete params.filter_badge;
                 delete params.filter_brand;
+                delete params.filter_status;
                 delete params.page;
                 var urlComponent = $.products.buildProductsUrlComponent(params);
                 $.products.forceHash('#/products/' + urlComponent);

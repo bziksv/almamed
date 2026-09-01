@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Backend product list filters (SKU, name, badge, brand).
+ * Backend product list filters (SKU, name, badge, brand, visibility).
  */
 class shopProductListFilters
 {
@@ -9,6 +9,7 @@ class shopProductListFilters
     const PARAM_NAME   = 'filter_name';
     const PARAM_BADGE  = 'filter_badge';
     const PARAM_BRAND  = 'filter_brand';
+    const PARAM_STATUS = 'filter_status';
 
     public static function getFromRequest()
     {
@@ -17,7 +18,26 @@ class shopProductListFilters
             'name'   => self::normalizeFilterInput(waRequest::request(self::PARAM_NAME, '', waRequest::TYPE_STRING_TRIM)),
             'badges' => self::parseBadgesFromRequest(),
             'brand'  => waRequest::request(self::PARAM_BRAND, 0, waRequest::TYPE_INT),
+            'status' => self::normalizeStatusFilter(waRequest::request(self::PARAM_STATUS, '', waRequest::TYPE_STRING_TRIM)),
         );
+    }
+
+    /**
+     * @return string '' | '0' | '1'
+     */
+    protected static function normalizeStatusFilter($value)
+    {
+        $value = (string) $value;
+        if ($value === '0' || $value === '1') {
+            return $value;
+        }
+        if ($value === 'hidden') {
+            return '0';
+        }
+        if ($value === 'visible') {
+            return '1';
+        }
+        return '';
     }
 
     protected static function normalizeFilterInput($value)
@@ -82,7 +102,8 @@ class shopProductListFilters
         return !empty($filters['sku'])
             || !empty($filters['name'])
             || !empty($filters['badges'])
-            || !empty($filters['brand']);
+            || !empty($filters['brand'])
+            || (isset($filters['status']) && $filters['status'] !== '');
     }
 
     /**
@@ -157,6 +178,10 @@ class shopProductListFilters
                         .' AND :table.sku_id IS NULL',
                 ));
             }
+        }
+
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $collection->addWhere('p.status = '.(int) $filters['status']);
         }
     }
 
@@ -251,6 +276,9 @@ class shopProductListFilters
         }
         if ($filters['brand'] > 0) {
             $parts[] = self::PARAM_BRAND.'='.$filters['brand'];
+        }
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $parts[] = self::PARAM_STATUS.'='.$filters['status'];
         }
         return implode('&', $parts);
     }
