@@ -301,20 +301,21 @@ Product.prototype.updatePrice = function (price, compare_price) {
     if (price === undefined) {
         var input_checked = this.form.find(".skus input:radio:checked");
         if (input_checked.length) {
-            var price = parseFloat(input_checked.data('price'));
-            var compare_price = parseFloat(input_checked.data('compare-price'));
+            price = parseFloat(input_checked.data('price'));
+            compare_price = parseFloat(input_checked.data('compare-price'));
         } else {
-            var price = parseFloat(this.add2cart.find(".price").data('price'));
+            price = parseFloat(this.add2cart.find(".price").data('price'));
         }
     }
-    if (compare_price) {
-        if (!this.add2cart.find(".compare-at-price").length) {
-            this.add2cart.prepend('<span class="compare-at-price nowrap"></span>');
-        }
-        this.add2cart.find(".compare-at-price").html(this.currencyFormat(compare_price)).show();
-    } else {
-        this.add2cart.find(".compare-at-price").hide();
+    price = parseFloat(price);
+    if (isNaN(price)) {
+        price = 0;
     }
+    compare_price = parseFloat(compare_price);
+    if (isNaN(compare_price)) {
+        compare_price = 0;
+    }
+
     var self = this;
     this.form.find(".services input:checked").each(function () {
         var s = $(this).val();
@@ -324,7 +325,31 @@ Product.prototype.updatePrice = function (price, compare_price) {
             price += parseFloat($(this).data('price'));
         }
     });
-    this.add2cart.find(".price").html(this.currencyFormat(price));
+
+    var $text = this.add2cart.find(".text-price");
+    var $price = this.add2cart.find(".price");
+    var $compare = this.add2cart.find(".compare-at-price");
+    var $request = this.add2cart.find(".buy-box-product");
+
+    if (price <= 0) {
+        $text.hide();
+        $price.hide();
+        $compare.hide();
+        $request.show();
+    } else {
+        $request.hide();
+        $text.show();
+        if (compare_price > 0) {
+            if (!$compare.length) {
+                this.add2cart.find(".price-wrapper").prepend('<span class="compare-at-price nowrap"></span>');
+                $compare = this.add2cart.find(".compare-at-price");
+            }
+            $compare.html(this.currencyFormat(compare_price)).show();
+        } else {
+            $compare.hide();
+        }
+        $price.data('price', price).html(this.currencyFormat(price)).show();
+    }
     this.form.find('input[name="quantity"]').val(1);
 }
 

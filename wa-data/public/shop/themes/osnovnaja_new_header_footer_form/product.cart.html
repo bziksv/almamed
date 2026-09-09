@@ -206,20 +206,16 @@
             	{/foreach}
             {/if}
 
-            {if shop_currency_html($product.price) > 0}
-            <span class="text-price">Цена: </span>
-            {/if}
+            {$price_on_request = $product.price <= 0}
+            <span class="text-price"{if $price_on_request} style="display:none"{/if}>Цена: </span>
             
             <div class="price-wrapper">
-                {if $product.compare_price > 0}<span data-compare-price="{shop_currency($product.compare_price, null, null, 0)}" class="compare-at-price nowrap"> {shop_currency_html($product.compare_price)} </span>{/if}
-                {if shop_currency_html($product.price) == 0}
-                        <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты.">
+                <span data-compare-price="{shop_currency($product.compare_price, null, null, 0)}" class="compare-at-price nowrap"{if $product.compare_price <= 0} style="display:none"{/if}>{if $product.compare_price > 0}{shop_currency_html($product.compare_price)}{/if}</span>
+                <div class="buy-box-product"{if !$price_on_request} style="display:none"{/if} data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты.">
                     <span>Цена по запросу</span>&nbsp;
                     <i>?</i>
                 </div>
-                {else}
-                <span data-price="{shop_currency($product.price, null, null, 0)}" class="price nowrap">{shop_currency_html($product.price)}</span>
-                {/if}
+                <span data-price="{shop_currency($product.price, null, null, 0)}" class="price nowrap"{if $price_on_request} style="display:none"{/if}>{if !$price_on_request}{shop_currency_html($product.price)}{/if}</span>
             </div>
             <input type="hidden" name="product_id" value="{$product.id}">
 
