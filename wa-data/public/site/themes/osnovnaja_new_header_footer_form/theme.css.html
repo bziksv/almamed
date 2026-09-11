@@ -529,6 +529,8 @@
     {/if}
 {*/if*}
 <style type="text/css" id="profitbuy-theme-css">
+/* Opaque page canvas (desktop body was transparent → Cursor screenshots show black) */
+html, body { background-color: #fff; }
 {if !empty($theme_settings.desktop_pane)}
     @media only screen and (min-width: 1201px) {
         html body { padding-bottom: 56px; }
