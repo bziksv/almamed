@@ -2,7 +2,8 @@
 
 class shopWebpimagesHelper
 {
-    const WEBP_QUALITY = 85;
+    // 85 давал «мыло» на сложных 200px-превью в списках; 92 ≈ заметно резче при умеренном весе
+    const WEBP_QUALITY = 92;
 
     /**
      * @return shopViewHelper
@@ -88,7 +89,8 @@ class shopWebpimagesHelper
     public static function generateAll($force = false, array $size_pattern = null, $progress_every = 0)
     {
         if ($size_pattern === null) {
-            $size_pattern = array('200', '750', '96x96', '970');
+            // 400 — список товаров (retina-friendly); 200 оставлен для старых URL/корзины
+            $size_pattern = array('200', '400', '750', '96x96', '970');
         }
 
         $stats = array(

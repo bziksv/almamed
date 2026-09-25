@@ -156,15 +156,15 @@
                             {/if}
                             {if empty($without_micro_markup)}
                                 {if $index > 3}
-                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '400', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
                                 {else}
-                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '400', ['itemprop' => 'image', 'alt' => $p.name, 'width' => '200', 'height' => '200', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
                                 {/if}
                             {else}
                                 {if $index > 3}
-                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '400', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
                                 {else}
-                                    {shopWebpimagesPlugin::productImgHtml($p, '200', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+                                    {shopWebpimagesPlugin::productImgHtml($p, '400', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
                                 {/if}
                             {/if}
                         </div>
