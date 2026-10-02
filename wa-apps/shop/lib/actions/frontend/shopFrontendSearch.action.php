@@ -4,6 +4,9 @@ class shopFrontendSearchAction extends shopFrontendAction
 {
     public function execute()
     {
+        require_once wa()->getAppPath('lib/classes/shopSearchGate.class.php', 'shop');
+        shopSearchGate::run();
+
         $query = waRequest::get('query');
         $this->setCollection(new shopProductsCollection('search/query='.str_replace('&', '\&', $query)));
 

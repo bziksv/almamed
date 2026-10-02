@@ -114,6 +114,7 @@ git push origin main
 | **Params категорий** | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) — **не ломать** |
 | **Заявки (админка)** | [LEADS.md](LEADS.md) — плагин `shop/plugins/leads`, URL `?plugin=leads&module=report` |
 | Кастом PHP shop | `wa-apps/shop/lib/classes/shopCustom.class.php` |
+| **Search gate (капча на `?sort`)** | `wa-apps/shop/lib/classes/shopSearchGate.class.php` — прямой заход на `/search/…?sort=` без same-site Referer; боты и cookie `am_sg` пропускаются |
 | Маршруты доменов | `wa-config/routing.php` |
 | SSL редирект | `wa-config/apps/site/domains/almamed.su.php` |
 | БД | `wa-config/db.php` (**не в git**) |

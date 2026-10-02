@@ -256,6 +256,9 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 
 	public function execute()
 	{
+		require_once wa()->getAppPath('lib/classes/shopSearchGate.class.php', 'shop');
+		shopSearchGate::run();
+
 		$this->workupQuery();
 
 		$products = $this->getProducts();
