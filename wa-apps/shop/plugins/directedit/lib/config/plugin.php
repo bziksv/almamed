@@ -8,7 +8,7 @@ return array(
     'name' => _wp("Редактировать в один клик"),
     'description' => _wp("В списках товарах, ссылка/картинка открывает сразу редактирование товара"),
     'vendor' => '962376',
-    'version' => '1.2',
+    'version' => '1.2.1',
     'img'=>'img/directedit16.png',
     'icons'=>array(
         16 => 'img/directedit16.png',

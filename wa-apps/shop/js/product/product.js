@@ -85,7 +85,8 @@ editClick:(function ($) {
          * @return {{id:number,mode:string,tab:string,tail:string,raw:string,params:{}}}
          */
         parsePath: function (path) {
-            path = path.replace(/^.*#\//, '').replace(/(^\/|\/$)/, '');
+            // [^#]* — только первый #/ (иначе directedit__back=#/... съедает путь → id=products → 404)
+            path = path.replace(/^[^#]*#\//, '').replace(/(^\/|\/$)/, '');
 
             var matches = path.split('/');
             var tail = matches.pop();
@@ -812,7 +813,7 @@ editClick:(function ($) {
 
         editClick: function ($el) {
             // #/product/{$product.id}/edit/stock/{$sku_id}/
-            var args = $el.attr('href').replace(/.*#\/product\/(\d+|new)\/edit\//, '').replace(/\/$/, '').split('/');
+            var args = $el.attr('href').replace(/[^#]*#\/product\/(\d+|new)\/edit\//, '').replace(/\/$/, '').split('/');
             var params = [];
             var action;
 

@@ -31,6 +31,29 @@ var directedit__echocompany;
         //Проскролить то товара
         that.need_to_scroll = false;
 
+        // back-hash без сырого "#" — иначе браузер/%-decode ломает #/product/.../directedit__back=#/...
+        that.encodeBack = function (hash) {
+            hash = String(hash || '');
+            if (hash.charAt(0) === '#') {
+                hash = hash.substring(1);
+            }
+            return encodeURIComponent(hash);
+        };
+
+        that.decodeBack = function (value) {
+            var hash = String(value || '');
+            try {
+                hash = decodeURIComponent(hash);
+            } catch (e) {}
+            if (hash.charAt(0) === '#') {
+                return hash;
+            }
+            if (hash.charAt(0) !== '/') {
+                hash = '/' + hash;
+            }
+            return '#' + hash;
+        };
+
         //Делаем ссылкой на редактирование
         that.add_edit = function (){
 
@@ -61,17 +84,17 @@ var directedit__echocompany;
                     if (href.substr(-1)!='/'){
                         href+='/';
                     }
-                    href += 'edit/directedit__back='+encodeURIComponent(window.location.hash)+'/';
+                    href += 'edit/directedit__back='+that.encodeBack(window.location.hash)+'/';
                 }else{
                     //Ссылка на редактирование, просто добавляем return_link
                     if (href.indexOf('=')!=-1) {
                         //Ссылки на редактирования skus
-                        href += '&directedit__back=' + encodeURIComponent(window.location.hash) + '/';
+                        href += '&directedit__back=' + that.encodeBack(window.location.hash) + '/';
                     }else{
                         if (href.substr(-1)!='/'){
                             href += '/';
                         }
-                        href += 'directedit__back=' + encodeURIComponent(window.location.hash) + '/';
+                        href += 'directedit__back=' + that.encodeBack(window.location.hash) + '/';
                     }
                 }
 
@@ -110,7 +133,7 @@ var directedit__echocompany;
 
             //Проверяем что ссылки на редактирвоание нет
             if (href.substr(-5) == 'edit/') {
-                href = href.substr(0,href.length-5)+"directedit__back="+encodeURIComponent(window.location.hash)+"/";
+                href = href.substr(0,href.length-5)+"directedit__back="+that.encodeBack(window.location.hash)+"/";
                 p_obj.attr("href", href);
                 p_obj.attr("title",that.lang.look);
             }
@@ -128,7 +151,7 @@ var directedit__echocompany;
             //По умолчанию возврат на текущею выборку
             var return_path = '#/' + $.products.list_hash;
             if (path.params && path.params.directedit__back){
-                return_path = decodeURIComponent(path.params.directedit__back);
+                return_path = that.decodeBack(path.params.directedit__back);
             }
 
             //Кнопка назад
@@ -140,7 +163,7 @@ var directedit__echocompany;
                 if (submenu_href.substr(-1)!="/"){
                     submenu_href+="/";
                 }
-                $(this).attr("href",submenu_href+'directedit__back='+encodeURIComponent(return_path)+'/');
+                $(this).attr("href",submenu_href+'directedit__back='+that.encodeBack(return_path)+'/');
             });
 
             //Кнопки и ссылки редактирования из режима просмотра
@@ -149,12 +172,12 @@ var directedit__echocompany;
 
                 if (edit_href.indexOf("=")!=-1) {
                     //Ссылки на редактирования skus
-                    $(this).attr("href", edit_href + '&directedit__back=' + encodeURIComponent(return_path) + '/');
+                    $(this).attr("href", edit_href + '&directedit__back=' + that.encodeBack(return_path) + '/');
                 }else{
                     if (edit_href.substr(-1)!="/"){
                         edit_href+="/";
                     }
-                    $(this).attr("href", edit_href + 'directedit__back=' + encodeURIComponent(return_path) + '/');
+                    $(this).attr("href", edit_href + 'directedit__back=' + that.encodeBack(return_path) + '/');
                 }
             })
 
@@ -242,7 +265,7 @@ var directedit__echocompany;
             var obj = $(this);
 
             if (obj.data('directedit__back')){
-                $(this).attr('href', decodeURIComponent(obj.data('directedit__back')));
+                $(this).attr('href', that.decodeBack(obj.data('directedit__back')));
             }else{
                 $(this).attr('href', '#/' + $.products.list_hash)
             }
