@@ -236,11 +236,11 @@
 
     {if 1 && shopWmimageincatPlugin::getCategoryImage($category.id, 'banner')}{* PLUGIN WMIMAGEINCAT: replace 0 to 1 to enable *}
     <div class="image">
-        {if $category.params.link_to}
+        {if !empty($category.params.link_to)}
         <a href="{$category.params.link_to}" title="{$category.name}">
             {/if}
             <img src="{shopWmimageincatPlugin::getCategoryImage($category.id, 'banner')}" alt="{$category.name}" />
-            {if $category.params.link_to}
+            {if !empty($category.params.link_to)}
         </a>
         {/if}
     </div>
@@ -252,6 +252,7 @@
 
     <!-- subcategories -->
     {if 1 && $category.subcategories}{* PLUGIN WMIMAGEINCAT: replace 0 to 1 to enable *}
+        {$oftalm_layout = shopCustom::getOftalmLayout($root_category_id)}
         {if class_exists('shopSeoViewHelper')}
             {$_subcat_seo_names = shopSeoViewHelper::getCategorySeoNamesByIds(array_keys($category.subcategories))}
         {else}
@@ -262,6 +263,45 @@
         {else}
             {$_subcat_filter_map = []}
         {/if}
+
+        {if $oftalm_layout == 'v2'}
+            {$oftalm_subcat_n = 0}
+            {foreach $category.subcategories as $sc}
+                {if waRequest::get('brend') && empty($_subcat_filter_map[$sc.id]) || isset($sc.params.menu) || isset($sc.params.cat)}
+                    {continue}
+                {/if}
+                {$oftalm_subcat_n = $oftalm_subcat_n + 1}
+            {/foreach}
+            {if $oftalm_subcat_n > 0}
+            <details class="oftalm-subcats-wrap" data-oftalm-subcats-filter>
+                <summary class="oftalm-subcats-wrap__summary">
+                    Подкатегории <span class="oftalm-subcats-wrap__n" data-oftalm-subcats-n>{$oftalm_subcat_n}</span>
+                    <span class="oftalm-subcats-wrap__hint">показать</span>
+                </summary>
+                <div class="oftalm-subcats-search">
+                    <input type="search" class="oftalm-subcats-search__input" placeholder="Найти подкатегорию…" autocomplete="off" enterkeyhint="search" aria-label="Поиск подкатегорий">
+                    <p class="oftalm-subcats-search__empty" hidden>Ничего не найдено</p>
+                </div>
+                <nav class="oftalm-subcats" aria-label="Подкатегории">
+                    <ul class="oftalm-subcats__grid">
+                    {foreach $category.subcategories as $sc}
+                        {if waRequest::get('brend') && empty($_subcat_filter_map[$sc.id]) || isset($sc.params.menu) || isset($sc.params.cat)}
+                            {continue}
+                        {/if}
+                        {if isset($_subcat_seo_names[$sc.id])}
+                            {$sc.seo_name = $_subcat_seo_names[$sc.id]}
+                        {else}
+                            {$sc.seo_name = $sc.name}
+                        {/if}
+                        <li class="oftalm-subcats__item" data-name="{$sc.seo_name|escape}">
+                            <a class="oftalm-subcats__link" href="{$sc.url}" title="{$sc.seo_name|escape}">{$sc.seo_name|escape}</a>
+                        </li>
+                    {/foreach}
+                    </ul>
+                </nav>
+            </details>
+            {/if}
+        {else}
         <ul class="piicsl">
             {foreach $category.subcategories as $sc}
 
@@ -296,6 +336,7 @@
                 </li>
             {/foreach}
         </ul>
+        {/if}
     {elseif $category.subcategories}
         <ul class="sub-links">
             {foreach $category.subcategories as $sc}
@@ -347,18 +388,24 @@
             {if !$category.subcategories} {/if}
         {/if}
     {else}
+        {$oftalm_layout = shopCustom::getOftalmLayout($root_category_id)}
         {$select_view = waRequest::cookie('shop_select_view', '', waRequest::TYPE_STRING)}
         {if isset($category.params.select_view)}{$select_view = $select_view|default:$category.params.select_view}{/if}
         {$select_view = $select_view|default:$theme_settings.select_view}
-        {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting) plp=true select_view=$select_view}
+        {if $oftalm_layout == 'v2'}
+            {$select_view = 'list'}
+        {/if}
+        {include file='list-thumbs.html' sorting=!empty($category.params.enable_sorting) plp=true select_view=$select_view oftalm_layout=$oftalm_layout}
     {/if}
 	
 	
+	{if !empty($filters)}
 	{foreach $filters as $fid => $filter}
 		{if $wa->get($filter.code, array())}
 			{assign var="filter_value" value=$wa->get($filter.code, array())}
 		{/if}
 	{/foreach}
+	{/if}
 	
     <!-- products list -->
 	
@@ -376,7 +423,7 @@
 			{/if}
 		{/foreach}	
 
-		{if $category.params.product_additional != 'hide'}
+		{if ($category.params.product_additional|default:'') != 'hide'}
 			{shopProductadditionalPlugin::getAdditionalProduct($category)}
 		{/if}
 	
@@ -387,5 +434,14 @@
     <div class="category-description">{$category.description}</div>
     {/if}
 </div>
+
+{if !isset($oftalm_layout)}{$oftalm_layout = shopCustom::getOftalmLayout($root_category_id)}{/if}
+{if shopCustom::canManageOftalmLayout() && !empty($oftalm_layout)}
+<div class="oftalm-layout-switch oftalm-layout-switch--float" role="group" aria-label="Режим отображения (только админ)">
+    <a href="#" class="oftalm-layout-switch__btn{if $oftalm_layout == 'v1'} is-selected{/if}" data-oftalm-layout="v1" title="Список — для всех">v1</a>
+    <a href="#" class="oftalm-layout-switch__btn{if $oftalm_layout == 'v2'} is-selected{/if}" data-oftalm-layout="v2" title="По брендам — для всех">v2</a>
+    <a href="#" class="oftalm-layout-switch__btn{if $oftalm_layout == 'v3'} is-selected{/if} is-soon" data-oftalm-layout="v3" title="Скоро">v3</a>
+</div>
+{/if}
 
 {/strip}

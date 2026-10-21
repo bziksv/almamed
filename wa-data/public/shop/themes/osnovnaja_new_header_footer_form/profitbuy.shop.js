@@ -312,6 +312,62 @@ $(document).ready(function () {
 		$(this).addClass('selected');
 		return false;
 	});
+
+    // Oftalmologiya layout v1/v2/v3 — backend users; saves default for all visitors
+    $(document).off('click.oftalmLayout').on('click.oftalmLayout', '[data-oftalm-layout]', function(e){
+        e.preventDefault();
+        var layout = $(this).data('oftalm-layout');
+        if (!layout || layout === 'v3') {
+            return false;
+        }
+        $.cookie('shop_oftalm_layout', layout, {expires: 30, path: '/'});
+        var url = window.location.href
+            .replace(/([?&])oftalm_layout=[^&]*/g, '$1')
+            .replace(/([?&])oftalm_save=[^&]*/g, '$1')
+            .replace(/[?&]$/, '')
+            .replace(/\?&/, '?');
+        var sep = url.indexOf('?') >= 0 ? '&' : '?';
+        window.location.assign(url + sep + 'oftalm_layout=' + encodeURIComponent(layout) + '&oftalm_save=1');
+        return false;
+    });
+
+    // v2: smart filter inside «Подкатегории»
+    (function initOftalmSubcatsFilter(){
+        var $wrap = $('[data-oftalm-subcats-filter]');
+        if (!$wrap.length) {
+            return;
+        }
+        function norm(s){
+            return String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
+        }
+        function applyFilter($root){
+            var q = norm($root.find('.oftalm-subcats-search__input').val());
+            var visible = 0;
+            $root.find('.oftalm-subcats__item').each(function(){
+                var name = norm($(this).attr('data-name') || $(this).text());
+                var ok = !q || name.indexOf(q) !== -1;
+                $(this).toggleClass('is-hidden', !ok);
+                if (ok) {
+                    visible++;
+                }
+            });
+            $root.find('[data-oftalm-subcats-n]').text(visible);
+            $root.find('.oftalm-subcats-search__empty').prop('hidden', visible > 0);
+            $root.find('.oftalm-subcats').toggle(visible > 0 || !q);
+        }
+        $wrap.off('toggle.oftalmSubcats input.oftalmSubcats').on('toggle.oftalmSubcats', function(){
+            var $root = $(this);
+            if (this.open) {
+                var $input = $root.find('.oftalm-subcats-search__input');
+                setTimeout(function(){ $input.trigger('focus'); }, 0);
+            }
+        }).on('input.oftalmSubcats', '.oftalm-subcats-search__input', function(e){
+            e.stopPropagation();
+            applyFilter($(this).closest('[data-oftalm-subcats-filter]'));
+        }).on('click.oftalmSubcats keydown.oftalmSubcats', '.oftalm-subcats-search__input', function(e){
+            e.stopPropagation();
+        });
+    })();
     
 
     //SLIDERS

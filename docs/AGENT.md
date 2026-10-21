@@ -9,7 +9,7 @@
 | | |
 |---|---|
 | Сайт | almamed.su — медоборудование |
-| Стек | Webasyst 1.14.4 + Shop-Script 7.5.1, **PHP 7.2** |
+| Стек | Webasyst 1.14.4 + Shop-Script 7.5.1; local **PHP 8.2**, prod пока **PHP 7.2** |
 | Prod тема | `osnovnaja_new_header_footer_form` (shop child of site) |
 | Git | https://github.com/bziksv/almamed (private) |
 
@@ -29,7 +29,7 @@
 
 ```bash
 cd ~/Documents/projects/almamed
-./start-dev.sh    # nginx + php-fpm 7.2, OPcache, :8080
+./start-dev.sh    # nginx + php-fpm 8.2, OPcache, :8080
 ./stop-dev.sh
 ```
 

@@ -81,7 +81,7 @@ class shopWaitPluginFrontendWaitautocouponController extends waJsonController
         $alphabet = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
         $result = '';
         while (strlen($result) < 10) {
-            $result .= $alphabet{mt_rand(0, strlen($alphabet)-1)};
+            $result .= $alphabet[mt_rand(0, strlen($alphabet)-1)];
         }
 
         return 'WAIT' . $result;

@@ -1,0 +1,38 @@
+{strip}
+{if isset($_list_seo_names[$p.id])}
+    {$p.seo_name = $_list_seo_names[$p.id]}
+{else}
+    {$p.seo_name = $p.name}
+{/if}
+{if !empty($p.list_name)}{$p.seo_name = $p.list_name}{/if}
+{if isset($_list_product_params[$p.id][$_seo_list_url])}
+    {$p.seo_name = $_list_product_params[$p.id][$_seo_list_url]}
+{/if}
+{$available = $wa->shop->settings('ignore_stock_count') || $p.count === null || $p.count > 0}
+
+<article class="bg-tile">
+    <a class="bg-tile__img" href="{$p.frontend_url}" title="{$p.seo_name}">
+        {$badge_html = $wa->shop->badgeHtml($p.badge)}
+        {if $badge_html}<span class="bg-tile__badge">{$badge_html}</span>{/if}
+        {shopWebpimagesPlugin::productImgHtml($p, '400', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
+    </a>
+    <div class="bg-tile__body">
+        <a class="bg-tile__name" href="{$p.frontend_url}" title="{$p.seo_name}">{$p.seo_name}</a>
+        <div class="bg-tile__price">
+            {if shop_currency($p.price) == 0}
+                <span class="bg-tile__price-req">Цена по запросу</span>
+            {else}
+                <span class="bg-tile__price-val">{shop_currency_html($p.price)}</span>
+            {/if}
+        </div>
+        {if $available}
+        <form class="bg-tile__form purchase addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}{if strpos($p.frontend_url, '?')}&{else}?{/if}cart=1"{/if} method="post" action="{$wa->getUrl('shop/frontendCart/add')}">
+            <input type="hidden" name="product_id" value="{$p.id}">
+            <button type="submit" class="bg-tile__cta button second-type">{$add2cart_label}</button>
+        </form>
+        {else}
+            <span class="bg-tile__oos">Нет в наличии</span>
+        {/if}
+    </div>
+</article>
+{/strip}

@@ -640,7 +640,7 @@ class waNet
                     CURLOPT_RETURNTRANSFER    => 1,
                     CURLOPT_TIMEOUT           => $this->options['timeout'],
                     CURLOPT_CONNECTTIMEOUT    => $this->options['timeout'],
-                    CURLE_OPERATION_TIMEOUTED => $this->options['timeout'],
+                    // CURLE_* are error codes, not options — PHP 8+ throws ValueError
                     CURLOPT_DNS_CACHE_TIMEOUT => 3600,
                     CURLOPT_USERAGENT         => $this->user_agent,
                 );

@@ -10,7 +10,7 @@ cp wa-config/db.php.remote wa-config/db.php
 echo "→ wa-config/db.php = remote (45.90.35.63 / almamed_su_db)"
 echo "  Проверка подключения..."
 
-/opt/homebrew/opt/php@7.2/bin/php -r "
+/opt/homebrew/opt/php@8.2/bin/php -r "
 \$c = include '$ROOT/wa-config/db.php';
 \$d = \$c['default'];
 \$m = new mysqli(\$d['host'], \$d['user'], \$d['password'], \$d['database']);

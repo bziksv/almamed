@@ -195,7 +195,7 @@ class waInstallerFile
                 //CURLOPT_VERBOSE           => 1,
                 CURLOPT_TIMEOUT           => self::$timeout,
                 CURLOPT_CONNECTTIMEOUT    => self::$timeout,
-                CURLE_OPERATION_TIMEOUTED => self::$timeout,
+                // CURLE_* are error codes, not options — PHP 8+ throws ValueError
                 CURLOPT_DNS_CACHE_TIMEOUT => 3600,
             );
 

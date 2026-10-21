@@ -17,6 +17,8 @@
     <link rel="shortcut icon" href="/favicon.ico"/>
 
     {include file="at.html" inline}
+    {* PHP 8: preg_match(_all) writes into $matches->value — variable must exist in this scope *}
+    {$matches = []}
 
     {if $wa->blog}
         <!-- rss -->

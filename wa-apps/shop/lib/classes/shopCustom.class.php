@@ -429,6 +429,171 @@ class shopCustom
         return $params;
     }
 
+    /**
+     * Oftalmologiya catalog layout modes: v1 (default list), v2 (group by brand), v3 (reserved).
+     * Root category id = 16 (full_url oftalmologiya).
+     * Guests / buyers always see v1 (обкатка только среди своих).
+     * Switcher + saved setting: backend-пользователи (Контакты → Пользователи, is_user=1).
+     */
+    const OFTALM_ROOT_CATEGORY_ID = 16;
+    const OFTALM_LAYOUT_SETTING = 'oftalm_catalog_layout';
+
+    public static function isOftalmCategoryTree($root_category_id)
+    {
+        return (int)$root_category_id === self::OFTALM_ROOT_CATEGORY_ID;
+    }
+
+    public static function canManageOftalmLayout()
+    {
+        try {
+            $user = wa()->getUser();
+        } catch (Exception $e) {
+            return false;
+        }
+        if (!$user || !$user->isAuth()) {
+            return false;
+        }
+        // Contacts → Users (wa_contact.is_user = 1), not shop customers
+        return (int)$user['is_user'] === 1;
+    }
+
+    public static function getOftalmLayoutDefault()
+    {
+        $layout = wa()->getSetting(self::OFTALM_LAYOUT_SETTING, 'v1', 'shop');
+        if (!in_array($layout, array('v1', 'v2', 'v3'), true)) {
+            return 'v1';
+        }
+        return $layout;
+    }
+
+    /**
+     * Resolve oftalm layout.
+     * Guests / buyers → always v1.
+     * Backend users → GET/cookie + shared setting among staff (oftalm_save).
+     *
+     * @param int $root_category_id
+     * @return string v1|v2|v3 or '' if not oftalm tree
+     */
+    public static function getOftalmLayout($root_category_id)
+    {
+        if (!self::isOftalmCategoryTree($root_category_id)) {
+            return '';
+        }
+
+        // Public: always classic list while we test v2 internally
+        if (!self::canManageOftalmLayout()) {
+            return 'v1';
+        }
+
+        $default = self::getOftalmLayoutDefault();
+
+        $layout = waRequest::get('oftalm_layout', null, waRequest::TYPE_STRING_TRIM);
+        if ($layout === null || $layout === '') {
+            $layout = waRequest::cookie('shop_oftalm_layout', $default, waRequest::TYPE_STRING_TRIM);
+        }
+        if (!in_array($layout, array('v1', 'v2', 'v3'), true)) {
+            $layout = $default;
+        }
+
+        // Shared default among backend users only (not for the storefront public)
+        if (waRequest::get('oftalm_save') && in_array($layout, array('v1', 'v2'), true)) {
+            $asm = new waAppSettingsModel();
+            $asm->set('shop', self::OFTALM_LAYOUT_SETTING, $layout);
+        }
+
+        return $layout;
+    }
+
+    /**
+     * Group products by brand (feature brend / productbrands), sort brands A→Z,
+     * within each brand sort by price asc (zero / «по запросу» last).
+     *
+     * @param array $products
+     * @return array [ brandName => ['name'=>,'url'=>,'id'=>,'products'=>[]] ]
+     */
+    public static function groupProductsByBrand($products)
+    {
+        if (!$products) {
+            return array();
+        }
+
+        if (class_exists('shopProductbrandsPlugin')) {
+            $products = shopProductbrandsPlugin::prepareProducts($products);
+        }
+
+        $groups = array();
+        foreach ($products as $id => $p) {
+            $brand_name = 'Без бренда';
+            $brand_url = '';
+            $brand_id = 0;
+            if (!empty($p['brand']['name'])) {
+                $brand_name = $p['brand']['name'];
+                $brand_url = ifset($p['brand']['url'], '');
+                $brand_id = (int)ifset($p['brand']['id'], 0);
+            }
+            if (!isset($groups[$brand_name])) {
+                $groups[$brand_name] = array(
+                    'name' => $brand_name,
+                    'url' => $brand_url,
+                    'id' => $brand_id,
+                    'products' => array(),
+                );
+            }
+            $groups[$brand_name]['products'][$id] = $p;
+        }
+
+        uksort($groups, function ($a, $b) {
+            if ($a === 'Без бренда') {
+                return 1;
+            }
+            if ($b === 'Без бренда') {
+                return -1;
+            }
+            return strcasecmp($a, $b);
+        });
+
+        foreach ($groups as &$group) {
+            uasort($group['products'], function ($a, $b) {
+                $pa = isset($a['price']) ? (float)$a['price'] : 0;
+                $pb = isset($b['price']) ? (float)$b['price'] : 0;
+                if ($pa <= 0 && $pb > 0) {
+                    return 1;
+                }
+                if ($pb <= 0 && $pa > 0) {
+                    return -1;
+                }
+                if ($pa == $pb) {
+                    return 0;
+                }
+                return ($pa < $pb) ? -1 : 1;
+            });
+
+            $count = count($group['products']);
+            $group['count'] = $count;
+            $priced = array();
+            foreach ($group['products'] as $p) {
+                $price = isset($p['price']) ? (float)$p['price'] : 0;
+                if ($price > 0) {
+                    $priced[] = $price;
+                }
+            }
+            $group['price_from'] = $priced ? min($priced) : 0;
+            $group['price_to'] = $priced ? max($priced) : 0;
+            $mod = $count % 10;
+            $mod100 = $count % 100;
+            if ($mod == 1 && $mod100 != 11) {
+                $group['count_label'] = $count.' модель';
+            } elseif ($mod >= 2 && $mod <= 4 && ($mod100 < 12 || $mod100 > 14)) {
+                $group['count_label'] = $count.' модели';
+            } else {
+                $group['count_label'] = $count.' моделей';
+            }
+        }
+        unset($group);
+
+        return $groups;
+    }
+
     public static function getListProducts($ids, $title = '', $view = 'thumbs', $cart = false){
 
         $ids = json_decode($ids, true);

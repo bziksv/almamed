@@ -3,7 +3,7 @@
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 RUN_DIR="$ROOT/.local/run"
-PHP72=/opt/homebrew/opt/php@7.2
+PHP82=/opt/homebrew/opt/php@8.2
 WATCH_PID="$RUN_DIR/mysql-watch.pid"
 LOG="$RUN_DIR/mysql-watch.log"
 MYSQL_PIDFILE="$RUN_DIR/almamed-mysqld.pid"
@@ -12,7 +12,7 @@ mkdir -p "$RUN_DIR"
 echo $$ >"$WATCH_PID"
 
 php_db_ok() {
-  "$PHP72/bin/php" -r "
+  "$PHP82/bin/php" -r "
     \$c = include '$ROOT/wa-config/db.php';
     \$d = \$c['default'];
     \$m = @new mysqli(\$d['host'] ?: 'localhost', \$d['user'], \$d['password'], \$d['database']);

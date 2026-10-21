@@ -126,7 +126,26 @@ class shopFrontendCategoryAction extends shopFrontendAction
         // products
         $collection = new shopProductsCollection('category/'.$category['id']);
 
-        $this->setCollection($collection, $category['params']['products_per_page']);
+        $products_per_page = ifset($category['params']['products_per_page']);
+        // v2: group by brand over the FULL category collection (include_sub_categories),
+        // not a paginated page slice — otherwise brand badges show only “on this page”.
+        $oftalm_v2 = class_exists('shopCustom')
+            && shopCustom::getOftalmLayout($root_category_id) === 'v2';
+        if ($oftalm_v2) {
+            $collection->filters(waRequest::get());
+            $collection->setOptions(array(
+                'overwrite_product_prices' => true,
+            ));
+            $count = (int)$collection->count();
+            $limit = max(1, min($count, 5000));
+            $products = $collection->getProducts('*,skus_filtered,skus_image', 0, $limit);
+            $this->view->assign('pages_count', 1);
+            $this->view->assign('products', $products);
+            $this->view->assign('products_count', $count);
+            $this->view->assign('oftalm_v2_full', true);
+        } else {
+            $this->setCollection($collection, $products_per_page);
+        }
 
         $filter_data = waRequest::get();
         $filters = array();

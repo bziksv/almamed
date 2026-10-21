@@ -86,7 +86,7 @@
 
                 <!-- plugin hook: 'frontend_product.cart' -->
                 {* @event frontend_product.%plugin_id%.cart *}
-                {foreach $frontend_product as $k => $_}{if $k !== 'quickorder-plugin'}{$_.cart}{/if}{/foreach}
+                {foreach $frontend_product as $k => $_}{if $k !== 'quickorder-plugin' && is_array($_) && isset($_.cart)}{$_.cart}{/if}{/foreach}
 
             </div>
 
@@ -94,7 +94,7 @@
             {* @event frontend_product.%plugin_id%.block_aux *}
             {if !empty($frontend_product)}
             <div class="aux">
-                {foreach $frontend_product as $_}{$_.block_aux}{/foreach}
+                {foreach $frontend_product as $_}{if is_array($_) && isset($_.block_aux)}{$_.block_aux}{/if}{/foreach}
             </div>
             {/if}
 
@@ -122,7 +122,7 @@
 
                     <!-- plugin hook: 'frontend_product.menu' -->
                     {* @event frontend_product.%plugin_id%.menu *}
-                    {foreach $frontend_product as $_}{$_.menu}{/foreach}
+                    {foreach $frontend_product as $_}{if is_array($_) && isset($_.menu)}{$_.menu}{/if}{/foreach}
                 </ul>
             </nav>
             {/if}
@@ -267,7 +267,7 @@
 
             <!-- plugin hook: 'frontend_product.block' -->
             {* @event frontend_product.%plugin_id%.block *}
-            {foreach $frontend_product as $_}{$_.block}{/foreach}
+            {foreach $frontend_product as $_}{if is_array($_) && isset($_.block)}{$_.block}{/if}{/foreach}
 
             {if count($product.categories) > 1}<!-- categories -->
                 <ul class="sub-links" id="product-categories">
@@ -296,19 +296,19 @@
 {$crossselling = $product->crossSelling(100)}
 
 {$uservaluerelateds = shopRelatedPlugin::frontendRelated($product->id)}
-{if $uservaluerelateds.view}
+{if !empty($uservaluerelateds.view)}
     {$product.related_view = $uservaluerelateds.view}
 {/if}
 
 
-{if $upselling || $crossselling || $uservaluerelateds.product.item}
+{if $upselling || $crossselling || !empty($uservaluerelateds.product.item)}
 
     {foreach $uservaluerelateds.product.item as $k => $uservaluerelated}
         {if isset($uservaluerelated) && $uservaluerelated}
         {$name_related = "title_name_related_$k"}
         <section class="related fill-background">
             <div class="h3">
-                {if $uservaluerelateds.product.title[$k]}
+                {if !empty($uservaluerelateds.product.title[$k])}
                     {$uservaluerelateds.product.title[$k]}
                 {else}
                     {$product.$name_related}

@@ -14,7 +14,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-PHP_BIN="${PHP_BIN:-/opt/homebrew/opt/php@7.2/bin/php}"
+PHP_BIN="${PHP_BIN:-/opt/homebrew/opt/php@8.2/bin/php}"
 DRY_RUN=0
 ASSUME_YES=0
 

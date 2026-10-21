@@ -2,7 +2,8 @@
 
 {$at = []}
 
-{* IE *}
+{* IE — $matches must exist before preg_match (PHP 8: cannot write ->value on null) *}
+{$matches = []}
 {$at['ie'] = preg_match("/(MSIE)(?:\/| )([0-9.]+)/", $wa->userAgent(), $matches)}
 {if $at['ie']}{$at['ie'] = $matches[2]}{/if}
 

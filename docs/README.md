@@ -14,7 +14,7 @@
 | Production | almamed.su | 7.2 | `/var/www/almamed.su/data/www/almamed.su/` |
 | Dev (staging) | dev.almamed.su | — | тема `main_05_2021` |
 | Test | almamed-test.ru | — | тема `main_05_2021` |
-| Local | localhost:8080 | **7.2** | `~/Documents/projects/almamed/` |
+| Local | localhost:8080 | **8.2** | `~/Documents/projects/almamed/` |
 
 ---
 
@@ -33,7 +33,7 @@
 
 Проверить версии:
 ```bash
-/opt/homebrew/opt/php@7.2/bin/php -r "
+/opt/homebrew/opt/php@8.2/bin/php -r "
 require 'wa-config/SystemConfig.class.php';
 \$wa = waSystem::getInstance(null, new SystemConfig());
 echo wa()->getVersion('webasyst'), PHP_EOL;
@@ -103,7 +103,7 @@ $routes['almamed.su:8080'] = 'almamed.su';
 ```
 almamed/
 ├── index.php              # фронт-контроллер
-├── start-dev.sh           # nginx + php-fpm 7.2 (local)
+├── start-dev.sh           # nginx + php-fpm 8.2 (local)
 ├── stop-dev.sh            # остановка local stack
 ├── .local/                # nginx/php-fpm конфиги (только local)
 │   ├── nginx/nginx.conf
@@ -145,7 +145,7 @@ almamed/
 ```bash
 ./start-dev.sh
 # → http://localhost:8080/
-# nginx + php-fpm 7.2 (OPcache), порт FPM 9072
+# nginx + php-fpm 8.2 (OPcache), порт FPM 9072
 ./stop-dev.sh   # остановить
 ```
 
@@ -174,7 +174,7 @@ curl -sS http://localhost:8080/.local/opcache-check.php   # opcache_enabled=1
 
 Local → **MySQL 8.0** на `127.0.0.1:3306`, БД `almamed_su_db`, user `almamed` / `localdev`.
 
-> MySQL 9 несовместим с PHP 7.2. Локально: **mysql@8.0** (`brew services stop mysql`).  
+> Локально: **mysql@8.0** (`brew services stop mysql`) — не MySQL 9.  
 > `sql_mode` без `ONLY_FULL_GROUP_BY` (как на prod) — иначе Shop-Script падает с **error 3065**.
 
 | Файл | Назначение |

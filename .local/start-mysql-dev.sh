@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Локальный MySQL 8.0 для PHP 7.2 (не MySQL 9.x).
+# Локальный MySQL 8.0 (не MySQL 9.x).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 RUN_DIR="$ROOT/.local/run"
 MYSQL80=/opt/homebrew/opt/mysql@8.0
-PHP72=/opt/homebrew/opt/php@7.2
+PHP82=/opt/homebrew/opt/php@8.2
 CNF="$ROOT/.local/mysql/dev.cnf"
 LOG="$RUN_DIR/mysql.log"
 LOCK="$RUN_DIR/mysql-start.lockdir"
@@ -21,7 +21,7 @@ fi
 trap 'rmdir "$LOCK" 2>/dev/null || true' EXIT
 
 php_db_ok() {
-  "$PHP72/bin/php" -r "
+  "$PHP82/bin/php" -r "
     \$c = include '$ROOT/wa-config/db.php';
     \$d = \$c['default'];
     \$m = @new mysqli(\$d['host'] ?: 'localhost', \$d['user'], \$d['password'], \$d['database']);

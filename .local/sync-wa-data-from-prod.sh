@@ -27,7 +27,7 @@ ENV_FILE="$ROOT/.local/sync-prod.env"
 PROD_SSH="${PROD_SSH:-root@45.90.35.63}"
 PROD_PATH="${PROD_PATH:-/var/www/almamed.su/data/www/almamed.su/}"
 RSYNC_BIN="${RSYNC_BIN:-$(command -v rsync || echo /opt/homebrew/bin/rsync)}"
-PHP_BIN="${PHP_BIN:-/opt/homebrew/opt/php@7.2/bin/php}"
+PHP_BIN="${PHP_BIN:-/opt/homebrew/opt/php@8.2/bin/php}"
 
 MODE="products"
 DELETE=""
