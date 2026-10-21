@@ -1694,7 +1694,9 @@ SQL;
                             $values = array_filter($values, 'wa_is_int');
                             $feature_conditions[] = "(feature_id = ".((int)$feature_id)." AND feature_value_id IN (".join(',', $values)."))";
                         }
-                        $feature_conditions = join("\n\tOR ", $feature_conditions);
+                        // Count before join: PHP 8 count(string) is TypeError. PHP 7 counted the joined string as 1.
+                        $match_count_needed = is_array($feature_conditions) ? count($feature_conditions) : 0;
+                        $feature_conditions = is_array($feature_conditions) ? join("\n\tOR ", $feature_conditions) : '';
 
                         if ($feature_conditions) {
 
@@ -1716,7 +1718,6 @@ SQL;
                             }
 
                             // Remove SKUs that do not match all the conditions
-                            $match_count_needed = count($feature_conditions);
                             foreach($skus as $sku_id => $sku) {
                                 $match_count = 0;
                                 if (isset($sku['matches_feature'])) {

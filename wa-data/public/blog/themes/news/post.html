@@ -1,6 +1,8 @@
 {strip}
     {function addProductText hash=null}
         {if $hash}
+            {* $match must exist before preg_match_all: PHP 8 writes the 3rd arg by reference and fatals if the Smarty var is null *}
+            {$match = array()}
             {if preg_match_all("/\{(.*?)\}/", $hash, $match)}
                 {foreach from=$match[1] key=Id item=m}
                     {if (stripos($m,','))}

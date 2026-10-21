@@ -2894,6 +2894,24 @@ static public $yy_action = array(
                     $this->_retvalue = $func_name.'('.$this->yystack[$this->yyidx + -1]->minor[0].')';
                 }
             } else {
+                // PHP 8 fatals on ->value when a Smarty var was never created and is passed by reference
+                // (ifset/ifempty, preg_match/preg_match_all).
+                $wa_ref_args = array();
+                if ($func_name === 'ifset' || $func_name === 'ifempty') {
+                    $wa_ref_args = array(0);
+                } elseif ($func_name === 'preg_match' || $func_name === 'preg_match_all') {
+                    $wa_ref_args = array(2);
+                }
+                foreach ($wa_ref_args as $wa_i) {
+                    if (!isset($this->yystack[$this->yyidx + -1]->minor[$wa_i])) {
+                        continue;
+                    }
+                    $wa_arg = $this->yystack[$this->yyidx + -1]->minor[$wa_i];
+                    if (preg_match('/^\$_smarty_tpl->tpl_vars\[(.+)\]->value$/', $wa_arg, $wa_m)) {
+                        $wa_var = $wa_m[1];
+                        $this->compiler->prefix_code[] = '<?php if (!isset($_smarty_tpl->tpl_vars['.$wa_var.']) || !is_object($_smarty_tpl->tpl_vars['.$wa_var.'])) { $_smarty_tpl->tpl_vars['.$wa_var.'] = new Smarty_Variable(null); } ?>';
+                    }
+                }
                 $this->_retvalue = $this->yystack[$this->yyidx + -3]->minor . "(". implode(',',$this->yystack[$this->yyidx + -1]->minor) .")";
             }
         } else {
