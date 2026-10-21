@@ -71,7 +71,6 @@ class shopNbpopupformPluginFrontendSendController extends waJsonController
         $mail_message = new waMailMessage($subject, $output);
         $mail_message->setFrom($shop_email, 'АльмаМед');
         $mail_message->setTo($manager_email, 'АльмаМед');
-
         $mail_ok = $mail_message->send();
 
         if (!empty(wa('shop')->getConfig()->getPlugins()['leads'])) {

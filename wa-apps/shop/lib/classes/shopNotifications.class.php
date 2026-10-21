@@ -39,7 +39,8 @@ class shopNotifications
                     if (method_exists('shopNotifications', $method)) {
                         try {
                             self::$method($n, $data);
-                        } catch (Exception $ex) {
+                        } catch (Throwable $ex) {
+                            // PHP 8+: TypeError/Error must not break checkout after order is created
                             $error = sprintf(
                                 'Unable to send %s notifications for order %s: %s',
                                 ucfirst($n['transport']),
@@ -446,7 +447,8 @@ SQL;
         $subject = $view->fetch('string:'.$n['subject']);
         $body = $view->fetch('string:'.$n['body']);
 
-        $message = new waMailMessage($subject, $body);
+        $content_type = preg_match('/<[a-z][\s\S]*>/i', $body) ? 'text/html' : 'text/plain';
+        $message = new waMailMessage($subject, $body, $content_type);
         $message->setTo($to);
         if ($n['to'] == 'admin') {
             if ($customer_email = $customer->get('email', 'default')) {

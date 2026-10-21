@@ -39,28 +39,32 @@
             .before(`<a href="/webasyst/shop/?action=products#/products/category_id=${$(value).val()}" target="_blank"> >>> </a>`);
     });
 
-    var $select2 = $('div.value.s-product-categories').filter(function() {
-            return $(this).css('display') != 'none';
-        }
-    ).find('select.s-product-categories');
+    // select2 есть только в бэкенде (backend.html). На витрине плагин не подключён —
+    // вызов .select2() даёт TypeError и рвёт остальной JS у залогиненных менеджеров.
+    if ($.fn.select2) {
+        var $select2 = $('div.value.s-product-categories').filter(function() {
+                return $(this).css('display') != 'none';
+            }
+        ).find('select.s-product-categories');
 
-    $select2.select2({
-        width: '70%',
-        matcher: matchStart
-    });
+        $select2.select2({
+            width: '70%',
+            matcher: matchStart
+        });
 
-    $(".s-category-action a.js-action").on("click", function () {
-        var $self = $(this);
+        $(".s-category-action a.js-action").on("click", function () {
+            var $self = $(this);
 
-        setTimeout(function () {
+            setTimeout(function () {
 
-            let select = $self.closest('.field').find('div.value.s-product-categories.no-shift');
-            select.last().find('select.s-product-categories').select2({
-                matcher: matchStart
-            });
-            select.last().after(select.eq(select.length - 2));
-        }, 500);
-    });
+                let select = $self.closest('.field').find('div.value.s-product-categories.no-shift');
+                select.last().find('select.s-product-categories').select2({
+                    matcher: matchStart
+                });
+                select.last().after(select.eq(select.length - 2));
+            }, 500);
+        });
+    }
 
 })(jQuery);
 

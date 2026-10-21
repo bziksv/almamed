@@ -811,7 +811,8 @@ abstract class waBaseForgotPasswordAction extends waLoginModuleController
         }
         $this->view->clearAllAssign();
         try {
-            $m = new waMailMessage($subject, $body);
+            $content_type = (preg_match('/<[a-z][\s\S]*>/i', $body)) ? 'text/html' : 'text/plain';
+            $m = new waMailMessage($subject, $body, $content_type);
             $m->setTo($to);
             return (bool)$m->send();
         } catch (Exception $e) {

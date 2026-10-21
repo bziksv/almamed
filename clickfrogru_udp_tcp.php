@@ -48,7 +48,7 @@ class ClickfrogUDPSender
 			if(isset($_SERVER[$h]))
 				$srv[$h] = $_SERVER[$h];
 		if(count($srv) == 0)
-			exit;
+			return 0;
 			
 		$msg = 'header='.@urlencode(@json_encode($srv));
 		$msg_id = self::msgid($msg);
@@ -68,12 +68,15 @@ class ClickfrogUDPSender
 				$err_id = 1;
 				break;
 			}			
-		}		
-		@fclose($s_udp);
+		}
+		// PHP 8.2: fclose(false) is TypeError (not Exception) → HTTP 500 after OK body
+		if ($s_udp) {
+			@fclose($s_udp);
+		}
 		if($err_id!== false && $err_id === 1)			
 			self::sendto_tcp($msg);
 		}
-		catch(Exception $e) { } 
+		catch(Throwable $e) { } 
 	}
 	
 	private static function sendto_tcp($msg)
@@ -103,7 +106,7 @@ class ClickfrogUDPSender
 				fclose($fp);   
 			}
 		}
-		catch(Exception $e) {
+		catch(Throwable $e) {
 		} 
 	}
 	

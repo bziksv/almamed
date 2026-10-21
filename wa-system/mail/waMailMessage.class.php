@@ -148,6 +148,14 @@ class waMailMessage extends Swift_Message
                 $this->setFrom($from);
             }
         }
+
+        // Never multipart via PHP mail() — outer Content-Type is lost and clients show raw MIME.
+        // Always single part, 8bit UTF-8, no line wrap (QP shows as =D0=… / href=3D).
+        if (class_exists('Swift_Encoding')) {
+            $this->setCharset('utf-8');
+            $this->setEncoder(Swift_Encoding::get8BitEncoding());
+            $this->setMaxLineLength(0);
+        }
         $mailer = new waMail(waMail::getTransportByEmail(key($this->getFrom())));
         return $mailer->send($this);
     }

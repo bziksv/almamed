@@ -427,7 +427,20 @@ class waVerificationChannelEmail extends waVerificationChannel
         }
 
         try {
-            $m = new waMailMessage($subject, $body);
+            // PHP mail() often delivers HTML as raw tags / broken multipart.
+            // Verification mail (recovery etc.) → always readable text/plain, 8bit UTF-8.
+            if (preg_match('/<[a-z][\s\S]*>/i', $body)) {
+                $body = preg_replace('/<a\s[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>/is', '$2 <$1>', $body);
+                $body = str_ireplace(
+                    array('<br>', '<br/>', '<br />', '</p>', '</div>', '</h1>', '</h2>', '</h3>'),
+                    "\n",
+                    $body
+                );
+                $body = html_entity_decode(strip_tags($body), ENT_QUOTES, 'UTF-8');
+                $body = preg_replace("/[ \t]+/u", ' ', $body);
+                $body = preg_replace("/\n{3,}/", "\n\n", trim($body));
+            }
+            $m = new waMailMessage($subject, $body, 'text/plain');
             $m->setTo($recipient['email'], isset($recipient['name']) ? $recipient['name'] : null);
             $from = $this->getAddress();
             if ($from) {

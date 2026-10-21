@@ -37,7 +37,14 @@ class shopSearchproV2SearchService
 			return $result;
 		}
 
-		foreach ($this->buildFallbackQueries($query) as $corrected_query) {
+		// Dropdown (live suggest): already have hits — do not fan out up to ~28
+		// typo/layout retries (multiplies latency while typing). Keep fan-out for empty.
+		if ($this->context === 'dropdown' && $result->count > 0) {
+			return $result;
+		}
+
+		$fallback_limit = ($this->context === 'dropdown') ? 8 : 28;
+		foreach (array_slice($this->buildFallbackQueries($query), 0, $fallback_limit) as $corrected_query) {
 			$retry = $this->suggestOnce($corrected_query, $category_id);
 			if ($retry->count <= 0) {
 				continue;
