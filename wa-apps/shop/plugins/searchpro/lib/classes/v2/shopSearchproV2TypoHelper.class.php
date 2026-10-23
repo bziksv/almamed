@@ -93,12 +93,14 @@ class shopSearchproV2TypoHelper
 			}
 		}
 
-		if ($settings && $settings->get('grams_status')) {
+		// Skip grams on short prefixes (live typing) — high RPS × heavy SQL.
+		if ($settings && $settings->get('grams_status') && mb_strlen($query, 'UTF-8') >= 5) {
 			try {
 				$corrector = new shopSearchproGramsCorrector(array(
-					'grams_mode' => $settings->get('grams_mode'),
+					'grams_mode' => $settings->get('grams_mode') ?: 'match_against',
 				));
-				$fixed = $corrector->fixQuery($query, $settings->get('grams_mode'));
+				$mode = $settings->get('grams_mode') ?: 'match_against';
+				$fixed = $corrector->fixQuery($query, $mode);
 				if ($fixed && $fixed !== $query && self::isAcceptableGramsFix($query, $fixed)) {
 					$candidates[] = $fixed;
 				}

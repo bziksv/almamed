@@ -10,6 +10,7 @@ return array(
 		':keys' => array(
 			'PRIMARY' => 'id',
 			'grams' => array('grams', 'fulltext' => 1),
+			'word' => 'word',
 		),
 	),
 	'shop_searchpro_query' => array(

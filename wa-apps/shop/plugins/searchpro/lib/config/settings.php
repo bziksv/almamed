@@ -16,7 +16,8 @@ return array(
 			'match_status' => '1',
 			'translate_status' => '1',
 			'grams_status' => '1',
-			'grams_mode' => 'like',
+			// FULLTEXT — legacy multi-LIKE scoring caused multi-second "Creating sort index"
+			'grams_mode' => 'match_against',
 			'keyboard_layout_status' => '1',
 			'keyboard_layout_mode' => 'smart',
 			'combine_status' => 'KeyboardLayout+Grams',

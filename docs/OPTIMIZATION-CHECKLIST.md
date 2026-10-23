@@ -121,6 +121,19 @@ CLI-компоненты (warm finder ~11 ms, `getCollectionCategories` ~2 ms): 
 2. Не отключать при деплое (настройки в `wa_app_settings`, app `shop.searchpro`).
 3. После массового импорта товаров — сброс `wa-cache` / дождаться TTL.
 
+### Bailout/LA fix 2026-10-23 (s1)
+
+Причина пиков LA: `grams_mode=like` → SQL с десятками `if(word LIKE…)` / `Creating sort index` (~5.5k slow queries в хвосте лога).
+
+| Мера | Где |
+|------|-----|
+| `grams_mode=match_against` | `shop_searchpro_storefront_settings` (`*`) |
+| Убран legacy LIKE-scoring; prefix &lt;5 → `word LIKE 'x%'` | `shopSearchproGrams.model.php` |
+| INDEX `word` | `shop_searchpro_grams` |
+| nginx `limit_req` suggest 60r/m, `/search/` 30r/m | `almamed.su.conf` |
+| PHP soft 429 60/min/IP | `FrontendSuggest.controller.php` |
+| Кэш dropdown 43200 / page 86400 | уже было |
+
 ---
 
 ## `/brands/` — детали
