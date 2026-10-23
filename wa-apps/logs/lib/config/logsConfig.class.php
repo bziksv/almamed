@@ -36,7 +36,7 @@ class logsConfig extends waAppConfig
         //notify user on large logs size
         $csm = new waContactSettingsModel();
         $large_logs_notify = $csm->getOne(wa()->getUser()->getId(), 'logs', 'large_logs_notify');
-        $large_logs_notify = strlen($large_logs_notify) ? (bool) (int) $large_logs_notify : true;    //enabled by default
+        $large_logs_notify = strlen((string)$large_logs_notify) ? (bool) (int) $large_logs_notify : true;    //enabled by default
         if ($large_logs_notify) {
             $total_size = logsHelper::getTotalLogsSize();
             if (logsHelper::isLargeSize($total_size)) {

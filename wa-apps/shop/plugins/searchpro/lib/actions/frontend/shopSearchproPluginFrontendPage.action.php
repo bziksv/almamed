@@ -858,6 +858,7 @@ class shopSearchproPluginFrontendPageAction extends shopFrontendAction
 		}
 
 		$query = $this->query;
+		$categories = isset($this->categories) ? $this->categories : array();
 
 		$params = compact('products', 'query', 'categories', 'is_empty');
 		$params = array_merge($this->default_action_params , $params);

@@ -10,6 +10,7 @@
  * @property-read string $unit_name
  * @property-read string $units
  */
+#[\AllowDynamicProperties]
 class shopDimensionValue implements ArrayAccess
 {
     private $value;

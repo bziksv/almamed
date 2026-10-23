@@ -149,7 +149,9 @@ class waDateTime
      */
     public static function date($format, $time = null, $timezone = null, $locale = null)
     {
-        if (is_numeric($time) && (strlen($time)!= 8) && ($time < PHP_INT_MAX)) {
+        if ($time === null) {
+            $time = 'now';
+        } elseif (is_numeric($time) && (strlen($time)!= 8) && ($time < PHP_INT_MAX)) {
             $time = date('Y-m-d H:i:s', $time);
         }
         try {

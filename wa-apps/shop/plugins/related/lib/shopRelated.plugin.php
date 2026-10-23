@@ -47,6 +47,7 @@ class shopRelatedPlugin extends shopPlugin
         });
 
         $related_key = array_keys($related_value);
+        $title = array();
         foreach ($related_key as $type){
             $sort = substr(strrchr($type, "_"), 1);
             $title[$type] = ($plugin->getSettings('title_'.$type.'_'.$product->id)) ?: $product['title_name_related_'.$sort];

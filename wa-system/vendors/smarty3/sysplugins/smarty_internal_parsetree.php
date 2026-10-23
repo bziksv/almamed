@@ -15,6 +15,7 @@
  * @subpackage Compiler
  * @ignore
  */
+#[\AllowDynamicProperties]
 abstract class _smarty_parsetree {
 
     /**
@@ -131,6 +132,9 @@ class _smarty_code extends _smarty_parsetree {
  * @ignore
  */
 class _smarty_doublequoted extends _smarty_parsetree {
+
+    /** @var _smarty_parsetree[] */
+    public $subtrees = array();
 
     /**
      * Create parse tree buffer for double quoted string subtrees

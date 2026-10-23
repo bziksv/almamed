@@ -149,6 +149,21 @@ abstract class Smarty_Internal_TemplateCompilerBase {
      */
     public $known_modifier_type = array();
 
+    /** @var array prefix code emitted before current tag (PHP 8.2+) */
+    public $prefix_code = array();
+
+    /** @var bool */
+    public $has_variable_string = false;
+
+    /** @var bool compiled tag produced PHP code */
+    public $has_code = true;
+
+    /** @var bool compiled tag produced output */
+    public $has_output = false;
+
+    /** @var array capture stack while compiling */
+    public $_capture_stack = array();
+
     /**
      * Methode to compile a Smarty template
      *

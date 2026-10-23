@@ -413,9 +413,9 @@ SQL;
         if (!isset($product['image_filename'])) {
             $p = $this->wa()->getView()->getVars('product');
             /**
-             * @var array $p
+             * @var array|ArrayAccess|null $p
              */
-            if ($p && ($p['id'] == $product['id'])) {
+            if (!empty($p['id']) && $p['id'] == $product['id'] && isset($p['images'][$product['image_id']]['filename'])) {
                 $product['image_filename'] = $p['images'][$product['image_id']]['filename'];
             }
         }
@@ -424,7 +424,7 @@ SQL;
             if (empty($p)) {
                 $p = $this->wa()->getView()->getVars('product');
             }
-            if ($p && ($p['id'] == $product['id'])) {
+            if (!empty($p['id']) && $p['id'] == $product['id'] && isset($p['images'][$product['image_id']]['description'])) {
                 $product['image_description'] = $p['images'][$product['image_id']]['description'];
             }
         }
@@ -654,8 +654,8 @@ SQL;
             if ($c['parent_id'] && $c['id'] != $id && !isset($cats[$c['parent_id']])) {
                 unset($cats[$c_id]);
             } else {
-                $cats[$c_id]['url'] = str_replace('%CATEGORY_URL%', isset($route['url_type']) && $route['url_type'] == 1 ? $c['url'] : $c['full_url'], $url);
-                $cats[$c_id]['name'] = htmlspecialchars($cats[$c_id]['name']);
+                $cats[$c_id]['url'] = str_replace('%CATEGORY_URL%', isset($route['url_type']) && $route['url_type'] == 1 ? $c['url'] : $c['full_url'], (string)$url);
+                $cats[$c_id]['name'] = htmlspecialchars((string)$cats[$c_id]['name']);
             }
         }
 

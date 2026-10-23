@@ -9,6 +9,7 @@
 * @author Uwe Tews
 */
 
+#[\AllowDynamicProperties]
 class TP_yyToken implements ArrayAccess
 {
     public $string = '';
@@ -34,16 +35,19 @@ class TP_yyToken implements ArrayAccess
         return $this->_string;
     }
 
+    #[\ReturnTypeWillChange]
     function offsetExists($offset)
     {
         return isset($this->metadata[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     function offsetGet($offset)
     {
         return $this->metadata[$offset];
     }
 
+    #[\ReturnTypeWillChange]
     function offsetSet($offset, $value)
     {
         if ($offset === null) {
@@ -67,6 +71,7 @@ class TP_yyToken implements ArrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     function offsetUnset($offset)
     {
         unset($this->metadata[$offset]);
@@ -84,6 +89,7 @@ class TP_yyStackEntry
 
 
 #line 12 "smarty_internal_templateparser.y"
+#[\AllowDynamicProperties]
 class Smarty_Internal_Templateparser#line 79 "smarty_internal_templateparser.php"
 {
 #line 14 "smarty_internal_templateparser.y"
@@ -97,6 +103,19 @@ class Smarty_Internal_Templateparser#line 79 "smarty_internal_templateparser.php
     private $lex;
     private $internalError = false;
     private $strip = false;
+    /** @var object */
+    public $compiler;
+    /** @var Smarty */
+    public $smarty;
+    public $template;
+    public $prefix_number = 0;
+    public $block_nesting_level = 0;
+    public $security;
+    public $php_handling;
+    public $is_xml = false;
+    public $asp_tags = false;
+    public $current_buffer;
+    public $root_buffer;
 
     function __construct($lex, $compiler) {
         $this->lex = $lex;

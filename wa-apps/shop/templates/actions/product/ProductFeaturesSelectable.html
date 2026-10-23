@@ -4,27 +4,33 @@
             <div class="block not-padded right-padded">
                 <ul class="menu-v with-icons features">
                     {foreach $features as $code => $f}
+                        {if is_array($f)}
                         <li class="{if $f@first}selected{/if}" data-feature-id="{$f.id}" data-feature-code="{$f.code|escape}">
                             <a href="#">
                                 <strong class="count">{$f.selected|string_format:'%d'}</strong>
                                 <i class="icon16 {if $f.selected}status-blue-tiny{else}status-gray-tiny{/if}"></i>{$f.name}
                             </a>
                         </li>
+                        {/if}
                     {/foreach}
                 </ul>
             </div>
         </div>
         <div class="content left150px bordered-left">
             {foreach $features as $code => $f}
+                {if is_array($f)}
                 <div class="sidebar left150px feature-values" data-feature-id="{$f.id}" {if !$f@first}style="display:none;"{/if}>
                     <div class="block not-padded right-padded left-padded">
                         <ul class="menu-v values">
                             {foreach $f['values'] as $v_id => $v}
+                                {if is_array($v)}
                                 <li style="white-space: nowrap;"><label><input type="checkbox" name="product[features_selectable][{$code}][{$v_id}]" value="{$v_id}" {if $v.selected}checked{/if}> {$v.html|default:$v.value}</label></li>
+                                {/if}
                             {/foreach}
                         </ul>
                     </div>
                 </div>
+                {/if}
             {/foreach}
             <div class="content left200px bordered-left s-selectable-features-box">
                 <div class="block not-padded right-padded left-padded">

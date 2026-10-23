@@ -42,6 +42,9 @@ class shopSearchproKeyboardLayoutCorrector extends shopSearchproCorrector
 
 	public $mode = 'smart';
 
+	/** @var shopSearchproKeyboardLayoutSmartCorrector|null */
+	protected $smart_corrector;
+
 	public function setMode($mode)
 	{
 		$this->mode = $mode;
