@@ -140,6 +140,73 @@ class shopXmlPluginExportService
 		}
 	}
 
+	/**
+	 * Удалить рабочую папку одного экспорта (partial.xml / partial.zip).
+	 * Финальные import.xml / import_files.zip в корне сайта не трогаем.
+	 */
+	public function cleanupWorkDir($dir)
+	{
+		$dir = rtrim((string) $dir, '/\\');
+		if ($dir === '' || !is_dir($dir)) {
+			return false;
+		}
+		$export_root = rtrim($this->getExportRoot(), '/\\');
+		// safety: только внутри plugins/xml/export/
+		if ($export_root === '' || strpos($dir, $export_root) !== 0) {
+			return false;
+		}
+		try {
+			waFiles::delete($dir, true);
+			return true;
+		} catch (Exception $e) {
+			$this->log('cleanupWorkDir failed: ' . $dir . ' — ' . $e->getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Удалить брошенные/старые process-папки export/{id}/ старше $max_age_days суток.
+	 * Незавершённые экспорты и забытые partial.zip иначе копятся гигабайтами.
+	 *
+	 * @return int число удалённых каталогов
+	 */
+	public function cleanupStaleExports($max_age_days = 3)
+	{
+		$max_age_days = max(1, (int) $max_age_days);
+		$root = $this->getExportRoot();
+		if (!is_dir($root)) {
+			return 0;
+		}
+
+		$cutoff = time() - ($max_age_days * 86400);
+		$removed = 0;
+		foreach (scandir($root) as $name) {
+			if ($name === '.' || $name === '..') {
+				continue;
+			}
+			$path = $root . $name;
+			if (!is_dir($path)) {
+				continue;
+			}
+			$mtime = @filemtime($path);
+			if ($mtime === false || $mtime > $cutoff) {
+				continue;
+			}
+			if ($this->cleanupWorkDir($path)) {
+				$removed++;
+			}
+		}
+		if ($removed) {
+			$this->log('cleanupStaleExports: removed ' . $removed . ' dir(s) older than ' . $max_age_days . 'd');
+		}
+		return $removed;
+	}
+
+	public function getExportRoot()
+	{
+		return wa()->getDataPath('plugins/xml/export/', true, 'shop', true);
+	}
+
 	public function getDefaultOutputPaths()
 	{
 		$root = wa()->getConfig()->getPath('root');
@@ -209,6 +276,8 @@ class shopXmlPluginExportService
 		fclose($fd);
 
 		$this->publishExport($work['partial_xml'], $final_xml, $final_zip, $work['partial_zip']);
+		$this->cleanupWorkDir($work['dir']);
+		$this->cleanupStaleExports(3);
 
 		return array(
 			'products' => $total,

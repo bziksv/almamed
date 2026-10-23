@@ -59,6 +59,9 @@ class shopXmlPluginBackendRunController extends waLongActionController
 			$params['category_roots'] = $all_cat;
 		}
 
+		// подчистить брошенные partial.zip от прошлых прогонов
+		$this->export_service->cleanupStaleExports(3);
+
 		$paths = $this->export_service->getWorkPath($this->processId);
 		waFiles::create($paths['dir']);
 
@@ -178,6 +181,8 @@ class shopXmlPluginBackendRunController extends waLongActionController
 			$this->data['output']['zip'],
 			$this->data['paths']['partial_zip']
 		);
+		// partial уже скопированы в корень — рабочую папку processId можно снести
+		$this->export_service->cleanupWorkDir(ifset($this->data, 'paths', 'dir', ''));
 
 		$duration = time() - (int) $this->data['started_at'];
 		$this->appendLog('Готово: ' . $this->data['total'] . ' товаров, изображений в архиве: ' . (int) $this->data['images_added']);

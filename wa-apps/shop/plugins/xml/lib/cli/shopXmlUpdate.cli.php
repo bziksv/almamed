@@ -10,6 +10,11 @@ class shopXmlUpdateCli extends waCliController
 		$cat_parent = $plugin->getFullTree(false, true, array(), true);
 		$root = wa()->getConfig()->getPath('root') . DIRECTORY_SEPARATOR;
 
+		$stale = $service->cleanupStaleExports(3);
+		if ($stale) {
+			echo "Cleaned {$stale} stale export dir(s) older than 3 days\n";
+		}
+
 		if (!is_dir($root . 'bx-import')) {
 			waFiles::create($root . 'bx-import');
 		}
