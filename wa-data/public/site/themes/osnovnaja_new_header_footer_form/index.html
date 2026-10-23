@@ -287,7 +287,7 @@
 </script>
 {/if}
 
-<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js" defer></script>
+<script src="{$wa_theme_url}vendor/js/lazyload.min.js?v{$wa_theme_version}" defer></script>
 <script defer>
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof jQuery === 'undefined' || typeof LazyLoad === 'undefined') {
@@ -335,9 +335,9 @@
     });
 </script>
 
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" media="print" onload="this.media='all'"/>
-<noscript><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/></noscript>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js" defer></script>
+<link rel="stylesheet" type="text/css" href="{$wa_theme_url}vendor/css/slick.css?v{$wa_theme_version}" media="print" onload="this.media='all'"/>
+<noscript><link rel="stylesheet" type="text/css" href="{$wa_theme_url}vendor/css/slick.css?v{$wa_theme_version}"/></noscript>
+<script type="text/javascript" src="{$wa_theme_url}vendor/js/slick.min.js?v{$wa_theme_version}" defer></script>
 <script defer>
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof jQuery === 'undefined' || !jQuery.fn.slick) {

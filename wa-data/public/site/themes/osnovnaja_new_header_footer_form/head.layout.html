@@ -1,16 +1,12 @@
 {strip}
 
-{* fonts — preconnect сокращает cold load на ~200–400 ms *}
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{* fonts — локально (без Google Fonts / gstatic) *}
 <link rel="dns-prefetch" href="https://mc.yandex.ru">
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
-<link href='//fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic,latin&amp;display=swap' rel='stylesheet' type='text/css' media="print" onload="this.media='all'">
-<noscript><link href='//fonts.googleapis.com/css?family=Roboto:400,500,700&amp;subset=cyrillic,latin&amp;display=swap' rel='stylesheet' type='text/css'></noscript>
+<link href="{$wa_theme_url}vendor/css/roboto.css?v{$wa_theme_version}" rel="stylesheet" type="text/css" media="print" onload="this.media='all'">
+<noscript><link href="{$wa_theme_url}vendor/css/roboto.css?v{$wa_theme_version}" rel="stylesheet" type="text/css"></noscript>
 {* Material Icons — sync: иконки шапки/футера без скачка layout *}
-<link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=block" rel="stylesheet" type="text/css">
-<noscript><link href="//fonts.googleapis.com/icon?family=Material+Icons&amp;display=block" rel="stylesheet" type="text/css"></noscript>
+<link href="{$wa_theme_url}vendor/css/material-icons.css?v{$wa_theme_version}" rel="stylesheet" type="text/css">
 {if $wa->shop && $wa->shop->currency() == 'RUB'}<link href="{$wa_url}wa-content/font/ruble/arial/fontface.css" rel="stylesheet" type="text/css">{/if}
 
 {* css — некритичные таблицы стилей уходят в footer через speedup *}
