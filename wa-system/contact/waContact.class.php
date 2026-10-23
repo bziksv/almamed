@@ -408,10 +408,10 @@ class waContact implements ArrayAccess
             else {
                 // Contact without name derive firstname from email or phone
                 if ($field_id === 'firstname' &&
-                        !trim($result) &&
-                        !trim($this['middlename']) &&
-                        !trim($this['lastname']) &&
-                        !trim($this['company']))
+                        !trim((string) $result) &&
+                        !trim((string) $this['middlename']) &&
+                        !trim((string) $this['lastname']) &&
+                        !trim((string) $this['company']))
                 {
                     $emls = $this->get('email', 'value');
                     $emls = waUtils::toStrArray($emls);
@@ -1250,6 +1250,7 @@ class waContact implements ArrayAccess
         return 'offline';
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         //@TODO
@@ -1260,6 +1261,7 @@ class waContact implements ArrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->get($offset);
@@ -1379,11 +1381,13 @@ class waContact implements ArrayAccess
         }
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->set($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->data[$offset] = null;

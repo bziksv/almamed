@@ -270,7 +270,11 @@ class waResponse
     protected function header($string, $replace = true, $http_response_code = null)
     {
         if (!headers_sent()) {
-            header($string, $replace, $http_response_code);
+            if ($http_response_code === null) {
+                header($string, $replace);
+            } else {
+                header($string, $replace, (int) $http_response_code);
+            }
         }
     }
 

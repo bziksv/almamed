@@ -49,7 +49,7 @@ class shopWholesaleRouteHelper {
         }
     }
 
-    protected static function getRouteTemplate($route_hash = null, $template_id, $read = true) {
+    protected static function getRouteTemplate($route_hash = null, $template_id = null, $read = true) {
         if (empty(shopWholesalePlugin::$templates[$template_id])) {
             return false;
         }

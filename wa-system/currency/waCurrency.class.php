@@ -155,7 +155,7 @@ class waCurrency
         self::$format_data['locale']['id'] = $locale_id;
         self::$format_data['currency'] = $currency;
         $pattern = '/%([0-9]?\.?[0-9]?)([iw!kt]*)({[n|f|c|s|h][0-9]?})?/i';
-        $result = preg_replace_callback($pattern, array('self', 'replaceCallback'), $format);
+        $result = preg_replace_callback($pattern, array(__CLASS__, 'replaceCallback'), $format);
         if ($locale !== $old_locale) {
             wa()->setLocale($old_locale);
         }

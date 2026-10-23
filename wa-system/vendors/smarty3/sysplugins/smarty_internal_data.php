@@ -489,6 +489,20 @@ class Smarty_Variable {
      * @var int
      */
     public $scope = Smarty::SCOPE_LOCAL;
+    /** @var mixed foreach loop key (set by compiled templates) */
+    public $key = null;
+    /** @var int foreach loop index */
+    public $index = null;
+    /** @var bool foreach first iteration flag */
+    public $first = null;
+    /** @var bool foreach last iteration flag */
+    public $last = null;
+    /** @var int foreach total */
+    public $total = null;
+    /** @var bool foreach iteration flag used by compiled templates */
+    public $_loop = null;
+    /** @var int foreach iteration counter */
+    public $iteration = null;
 
     /**
      * create Smarty variable object

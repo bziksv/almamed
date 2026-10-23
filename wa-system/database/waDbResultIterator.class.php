@@ -57,6 +57,7 @@ class waDbResultIterator implements Iterator
      *
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->current;
@@ -67,6 +68,7 @@ class waDbResultIterator implements Iterator
      *
      * @return int
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         if ($this->key >= $this->count()) {
@@ -81,6 +83,7 @@ class waDbResultIterator implements Iterator
      *
      * @return array
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->key++;
@@ -92,6 +95,7 @@ class waDbResultIterator implements Iterator
      * Reset key
      * @return mixed|null
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->current = null;
@@ -113,6 +117,7 @@ class waDbResultIterator implements Iterator
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         if (!$this->count()) {

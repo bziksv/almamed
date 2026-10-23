@@ -96,7 +96,7 @@ Class shopProductmanagerPlugin extends shopPlugin {
             $plugin = wa('shop')->getPlugin('productmanager');
             $settings = $plugin->getSettings();
             if(strlen($settings['default_email']) > 1){
-                $arr_users['email'] = array(str_replace('info',waRequest::cookie('roistat_visit'),$settings['default_email']));
+                $arr_users['email'] = array(str_replace('info', (string) waRequest::cookie('roistat_visit'), (string) $settings['default_email']));
             }
 
             if($settings['mail_to']){

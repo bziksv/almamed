@@ -22,6 +22,12 @@
 class Smarty_Security {
 
     /**
+     * Owning Smarty instance (PHP 8.2+: must be declared)
+     * @var Smarty
+     */
+    public $smarty = null;
+
+    /**
      * This determines how Smarty handles "<?php ... ?>" tags in templates.
      * possible values:
      * <ul>

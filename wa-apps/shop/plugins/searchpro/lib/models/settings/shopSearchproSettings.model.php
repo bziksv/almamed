@@ -5,6 +5,8 @@ class shopSearchproSettingsModel extends waModel
 	protected $table = 'shop_searchpro_settings';
 	protected $storefront_model;
 	protected $theme_model;
+	/** @var array|null */
+	protected $settings;
 
 	public function __construct($type = null, $writable = false)
 	{

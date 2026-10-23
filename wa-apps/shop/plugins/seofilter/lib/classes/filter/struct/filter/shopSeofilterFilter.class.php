@@ -892,7 +892,7 @@ WHERE f.id IN (' . implode(',', $ids) . ')
 		}
 
 		$query = count($params)
-			? '?' . http_build_query($params, null, '&')
+			? '?' . http_build_query($params, '', '&')
 			: '';
 
 		return $url . $query;

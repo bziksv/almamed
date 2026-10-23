@@ -56,6 +56,7 @@ class shopSeoContext
 	private $brand_category_extender;
 	private $customs_view_buffer_modifier;
 	private $product_extender;
+	private $product_inner_extender;
 	private $product_data_collector;
 	private $product_data_renderer;
 	private $product_view_buffer_modifier;

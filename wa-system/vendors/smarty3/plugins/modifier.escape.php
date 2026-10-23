@@ -27,6 +27,10 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null, $
     if ($_double_encode === null) {
         $_double_encode = version_compare(PHP_VERSION, '5.2.3', '>=');
     }
+
+    if ($string === null) {
+        $string = '';
+    }
     
     if (!$char_set) {
         $char_set = Smarty::$_CHARSET;
@@ -36,7 +40,7 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null, $
         case 'html':
             if ($_double_encode) {
                 // php >=5.3.2 - go native
-                return htmlspecialchars($string, ENT_QUOTES, $char_set, $double_encode);
+                return htmlspecialchars((string) $string, ENT_QUOTES, $char_set, $double_encode);
             } else {
                 if ($double_encode) {
                     // php <5.2.3 - only handle double encoding

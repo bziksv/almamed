@@ -84,6 +84,7 @@ class waUser extends waContact
     }
 
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         parent::offsetSet($offset, $value);

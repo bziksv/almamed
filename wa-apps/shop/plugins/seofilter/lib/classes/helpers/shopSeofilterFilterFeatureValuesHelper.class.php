@@ -110,7 +110,7 @@ class shopSeofilterFilterFeatureValuesHelper
 
 	public static function key($params)
 	{
-		$query = http_build_query($params, null, '&');
+		$query = http_build_query($params, '', '&');
 
 		return $query;
 	}

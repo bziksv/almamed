@@ -35,7 +35,7 @@ class waContactNameField extends waContactStringField
         } else {
             $name = array();
             foreach(self::getNameOrder() as $part) {
-                if ( ($part = trim($contact[$part])) || $part === '0') {
+                if ( ($part = trim((string) $contact[$part])) || $part === '0') {
                     $name[] = $part;
                 }
             }
@@ -44,7 +44,7 @@ class waContactNameField extends waContactStringField
         }
         if (!$name && $name !== '0') {
             $email = $contact->get('email', 'default');
-            $name = strtok($email, '@');
+            $name = strtok((string) $email, '@');
         }
 
         return $this->format($name, $format);
@@ -58,11 +58,11 @@ class waContactNameField extends waContactStringField
         if ($contact['is_company']) {
             $name = $contact['company'];
         } else {
-            $fst = trim($contact['firstname']);
-            $mdl = trim($contact['middlename']);
-            $lst = trim($contact['lastname']);
-            $cmp = trim($contact['company']);
-            $eml = trim($contact->get('email', 'default'));
+            $fst = trim((string) $contact['firstname']);
+            $mdl = trim((string) $contact['middlename']);
+            $lst = trim((string) $contact['lastname']);
+            $cmp = trim((string) $contact['company']);
+            $eml = trim((string) $contact->get('email', 'default'));
 
             $name = array();
             if ($fst || $fst === '0' || $mdl || $mdl === '0' || $lst || $lst === '0')
@@ -99,7 +99,7 @@ class waContactNameField extends waContactStringField
 
     public function set(waContact $contact, $value, $params = array(), $add = false)
     {
-        $value = preg_replace('~\s+~u', ' ', trim($value));
+        $value = preg_replace('~\s+~u', ' ', trim((string) $value));
 
         if ($contact['name'] == $value) {
             return $contact['name'];
@@ -160,7 +160,7 @@ class waContactNameField extends waContactStringField
             $name = array();
             foreach(self::getNameOrder() as $part) {
                 if (!empty($contact[$part])) {
-                    if ( ($part = trim($contact[$part])) || $part === '0') {
+                    if ( ($part = trim((string) $contact[$part])) || $part === '0') {
                         $name[] = $part;
                     }
                 }

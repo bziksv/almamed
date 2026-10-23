@@ -354,7 +354,7 @@ class waTheme implements ArrayAccess
                             if (is_int($settings_group)) {
                                 $s['level'] = max(0, $settings_group);
                             } else {
-                                $s['level'] = strlen($settings_group) ? substr_count($settings_group, '/') + 1 : 0;
+                                $s['level'] = strlen((string) $settings_group) ? substr_count((string) $settings_group, '/') + 1 : 0;
                             }
 
                             $this->info['settings'][$var] = &$s;
@@ -567,7 +567,10 @@ class waTheme implements ArrayAccess
     {
         $xml_options = LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NONET;
         libxml_use_internal_errors(true);
-        libxml_disable_entity_loader(false);
+        if (PHP_VERSION_ID < 80000 && function_exists('libxml_disable_entity_loader')) {
+            // removed in PHP 8.0 — external entities already disabled by default
+            libxml_disable_entity_loader(false);
+        }
         libxml_clear_errors();
 
         if ($as_dom && !class_exists('DOMDocument')) {
@@ -1818,6 +1821,7 @@ HTACCESS;
      * @param mixed $offset
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         if ($this->getMethod($offset)) {
@@ -1831,6 +1835,7 @@ HTACCESS;
      * @param mixed $offset
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $value = null;
@@ -1860,6 +1865,7 @@ HTACCESS;
      * @param mixed $value
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $method_name = $this->getMethod($offset, 'set');
@@ -1899,6 +1905,7 @@ HTACCESS;
      * @param mixed $offset
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         if (is_null($this->info)) {

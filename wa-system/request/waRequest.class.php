@@ -248,7 +248,7 @@ class waRequest
         if (self::$mobile !== null) {
             return self::$mobile;
         }
-        $user_agent = self::server('HTTP_USER_AGENT');
+        $user_agent = (string) self::server('HTTP_USER_AGENT');
 
         $desktop_platforms = array(
             'ipad'       => 'ipad',
@@ -623,7 +623,7 @@ class waRequest
         if (!empty($_SERVER['HTTP_X_SCHEME']) && strtolower($_SERVER['HTTP_X_SCHEME']) == 'https') {
             return true;
         }
-        $http_cf_visitor = json_decode(self::server('HTTP_CF_VISITOR'), true);
+        $http_cf_visitor = json_decode((string) self::server('HTTP_CF_VISITOR'), true);
         if (!empty($http_cf_visitor['scheme']) && $http_cf_visitor['scheme'] == 'https') {
             return true;
         }

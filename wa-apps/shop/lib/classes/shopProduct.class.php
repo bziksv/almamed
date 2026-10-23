@@ -763,6 +763,7 @@ class shopProduct implements ArrayAccess
      * @return boolean true on success or false on failure.
      * The return value will be casted to boolean if non-boolean was returned.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         if (isset($this->data[$offset]) || $this->model->fieldExists($offset) || $this->getStorage($offset)) {
@@ -779,6 +780,7 @@ class shopProduct implements ArrayAccess
      * @param mixed $offset The offset to retrieve.
      * @return mixed Can return all value types.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);
@@ -791,6 +793,7 @@ class shopProduct implements ArrayAccess
      * @param mixed $value The value to set.
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->__set($offset, $value);
@@ -802,6 +805,7 @@ class shopProduct implements ArrayAccess
      * @param mixed $offset The offset to unset.
      * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $this->__set($offset, null);

@@ -30,21 +30,25 @@ class shopBooleanValue implements ArrayAccess
         return isset($this->$field) ? $this->$field : null;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
-        return $this->__set($offset, $value);
+        $this->__set($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
 
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return in_array($offset, array('value', 'feature_id', 'sort'));

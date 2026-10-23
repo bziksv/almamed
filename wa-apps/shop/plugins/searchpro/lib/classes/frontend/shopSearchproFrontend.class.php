@@ -12,6 +12,10 @@ class shopSearchproFrontend
 	protected $query_model;
 	protected $templates_instance;
 	protected $currency;
+	/** @var string|null */
+	protected $theme_id;
+	/** @var waTheme|null */
+	protected $theme;
 
 	protected $is_disabled_assets = array(
 		'init' => false

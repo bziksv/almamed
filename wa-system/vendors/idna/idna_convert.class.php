@@ -84,6 +84,8 @@ class idna_convert
     protected $_allow_overlong = false;  // Overlong UTF-8 encodings are forbidden
     protected $_strict_mode = false;     // Behave strict or not
     protected $_idn_version = 2003;      // Can be either 2003 (old, default) or 2008
+    /** @var int Punycode bias last (PHP 8.2+) */
+    protected $slast = 0;
 
     /**
      * the constructor

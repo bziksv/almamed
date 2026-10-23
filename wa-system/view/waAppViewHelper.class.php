@@ -95,7 +95,7 @@ class waAppViewHelper
                     }
                     foreach ($page as $k => $v) {
                         if ($k != 'content') {
-                            $page[$k] = htmlspecialchars($v);
+                            $page[$k] = htmlspecialchars((string) $v);
                         }
                     }
                 }

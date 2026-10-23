@@ -72,7 +72,7 @@ class waLocaleGettextAdapter implements waiLocaleAdapter
 
     public function dngettext($domain, $msgid1, $msgid2, $n)
     {
-        return dngettext($domain, $msgid1, $msgid2, $n);
+        return dngettext($domain, $msgid1, $msgid2, (int) $n);
     }
 
     /**

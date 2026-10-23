@@ -67,6 +67,7 @@ class shopSeofilterFeature implements ArrayAccess
 		return self::$price_feature_instance;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetExists($offset)
 	{
 		return $offset === 'id'
@@ -81,16 +82,19 @@ class shopSeofilterFeature implements ArrayAccess
 			|| $offset === 'values';
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		return $this->$offset;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetSet($offset, $value)
 	{
 		$this->$offset = $value;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetUnset($offset)
 	{
 		$this->$offset = null;

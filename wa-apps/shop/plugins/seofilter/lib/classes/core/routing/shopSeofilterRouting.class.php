@@ -292,7 +292,7 @@ class shopSeofilterRouting
 					$this->removeSeofilterSuffixFromUrl();
 				}
 
-				$redirect_url = waSystem::getInstance()->getConfig()->getRequestUrl(false, true) . '?' . http_build_query($extra_params, null, '&');
+				$redirect_url = waSystem::getInstance()->getConfig()->getRequestUrl(false, true) . '?' . http_build_query($extra_params, '', '&');
 			}
 		}
 		elseif ($this->seofilter_url_suffix !== strtolower($this->seofilter_url_suffix) || substr($this->original_url, -1, 1) != '/')

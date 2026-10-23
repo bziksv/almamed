@@ -18,6 +18,13 @@
  */
 abstract class Smarty_Internal_TemplateCompilerBase {
 
+    /** @var bool nocache mode flag (PHP 8.2+) */
+    public $nocache = false;
+    /** @var bool tag-level nocache flag */
+    public $tag_nocache = false;
+    /** @var bool abort current compile and restart */
+    public $abort_and_recompile = false;
+
     /**
      * hash for nocache sections
      *
@@ -180,7 +187,7 @@ abstract class Smarty_Internal_TemplateCompilerBase {
         // template header code
         $template_header = '';
         if (!$this->suppressHeader) {
-            $template_header .= "<?php /* Smarty version " . Smarty::SMARTY_VERSION . ", created on " . strftime("%Y-%m-%d %H:%M:%S") . "\n";
+            $template_header .= "<?php /* Smarty version " . Smarty::SMARTY_VERSION . ", created on " . date("Y-m-d H:i:s") . "\n";
             $template_header .= "         compiled from \"" . $this->template->source->filepath . "\" */ ?>\n";
         }
 

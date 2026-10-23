@@ -296,19 +296,23 @@
 {$crossselling = $product->crossSelling(100)}
 
 {$uservaluerelateds = shopRelatedPlugin::frontendRelated($product->id)}
-{if !empty($uservaluerelateds.view)}
+{if is_array($uservaluerelateds) && !empty($uservaluerelateds.view)}
     {$product.related_view = $uservaluerelateds.view}
 {/if}
 
+{$uservaluerelated_items = []}
+{if is_array($uservaluerelateds) && !empty($uservaluerelateds.product.item) && is_array($uservaluerelateds.product.item)}
+    {$uservaluerelated_items = $uservaluerelateds.product.item}
+{/if}
 
-{if $upselling || $crossselling || !empty($uservaluerelateds.product.item)}
+{if $upselling || $crossselling || !empty($uservaluerelated_items)}
 
-    {foreach $uservaluerelateds.product.item as $k => $uservaluerelated}
+    {foreach $uservaluerelated_items as $k => $uservaluerelated}
         {if isset($uservaluerelated) && $uservaluerelated}
         {$name_related = "title_name_related_$k"}
         <section class="related fill-background">
             <div class="h3">
-                {if !empty($uservaluerelateds.product.title[$k])}
+                {if is_array($uservaluerelateds.product.title) && !empty($uservaluerelateds.product.title[$k])}
                     {$uservaluerelateds.product.title[$k]}
                 {else}
                     {$product.$name_related}

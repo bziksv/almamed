@@ -77,8 +77,17 @@ class shopRelatedPlugin extends shopPlugin
 
         $related_key = array_keys($related_value);
 
-        if(!$related_key)
-            return false;
+        $result = array(
+            'view' => null,
+            'product' => array(
+                'item' => array(),
+                'title' => array(),
+            ),
+        );
+
+        if (!$related_key) {
+            return $result;
+        }
 
         $plugin = wa('shop')->getPlugin('related');
 

@@ -32,15 +32,15 @@ class blogViewHelper extends waAppViewHelper
             }
             $this->avaialable_blogs = blogHelper::getAvailable(true, $default_blog_id);
             foreach ($this->avaialable_blogs as &$item) {
-                $item['name'] = htmlspecialchars($item['name'], ENT_QUOTES, 'utf-8');
+                $item['name'] = htmlspecialchars((string) $item['name'], ENT_QUOTES, 'utf-8');
                 if (!is_array($item['link'])) {
-                    $item['link'] = htmlspecialchars($item['link'], ENT_QUOTES, 'utf-8');
+                    $item['link'] = htmlspecialchars((string) $item['link'], ENT_QUOTES, 'utf-8');
                 } else {
                     foreach ($item['link'] as &$l) {
-                        $l = htmlspecialchars($l, ENT_QUOTES, 'utf-8');
+                        $l = htmlspecialchars((string) $l, ENT_QUOTES, 'utf-8');
                     }
                 }
-                $item['title'] = htmlspecialchars($item['title'], ENT_QUOTES, 'utf-8');
+                $item['title'] = htmlspecialchars((string) $item['title'], ENT_QUOTES, 'utf-8');
             }
         }
 
@@ -241,7 +241,7 @@ HTML;
             }
             unset($item);
         } else {
-            $data = htmlspecialchars($data, ENT_QUOTES, 'utf-8');
+            $data = htmlspecialchars((string) $data, ENT_QUOTES, 'utf-8');
         }
     }
 }
