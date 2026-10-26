@@ -106,8 +106,16 @@ if (!is_readable($dbFile)) {
 }
 $dbCfg = include $dbFile;
 $d = $dbCfg['default'];
-$host = $d['host'] === 'localhost' ? '127.0.0.1' : $d['host'];
-$m = new mysqli($host, $d['user'], $d['password'], $d['database'], !empty($d['port']) ? (int)$d['port'] : 3306);
+// Keep "localhost" as-is (socket); only remap empty host
+$host = !empty($d['host']) ? $d['host'] : '127.0.0.1';
+$port = !empty($d['port']) ? (int)$d['port'] : ini_get('mysqli.default_port');
+$m = @new mysqli($host, $d['user'], $d['password'], $d['database'], $port ?: 3306);
+if ($m->connect_error) {
+    // localdev often needs TCP 127.0.0.1 when socket user differs
+    if ($host === 'localhost') {
+        $m = @new mysqli('127.0.0.1', $d['user'], $d['password'], $d['database'], $port ?: 3306);
+    }
+}
 if ($m->connect_error) {
     fwrite(STDERR, "DB connect failed: ".$m->connect_error."\n");
     exit(1);
