@@ -99,12 +99,21 @@ $titles = [
     732 => 'Эмоциональное выгорание: 3 признака, которые нельзя игнорировать',
 ];
 
-$m = new mysqli('127.0.0.1', 'almamed', 'localdev', 'almamed_su_db');
+$dbFile = dirname(__DIR__).'/wa-config/db.php';
+if (!is_readable($dbFile)) {
+    fwrite(STDERR, "Missing wa-config/db.php\n");
+    exit(1);
+}
+$dbCfg = include $dbFile;
+$d = $dbCfg['default'];
+$host = $d['host'] === 'localhost' ? '127.0.0.1' : $d['host'];
+$m = new mysqli($host, $d['user'], $d['password'], $d['database'], !empty($d['port']) ? (int)$d['port'] : 3306);
 if ($m->connect_error) {
-    fwrite(STDERR, "DB connect failed\n");
+    fwrite(STDERR, "DB connect failed: ".$m->connect_error."\n");
     exit(1);
 }
 $m->set_charset('utf8mb4');
+echo "DB: {$d['user']}@{$host}/{$d['database']}\n";
 
 $ok = 0;
 $skip = 0;
