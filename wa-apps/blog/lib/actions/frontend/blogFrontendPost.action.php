@@ -92,23 +92,15 @@ class blogFrontendPostAction extends blogViewAction
         }
 
 
-        $title = $this->getResponse()->getTitle();
         $post_title = htmlspecialchars_decode($post['title'], ENT_QUOTES);
-        if ($this->getRequest()->param('title_type', 'blog_post') == 'blog_post') {
-            if ($title) {
-                $this->getResponse()->setTitle($title." » ".$post_title);
-            } elseif (isset($available[$post['blog_id']]) && ($title = $available[$post['blog_id']]['title'])) {
-                $this->getResponse()->setTitle($title." » ".$post_title);
-            } else {
-                $this->getResponse()->setTitle($post_title);
-            }
-        } else {
-            $this->getResponse()->setTitle($post_title);
-        }
 
-        // meta title override default title
-        if ($post['meta_title']) {
-            $this->getResponse()->setTitle($post['meta_title']);
+        // Distinct meta_title for SERP CTR; ignore copy of H1
+        $meta_title = isset($post['meta_title']) ? trim(htmlspecialchars_decode((string)$post['meta_title'], ENT_QUOTES)) : '';
+        if ($meta_title !== '' && $meta_title !== $post_title) {
+            $this->getResponse()->setTitle($meta_title);
+        } else {
+            // Temporary fallback until editorial meta_title is set — never = H1
+            $this->getResponse()->setTitle($post_title.' | АльмаМед');
         }
 
         $this->getResponse()->setMeta('keywords', $post['meta_keywords']);
