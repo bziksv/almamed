@@ -121,8 +121,12 @@
                         {if !empty($without_form)}
                             <div class="purchase addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}{if strpos($p.frontend_url, '?')}&{else}?{/if}cart=1"{/if}>
                                 <div class="price-wrapper">
-                                    {if $p.compare_price > 0}<span class="compare-at-price nowrap"> {shop_currency_html($p.compare_price)} </span>{/if}
-                                    <span class="price nowrap">{shop_currency_html($p.price)}</span>
+                                    {if $p.price <= 0}
+                                        <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты."><span>Цена по запросу</span> <i>?</i></div>
+                                    {else}
+                                        {if $p.compare_price > 0}<span class="compare-at-price nowrap"> {shop_currency_html($p.compare_price)} </span>{/if}
+                                        <span class="price nowrap">{shop_currency_html($p.price)}</span>
+                                    {/if}
                                 </div>
                                 {if empty($without_micro_markup)}
                                     <meta itemprop="price" content="{$p.price}">
@@ -144,7 +148,8 @@
                         {else}
                             <form class="purchase addtocart" {if $p.sku_count > 1}data-url="{$p.frontend_url}{if strpos($p.frontend_url, '?')}&{else}?{/if}cart=1"{/if} method="post" action="{$wa->getUrl('shop/frontendCart/add')}">
                                 <div class="price-wrapper">
-                                    {if shop_currency_html($p.price) == 0}
+                                    {* PHP 8: shop_currency_html()==0 is false for "0 руб." — compare raw price *}
+                                    {if $p.price <= 0}
                                         <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты."><span>Цена по запросу</span> <i>?</i></div>
                                     {else}
 										{if !empty($category.params.product_per_price) && $index > $category.params.product_per_price}
@@ -185,7 +190,11 @@
                         {if empty($without_micro_markup)}<link itemprop="availability" href="https://schema.org/InStock" />{/if}
                     {else}
                         <div class="price-wrapper">
-                            <span class="price nowrap">{shop_currency_html($p.price)}</span>
+                            {if $p.price <= 0}
+                                <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты."><span>Цена по запросу</span> <i>?</i></div>
+                            {else}
+                                <span class="price nowrap">{shop_currency_html($p.price)}</span>
+                            {/if}
                         </div>
                         {if empty($without_micro_markup)}
                             <meta itemprop="price" content="{$p.price}">

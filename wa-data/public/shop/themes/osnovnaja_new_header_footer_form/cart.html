@@ -58,7 +58,7 @@
                     <div class="col w2 item-qty align-center nowrap"><span class="gray">&times;</span> <input type="text" name="quantity[{$item.id}]" value="{$item.quantity}" class="qty{if !empty($item.error)} error{/if}"></div>
                     <div class="col w1 item-remove"><a class="delete" href="#" title="[`Remove from cart`]"><i class="material-icons mi-2x">&#xE5CD;</i></a></div>
                     <div class="col w3 align-right item-total nowrap {if $manager_description}manager_description{/if}">
-                        {if shop_currency_html($item.full_price, true) == 0}
+                        {if $item.full_price <= 0}
                         <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты.">
                             <span>Цена по запросу</span>&nbsp;
                             <i>?</i>

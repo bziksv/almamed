@@ -82,8 +82,14 @@ class blogPost
                     $route = 'blog/frontend';
                     break;
                 case 'author':
-                    if ($params['contact_id'] = $post['contact_id']) {
+                    if (!empty($post['contact_id'])) {
+                        $params['contact_id'] = $post['contact_id'];
                         $route = 'blog/frontend';
+                        // Without blog_id getRouteUrl picks the first blog settlement
+                        // (punkty-vydachi on almamed) — author pages end up empty/wrong.
+                        if (!empty($post['blog_id'])) {
+                            $blog_id = $post['blog_id'];
+                        }
                     }
                     break;
                 case 'post':

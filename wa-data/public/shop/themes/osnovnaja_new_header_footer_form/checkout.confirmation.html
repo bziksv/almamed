@@ -32,11 +32,11 @@
             {foreach $items as $item}
             <tr{if $item.type == 'service'} class="service"{/if}>
                 <td>{if $item.type == 'service'}+ {/if}{$item.name|escape}</td>
-                <td class="align-right nowrap"> {if shop_currency_html($item.price) == 0} {else}<span class="gray">{shop_currency_html($item.price, $item.currency)} &times;</span> {$item.quantity}{/if}</td>
+                <td class="align-right nowrap"> {if $item.price <= 0} {else}<span class="gray">{shop_currency_html($item.price, $item.currency)} &times;</span> {$item.quantity}{/if}</td>
                 {if $tax > 0} 
                     <td class="align-right nowrap">{if isset($item.tax)}{shop_currency_html($item.tax, true)}{else}&ndash;{/if}</td>
                 {/if}
-                <td class="align-right nowrap">{if shop_currency_html($item.price) == 0}                        
+                <td class="align-right nowrap">{if $item.price <= 0}                        
                 <div class="buy-box-product" data-tooltip="Цена зависит от комплектации прибора и/или наличия на складах в России. При заказе данного продукта Вам перезвонит менеджер и уточнит все детали. В случае, если Вас не устроит текущая цена или комплектация, Вы всегда сможете отказаться от товара до момента оплаты.">
                     <span>Цена по запросу</span>&nbsp;
                     <i>?</i>

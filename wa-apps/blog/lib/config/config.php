@@ -9,9 +9,10 @@ return array(
     'comments_per_page'=>10,
 
     /**
-     * count posts per page at backend
+     * count posts per page (frontend stream + backend)
+     * News theme grid is 4 cols (l3) — use multiple of 4 to avoid a short last row.
      */
-    'posts_per_page'=>10,
+    'posts_per_page'=>12,
 
     /**
      * list of available CSS classes for blog coloring

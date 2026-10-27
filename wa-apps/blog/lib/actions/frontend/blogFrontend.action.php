@@ -59,6 +59,11 @@ class blogFrontendAction extends blogViewAction
         }
         $this->view->getHelper()->globals($this->getRequest()->param());
         $posts_per_page = max(1, intval($this->getConfig()->getOption('posts_per_page')));
+        // Theme sidebar ?posts_count=12|16|32 (was ignored before)
+        $posts_count = waRequest::request('posts_count', 0, waRequest::TYPE_INT);
+        if (in_array($posts_count, array(12, 16, 32), true)) {
+            $posts_per_page = $posts_count;
+        }
 
         $post_model = new blogPostModel();
         $options = array();

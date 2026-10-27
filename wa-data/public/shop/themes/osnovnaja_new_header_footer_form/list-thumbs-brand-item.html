@@ -19,7 +19,7 @@
     <div class="bg-tile__body">
         <a class="bg-tile__name" href="{$p.frontend_url}" title="{$p.seo_name}">{$p.seo_name}</a>
         <div class="bg-tile__price">
-            {if shop_currency($p.price) == 0}
+            {if $p.price <= 0}
                 <span class="bg-tile__price-req">Цена по запросу</span>
             {else}
                 <span class="bg-tile__price-val">{shop_currency_html($p.price)}</span>
