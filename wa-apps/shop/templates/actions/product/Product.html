@@ -1067,6 +1067,12 @@
     var wa_app = 'shop';
     var wa_lang = '{$lang}';
 
+    // Сразу, до любой другой инициализации — иначе editInit видит undefined и откатывает /edit/ → profile
+    $.product.setOptions({
+        title_suffix: '{$title_suffix}',
+        edit_rights:    {if $edit_rights}true{else}false{/if},
+        sidebar_width: {if $sidebar_width}{$sidebar_width}{else}0{/if}
+    });
 
     $(function() {
 
@@ -1091,9 +1097,10 @@
     {if !empty($product.reviews)}
         $('#s-all-reviews').find('.count-new:first').text({if $sidebar_counters.reviews.new}'+{$sidebar_counters.reviews.new}'{else}''{/if});
     {/if}
-    {if $product.id > 0}
+    {* PHP8: ('new' > 0) === true (string vs number)! Нельзя id > 0 для нового товара *}
+    {if $product.id != 'new'}
         $.product_images.init({
-            product_id: {$product.id},
+            product_id: {$product.id|json_encode},
             images: {json_encode(array_values($product.images))},
             type: 'crop',
             enable_2x: {if $wa->shop->config('enable_2x')}true{else}false{/if},
@@ -1106,13 +1113,8 @@
 
     // "By SKU" pie graph
     var sku_plot_data = {if !empty($sku_plot_data) && $report_rights}{json_encode($sku_plot_data)}{else}[]{/if};
-    $.product.setOptions({
-        title_suffix: '{$title_suffix}',
-        edit_rights:    {if $edit_rights}true{else}false{/if},
-        sidebar_width: {if $sidebar_width}{$sidebar_width}{else}0{/if}
-    });
 
-    {if $product.id > 0}
+    {if $product.id != 'new'}
         document.title = '{$product.name|escape:'javascript'|cat:$title_suffix}';
     {else}
         document.title = '[`New product`]{$title_suffix}';
@@ -1204,7 +1206,7 @@
                     }
                 });
 
-                {if $product.id > 0}
+                {if $product.id != 'new'}
                     var last_tab = getLastTab();
                     if (last_tab) {
                         container.find('li[data-tab="' + last_tab + '"] a').click();

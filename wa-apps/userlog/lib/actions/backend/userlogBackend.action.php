@@ -11,7 +11,9 @@ class userlogBackendAction extends waViewAction
             throw new waRightsException('Нет доступа к журналу');
         }
 
-        userlogLogger::syncForDisplay();
+        // Do NOT sync wa_log on every page view — existsByWaLogId() is LIKE on mediumtext
+        // and stalls the whole admin. Sync via CLI: php cli.php userlog sync
+        // userlogLogger::syncForDisplay();
 
         $event_model = new userlogEventModel();
         $hide_auth = waRequest::get('show_auth', 0, waRequest::TYPE_INT) ? 0 : 1;

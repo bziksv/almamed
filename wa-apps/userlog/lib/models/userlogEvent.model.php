@@ -75,23 +75,14 @@ class userlogEventModel extends waModel
             $bind['date_to'] = $options['date_to'].' 23:59:59';
         }
 
+        // No correlated NOT EXISTS here: at 20k+ rows it times out (DEPENDENT SUBQUERY).
+        // Thin duplicates are filtered in enrichEvent / purgeThinDuplicates.
         $sql = "SELECT e.*, c.name AS contact_name, c.photo AS contact_photo,
                        rb.name AS rolled_back_by_name
                 FROM {$this->table} e
                 LEFT JOIN wa_contact c ON c.id = e.contact_id
                 LEFT JOIN wa_contact rb ON rb.id = e.rolled_back_by
                 WHERE ".implode(' AND ', $where)."
-                  AND NOT EXISTS (
-                    SELECT 1 FROM {$this->table} dup
-                    WHERE dup.entity_id = e.entity_id
-                      AND dup.action = e.action
-                      AND dup.datetime = e.datetime
-                      AND dup.id != e.id
-                      AND dup.before_data IS NOT NULL
-                      AND dup.before_data != ''
-                      AND (e.before_data IS NULL OR e.before_data = '')
-                      AND e.can_rollback = 0
-                  )
                 ORDER BY e.datetime DESC, e.id DESC
                 LIMIT {$offset}, {$limit}";
 

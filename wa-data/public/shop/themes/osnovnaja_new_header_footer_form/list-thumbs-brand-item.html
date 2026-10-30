@@ -13,7 +13,16 @@
 <article class="bg-tile">
     <a class="bg-tile__img" href="{$p.frontend_url}" title="{$p.seo_name}">
         {$badge_html = $wa->shop->badgeHtml($p.badge)}
-        {if $badge_html}<span class="bg-tile__badge">{$badge_html}</span>{/if}
+        {$dg_sticker_html = ''}
+        {if !empty($_dg_stickers[$p.id])}
+            {$dg_sticker_html = shopCustom::dgStickerBadgesHtml($_dg_stickers[$p.id])}
+        {/if}
+        {if $badge_html || $dg_sticker_html}
+            <span class="bg-tile__badge">
+                {if $badge_html}{$badge_html}{/if}
+                {if $dg_sticker_html}{$dg_sticker_html}{/if}
+            </span>
+        {/if}
         {shopWebpimagesPlugin::productImgHtml($p, '400', ['alt' => $p.name, 'width' => '200', 'height' => '200', 'loading' => 'lazy', 'decoding' => 'async', 'default' => "`$wa_theme_url`img/dummy200.png"])}
     </a>
     <div class="bg-tile__body">

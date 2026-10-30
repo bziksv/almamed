@@ -1,7 +1,8 @@
 {strip}
 
 {$_legal_prefix = 'pravovye-dokumenty-almamed/'}
-{$_is_legal = ($page.full_url|substr:0:strlen($_legal_prefix) == $_legal_prefix)}
+{$_page_full_url = $page.full_url|default:''}
+{$_is_legal = ($_page_full_url|substr:0:strlen($_legal_prefix) == $_legal_prefix)}
 
 {if $_is_legal}
 <link rel="stylesheet" href="{$wa_theme_url}legal-page.css?v{$wa_theme_version}">

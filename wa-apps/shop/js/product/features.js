@@ -39,6 +39,48 @@ $.product = $.extend(true, $.product, {
         }
 
         this.featureSelectableCount();
+        this.editTabFeaturesInitSearch();
+    },
+
+    /**
+     * Filter product features by name or system code (data-code).
+     */
+    editTabFeaturesInitSearch: function () {
+        var $tab = $('#s-product-save .s-product-form.features');
+        if (!$tab.length) {
+            $tab = $('.s-product-form.features');
+        }
+        var $form = $tab.find('.fields.form');
+        var $input = $tab.find('#s-dg-feature-search');
+        if (!$input.length || !$form.length || $input.data('dg-bound')) {
+            return;
+        }
+        $input.data('dg-bound', 1);
+
+        var apply = function () {
+            var q = String($input.val() || '').trim().toLowerCase();
+            $form.find('> .field[data-code]').each(function () {
+                var $f = $(this);
+                if (!q) {
+                    $f.show();
+                    return;
+                }
+                var code = String($f.attr('data-code') || '').toLowerCase();
+                var name = String($f.attr('data-name') || '').toLowerCase();
+                var hit = code.indexOf(q) !== -1 || name.indexOf(q) !== -1;
+                $f.toggle(hit);
+            });
+        };
+
+        $input.on('input.dgFeatureSearch change.dgFeatureSearch', apply);
+        $input.on('keydown.dgFeatureSearch', function (e) {
+            if (e.keyCode === 27) {
+                $input.val('');
+                apply();
+                e.preventDefault();
+            }
+        });
+        apply();
     },
 
     editTabFeaturesAction: function (path) {

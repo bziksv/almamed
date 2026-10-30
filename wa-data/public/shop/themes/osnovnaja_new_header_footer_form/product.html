@@ -142,7 +142,7 @@
 
 
                             {foreach shopSeofilterViewHelper::wrapFeatureValues($product.features) as $f_code => $f_value}
-
+                                {if $f_code|substr:0:11 == 'dg_sticker_'}{continue}{/if}
 
                                 <tr{if $features[$f_code].type == 'divider'} class="divider"{/if}>
                                     <td class="name">

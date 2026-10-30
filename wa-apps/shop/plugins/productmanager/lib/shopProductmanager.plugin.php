@@ -12,8 +12,14 @@ Class shopProductmanagerPlugin extends shopPlugin {
 
     public function product_edit($data)
     {
+        $manager = 0;
+        if (is_object($data) && isset($data->data) && is_array($data->data) && isset($data->data['manager'])) {
+            $manager = $data->data['manager'];
+        } elseif (is_array($data) && isset($data['manager'])) {
+            $manager = $data['manager'];
+        }
         return array(
-            'category_action_li' => $this->backend_user_html($data->data['manager']),
+            'category_action_li' => $this->backend_user_html($manager),
         );
     }
 

@@ -47,7 +47,7 @@ echo wa()->getVersion('shop'), PHP_EOL;
 
 Из `wa-config/apps.php`:
 
-`shop`, `site`, `blog`, `contacts`, `installer`, `logs`, `priceparse`, `docs`, `checklists`, `stickies`, `clock`, `news`, `weather`
+`shop`, `site`, `blog`, `contacts`, `installer`, `logs`, `docs`, `checklists`, `stickies`, `clock`, `news`, `weather`
 
 Основные для фронта: **shop** (витрина), **site** (CMS/страницы), **blog** (новости, врачи, болезни).
 

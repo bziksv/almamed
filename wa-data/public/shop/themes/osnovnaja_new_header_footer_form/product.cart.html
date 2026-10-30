@@ -226,7 +226,7 @@
             </div>
 
             <div class="submit-wrapper">
-                <a href="/cart/" class="button second-type {if !$product_available && ($product.params.buy === "false" || !isset($product.params.buy)) }disabled{/if}" onclick="$(this).closest('form').submit();return false" rel="{$product.id}">{$add2cart_label}</a>
+                <a href="/cart/" class="button second-type {if !$product_available && (!isset($product.params.buy) || $product.params.buy === "false")}disabled{/if}" onclick="$(this).closest('form').submit();return false" rel="{$product.id}">{$add2cart_label}</a>
                 <i class="adding2cart"></i>
             </div>
 

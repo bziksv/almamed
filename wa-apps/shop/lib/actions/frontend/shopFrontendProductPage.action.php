@@ -37,8 +37,20 @@ class shopFrontendProductPageAction extends shopFrontendProductAction
             $page['title'] = $page['name'];
         }
 
-        // interpret smarty code
-        $page['content'] = $this->view->fetch('string:'.$page['content']);
+        // Interpret Smarty in page body. Word/Office paste often has bare "&" in attrs
+        // → SmartyCompilerException; fall back to raw HTML so the page stays up.
+        $raw = (string) $page['content'];
+        try {
+            $page['content'] = $this->view->fetch('string:'.$raw);
+        } catch (Exception $e) {
+            waLog::log(
+                'product page Smarty failed product_id='.$product['id']
+                .' page='.ifset($page, 'url', '')
+                .': '.$e->getMessage(),
+                'shop/product-page-smarty.log'
+            );
+            $page['content'] = $raw;
+        }
 
         $this->view->assign('page', $page);
         $this->view->assign('reviews_total_count', $this->getReviewsTotalCount($product['id']));

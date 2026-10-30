@@ -705,7 +705,7 @@ SQL;
                         $v = isset($product['features'][$row['feature']]) ? $product['features'][$row['feature']] : null;
                     }
                     if (!$v) {
-                        continue;
+                        continue 2;
                     }
                     $min = $v * (float)(100 + $min) / 100;
                     $max = $v * (float)(100 + $max) / 100;

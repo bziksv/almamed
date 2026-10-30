@@ -156,7 +156,8 @@ class userlogLogger
     }
 
     /**
-     * Fast sync for backend UI: auth tail + recent blog actions (no multi-year backfill).
+     * Auth tail + recent blog. Safe for CLI; do not call on every HTTP page view
+     * (existsByWaLogId uses LIKE on mediumtext → minutes of stall).
      */
     public static function syncForDisplay()
     {
@@ -236,11 +237,8 @@ class userlogLogger
             'login_failed' => 'auth.login_failed',
         );
 
+        // Trust wa_log_auth_last_id cursor — no per-row LIKE existsByWaLogId (full table scan).
         foreach ($rows as $row) {
-            if ($event_model->existsByWaLogId((int) $row['id'])) {
-                $last_id = max($last_id, (int) $row['id']);
-                continue;
-            }
             $action = ifset($map, $row['action'], 'auth.'.$row['action']);
             $params = self::parseWaLogParams($row['params']);
             $summary = self::authSummary($action, $params, $row);
@@ -327,14 +325,20 @@ class userlogLogger
 
         $actions = self::blogWaLogActionMap();
 
+        // Incremental by cursor (not “last 50 of 30 days” + EXISTS LIKE every request).
+        $asm = new waAppSettingsModel();
+        $cursor = (int) $asm->get('userlog', 'wa_log_blog_last_id', 0);
+
         $sql = "SELECT * FROM wa_log
-                WHERE app_id = 'blog'
+                WHERE id > i:cursor
+                  AND app_id = 'blog'
                   AND action IN (s:actions)
                   AND datetime >= s:since
-                ORDER BY id DESC
+                ORDER BY id ASC
                 LIMIT 50";
 
         $rows = (new waModel())->query($sql, array(
+            'cursor'  => $cursor,
             'actions' => array_keys($actions),
             'since'   => $since,
         ))->fetchAll();
@@ -342,13 +346,7 @@ class userlogLogger
             return;
         }
 
-        self::importBlogWaLogRows($rows, $actions);
-
-        $asm = new waAppSettingsModel();
-        $cursor = (int) $asm->get('userlog', 'wa_log_blog_last_id', 0);
-        foreach ($rows as $row) {
-            $cursor = max($cursor, (int) $row['id']);
-        }
+        self::importBlogWaLogRows($rows, $actions, $cursor);
         $asm->set('userlog', 'wa_log_blog_last_id', $cursor);
     }
 
@@ -408,12 +406,7 @@ class userlogLogger
         $post_model = new blogPostModel();
 
         foreach ($rows as $row) {
-            if ($event_model->existsByWaLogId((int) $row['id'])) {
-                if ($last_id !== null) {
-                    $last_id = max($last_id, (int) $row['id']);
-                }
-                continue;
-            }
+            // Skip existsByWaLogId (LIKE full scan). Cursor / plugin skip is enough.
 
             if (self::isBlogUserlogPluginActive() && in_array($row['action'], array('post_edit', 'post_publish', 'post_unpublish'), true)) {
                 if ($last_id !== null) {
@@ -509,12 +502,7 @@ class userlogLogger
         $category_model = new shopCategoryModel();
 
         foreach ($rows as $row) {
-            if ($event_model->existsByWaLogId((int) $row['id'])) {
-                if ($last_id !== null) {
-                    $last_id = max($last_id, (int) $row['id']);
-                }
-                continue;
-            }
+            // No existsByWaLogId — cursor-based import only.
 
             $entity_id = self::resolveShopEntityId($row['params']);
             $action = $actions[$row['action']];

@@ -1,15 +1,31 @@
 (function ($) {
 
-    $('body').attr('onbeforeprint', 'descriptionmanager()');
+    // Витринный print-хук: только если на странице есть #cart-flyer (фронт), не бэкенд.
+    if ($('#cart-flyer').length) {
+        $('body').attr('onbeforeprint', 'descriptionmanager()');
 
-    $.post('/descriptionmanager/get/', {'product_id' : $('input[name="product_id"]').val()}, function (d) {
-        $('#cart-flyer').attr('data-print_price', d.data.request.price);
-        $('#cart-flyer').attr('data-print_delivery', d.data.request.delivery);
-    }, 'json');
+        var productId = $('input[name="product_id"]').val();
+        if (productId && productId !== 'new') {
+            $.post('/descriptionmanager/get/', {'product_id': productId}, function (d) {
+                if (!d || !d.data || !d.data.request) {
+                    return;
+                }
+                if (d.data.request.price != null) {
+                    $('#cart-flyer').attr('data-print_price', d.data.request.price);
+                }
+                if (d.data.request.delivery != null) {
+                    $('#cart-flyer').attr('data-print_delivery', d.data.request.delivery);
+                }
+            }, 'json');
+        }
+    }
 
     $('#s-product-edit-save-panel').on('click','input.button',function(){
 
         var textarea = $('#descriptionmanager_edit');
+        if (!textarea.length) {
+            return;
+        }
 
         $.post('?plugin=descriptionmanager&action=save',
             {'product_id': textarea.data('edit_product_id'), 'description': textarea.val()},
@@ -103,4 +119,3 @@ function descriptionmanager() {
             '        </div>');
     }
 }
-

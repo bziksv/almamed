@@ -124,6 +124,64 @@ curl -s -A "Mozilla/5.0" "https://almamed.su/category/veterinariya/" \
   | grep -oiE '<title>[^<]*</title>|<meta name="(Description|Keywords)" content="[^"]{0,40}'
 ```
 
+### 504 / upstream timed out (nginx → Apache:81)
+
+Симптом: в `almamed.su-frontend.error.log` — `upstream timed out … while reading response header from upstream` на `127.0.0.1:81`; в access — HTTP 504 (витрина + `/webasyst/` виджеты). При полном забитии PHP-слотов — **503** (`mod_fcgid: can't apply process slot`).
+
+Причина 2026-10-28…29: мало php-cgi на класс + короткий **proxy_read_timeout** + пик скрейперов (AI/магазинные боты, `/category` `/search` `/brand`), которые держат воркеры и душат админку.
+
+Актуальные значения (после фикса 2026-10-29):
+
+| Параметр | Файл | Значение |
+|----------|------|----------|
+| `FcgidMaxProcesses` | `/etc/httpd/conf.d/fcgid.conf` | **120** (глобально на весь httpd) |
+| `FcgidMaxProcessesPerClass` | то же | **40** (потолок на almamed) |
+| `proxy_read_timeout` (витрина) | `almamed.su.conf` location `/` и `@fallback` | **90s** |
+| `proxy_read_timeout` (админка) | `almamed.su.includes` `location ^~ /webasyst/` | **120s** |
+| search / suggest | `almamed.su.includes` | **90s** + прежние `limit_req` |
+
+⚠️ Расширение fcgid **не заменяет** блок ботов: при флуде 40 слотов всё равно кончаются за минуты → снова 503. Сначала режут UA/IP (ниже), лимиты — запас.
+
+⚠️ FastPanel при «пересохранении сайта» может затереть `almamed.su.conf` / includes / fcgid — сверять бэкапы `*.bak-*` рядом с файлами.
+
+### Блок AI / скрейперов (nginx, 2026-10-29)
+
+Цель: не пускать в PHP ботов, которые жрут слоты и дают 504/503. **Поисковики не трогаем.**
+
+| Что | Где |
+|-----|-----|
+| `map $http_user_agent $almamed_bad_bot` | `/etc/nginx/conf.d/almamed-botblock.conf` |
+| `if ($almamed_bad_bot) { return 403; }` | `/etc/nginx/fastpanel2-sites/almamed.su/almamed.su.conf` (+ available-копия) |
+| `deny 131.153.11.133` | тот же `almamed.su.conf` — бренд-скрейпер (200 по `/brand/*`, Chrome UA) |
+
+**403 (заблокированы):** `GeedoShopProductFinder`, `KakaoBot`, `ElevenlabsCrawler`, `Amazonbot`, `meta-externalagent`, `meta-externalads`, `Bytespider`, `ClaudeBot`, `DotBot`, `SemrushBot`, `AhrefsBot` + IP `131.153.11.133`.
+
+**200 (не в map / разрешены):** Googlebot, YandexBot / YandexImages, bingbot, Mail.RU_Bot, PetalBot, PerplexityBot, **GPTBot** (разбан 2026-10-29). Обычный браузерный UA — тоже 200.
+
+`SemrushBot` / `AhrefsBot` — SEO-краулеры (не поисковая выдача), режем намеренно.
+
+Проверка после правок:
+
+```bash
+# поисковики → 200
+curl -sk -o /dev/null -w "%{http_code}\n" -A "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)" -H "Host: almamed.su" https://213.139.209.184/
+curl -sk -o /dev/null -w "%{http_code}\n" -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" -H "Host: almamed.su" https://213.139.209.184/
+# скрейпер → 403
+curl -sk -o /dev/null -w "%{http_code}\n" -A "GeedoShopProductFinder" -H "Host: almamed.su" https://213.139.209.184/
+```
+
+**fail2ban** (`nginx-siteprobe` / `nginx-botsearch`) ловит только зонды (`/wp-login`, `/.env`) и 404-botsearch — **не** вежливый обход `/brand|/category` с 200. Для объёмных скрейперов нужен этот nginx-блок или отдельный rate-jail; fail2ban их сам не банит.
+
+### Search gate — капча на прямой `/search/`
+
+Файл: `wa-apps/shop/lib/classes/shopSearchGate.class.php` (хуки в `shopFrontendSearch` + SearchPro page).
+
+Прямой GET/HEAD на `/search/…` без same-site Referer и без cookie `am_sg` → страница с картинкой-капчей (не полный PHP-поиск). После успеха — cookie 14 дней. Same-site Referer (`almamed.su` / localhost) или UA поисковика → проход без капчи.
+
+С 2026-10-29: на **любой** `/search/…` (раньше только при `?sort=`).
+
+Добавить нового бота: строка `~*ИмяБота 1;` в `almamed-botblock.conf` → `nginx -t && nginx -s reload`.
+
 ### После деплоя — smoke + TTFB
 
 ```bash

@@ -1,0 +1,45 @@
+/* Datagon stickers (dg_sticker_*) — local Almamed only */
+.dg-sticker-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: 9.5rem;
+  pointer-events: none;
+}
+.dg-sticker {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #fff;
+  text-transform: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  white-space: normal;
+}
+.dg-sticker span {
+  display: inline;
+  text-transform: none;
+}
+.dg-sticker--not_supplied { background: #6b7280; }
+.dg-sticker--discontinued { background: #7c3aed; }
+.dg-sticker--no_ru { background: #b45309; }
+.dg-sticker--sale { background: #dc2626; }
+.dg-sticker--has_ru { background: #059669; }
+.dg-sticker--in_stock { background: #2563eb; }
+
+.badge-wrapper .corner.top.left .dg-sticker-stack,
+.image .corner.top.left .dg-sticker-stack {
+  margin-top: 2px;
+}
+.bg-tile__badge .dg-sticker-stack {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+}
+.bg-tile__img {
+  position: relative;
+}

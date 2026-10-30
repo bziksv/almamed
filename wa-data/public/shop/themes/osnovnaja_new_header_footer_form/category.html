@@ -222,15 +222,15 @@
 
 	{if isset($category.params.h1) && $category.params.h1}
 	<h1 class="title_h1 category-name">
-		{if $category.seo_name}
+		{if !empty($category.seo_name)}
 			{$category.seo_name|escape}
 		{else}
-			{$category.name}
+			{$category.name|escape}
 		{/if}
 	</h1>
     {else}
 	<div class="title_h1 category-name">
-		{$category.seo_name|escape}
+		{if !empty($category.seo_name)}{$category.seo_name|escape}{else}{$category.name|escape}{/if}
 	</div>
     {/if}
 
@@ -401,7 +401,7 @@
 	
 	{if !empty($filters)}
 	{foreach $filters as $fid => $filter}
-		{if $wa->get($filter.code, array())}
+		{if !empty($filter.code) && $wa->get($filter.code, array())}
 			{assign var="filter_value" value=$wa->get($filter.code, array())}
 		{/if}
 	{/foreach}
@@ -411,7 +411,8 @@
 	
 	{if array_key_exists($wa->currentUrl(), $category.params)}
 		{$rec = explode("@", $category.params[$wa->currentUrl()])}
-		{shopCustom::getListProducts($rec[1], $rec[0], $rec[2], $rec[3])}
+		{* format: Title@JSON@view[@off] — 4th part optional *}
+		{shopCustom::getListProducts($rec[1], $rec[0], $rec[2]|default:'thumbs', $rec[3]|default:false)}
 	{/if}
 	
 	{if empty($filter_value)}
@@ -419,7 +420,7 @@
 		{foreach shopCustom::array_filter($category.params, 'rec') as $rec}
 			{if $rec}
 			{$rec = explode("@", $rec)}
-				{shopCustom::getListProducts($rec[1], $rec[0], $rec[2], $rec[3])}
+				{shopCustom::getListProducts($rec[1], $rec[0], $rec[2]|default:'thumbs', $rec[3]|default:false)}
 			{/if}
 		{/foreach}	
 

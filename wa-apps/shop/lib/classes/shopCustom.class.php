@@ -646,4 +646,162 @@ class shopCustom
         return $html;
     }
 
+    /** Datagon sticker feature codes (boolean) — local Almamed. */
+    const DG_STICKER_CODES = array(
+        'dg_sticker_not_supplied',
+        'dg_sticker_discontinued',
+        'dg_sticker_no_ru',
+        'dg_sticker_sale',
+        'dg_sticker_has_ru',
+        'dg_sticker_in_stock',
+    );
+
+    public static function dgStickerLabels()
+    {
+        return array(
+            'dg_sticker_not_supplied' => 'Не поставляется',
+            'dg_sticker_discontinued' => 'Снят / аналог',
+            'dg_sticker_no_ru' => 'Нет РУ',
+            'dg_sticker_sale' => 'Скидка',
+            'dg_sticker_has_ru' => 'Есть РУ',
+            'dg_sticker_in_stock' => 'Есть в наличии',
+        );
+    }
+
+    public static function isDgStickerFeatureCode($code)
+    {
+        $code = (string)$code;
+        return strpos($code, 'dg_sticker_') === 0;
+    }
+
+    /**
+     * Active sticker codes for products (Yes = row with feature_value_id=1).
+     *
+     * @param int[] $product_ids
+     * @return array [product_id => string[] codes in display order]
+     */
+    public static function getDgStickersByProductIds($product_ids)
+    {
+        $out = array();
+        $product_ids = array_values(array_unique(array_filter(array_map('intval', (array)$product_ids))));
+        if (!$product_ids) {
+            return $out;
+        }
+
+        $fm = new shopFeatureModel();
+        $features = $fm->getByField('code', self::DG_STICKER_CODES, true);
+        if (!$features) {
+            return $out;
+        }
+        $id_to_code = array();
+        foreach ($features as $f) {
+            $id_to_code[(int)$f['id']] = $f['code'];
+        }
+        if (!$id_to_code) {
+            return $out;
+        }
+
+        $pfm = new shopProductFeaturesModel();
+        $rows = $pfm->getByField(
+            array(
+                'product_id' => $product_ids,
+                'feature_id' => array_keys($id_to_code),
+                'sku_id' => null,
+            ),
+            true
+        );
+        $active = array();
+        foreach ($rows as $row) {
+            if ((int)$row['feature_value_id'] !== 1) {
+                continue;
+            }
+            $pid = (int)$row['product_id'];
+            $code = ifset($id_to_code[(int)$row['feature_id']]);
+            if ($code) {
+                $active[$pid][$code] = true;
+            }
+        }
+
+        foreach ($product_ids as $pid) {
+            $codes = array();
+            foreach (self::DG_STICKER_CODES as $code) {
+                if (!empty($active[$pid][$code])) {
+                    $codes[] = $code;
+                }
+            }
+            if ($codes) {
+                $out[$pid] = $codes;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * HTML stack of sticker badges for corner (empty string if none).
+     *
+     * @param string[]|null $codes
+     * @return string
+     */
+    public static function dgStickerBadgesHtml($codes)
+    {
+        if (empty($codes) || !is_array($codes)) {
+            return '';
+        }
+        $labels = self::dgStickerLabels();
+        $parts = array();
+        foreach (self::DG_STICKER_CODES as $code) {
+            if (!in_array($code, $codes, true)) {
+                continue;
+            }
+            $label = ifset($labels[$code], $code);
+            $class = 'dg-sticker dg-sticker--' . str_replace('dg_sticker_', '', $code);
+            $parts[] = '<div class="' . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . '"><span>'
+                . htmlspecialchars($label, ENT_QUOTES, 'UTF-8')
+                . '</span></div>';
+        }
+        if (!$parts) {
+            return '';
+        }
+        return '<div class="dg-sticker-stack">' . implode('', $parts) . '</div>';
+    }
+
+    /**
+     * Resolve sticker codes from product features map (frontend $product.features).
+     *
+     * @param array $features code => value
+     * @return string[]
+     */
+    public static function dgStickerCodesFromFeatures($features)
+    {
+        if (empty($features) || !is_array($features)) {
+            return array();
+        }
+        $codes = array();
+        foreach (self::DG_STICKER_CODES as $code) {
+            if (!array_key_exists($code, $features)) {
+                continue;
+            }
+            $v = $features[$code];
+            $yes = false;
+            if ($v instanceof shopBooleanValue) {
+                $yes = !empty($v['value']);
+            } elseif (is_object($v) && isset($v['value'])) {
+                $yes = !empty($v['value']);
+            } elseif (is_bool($v)) {
+                $yes = $v;
+            } elseif (is_numeric($v)) {
+                $yes = (int)$v === 1;
+            } elseif (is_string($v)) {
+                $low = mb_strtolower(trim($v));
+                $yes = in_array($low, array('1', 'да', 'yes', 'true'), true);
+            } else {
+                $yes = !empty($v);
+            }
+            if ($yes) {
+                $codes[] = $code;
+            }
+        }
+        return $codes;
+    }
+
 }

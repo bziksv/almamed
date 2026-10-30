@@ -1,10 +1,11 @@
 <?php
 
 /**
- * Gate for /search/…?sort=… — same idea as kosmamed km_catalog_gate.
+ * Gate for /search/… — same idea as kosmamed km_catalog_gate.
  *
- * Direct hit with sort (no same-site Referer, no cookie) → image captcha.
+ * Direct hit (no same-site Referer, no cookie am_sg) → image captcha.
  * Search bots / valid cookie / same-site Referer → pass through.
+ * (Was only ?sort=; since 2026-10-29 — any /search/ path.)
  */
 class shopSearchGate
 {
@@ -24,7 +25,7 @@ class shopSearchGate
             return;
         }
 
-        if (!self::isTailedSearch()) {
+        if (!self::isSearchPath()) {
             return;
         }
         if (self::isSearchBot(ifset($_SERVER['HTTP_USER_AGENT'], ''))) {
@@ -58,29 +59,18 @@ class shopSearchGate
         self::show();
     }
 
-    protected static function isTailedSearch()
+    /** Any frontend /search/… URL (query optional). */
+    protected static function isSearchPath()
     {
         $uri = (string)ifset($_SERVER['REQUEST_URI'], '');
         $path = (string)parse_url($uri, PHP_URL_PATH);
-        if (!preg_match('#^/search(/|$)#', $path)) {
-            return false;
-        }
-
-        $query = (string)parse_url($uri, PHP_URL_QUERY);
-        if ($query === '') {
-            return false;
-        }
-
-        $params = array();
-        parse_str($query, $params);
-
-        return isset($params['sort']);
+        return (bool)preg_match('#^/search(/|$)#', $path);
     }
 
     protected static function isSearchBot($ua)
     {
         return (bool)preg_match(
-            '/Googlebot|Google-InspectionTool|Storebot-Google|AdsBot-Google|YandexBot|YandexImages|YandexMobileBot|YandexWebmaster|YandexMarket|bingbot|Mail\.RU_Bot|Applebot|almamed-warmup|almamed-psi/i',
+            '/Googlebot|Google-InspectionTool|Storebot-Google|AdsBot-Google|YandexBot|YandexImages|YandexMobileBot|YandexWebmaster|YandexMarket|bingbot|Mail\.RU_Bot|Applebot|PetalBot|PerplexityBot|GPTBot|almamed-warmup|almamed-psi/i',
             $ua
         );
     }
@@ -268,7 +258,7 @@ class shopSearchGate
             . '.am-gate button:hover{background:#155e75;}'
             . '</style></head><body><div class="am-gate">'
             . '<h1>Подтвердите, что вы не робот</h1>'
-            . '<p>Страница поиска открыта сразу с сортировкой. Введите код с картинки, и мы покажем результаты.</p>'
+            . '<p>Прямой заход на поиск. Введите код с картинки, и мы покажем результаты.</p>'
             . $error_html
             . '<form method="post" action="' . $action . '">'
             . '<input type="hidden" name="' . self::POST_FLAG . '" value="1">'

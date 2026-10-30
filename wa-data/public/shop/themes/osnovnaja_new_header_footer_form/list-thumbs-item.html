@@ -39,8 +39,15 @@
                         </div>
                         <div class="badge-wrapper">
                             {$badge_html = $wa->shop->badgeHtml($p.badge)}
-                            {if $badge_html}
-                                <div class="corner top left">{$badge_html}</div>
+                            {$dg_sticker_html = ''}
+                            {if !empty($_dg_stickers[$p.id])}
+                                {$dg_sticker_html = shopCustom::dgStickerBadgesHtml($_dg_stickers[$p.id])}
+                            {/if}
+                            {if $badge_html || $dg_sticker_html}
+                                <div class="corner top left">
+                                    {if $badge_html}{$badge_html}{/if}
+                                    {if $dg_sticker_html}{$dg_sticker_html}{/if}
+                                </div>
                             {/if}
                             {if empty($without_micro_markup)}
                                 {if $index > 3}
@@ -93,6 +100,7 @@
                     {if !empty($p.features)}
                     <table class="features">
                         {foreach $p.features as $f_code => $f_value}
+                        {if $f_code|substr:0:11 == 'dg_sticker_'}{continue}{/if}
                         <tr{if $features[$f_code].type == 'divider'} class="divider"{/if}>
                         <td class="name">
                             {$features[$f_code].name|escape}

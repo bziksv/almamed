@@ -88,7 +88,8 @@ curl -sS -L -o /dev/null -w "HTTPS %{http_code}\n" -H "Host: almamed.su" -k http
 
 - DNS `almamed.su` → **213.139.209.184**
 - Nginx vhost: `/etc/nginx/fastpanel2-available/almamed.su/almamed.su.conf`
-- Стек: nginx (frontend) + **httpd** (Apache, php-cgi 7.2 для almamed.su)
+- Стек: nginx (frontend) + **httpd** (Apache, php-cgi **8.2** `/opt/php82` для almamed.su)
+- AI/скрейперы 403 + fcgid/504: см. [PRODUCTION.md](PRODUCTION.md) § «Блок AI / скрейперов» и «504»
 - **45.90.35.63** — другой vhost, не использовать для проверки almamed
 
 ---
@@ -114,7 +115,7 @@ git push origin main
 | **Params категорий** | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) — **не ломать** |
 | **Заявки (админка)** | [LEADS.md](LEADS.md) — плагин `shop/plugins/leads`, URL `?plugin=leads&module=report` |
 | Кастом PHP shop | `wa-apps/shop/lib/classes/shopCustom.class.php` |
-| **Search gate (капча на `?sort`)** | `wa-apps/shop/lib/classes/shopSearchGate.class.php` — прямой заход на `/search/…?sort=` без same-site Referer; боты и cookie `am_sg` пропускаются |
+| **Search gate (капча на `/search/`)** | `wa-apps/shop/lib/classes/shopSearchGate.class.php` — прямой заход на любой `/search/…` без same-site Referer; поисковые боты и cookie `am_sg` пропускаются |
 | Маршруты доменов | `wa-config/routing.php` |
 | SSL редирект | `wa-config/apps/site/domains/almamed.su.php` |
 | БД | `wa-config/db.php` (**не в git**) |

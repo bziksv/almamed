@@ -5,6 +5,42 @@
     [`Product custom features allows you to beautifully present all product details to your customers, to setup product search filters and upselling.`]
 </div>
 
+<style type="text/css">
+.s-dg-feature-search-bar {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    background: #f4f6f8;
+    border: 1px solid #dbe0e6;
+    border-radius: 6px;
+}
+.s-dg-feature-search-bar__label {
+    display: block;
+    font-weight: bold;
+    margin: 0 0 6px;
+}
+.s-dg-feature-search-bar__input {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+.s-dg-feature-search-bar__hint {
+    margin: 6px 0 0;
+}
+</style>
+
+<div class="s-dg-feature-search-bar">
+    <label class="s-dg-feature-search-bar__label" for="s-dg-feature-search">Поиск характеристики</label>
+    <input type="search" id="s-dg-feature-search" class="s-dg-feature-search-bar__input" placeholder="Название или код, например massa_sistemy_gazosnabzheniya / dg_sticker_sale" autocomplete="off" />
+    <p class="hint s-dg-feature-search-bar__hint">Фильтр по названию и системному коду (в скобках). Esc — сброс.</p>
+</div>
+
 <div class="fields form">
 {$product_features = $product.features}
 {if true}
@@ -28,14 +64,14 @@
     </div>
 </div>
 
-
 {foreach $features as $code => $feature}
     {if strpos($code,'.') == false}
         <div class="field{if $feature.type eq 'divider'} divider{/if}" data-type="{$feature.type}" data-multiple="{$feature.multiple}"
-             data-selectable="{$feature.selectable}" data-code="{$code|escape}">
+             data-selectable="{$feature.selectable}" data-code="{$code|escape}" data-name="{$feature.name|escape}">
             <div class="name"><label for="product-features-{$code}">
                     {if empty($feature.internal)}<i class="icon10 exclamation"
                                                     title="[`This feature is not listed for the product type this product belongs to`]"></i> {/if}{$feature.name|escape}
+                                                    <span class="hint s-dg-feature-code">({$code|escape})</span>
                                                     {if $feature.status != 'public'}<i class="icon16 ss visibility" title="[`Only visible in backend`]"></i>{/if}
                 </label></div>
 
@@ -364,7 +400,7 @@
 <p><pre>{var_export($features,true)|escape}</pre></p>
 *}
 
-<script src="{$wa_app_static_url}js/product/features.js?{$wa->version()}" type="text/javascript"></script>
+<script src="{$wa_app_static_url}js/product/features.js?{$wa->version()}&dg=2" type="text/javascript"></script>
 <script src="{$wa_url}wa-content/js/farbtastic/farbtastic.js" type="text/javascript"></script>
 <link rel="stylesheet" href="{$wa_url}wa-content/js/farbtastic/farbtastic.css" type="text/css" />
 <script type="text/javascript">

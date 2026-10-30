@@ -24,10 +24,13 @@ class shopProductsAction extends shopProductListAction
             $this->view->assign('page', $page);
         }
 
+        // hash is null on «all products» list (no category/set/search)
+        $hash_type = (is_array($this->hash) && isset($this->hash[0])) ? $this->hash[0] : '';
+
         /*
          * @event backend_products
          */
-        $event_params = array('type' => $this->hash[0], 'info' => $this->collection->getInfo());
+        $event_params = array('type' => $hash_type, 'info' => $this->collection->getInfo());
         $this->view->assign('backend_products', wa()->event('backend_products', $event_params));
 
         $this->view->assign('products_rights', $this->getUser()->isAdmin('shop') || $this->getUser()->getRights('shop', 'type.%'));
@@ -58,7 +61,7 @@ class shopProductsAction extends shopProductListAction
             'sort' => $this->sort,
             'order' => $this->order,
             'text' => $this->text,
-            'title' => $this->hash[0] != 'search' ? $this->collection->getTitle() : $this->text,
+            'title' => $hash_type != 'search' ? $this->collection->getTitle() : $this->text,
             'info' => $this->collection->getInfo(),
             'view' => $view,
             'stocks' => array_values($stocks),

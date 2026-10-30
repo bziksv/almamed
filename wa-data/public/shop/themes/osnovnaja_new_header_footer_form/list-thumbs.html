@@ -98,6 +98,11 @@
 {if !empty($theme_settings.list_features) && !empty($products)}
     {$features = $wa->shop->features($products)}
 {/if}
+{if !empty($products)}
+    {$_dg_stickers = shopCustom::getDgStickersByProductIds(array_keys($products))}
+{else}
+    {$_dg_stickers = []}
+{/if}
 {if !empty($theme_settings.scroll_image) && !empty($products)}
     {$_images = $wa->shop->images(array_keys($products), '200')}
 {/if}
