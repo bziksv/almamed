@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Collection of functions to deal with prices rounding when converting from one currency to another.
+ * Collection of functions to deal with prices rounding for storefront display.
  *
  * Ideas behind rounding are following:
  * - In the DB all prices are always stored as is, without any rounding.
@@ -10,6 +10,9 @@
  *   rounding already applied in PHP before passing data to templates. This is true for all
  *   vars that come from controllers, $wa->shop->* helpers and ProductsCollection.
  *   The only problem is that bad plugins unaware of rounding could potentially break this rule.
+ *
+ * Almamed: also round when product currency == frontend currency. Stock Shop-Script
+ * only rounds on currency conversion, so RUB→RUB with «округлять до 1.00 вверх» was a no-op.
  */
 class shopRounding
 {
@@ -122,7 +125,11 @@ class shopRounding
                                 $p[$k] = shop_currency($p['frontend_'.$k], $frontend_currency, $default_currency, null);
                             }
                         } else {
-                            $p['frontend_'.$k]= $p[$k] = shop_currency($p[$k], $frontend_currency, $frontend_currency, false);
+                            $p['frontend_'.$k] = $p[$k] = shop_currency($p[$k], $frontend_currency, $frontend_currency, false);
+                            // Same currency: still honour currency rounding settings (e.g. RUB 618.57 → 619)
+                            if (!empty($curs[$frontend_currency]['rounding'])) {
+                                $p['frontend_'.$k] = $p[$k] = shopRounding::roundCurrency($p['frontend_'.$k], $frontend_currency);
+                            }
                         }
                     }
                 }
@@ -171,8 +178,9 @@ class shopRounding
             }
 
             $convert_currency = $product_currency != $frontend_currency && !empty($curs[$frontend_currency]['rounding']) && !empty($curs[$product_currency]);
+            $round_frontend = !empty($curs[$frontend_currency]['rounding']);
             $sku['currency'] = $sku['unconverted_currency'] = $product_currency;
-            if ($convert_currency) {
+            if ($convert_currency || $round_frontend) {
                 $sku['currency'] = $frontend_currency;
             }
 
@@ -185,7 +193,7 @@ class shopRounding
                 $sku['unconverted_'.$k] = $sku[$k];
                 if ($sku[$k] > 0 && !empty($curs[$product_currency])) {
                     $sku['frontend_'.$k] = shop_currency($sku[$k], $product_currency, $frontend_currency, false);
-                    if ($convert_currency) {
+                    if ($convert_currency || $round_frontend) {
                         $sku[$k] = $sku['frontend_'.$k] = shopRounding::roundCurrency($sku['frontend_'.$k], $frontend_currency);
                     } else {
                         $sku[$k] = $sku['frontend_'.$k];
@@ -193,7 +201,7 @@ class shopRounding
                 }
             }
 
-            if ($convert_currency && isset($sku['primary_price'])) {
+            if (($convert_currency || $round_frontend) && isset($sku['primary_price']) && isset($sku['frontend_price'])) {
                 $sku['primary_price'] = shop_currency($sku['frontend_price'], $frontend_currency, $primary_currency, false);
             }
         }
@@ -235,6 +243,9 @@ class shopRounding
                     }
                 } else {
                     $s['price'] = shop_currency($s['frontend_price'], $frontend_currency, $frontend_currency, false);
+                    if ($s['price'] && !empty($curs[$frontend_currency]['rounding'])) {
+                        $s['frontend_price'] = $s['price'] = shopRounding::roundCurrency($s['price'], $frontend_currency);
+                    }
                 }
             }
 
@@ -288,7 +299,7 @@ class shopRounding
 
             $v['frontend_price'] = $v['unconverted_price'] = $v['price'];
             if ($v['price'] > 0) {
-                if (($service_currency != $frontend_currency) || $round_services) {
+                if (($service_currency != $frontend_currency) || $round_services || !empty($curs[$frontend_currency]['rounding'])) {
                     $v['frontend_price'] = shop_currency($v['price'], $service_currency, $frontend_currency, false);
                     if (!empty($curs[$frontend_currency]['rounding'])) {
                         $v['price'] = $v['frontend_price'] = shopRounding::roundCurrency($v['frontend_price'], $frontend_currency);
