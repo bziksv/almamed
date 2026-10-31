@@ -675,10 +675,10 @@ class shopCustom
     }
 
     /**
-     * Active sticker codes for products (Yes = row with feature_value_id=1).
+     * Active stickers for products (boolean Yes = feature_value_id=1).
      *
      * @param int[] $product_ids
-     * @return array [product_id => string[] codes in display order]
+     * @return array [product_id => ['codes' => string[], 'sale_until' => string]]
      */
     public static function getDgStickersByProductIds($product_ids)
     {
@@ -722,6 +722,42 @@ class shopCustom
             }
         }
 
+        $sale_until_by_pid = array();
+        $until_feature = $fm->getByField('code', 'dg_sticker_sale_until');
+        if ($until_feature && !empty($until_feature['id'])) {
+            $until_fid = (int)$until_feature['id'];
+            $until_rows = $pfm->getByField(
+                array(
+                    'product_id' => $product_ids,
+                    'feature_id' => $until_fid,
+                    'sku_id' => null,
+                ),
+                true
+            );
+            $value_ids = array();
+            foreach ($until_rows as $row) {
+                $vid = (int)$row['feature_value_id'];
+                if ($vid > 0) {
+                    $value_ids[$vid] = true;
+                }
+            }
+            $id_to_val = array();
+            if ($value_ids) {
+                $vm = new shopFeatureValuesVarcharModel();
+                $vals = $vm->getByField('id', array_keys($value_ids), true);
+                foreach ($vals as $v) {
+                    $id_to_val[(int)$v['id']] = self::normalizeDgSaleUntilLabel(ifset($v['value'], ''));
+                }
+            }
+            foreach ($until_rows as $row) {
+                $pid = (int)$row['product_id'];
+                $label = ifset($id_to_val[(int)$row['feature_value_id']], '');
+                if ($label !== '') {
+                    $sale_until_by_pid[$pid] = $label;
+                }
+            }
+        }
+
         foreach ($product_ids as $pid) {
             $codes = array();
             foreach (self::DG_STICKER_CODES as $code) {
@@ -730,7 +766,10 @@ class shopCustom
                 }
             }
             if ($codes) {
-                $out[$pid] = $codes;
+                $out[$pid] = array(
+                    'codes' => $codes,
+                    'sale_until' => ifset($sale_until_by_pid[$pid], ''),
+                );
             }
         }
         return $out;
@@ -739,13 +778,22 @@ class shopCustom
     /**
      * HTML stack of sticker badges for corner (empty string if none).
      *
-     * @param string[]|null $codes
+     * @param string[]|array|null $codes список code или pack ['codes'=>[], 'sale_until'=>'']
      * @param string|null $sale_until срок акции дд-мм-гггг (Feature dg_sticker_sale_until)
      * @return string
      */
     public static function dgStickerBadgesHtml($codes, $sale_until = null)
     {
         if (empty($codes) || !is_array($codes)) {
+            return '';
+        }
+        if (isset($codes['codes']) && is_array($codes['codes'])) {
+            if ($sale_until === null) {
+                $sale_until = ifset($codes['sale_until'], '');
+            }
+            $codes = $codes['codes'];
+        }
+        if (empty($codes)) {
             return '';
         }
         $labels = self::dgStickerLabels();
