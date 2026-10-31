@@ -740,20 +740,25 @@ class shopCustom
      * HTML stack of sticker badges for corner (empty string if none).
      *
      * @param string[]|null $codes
+     * @param string|null $sale_until срок акции дд-мм-гггг (Feature dg_sticker_sale_until)
      * @return string
      */
-    public static function dgStickerBadgesHtml($codes)
+    public static function dgStickerBadgesHtml($codes, $sale_until = null)
     {
         if (empty($codes) || !is_array($codes)) {
             return '';
         }
         $labels = self::dgStickerLabels();
+        $until = self::normalizeDgSaleUntilLabel($sale_until);
         $parts = array();
         foreach (self::DG_STICKER_CODES as $code) {
             if (!in_array($code, $codes, true)) {
                 continue;
             }
             $label = ifset($labels[$code], $code);
+            if ($code === 'dg_sticker_sale' && $until !== '') {
+                $label = 'Скидка до ' . $until;
+            }
             $class = 'dg-sticker dg-sticker--' . str_replace('dg_sticker_', '', $code);
             $parts[] = '<div class="' . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . '"><span>'
                 . htmlspecialchars($label, ENT_QUOTES, 'UTF-8')
@@ -763,6 +768,54 @@ class shopCustom
             return '';
         }
         return '<div class="dg-sticker-stack">' . implode('', $parts) . '</div>';
+    }
+
+    /**
+     * Срок акции из features (varchar dg_sticker_sale_until) → «дд-мм-гггг» или ''.
+     *
+     * @param array $features
+     * @return string
+     */
+    public static function dgStickerSaleUntilFromFeatures($features)
+    {
+        if (empty($features) || !is_array($features) || !array_key_exists('dg_sticker_sale_until', $features)) {
+            return '';
+        }
+        return self::normalizeDgSaleUntilLabel($features['dg_sticker_sale_until']);
+    }
+
+    /**
+     * @param mixed $raw
+     * @return string
+     */
+    public static function normalizeDgSaleUntilLabel($raw)
+    {
+        if ($raw === null || $raw === false || $raw === '') {
+            return '';
+        }
+        if (is_object($raw)) {
+            if (isset($raw['value'])) {
+                $raw = $raw['value'];
+            } elseif (method_exists($raw, '__toString')) {
+                $raw = (string)$raw;
+            } else {
+                return '';
+            }
+        }
+        if (is_array($raw)) {
+            $raw = ifset($raw['value'], ifset($raw[0], ''));
+        }
+        $s = trim((string)$raw);
+        if ($s === '') {
+            return '';
+        }
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})/', $s, $m)) {
+            return $m[3] . '-' . $m[2] . '-' . $m[1];
+        }
+        if (preg_match('/^(\d{2})[.\-\/](\d{2})[.\-\/](\d{4})$/', $s, $m)) {
+            return $m[1] . '-' . $m[2] . '-' . $m[3];
+        }
+        return $s;
     }
 
     /**
@@ -802,6 +855,20 @@ class shopCustom
             }
         }
         return $codes;
+    }
+
+    /**
+     * Badges from full features map (boolean stickers + срок «Скидка до»).
+     *
+     * @param array $features
+     * @return string
+     */
+    public static function dgStickerBadgesHtmlFromFeatures($features)
+    {
+        return self::dgStickerBadgesHtml(
+            self::dgStickerCodesFromFeatures($features),
+            self::dgStickerSaleUntilFromFeatures($features)
+        );
     }
 
 }

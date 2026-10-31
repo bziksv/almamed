@@ -18,7 +18,7 @@
             <div class="image" id="product-core-image"{if !empty($video.url)} style="display:none"{/if}>
                 <div class="corner top left">
                     {$wa->shop->badgeHtml($product.badge)}
-                    {$dg_sticker_html = shopCustom::dgStickerBadgesHtml(shopCustom::dgStickerCodesFromFeatures($product.features))}
+                    {$dg_sticker_html = shopCustom::dgStickerBadgesHtmlFromFeatures($product.features)}
                     {if $dg_sticker_html}{$dg_sticker_html}{/if}
                 </div>
                 <a href="{$wa->shop->productImgUrl($product, '970')}">
