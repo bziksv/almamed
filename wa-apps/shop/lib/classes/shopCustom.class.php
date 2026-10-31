@@ -776,6 +776,29 @@ class shopCustom
     }
 
     /**
+     * Для листингов категорий: только акция «Скидка» (+ срок), без РУ / наличия и пр.
+     *
+     * @param int[] $product_ids
+     * @return array [product_id => ['codes' => string[], 'sale_until' => string]]
+     */
+    public static function getDgSaleStickersByProductIds($product_ids)
+    {
+        $all = self::getDgStickersByProductIds($product_ids);
+        $out = array();
+        foreach ($all as $pid => $pack) {
+            $codes = ifset($pack['codes'], array());
+            if (!is_array($codes) || !in_array('dg_sticker_sale', $codes, true)) {
+                continue;
+            }
+            $out[(int)$pid] = array(
+                'codes' => array('dg_sticker_sale'),
+                'sale_until' => ifset($pack['sale_until'], ''),
+            );
+        }
+        return $out;
+    }
+
+    /**
      * HTML stack of sticker badges for corner (empty string if none).
      *
      * @param string[]|array|null $codes список code или pack ['codes'=>[], 'sale_until'=>'']

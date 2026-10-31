@@ -99,7 +99,7 @@
     {$features = $wa->shop->features($products)}
 {/if}
 {if !empty($products)}
-    {$_dg_stickers = shopCustom::getDgStickersByProductIds(array_keys($products))}
+    {$_dg_stickers = shopCustom::getDgSaleStickersByProductIds(array_keys($products))}
 {else}
     {$_dg_stickers = []}
 {/if}
