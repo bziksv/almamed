@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Визуализатор вен Veinlite LEDX · мок типографики</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300..500,0..1,0&icon_names=accessible,assist_walker,back_hand,bed,biotech,cardiology,child_care,co_present,content_cut,coronavirus,dentistry,dermatology,emergency,ent,face_retouching_natural,fact_check,flashlight_on,gastroenterology,gynecology,labs,light,monitor_heart,ophthalmology,orthopedics,percent,pets,physical_therapy,pulmonology,radiology,sanitizer,sensors,stethoscope,surgical,syringe,urology,videocam,visibility,vital_signs&display=block" rel="stylesheet">
+<style>
+:root{
+  --font:"Roboto",system-ui,sans-serif;
+  --c-text:#212121;--c-muted:#455a64;--c-line:#cfd8dc;
+  --c-brand:#0e7a99;--c-brand-fill:#19a5cc;--c-soft:#e8f6fa;
+  --max:1400px;--header-h:56px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:16px}
+body{
+  margin:0;font-family:var(--font);font-size:1rem;line-height:1.5;color:var(--c-text);
+  background:#fff;padding-top:var(--header-h);padding-bottom:72px;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+button,input{font:inherit;color:inherit}
+
+.container{width:85%;max-width:var(--max);margin:0 auto}
+@media(min-width:993px){.container{min-width:min(950px,100%)}}
+@media(max-width:992px){.container{width:100%;min-width:0;padding:0 12px}}
+
+/* ===== TOP NAV: единая горизонталь как .container ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:var(--header-h);
+  background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.12);
+}
+.nav-shell{
+  height:100%;max-width:var(--max);width:85%;margin:0 auto;
+  display:flex;align-items:stretch;
+}
+@media(max-width:992px){.nav-shell{width:100%;max-width:none;padding:0 8px}}
+.nav-links{display:flex;align-items:center;flex:0 0 auto}
+.nav-links a{
+  display:flex;align-items:center;height:var(--header-h);
+  padding:0 12px;font-size:.8125rem;font-weight:500;white-space:nowrap;
+}
+.nav-links a:first-child{padding-left:0}
+.nav-search{flex:1;display:flex;align-items:center;padding:0 12px;min-width:120px}
+.nav-search input{
+  width:100%;height:38px;border:1px solid var(--c-line);border-radius:4px;
+  padding:0 12px;font-size:.8125rem;
+}
+.nav-cart,.nav-auth{
+  display:flex;align-items:center;gap:8px;padding:0 12px;
+  font-size:.8125rem;font-weight:500;flex-shrink:0;
+}
+.nav-cart .material-icons,.nav-auth .material-icons{font-size:22px;line-height:1;color:var(--c-brand)}
+.nav-phone{
+  flex:0 0 212px;background:var(--c-brand-fill);color:#fff;
+  display:flex;align-items:center;padding:0 18px;margin-left:8px;
+  border-radius:0;
+}
+.nav-links a,.nav-cart,.nav-auth{position:relative;transition:background .15s,color .15s}
+.nav-links a::after,.nav-cart::after,.nav-auth::after{
+  content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;border-radius:2px 2px 0 0;
+  background:var(--c-brand-fill);transform:scaleX(0);transition:transform .2s ease;
+}
+.nav-links a:first-child::after{left:0}
+.nav-links a:hover,.nav-cart:hover,.nav-auth:hover{background:rgba(0,0,0,.05);color:var(--c-brand)}
+.nav-links a:hover::after,.nav-cart:hover::after,.nav-auth:hover::after{transform:scaleX(1)}
+.nav-links a:hover{background:none}
+.nav-links a:focus-visible,.nav-cart:focus-visible,.nav-auth:focus-visible,.nav-phone:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:-2px}
+.nav-phone{transition:background .15s}
+.nav-phone:hover{background:#1496b8}
+.nav-phone-icon{display:none;font-size:22px;line-height:1;color:#fff}
+.nav-phone-text strong{display:block;font-size:1.2rem;font-weight:600;line-height:1.2;color:#fff}
+.nav-phone-text span{display:block;font-size:.75rem;margin-top:3px;color:#fff}
+
+/* ===== HEADER LINE: logo + USP ===== */
+.header-line{border-bottom:1px solid var(--c-line);padding:.85rem 0;background:#fff}
+.header-line-inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:2rem}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand img{width:100px;height:auto;flex-shrink:0}
+.brand-text strong{display:block;font-size:1.2rem;font-weight:500;line-height:1.25}
+.brand-text span{display:block;font-size:.75rem;color:var(--c-muted);margin-top:2px}
+.header-meta{display:contents}
+.header-meta .meta-item{display:flex;align-items:center;gap:10px;font-size:1rem;line-height:1.3;white-space:nowrap;color:var(--c-text)}
+.header-meta .meta-item:first-child{justify-self:center}
+.header-meta .meta-item:last-child{justify-self:end}
+.header-meta .material-icons{font-size:32px;color:var(--c-brand-fill);line-height:1}
+.header-meta b{font-weight:700}
+.header-meta sup{font-size:.6em;margin-left:1px}
+
+.main{padding:1.25rem 0 2.5rem}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:1.25rem;align-items:start}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* ===== SIDEBAR: site SVG icons, no left gutter ===== */
+.sidebar{min-width:0}
+.sidebar-card{
+  background:#fff;border:1px solid var(--c-line);border-radius:8px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.sidebar-title{
+  background:var(--c-brand-fill);color:#fff;margin:0;padding:12px 14px;
+  font-size:.9375rem;font-weight:500;line-height:1;
+}
+.sidebar-list{list-style:none;margin:0;padding:0}
+.sidebar-list li+li{border-top:1px solid #e6edf0}
+.sidebar-list a{
+  position:relative;display:flex;align-items:center;gap:12px;
+  min-height:44px;padding:6px 14px;
+  font-size:.9375rem;line-height:1.3;color:var(--c-text);
+  transition:background .15s,color .15s;
+}
+.sidebar-list a::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:#19A7CC;transform:scaleY(0);transition:transform .2s ease;
+}
+.sidebar-list a:hover{background:var(--c-soft);color:var(--c-brand)}
+.sidebar-list a:hover::before{transform:scaleY(1)}
+.cat-menu-icon{
+  flex:0 0 28px;width:28px;height:28px;border-radius:6px;
+  background:transparent;color:#78909c;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s,box-shadow .2s;
+}
+.msi{
+  font-family:"Material Symbols Outlined";font-weight:normal;font-style:normal;
+  font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;
+  white-space:nowrap;direction:ltr;-webkit-font-smoothing:antialiased;
+  display:block;width:20px;height:20px;overflow:hidden;
+  font-variation-settings:"FILL" 0,"wght" 400,"GRAD" 0,"opsz" 20;
+  transition:font-variation-settings .2s;
+}
+.sidebar-list a:hover .cat-menu-icon{color:var(--c-brand-fill)}
+.sidebar-list a:hover .msi{font-variation-settings:"FILL" 0,"wght" 500,"GRAD" 0,"opsz" 20}
+
+.product-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:1.5rem;align-items:start}
+@media(max-width:992px){.product-grid{grid-template-columns:1fr}}
+
+.breadcrumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 .75rem;font-size:.8125rem;color:var(--c-muted)}
+.breadcrumbs a:hover{color:var(--c-brand)}
+.breadcrumbs .material-icons{font-size:18px;color:var(--c-brand);line-height:1}
+.bc-sep{opacity:.5}
+.bc-drop{position:relative}
+.bc-item{display:inline-flex;align-items:center}
+.bc-item>a{display:inline-flex;align-items:center;min-height:28px}
+.bc-pill{
+  display:inline-flex;align-items:stretch;height:28px;border:1px solid var(--c-line);border-radius:14px;background:#fff;
+  transition:border-color .15s,background .15s;
+}
+.bc-link{display:inline-flex;align-items:center;padding:0 6px 0 10px;border-radius:14px 0 0 14px;color:var(--c-text)}
+.bc-link:hover{color:var(--c-brand);text-decoration:underline;text-underline-offset:2px}
+.bc-toggle{
+  display:inline-flex;align-items:center;justify-content:center;width:28px;padding:0;
+  border:0;border-left:1px solid var(--c-line);border-radius:0 14px 14px 0;background:none;cursor:pointer;
+  color:var(--c-muted);transition:background .15s,color .15s;
+}
+.bc-toggle .material-icons{font-size:20px;transition:transform .2s}
+.bc-pill:hover,.bc-drop:has([aria-expanded="true"]) .bc-pill{border-color:var(--c-brand-fill)}
+.bc-toggle:hover,.bc-toggle[aria-expanded="true"]{background:var(--c-soft);color:var(--c-brand)}
+.bc-toggle[aria-expanded="true"] .material-icons{transform:rotate(180deg)}
+.bc-toggle:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:2px}
+.bc-menu{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:60;width:min(600px,calc(100vw - 2rem));
+  background:#fff;border:1px solid var(--c-line);border-radius:8px;
+  box-shadow:0 12px 32px rgba(0,0,0,.14);padding:12px;color:var(--c-text);
+}
+.bc-menu[hidden]{display:none}
+.bc-menu-head{display:flex;align-items:center;gap:8px;margin:0 2px 10px;font-size:.875rem}
+.bc-menu-head span{padding:1px 7px;border-radius:10px;background:var(--c-soft);color:var(--c-brand);font-size:.75rem;font-weight:600}
+.bc-filter{position:relative;display:block;margin-bottom:8px}
+.bc-filter .material-icons{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--c-muted)}
+.bc-filter input{width:100%;height:36px;padding:0 10px 0 34px;border:1px solid var(--c-line);border-radius:6px;font-size:.8125rem}
+.bc-filter input:focus{outline:none;border-color:var(--c-brand-fill);box-shadow:0 0 0 3px rgba(25,165,204,.15)}
+.bc-scroll{position:relative;max-height:320px;overflow-y:auto;overscroll-behavior:contain}
+.bc-list{list-style:none;margin:0;padding:0;columns:2 220px;column-gap:12px}
+.bc-list li{break-inside:avoid}
+.bc-list a{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:4px;font-size:.8125rem;line-height:1.35}
+.bc-list a:hover{background:var(--c-soft);color:var(--c-brand)}
+.bc-list a.is-current{background:var(--c-soft);color:var(--c-brand);font-weight:600}
+.bc-list a.is-current .material-icons{font-size:16px}
+.bc-empty{margin:8px;color:var(--c-muted);font-size:.8125rem}
+.bc-all{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:8px;padding-top:10px;border-top:1px solid var(--c-line);font-size:.8125rem;font-weight:500;color:var(--c-brand)}
+.bc-all .material-icons{font-size:16px}
+@media(max-width:992px){
+  .breadcrumbs{display:none}
+  .title-row{border-top:0;padding-top:0}
+}
+
+.title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin:0 0 1rem;padding-top:.65rem;border-top:1px solid var(--c-line)}
+.title-main{flex:1;min-width:0}
+.product-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;margin:.35rem 0 0;font-size:.9375rem;color:var(--c-muted)}
+.meta-item{display:inline-flex;align-items:center;gap:4px}
+.meta-item b{font-weight:500;color:var(--c-text)}
+.meta-item a{color:var(--c-brand)}
+.meta-item a:hover{text-decoration:underline}
+.meta-copy{position:relative;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin-left:-2px;padding:0;border:0;border-radius:4px;background:none;color:#90a4ae;cursor:pointer;transition:background .15s,color .15s}
+.meta-copy:hover,.meta-copy:focus-visible{background:var(--c-soft);color:var(--c-brand)}
+.meta-copy .material-icons{font-size:15px}
+.meta-copied{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translate(-50%,4px);padding:4px 8px;border-radius:4px;background:#263238;color:#fff;font-size:.6875rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
+.meta-copy.is-done .meta-copied{opacity:1;transform:translate(-50%,0)}
+.title-row h1{margin:0;min-width:0;font-size:1.6em;font-weight:600;line-height:1.25;letter-spacing:-.015em}
+.actions{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;line-height:1;margin-top:-2px}
+.actions .act{
+  display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;
+  border:0;border-radius:50%;background:none;cursor:pointer;color:rgba(0,0,0,.45);
+  transition:background .15s,color .15s,transform .15s;
+}
+.actions .act:hover,.actions .act:focus-visible{background:var(--c-soft);color:var(--c-brand)}
+.actions .act:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:1px}
+.actions .act:active{transform:scale(.92)}
+.actions .act[aria-pressed="true"]{color:var(--c-brand)}
+.actions .act--fav[aria-pressed="true"]{color:#f5a623}
+.actions .material-icons{font-size:22px;line-height:1}
+
+.gallery{position:relative;border:1px solid var(--c-line);border-radius:4px;padding:12px;background:#fff}
+.badges{position:absolute;top:20px;left:20px;display:flex;gap:6px;z-index:2;flex-wrap:wrap}
+.badge{padding:6px 10px;border-radius:4px;font-size:.75rem;font-weight:600;color:#fff;text-transform:uppercase}
+.badge.ru{background:#43a047}.badge.stock{background:var(--c-brand-fill)}
+.gallery-main{position:relative;display:grid;place-items:center;min-height:320px;background:#fff;overflow:hidden;cursor:zoom-in}
+.gallery-main img{max-height:360px;width:auto}
+.gallery-zoom{
+  position:absolute;right:8px;bottom:8px;z-index:2;display:inline-flex;align-items:center;gap:6px;
+  height:32px;padding:0 10px 0 8px;border:0;border-radius:16px;background:rgba(255,255,255,.92);
+  box-shadow:0 1px 3px rgba(0,0,0,.18);color:#546e7a;font:500 .75rem/1 var(--font, Roboto, sans-serif);cursor:pointer;
+  transition:color .15s,box-shadow .15s,opacity .2s;
+}
+.gallery-zoom .material-icons{font-size:18px}
+.gallery-zoom:hover,.gallery-zoom:focus-visible{color:var(--c-brand);box-shadow:0 2px 6px rgba(0,0,0,.22)}
+.gallery-zoom:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:2px}
+
+html:has(.lb[open]){overflow:hidden}
+.lb{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#fff;color:var(--c-text);display:none;flex-direction:column}
+.lb[open]{display:flex;animation:lb-in .2s ease-out}
+.lb::backdrop{background:rgba(255,255,255,.9)}
+@keyframes lb-in{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+.lb-top{display:flex;align-items:center;gap:16px;height:56px;padding:0 8px 0 20px;border-bottom:1px solid var(--c-line);flex-shrink:0}
+.lb-count{font-size:.8125rem;font-weight:600;color:var(--c-muted);font-variant-numeric:tabular-nums;min-width:3.5em}
+.lb-title{flex:1;min-width:0;font-size:.9375rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-close,.lb-nav{display:inline-flex;align-items:center;justify-content:center;border:0;cursor:pointer;transition:background .15s,color .15s}
+.lb-close{width:44px;height:44px;border-radius:50%;background:none;color:#546e7a}
+.lb-close:hover,.lb-close:focus-visible{background:rgba(0,0,0,.05);color:var(--c-brand)}
+.lb-close .material-icons{font-size:26px}
+.lb-stage{position:relative;flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;touch-action:pan-y}
+.lb-img{max-width:min(700px,calc(100vw - 160px));max-height:calc(100dvh - 56px - 104px - 32px);width:auto;height:auto;user-select:none;-webkit-user-drag:none;transition:transform .25s ease,opacity .15s}
+.lb-img.is-zoomed{transform:scale(var(--z,2));cursor:zoom-out;transition:none}
+.lb-stage.can-zoom .lb-img:not(.is-zoomed){cursor:zoom-in}
+.lb-nav{position:absolute;top:50%;width:48px;height:48px;margin-top:-24px;border-radius:50%;background:#fff;color:#37474f;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.lb-nav[data-dir="-1"]{left:24px}.lb-nav[data-dir="1"]{right:24px}
+.lb-nav:hover,.lb-nav:focus-visible{background:var(--c-brand-fill);color:#fff}
+.lb-nav:disabled{opacity:0;pointer-events:none}
+.lb-nav .material-icons{font-size:28px}
+.lb-thumbs{display:flex;justify-content:center;gap:8px;height:104px;padding:16px;border-top:1px solid var(--c-line);overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.lb-thumbs .thumb{width:72px;height:72px}
+.lb-thumbs .thumb img{width:100%;height:100%}
+.thumbs{display:flex;align-items:center;gap:8px;margin-top:12px}
+.thumbs-nav{border:0;background:var(--c-brand-fill);color:#fff;width:28px;height:28px;border-radius:4px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:background .15s}
+.thumbs-nav:hover{background:#1496b8}
+.thumbs-nav:disabled{background:#cfe3ea;cursor:default}
+.thumbs-nav .material-icons{font-size:18px;line-height:1}
+.thumbs-track{display:flex;gap:8px;overflow-x:auto;flex:1;padding:2px;scroll-behavior:smooth;scrollbar-width:none}
+.thumbs-track::-webkit-scrollbar{display:none}
+.thumbs-track>:first-child{margin-left:auto}
+.thumbs-track>:last-child{margin-right:auto}
+.thumb{flex-shrink:0;padding:0;border:1px solid var(--c-line);border-radius:4px;background:#fff;cursor:pointer;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.thumb img{width:64px;height:64px;object-fit:cover;display:block}
+.thumb:hover{border-color:var(--c-brand-fill)}
+.thumb.is-active{border-color:var(--c-brand-fill);box-shadow:0 0 0 1px var(--c-brand-fill)}
+.thumb:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:2px}
+
+.buy{border:1px solid var(--c-line);border-radius:4px;padding:14px}
+.share{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--c-line);font-size:.8125rem;color:var(--c-muted)}
+.share>span{flex:0 0 auto;white-space:nowrap}
+.share-btns{display:flex;flex-wrap:nowrap;justify-content:flex-end;gap:8px;min-width:0}
+.share-btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 1 36px;
+  width:36px;height:36px;min-width:28px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:#f1f4f5;color:#78909c;
+  transition:background .2s,color .2s,transform .2s,box-shadow .2s;
+}
+.share-btn svg{width:18px;height:18px;fill:currentColor;display:block}
+.share-btn .material-icons{font-size:20px}
+.share-btn:hover,.share-btn:focus-visible{background:var(--brand);color:#fff;transform:translateY(-1px);box-shadow:0 3px 8px color-mix(in srgb,var(--brand) 35%,transparent)}
+.share-btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.share-btn--vk{--brand:#0077FF}
+.share-btn--tg{--brand:#26A5E4}
+.share-btn--wa{--brand:#25D366}
+.share-btn--ok{--brand:#EE8208}
+.share-btn--copy{--brand:#5f6b73}
+.share-copied{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translate(-50%,4px);
+  padding:4px 8px;border-radius:4px;background:#263238;color:#fff;
+  font-size:.75rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+}
+.share-btn--copy.is-copied .share-copied{opacity:1;transform:translate(-50%,0)}
+
+.price-label{display:block;font-size:13px;font-weight:500;color:var(--c-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.15rem}
+.price{font-size:2.05em;font-weight:700;line-height:1.1;letter-spacing:-.02em;margin:0 0 .5rem}
+.stock{display:flex;align-items:center;gap:8px;margin:0 0 .9rem;font-size:.875rem;line-height:1.35;color:var(--c-text)}
+.stock b{font-weight:600}
+.stock-text span{color:var(--c-muted)}
+.stock-dot{width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#43a047;box-shadow:0 0 0 3px rgba(67,160,71,.15)}
+.stock--many b,.stock--any b{color:#2e7d32}
+.stock--low .stock-dot{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.stock--low b{color:#b45309}
+.stock--none .stock-dot{background:#90a4ae;box-shadow:0 0 0 3px rgba(144,164,174,.2)}
+.stock--none b{color:var(--c-muted)}
+.stock--remote .stock-dot{background:var(--c-brand-fill);box-shadow:0 0 0 3px rgba(25,165,204,.18)}
+.stock--remote b{color:var(--c-brand)}
+.stock-hint{margin:.5rem 0 0;padding:8px 10px;border-radius:6px;background:#fff8e6;color:#8a5a00;font-size:.8125rem;line-height:1.4}
+.buy-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--c-line);border-radius:4px;overflow:hidden}
+.qty button{width:36px;height:38px;border:0;background:#f5f5f5;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,color .15s}
+.qty button:hover:not(:disabled){background:var(--c-soft);color:var(--c-brand)}
+.qty button:disabled{color:#b0bec5;cursor:default}
+.qty button .material-icons{font-size:20px;line-height:1}
+.qty input{width:44px;height:38px;border:0;border-left:1px solid var(--c-line);border-right:1px solid var(--c-line);text-align:center;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 18px;border:0;border-radius:4px;background:var(--c-brand-fill);color:#fff;font-weight:700;letter-spacing:.02em;cursor:pointer;text-transform:uppercase;font-size:.875rem;box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);transition:background .15s,box-shadow .2s}
+.btn:hover,.btn:focus-visible{box-shadow:0 5px 11px 0 rgba(0,0,0,.18),0 4px 15px 0 rgba(0,0,0,.15)}
+.btn.block{display:flex;width:100%;margin-top:10px;height:44px}
+.facts{margin:1rem 0 0;padding:.75rem 0 0;border-top:1px solid var(--c-line);font-size:.8125rem;line-height:1.4}
+.facts div{display:flex;align-items:baseline;gap:6px;padding:3px 0}
+.facts dt{color:var(--c-muted);white-space:nowrap}
+.facts div::after{content:"";order:1;flex:1;border-bottom:1px dotted #cfd8dc;transform:translateY(-3px)}
+.facts dd{order:2;margin:0;font-weight:500;color:var(--c-text);text-align:right}
+.facts dd a{color:var(--c-brand)}
+.facts dd a:hover{text-decoration:underline}
+.manager{margin-top:1rem;padding:14px;border-radius:8px;background:#f5f9fa;border:1px solid #e3edf0}
+.manager-head{display:flex;align-items:center;gap:12px}
+.manager-photo{width:56px;height:56px;flex-shrink:0;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px #fff,0 0 0 4px #d6e6eb}
+.manager-who{min-width:0}
+.manager-role{display:block;font-size:.75rem;color:var(--c-muted)}
+.manager-who strong{display:block;margin:1px 0 2px;font-size:1rem;font-weight:600;line-height:1.25;color:var(--c-text)}
+.manager-hours{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--c-muted)}
+.manager-hours::before{content:"";width:7px;height:7px;flex-shrink:0;border-radius:50%;background:#43a047}
+.manager-actions{display:grid;grid-template-columns:1fr;gap:6px;margin-top:12px}
+.manager-act{
+  display:flex;align-items:center;gap:10px;min-width:0;padding:7px 12px;
+  border:1px solid #d6e6eb;border-radius:6px;background:#fff;
+  font-size:.8125rem;font-weight:500;line-height:1.25;color:var(--c-text);
+  transition:border-color .15s,background .15s,color .15s;
+}
+.manager-act .material-icons{flex-shrink:0;font-size:20px;color:var(--c-brand-fill)}
+.manager-act span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.manager-act span{flex:1;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.manager-act small{order:2;font-size:.75rem;font-weight:400;color:var(--c-muted)}
+.manager-act:hover{border-color:var(--c-brand-fill);background:var(--c-soft);color:var(--c-brand)}
+.manager-act:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:2px}
+
+.below{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--c-line)}
+.below{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:1.5rem;align-items:start}
+@media(min-width:1280px){
+  .product-grid,.below{grid-template-columns:minmax(0,1fr) 380px}
+}
+.below-main{min-width:0}
+.below{scroll-margin-top:calc(var(--header-h) + 12px)}
+.below-aside{position:sticky;top:calc(var(--header-h) + 16px)}
+.terms{border:1px solid var(--c-line);border-radius:4px;padding:16px;background:#fafcfd}
+.terms-title{margin:0 0 12px;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-muted)}
+.terms-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.terms-list li{display:flex;gap:12px;align-items:flex-start}
+.terms-list .material-icons{flex-shrink:0;font-size:20px;color:var(--c-brand);margin-top:1px}
+.terms-list b{display:block;font-size:.875rem;font-weight:600;line-height:1.35;color:var(--c-text)}
+.terms-list span{display:block;margin-top:2px;font-size:.9375rem;line-height:1.45;color:var(--c-muted)}
+.terms-links{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--c-line);font-size:.8125rem;font-weight:500}
+.terms-links a{display:inline-flex;align-items:center;gap:6px;color:var(--c-brand)}
+.terms-links a:hover{text-decoration:underline}
+.terms-links .material-icons{font-size:16px}
+@media (max-width:992px){
+  .below{grid-template-columns:1fr}.below-aside{position:static}
+  .tabs{flex-wrap:nowrap}
+  .tabs:has(button:nth-child(3)){justify-content:space-between}
+  .tabs:has(button:nth-child(3)) button{padding-left:6px;padding-right:6px}
+}
+.tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--c-line);margin:0 0 1.25rem}
+.tabs button{
+  appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;
+  margin-bottom:-1px;padding:10px 16px;font-size:1rem;font-weight:500;
+  color:var(--c-muted);cursor:pointer;line-height:1.2;
+}
+.tabs button:hover{color:var(--c-brand)}
+.tabs button.is-active{color:var(--c-brand);font-weight:600;border-bottom-color:var(--c-brand-fill)}
+.tab-panel{display:none}
+.tab-panel.is-active{display:block}
+.desc{font-size:1rem;line-height:1.65;color:#333}
+.desc p{margin:0 0 1em}
+.desc h2,.desc h3,.desc h4{font-size:1.05rem;font-weight:600;margin:1.25em 0 .5em;line-height:1.3}
+.desc ul,.desc ol{margin:.5em 0 1em;padding-left:1.25em}
+.features{width:100%;border-collapse:collapse;font-size:1rem;line-height:1.4}
+.features td{padding:10px 12px;border-bottom:1px solid var(--c-line);vertical-align:top}
+.features tr:nth-child(odd) td{background:#f7fbfc}
+.features .name{width:48%;color:#37474f;font-weight:500}
+.features .value{color:var(--c-text);font-weight:500}
+.komplektatsiya{font-size:1rem;line-height:1.65;color:#333}
+.komplektatsiya p{margin:0 0 1em}
+.komplektatsiya ul{margin:.5em 0 1em;padding-left:1.25em}
+.komplektatsiya li{margin:.35em 0}
+.komplektatsiya h3{font-size:.9375rem;font-weight:500;margin:1.25em 0 .5em;color:#37474f}
+
+/* ===== RELATED ===== */
+.related{margin-top:2.5rem}
+.rel-head{display:flex;align-items:center;gap:1rem;margin:0 0 1.25rem}
+.rel-head h2{margin:0;font-size:1.125rem;font-weight:600;white-space:nowrap}
+.rel-head::after{content:"";flex:1;height:1px;background:var(--c-line)}
+.rel-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 14px;align-items:stretch}
+.rel-card{display:flex;flex-direction:column;min-width:0;padding:12px 12px 14px;background:#fff;border:1px solid #e6edf0;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.rel-card:hover{border-color:#b7c9d1}
+.related:not(.is-open) .rel-card:nth-child(n+5){display:none}
+.rel-img{display:grid;place-items:center;aspect-ratio:1;margin-bottom:12px;padding:4px;overflow:hidden}
+.rel-img img{width:100%;height:100%;object-fit:contain;transition:transform .35s ease}
+.rel-card:hover .rel-img img{transform:scale(1.04)}
+.rel-name{margin:0 0 14px;font-size:1rem;line-height:1.4;color:var(--c-text)}
+.rel-name:hover{color:var(--c-brand)}
+.rel-price{display:flex;align-items:flex-end;min-height:1.2em;margin:auto 0 14px;font-size:1rem;font-weight:700;line-height:1.2;color:var(--c-text)}
+.rel-price--request{font-size:.8125rem;font-weight:500;color:var(--c-muted)}
+.rel-buy{
+  display:inline-flex;align-self:flex-start;margin-top:0;padding:8px 18px;border:0;border-radius:6px;
+  background:var(--c-brand-fill);color:#fff;font-size:.8125rem;font-weight:600;line-height:1.2;text-align:center;
+  box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);transition:background .15s,box-shadow .2s;
+}
+.rel-buy:hover,.rel-buy:focus-visible{background:#1496b8;box-shadow:0 5px 11px 0 rgba(0,0,0,.18),0 4px 15px 0 rgba(0,0,0,.15)}
+.rel-more{display:block;margin:1.5rem auto 0;padding:8px 18px;border:1px solid var(--c-line);border-radius:6px;background:#fff;font:inherit;font-size:.875rem;color:var(--c-brand);cursor:pointer}
+.rel-more:hover{border-color:var(--c-brand-fill)}
+.related.is-open .rel-more{display:none}
+@media(max-width:1100px){
+  .rel-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .related:not(.is-open) .rel-card:nth-child(n+4){display:none}
+}
+@media(max-width:600px){
+  .rel-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .related:not(.is-open) .rel-card:nth-child(n+3){display:none}
+  .rel-price{font-size:.9375rem}
+}
+
+/* ===== FOOTER: geo + main ===== */
+.site-footer{margin-top:1rem}
+.geo{background:linear-gradient(180deg,#f3f9fb 0%,#eef6f9 100%);border-top:1px solid #e1eef2;padding:3rem 0 2.5rem}
+.geo-inner{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:3rem;row-gap:2rem;align-items:center}
+.geo-eyebrow{margin:0 0 .5rem;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-brand)}
+.geo-title{margin:0 0 .75rem;font-size:1.75rem;line-height:1.2;font-weight:600;letter-spacing:-.015em;text-wrap:balance}
+.geo-text{margin:0 0 1.25rem;color:var(--c-muted);font-size:.9375rem;line-height:1.55;max-width:44ch}
+.geo-more{display:inline-flex;align-items:center;gap:6px;font-size:.875rem;font-weight:500;color:var(--c-brand)}
+.geo-more .material-icons{font-size:18px;transition:transform .2s}
+.geo-more:hover .material-icons{transform:translateX(3px)}
+.geo-map{
+  aspect-ratio:960/570;width:100%;
+  background:url('/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/map2.webp') center/contain no-repeat;
+  filter:saturate(2.4) brightness(.9) contrast(1.05);
+}
+.geo-list{grid-column:1/-1;padding-top:1.5rem;border-top:1px solid #d9e8ed}
+.geo-list-title{margin:0 0 .75rem;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--c-muted)}
+.geo-cities{list-style:none;margin:0;padding:0;columns:6 9rem;column-gap:1.5rem;font-size:.8125rem;line-height:1.85}
+.geo-cities li{break-inside:avoid}
+.geo-cities a{color:#37474f;transition:color .15s}
+.geo-cities a:hover{color:var(--c-brand)}
+.geo-cities .geo-any{color:var(--c-brand);font-weight:500}
+
+.footer-main{background:#fff;border-top:1px solid var(--c-line);padding:1.5rem 0 1.25rem}
+.footer-nav{background:#fff;border-top:1px solid var(--c-line)}
+.footer-nav+.geo{border-top-color:var(--c-line)}
+.footer-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;min-height:56px}
+.footer-nav-links{display:flex;flex-wrap:wrap;gap:0 28px;list-style:none;margin:0;padding:0}
+.footer-nav-links a{position:relative;display:inline-block;padding:18px 0;font-size:.8125rem;font-weight:500;color:#37474f;transition:color .15s}
+.footer-nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:12px;height:2px;border-radius:1px;background:var(--c-brand-fill);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
+.footer-nav-links a:hover{color:var(--c-brand)}
+.footer-nav-links a:hover::after,.footer-nav-links a:focus-visible::after{transform:scaleX(1)}
+.footer-nav .footer-social{flex-shrink:0;margin:0}
+.footer-social{display:flex;gap:8px;margin-top:.25rem}
+.footer-social a{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#f1f4f5;color:#78909c;transition:background .15s,color .15s}
+.footer-social a:hover{background:var(--c-brand-fill);color:#fff}
+.footer-social svg{width:18px;height:18px;fill:currentColor}
+.footer-social .material-icons{font-size:18px}
+.footer-bottom{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem}
+.footer-legal{max-width:880px;font-size:.75rem;line-height:1.55;color:var(--c-muted)}
+.footer-legal p{margin:0 0 .2rem}
+.footer-legal a{color:var(--c-text);text-decoration:underline;text-decoration-color:#cfd8dc;text-underline-offset:2px}
+.footer-legal a:hover{color:var(--c-brand);text-decoration-color:currentColor}
+.footer-notice{margin-top:.6rem!important;font-size:.6875rem;line-height:1.5;color:#78909c}
+.footer-dev{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.footer-dev img{display:block;width:145px;height:auto;opacity:.75;transition:opacity .15s}
+.footer-dev a:hover img{opacity:1}
+.site-version-footer{margin:0;font-size:12px;line-height:1.3;color:#aaa;white-space:nowrap}
+
+/* ===== FOOTER PANE — как live #footer-pane ===== */
+#footer-pane{
+  position:fixed;left:0;right:0;bottom:0;z-index:1000;
+  background:#fff;
+  box-shadow:0 -5px 11px 0 rgba(0,0,0,.18),0 -4px 15px 0 rgba(0,0,0,.15);
+}
+#footer-pane .footer-pane-inner{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr)) auto auto;
+  align-items:stretch;height:56px;
+}
+#footer-pane .pane-link{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  color:#9e9e9e;font-size:.8125rem;text-align:center;padding:0 8px;
+  transition:background .15s;
+}
+#footer-pane .pane-link:hover{background:rgba(0,0,0,.06);color:#757575}
+#footer-pane .pane-link .material-icons{font-size:28px;line-height:1;color:#9e9e9e}
+#footer-pane .pane-cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;align-self:center;
+  height:40px;margin-left:10px;padding:0 18px;min-width:168px;border-radius:6px;
+  background:#19a5cc;color:#fff!important;border:1px solid #19a5cc;
+  font-size:.875rem;font-weight:500;white-space:nowrap;cursor:pointer;
+  box-shadow:0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
+  transition:background .15s,color .15s,border-color .15s,box-shadow .2s;
+}
+#footer-pane .pane-cta:hover{background:#1496b8;border-color:#1496b8;box-shadow:0 5px 11px 0 rgba(0,0,0,.18),0 4px 15px 0 rgba(0,0,0,.15)}
+#footer-pane .pane-cta .material-icons{font-size:22px;line-height:1;color:currentColor}
+#footer-pane .pane-cta--chat{background:#fff;color:#0e7a99!important;border-color:#19a5cc}
+#footer-pane .pane-cta--chat:hover{background:#e8f6fa;border-color:#1496b8}
+#footer-pane .pane-cta span{line-height:1.2}
+
+@media(max-width:1280px){.header-meta .meta-item:last-child{display:none}.header-line-inner{grid-template-columns:1fr auto}}
+
+/* ===== MOBILE HEADER: одна строка + поиск по тапу + drawer ===== */
+.m-bar,.m-overlay,.m-drawer{display:none}
+@media(max-width:992px){
+  .nav,.header-line{display:none!important}
+  .m-bar{
+    position:fixed;top:0;left:0;right:0;z-index:120;height:var(--header-h);
+    display:flex;align-items:center;justify-content:space-between;gap:6px;
+    padding:0 4px 0 10px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);
+  }
+  .m-brand{display:flex;align-items:center;gap:8px;min-width:0}
+  .m-brand img{width:40px;height:auto;flex-shrink:0}
+  .m-brand span{font-size:12px;line-height:1.2;font-weight:500;color:var(--c-text);white-space:nowrap}
+  .m-actions{display:flex;align-items:center;flex-shrink:0}
+  .m-btn{
+    position:relative;display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;
+    color:var(--c-text);-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s;
+  }
+  .m-btn .material-icons{font-size:26px;line-height:1}
+  .m-btn:hover,.m-btn:active,.m-btn[aria-expanded="true"]{background:var(--c-soft);color:var(--c-brand)}
+  .m-btn:focus-visible{outline:2px solid var(--c-brand-fill);outline-offset:-2px}
+  .m-badge{
+    position:absolute;top:4px;right:1px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;
+    background:var(--c-brand-fill);color:#fff;font-size:10px;font-weight:600;line-height:16px;text-align:center;
+    box-shadow:0 0 0 2px #fff;
+  }
+  .m-search{
+    position:absolute;top:100%;left:0;right:0;display:flex;align-items:center;gap:8px;
+    padding:8px 10px;background:#fff;box-shadow:0 6px 10px rgba(0,0,0,.1);
+    transform:translateY(-8px);opacity:0;visibility:hidden;
+    transition:transform .2s ease,opacity .2s ease,visibility 0s .2s;
+  }
+  .m-bar.is-search .m-search{transform:none;opacity:1;visibility:visible;transition:transform .2s ease,opacity .2s ease}
+  .m-search .material-icons{position:absolute;left:20px;font-size:20px;color:var(--c-muted);pointer-events:none}
+  .m-search input{flex:1;min-width:0;height:42px;padding:0 10px 0 36px;border:1px solid var(--c-line);border-radius:6px;font-size:16px}
+  .m-search input:focus{outline:none;border-color:var(--c-brand-fill);box-shadow:0 0 0 3px rgba(25,165,204,.18)}
+  .m-search button{height:42px;padding:0 14px;border:0;border-radius:6px;background:var(--c-brand-fill);color:#fff;font-weight:600;font-size:14px}
+
+  .m-overlay{display:block;position:fixed;inset:0;z-index:1100;background:rgba(15,30,40,.45);opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+  .m-drawer{
+    display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:1110;
+    width:min(86vw,340px);background:#fff;overflow-y:auto;overscroll-behavior:contain;
+    transform:translateX(-100%);transition:transform .28s ease;box-shadow:4px 0 20px rgba(0,0,0,.2);
+  }
+  body.m-menu-open{overflow:hidden}
+  body.m-menu-open .m-overlay{opacity:1;visibility:visible;transition:opacity .25s}
+  body.m-menu-open .m-drawer{transform:none}
+  .m-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:8px 4px 8px 14px;border-bottom:1px solid #e6edf0}
+  .m-drawer-user{display:flex;align-items:center;gap:10px;min-width:0}
+  .m-avatar{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--c-soft);color:var(--c-brand);font-weight:700}
+  .m-drawer-user b{display:block;font-size:14px;font-weight:600}
+  .m-drawer-user small{display:block;font-size:12px;color:var(--c-muted)}
+  .m-drawer-call{display:flex;align-items:center;gap:12px;margin:12px 14px;padding:10px 14px;border-radius:8px;background:var(--c-brand-fill);color:#fff}
+  .m-drawer-call .material-icons{font-size:24px}
+  .m-drawer-call b{display:block;font-size:17px;font-weight:600;line-height:1.2}
+  .m-drawer-call small{display:block;font-size:12px;opacity:.9}
+  .m-drawer-links{display:flex;flex-direction:column;padding:0 0 6px}
+  .m-drawer-links a{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 14px;font-size:14px;font-weight:500}
+  .m-drawer-links .material-icons{flex:0 0 28px;font-size:22px;text-align:center;color:var(--c-brand-fill)}
+  .m-drawer-title{padding:10px 16px 8px;border-top:1px solid #e6edf0;background:#f5f9fa;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--c-muted)}
+  .m-drawer-cats .sidebar-list a{min-height:48px;font-size:14px}
+}
+@media(max-width:480px){
+  .m-drawer{width:100%;box-shadow:none}
+  .m-drawer-head{min-height:var(--header-h);padding-right:4px}
+}
+@media(max-width:360px){
+  .tabs:has(button:nth-child(3)) button{font-size:12px;padding:10px 2px;white-space:nowrap}
+  .share{gap:4px}
+  .share-btns{gap:4px}
+  .m-bar{padding-left:8px;gap:2px}
+  .m-btn{width:40px;height:44px}
+  .m-brand{gap:7px}
+  .m-brand span{font-size:11.5px}
+}
+
+@media(max-width:992px){
+  html{font-size:14px}
+  body{padding-bottom:64px;overflow-x:hidden}
+  .nav-links{display:none!important}
+  .nav-cart span,.nav-auth span{display:none}
+  .nav-phone{flex:0 0 auto;width:auto;padding:0 10px;margin-left:4px;justify-content:center}
+  .nav-phone-icon{display:block}
+  .nav-phone-text{display:none}
+  .header-meta{display:none!important}
+  .brand img{width:72px}
+  .brand-text span{display:none}
+  .sidebar{display:none!important}
+  .layout{grid-template-columns:1fr}
+  .title-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.35rem .5rem;border-top:none;padding-top:.5rem}
+  .title-main{display:contents}
+  .title-row h1{grid-column:1/-1}
+  .product-meta{margin:0;gap:2px 14px}
+  .actions{margin:0 -8px 0 0}
+  .title-row h1{font-size:1.35rem}
+  .actions{align-self:flex-end}
+  .price{font-size:1.75rem}
+  .buy-row{display:grid;grid-template-columns:auto 1fr;gap:10px}
+  .buy-row .btn{width:100%;height:44px}
+  .geo{padding:2rem 0}
+  .geo-inner{grid-template-columns:1fr;row-gap:1.25rem}
+  .geo-title{font-size:1.35rem}
+  .geo-map{max-width:520px}
+  .geo-cities{columns:2}
+  .footer-bottom{flex-direction:column;gap:1rem}
+  .footer-nav-inner{flex-direction:column;align-items:flex-start;gap:.75rem;padding-top:1rem;padding-bottom:1rem}
+  .footer-nav-links{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;width:100%}
+  .footer-nav-links a{padding:8px 0}
+  .footer-nav-links a::after{bottom:4px}
+  .footer-dev{align-items:flex-start}
+  #footer-pane .footer-pane-inner{grid-template-columns:repeat(3,minmax(0,1fr)) auto;height:52px}
+  #footer-pane .pane-text{display:none}
+  #footer-pane .pane-cta{min-width:0;height:40px;margin:0 8px 0 4px;padding:0 12px;font-size:12px}
+  #footer-pane .pane-cta--chat{background:#19a5cc;color:#fff!important}
+  #footer-pane .pane-cta--chat:hover{background:#1496b8;border-color:#1496b8;color:#fff!important}
+  #footer-pane .pane-cta--app{display:none}
+}
+
+@media (hover:none),(pointer:coarse){.gallery-main{cursor:pointer}}
+@media (max-width:600px){
+  .lb-top{padding-left:14px}
+  .lb-img{max-width:100vw;max-height:calc(100dvh - 56px - 84px)}
+  .lb-nav{display:none}
+  .lb-thumbs{height:84px;padding:12px;justify-content:flex-start}
+  .lb-thumbs .thumb{width:56px;height:56px}
+  .lb-thumbs .thumb:first-child{margin-left:auto}.lb-thumbs .thumb:last-child{margin-right:auto}
+  .gallery-zoom span{display:none}
+  .gallery-zoom{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%}
+}
+
+.gallery[data-count="1"] .thumbs,.lb[data-count="1"] .lb-thumbs,.lb[data-count="1"] .lb-nav,.lb[data-count="1"] .lb-count{display:none}
+.desc h2[style]{color:var(--c-text)!important}
+.desc .Apple-tab-span{display:none}
+.desc strong{font-weight:600;color:var(--c-text)}
+.desc figure{margin:0}
+.desc figure img{float:right;width:200px!important;height:200px!important;margin:.25rem 0 1rem 1.5rem;object-fit:cover}
+.desc h2{clear:both}
+.desc iframe{display:block;width:100%;height:auto!important;aspect-ratio:16/9;margin:.5rem 0 1rem;border:0;border-radius:6px;background:#eef3f5}
+@media(max-width:600px){.desc figure img{float:none;display:block;width:160px!important;height:160px!important;margin:.5rem auto 1rem}}
+</style>
+</head>
+<body>
+
+
+
+
+<header class="nav" role="banner">
+  <div class="nav-shell">
+    <div class="nav-links">
+      <a href="/dostavka_i_oplata/">Доставка и оплата</a>
+      <a href="/kontakty/">Контакты</a>
+      <a href="/ostavit-zayavku/">Оставить заявку</a>
+    </div>
+    <div class="nav-search"><input type="search" placeholder="Поиск по категориям и товарам" aria-label="Поиск"></div>
+    <a class="nav-cart" href="/cart/"><i class="material-icons">shopping_cart</i><span>Корзина</span></a>
+    <a class="nav-auth" href="/login/"><i class="material-icons">person</i><span>Станислав</span></a>
+    <a class="nav-phone" href="tel:88001003797" aria-label="8-800-100-37-97">
+      <i class="material-icons nav-phone-icon" aria-hidden="true">phone</i>
+      <div class="nav-phone-text"><strong>8-800-100-37-97</strong><span>Многоканальная линия по РФ</span></div>
+    </a>
+  </div>
+</header>
+
+<header class="m-bar" role="banner">
+  <a class="m-brand" href="/" aria-label="AlmaMed — на главную">
+    <img src="/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/logo.png" alt="" width="40" height="30" decoding="async">
+    <span>Медицинская<br>техника</span>
+  </a>
+  <div class="m-actions">
+    <button class="m-btn" type="button" data-m-toggle="search" aria-controls="m-search" aria-expanded="false" aria-label="Поиск"><i class="material-icons" aria-hidden="true">search</i></button>
+    <a class="m-btn" href="tel:88001003797" aria-label="Позвонить 8-800-100-37-97"><i class="material-icons" aria-hidden="true">call</i></a>
+    <a class="m-btn" href="/cart/" aria-label="Корзина, 1 товар"><i class="material-icons" aria-hidden="true">shopping_cart</i><span class="m-badge">1</span></a>
+    <button class="m-btn" type="button" data-m-toggle="menu" aria-controls="m-drawer" aria-expanded="false" aria-label="Меню"><i class="material-icons" aria-hidden="true">menu</i></button>
+  </div>
+  <form class="m-search" id="m-search" action="/search/" role="search">
+    <i class="material-icons" aria-hidden="true">search</i>
+    <input type="search" name="query" placeholder="Поиск по каталогу" aria-label="Поиск по категориям и товарам">
+    <button type="submit">Найти</button>
+  </form>
+</header>
+
+<div class="m-overlay" data-m-close></div>
+<nav class="m-drawer" id="m-drawer" aria-label="Меню" aria-hidden="true" inert>
+  <div class="m-drawer-head">
+    <a class="m-drawer-user" href="/login/"><span class="m-avatar">С</span><span><b>Станислав</b><small>Личный кабинет</small></span></a>
+    <button class="m-btn" type="button" data-m-close aria-label="Закрыть меню"><i class="material-icons" aria-hidden="true">close</i></button>
+  </div>
+  <a class="m-drawer-call" href="tel:88001003797"><i class="material-icons" aria-hidden="true">call</i><span><b>8-800-100-37-97</b><small>Бесплатно по РФ · 09:00–18:00</small></span></a>
+  <div class="m-drawer-links">
+    <a href="/dostavka_i_oplata/"><i class="material-icons" aria-hidden="true">local_shipping</i>Доставка и оплата</a>
+    <a href="/kontakty/"><i class="material-icons" aria-hidden="true">place</i>Контакты</a>
+    <a href="/ostavit-zayavku/"><i class="material-icons" aria-hidden="true">assignment</i>Оставить заявку</a>
+  </div>
+  <div class="m-drawer-title">Каталог</div>
+  <div class="m-drawer-cats"></div>
+</nav>
+
+<div class="header-line">
+  <div class="container">
+    <div class="header-line-inner">
+      <a class="brand" href="/">
+        <img src="/wa-data/public/site/themes/osnovnaja_new_header_footer_form/img/logo.png" alt="AlmaMed" width="100" height="48" decoding="async">
+        <div class="brand-text">
+          <strong>Медицинская техника</strong>
+          <span>Прямые поставки от производителей</span>
+        </div>
+      </a>
+      <div class="header-meta">
+        <div class="meta-item">
+          <i class="material-icons" aria-hidden="true">place</i>
+          <div>Отправляем товары <b>по всей РФ</b></div>
+        </div>
+        <div class="meta-item">
+          <i class="material-icons" aria-hidden="true">hourglass_empty</i>
+          <div><b>Время работы</b> менеджеров: 09<sup>00</sup> – 18<sup>00</sup></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+  <div class="container">
+    <div class="layout">
+      <aside class="sidebar" aria-label="Категории">
+        <div class="sidebar-card">
+          <h2 class="sidebar-title">Категории</h2>
+          <ul class="sidebar-list">
+<li><a href="/category/anesteziologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">pulmonology</span></span>Анестезиология и реанимация</a></li>
+<li><a href="/category/veterinariya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">pets</span></span>Ветеринария</a></li>
+<li><a href="/category/vitalnye-funktsii/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">vital_signs</span></span>Витальные функции</a></li>
+<li><a href="/category/ginekologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">gynecology</span></span>Гинекология</a></li>
+<li><a href="/category/dermatologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">dermatology</span></span>Дерматология</a></li>
+<li><a href="/category/kosmetologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">face_retouching_natural</span></span>Косметология</a></li>
+<li><a href="/category/lor-oborudovanie-instrumenty/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">ent</span></span>ЛОР оборудование, инструменты</a></li>
+<li><a href="/category/laboratornoe-oborudovanie/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">labs</span></span>Лабораторное оборудование</a></li>
+<li><a href="/category/laringoskopy/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">flashlight_on</span></span>Ларингоскопы</a></li>
+<li><a href="/category/mebel-meditsinskaya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">bed</span></span>Мебель медицинская</a></li>
+<li><a href="/category/meditsinskie-instrumenty/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">content_cut</span></span>Медицинские инструменты</a></li>
+<li><a href="/category/meditsina-katastrof/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">emergency</span></span>Медицина катастроф</a></li>
+<li><a href="/category/medicinskie-plakaty/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">co_present</span></span>Медицинские и обучающие плакаты</a></li>
+<li><a href="/category/mikroskopy/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">biotech</span></span>Микроскопы</a></li>
+<li><a href="/category/neonatologiya-i-pediatriya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">child_care</span></span>Неонатология и педиатрия</a></li>
+<li><a href="/category/oborudovanie-dlya-invalidov/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">accessible</span></span>Оборудование для инвалидов</a></li>
+<li><a href="/category/ortopediya-i-travmatologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">orthopedics</span></span>Ортопедия и травматология</a></li>
+<li><a href="/category/kontaktnye-linzy/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">visibility</span></span>Контактные линзы</a></li>
+<li><a href="/category/oftalmologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">ophthalmology</span></span>Офтальмология</a></li>
+<li><a href="/category/perchatki-meditsinskie/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">back_hand</span></span>Перчатки медицинские</a></li>
+<li><a href="/category/proktologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">gastroenterology</span></span>Проктология</a></li>
+<li><a href="/category/rasprodazha/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">percent</span></span>Распродажа</a></li>
+<li><a href="/category/raskhodnye-materialy/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">syringe</span></span>Расходные материалы</a></li>
+<li><a href="/category/reabilitatsionnoe-oborudovanie/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">assist_walker</span></span>Реабилитационное оборудование</a></li>
+<li><a href="/category/rentgenologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">radiology</span></span>Рентгенология</a></li>
+<li><a href="/category/svetilniki-meditsinskie/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">light</span></span>Светильники медицинские</a></li>
+<li><a href="/category/standarty-osnashcheniya-kabinetov/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">fact_check</span></span>Стандарты оснащения кабинетов</a></li>
+<li><a href="/category/sterilizatsiya-i-dezinfektsiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">sanitizer</span></span>Стерилизация и дезинфекция</a></li>
+<li><a href="/category/stetoskopy-i-fonendoskopy/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">stethoscope</span></span>Стетоскопы и фонендоскопы</a></li>
+<li><a href="/category/stomatologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">dentistry</span></span>Стоматология</a></li>
+<li><a href="/category/tovary-dlya-diagnostiki-i-borby-s-koronovirusom/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">coronavirus</span></span>Товары для диагностики и борьбы с Коронавирусом, Covid</a></li>
+<li><a href="/category/uzi-skanery/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">sensors</span></span>УЗИ сканеры</a></li>
+<li><a href="/category/urologiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">urology</span></span>Урология</a></li>
+<li><a href="/category/fizioterapiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">physical_therapy</span></span>Физиотерапия</a></li>
+<li><a href="/category/flebologiya-i-sosudistaya-khirugiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">cardiology</span></span>Флебология и сосудистая хирургия</a></li>
+<li><a href="/category/funktsionalnaya-diagnostika/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">monitor_heart</span></span>Функциональная диагностика</a></li>
+<li><a href="/category/khirurgiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">surgical</span></span>Хирургия</a></li>
+<li><a href="/category/endoskopiya/"><span class="cat-menu-icon" aria-hidden="true"><span class="msi">videocam</span></span>Эндоскопия</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="content">
+        <nav class="breadcrumbs" aria-label="Хлебные крошки" itemscope itemtype="https://schema.org/BreadcrumbList">
+          <span class="bc-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="/" itemprop="item" aria-label="Главная"><i class="material-icons" aria-hidden="true">home</i><meta itemprop="name" content="Главная"></a>
+            <meta itemprop="position" content="1">
+          </span>
+          <span class="bc-sep" aria-hidden="true">/</span>
+          <span class="bc-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="/category/flebologiya-i-sosudistaya-khirugiya/" itemprop="item"><span itemprop="name">Флебология и сосудистая хирургия</span></a>
+            <meta itemprop="position" content="2">
+          </span>
+          <span class="bc-sep" aria-hidden="true">/</span>
+          <div class="bc-drop" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <div class="bc-pill">
+              <a class="bc-link" href="/category/vizualizatory-ven-venovizory/" itemprop="item"><span itemprop="name">Визуализаторы вен (Веновизоры)</span></a>
+              <button class="bc-toggle" type="button" aria-expanded="false" aria-controls="bc-menu" aria-label="Другие разделы флебологии"><i class="material-icons" aria-hidden="true">expand_more</i></button>
+            </div>
+            <meta itemprop="position" content="3">
+            <div class="bc-menu" id="bc-menu" hidden>
+              <div class="bc-menu-head">
+                <b>Разделы флебологии</b><span>5</span>
+              </div>
+              <label class="bc-filter"><i class="material-icons" aria-hidden="true">search</i><input type="search" placeholder="Найти раздел" aria-label="Найти раздел флебологии"></label>
+              <div class="bc-scroll"><ul class="bc-list">
+                <li><a href="/category/analizatory-skorosti-krovotoka/"><span>Анализаторы скорости кровотока</span></a></li>
+                <li><a href="/category/apparaty-dlya-radiochastotnoy-ablyatsii-ven-rcha/"><span>Аппараты для радиочастотной абляции вен (РЧА)</span></a></li>
+                <li><a class="is-current" href="/category/vizualizatory-ven-venovizory/" aria-current="page"><span>Визуализаторы вен (Веновизоры)</span><i class="material-icons" aria-hidden="true">check</i></a></li>
+                <li><a href="/category/lazernye-apparaty-dlya-flebologii-evlk/"><span>Лазерные аппараты для флебологии (ЭВЛК)</span></a></li>
+                <li><a href="/category/sistemy-zakrytiya-ven/"><span>Системы закрытия вен</span></a></li>
+              </ul></div>
+              <p class="bc-empty" hidden>Ничего не найдено</p>
+              <a class="bc-all" href="/category/flebologiya-i-sosudistaya-khirugiya/">Все товары флебологии<i class="material-icons" aria-hidden="true">arrow_forward</i></a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="title-row">
+          <div class="title-main">
+            <h1>Визуализатор вен Veinlite LEDX</h1>
+            <p class="product-meta">
+              <span class="meta-item">Артикул: <b class="meta-sku">A-1098</b><button type="button" class="meta-copy" data-copy="A-1098" aria-label="Скопировать артикул" title="Скопировать артикул"><i class="material-icons" aria-hidden="true">content_copy</i><span class="meta-copied" role="status">Скопировано</span></button></span>
+              <span class="meta-item">Бренд: <a href="/brand/veinlite/">Veinlite</a></span>
+            </p>
+          </div>
+          <div class="actions">
+            <button class="act" type="button" data-act="print" title="Печать" aria-label="Печать"><i class="material-icons" aria-hidden="true">print</i></button>
+            <button class="act" type="button" data-act="compare" title="Добавить к сравнению" aria-label="Добавить к сравнению" aria-pressed="false"><i class="material-icons" aria-hidden="true">insert_chart</i></button>
+            <button class="act act--fav" type="button" data-act="fav" title="Добавить в закладки" aria-label="Добавить в закладки" aria-pressed="false"><i class="material-icons" aria-hidden="true">star_border</i></button>
+          </div>
+        </div>
+
+        <div class="product-grid">
+          <div class="gallery" data-count="1">
+            <div class="gallery-main"><img src="/wa-data/public/shop/products/98/10/1098/images/71094/71094.750.jpg" alt="Визуализатор вен Veinlite LEDX — фото 1" width="480" height="360"><button type="button" class="gallery-zoom" aria-haspopup="dialog" aria-controls="lb"><i class="material-icons" aria-hidden="true">zoom_in</i><span>Увеличить</span></button></div>
+            <div class="thumbs">
+              <button type="button" class="thumbs-nav" data-dir="-1" aria-label="Предыдущее фото" disabled><i class="material-icons" aria-hidden="true">chevron_left</i></button>
+              <div class="thumbs-track">
+                <button type="button" class="thumb is-active" data-full="/wa-data/public/shop/products/98/10/1098/images/71094/71094.750.jpg" aria-label="Фото 1 из 1" aria-current="true"><img src="/wa-data/public/shop/products/98/10/1098/images/71094/71094.96x96.jpg" alt="" width="64" height="64"></button>
+              </div>
+              <button type="button" class="thumbs-nav" data-dir="1" aria-label="Следующее фото"><i class="material-icons" aria-hidden="true">chevron_right</i></button>
+            </div>
+          </div>
+
+          <div class="buy">
+            <span class="price-label">Цена</span>
+            <div class="price">165 000 руб.</div>
+            <div class="stock" data-stock="" role="status">
+              <span class="stock-dot" aria-hidden="true"></span>
+              <span class="stock-text"><b>Доступен к заказу с удаленного склада</b></span>
+            </div>
+            <div class="buy-row">
+              <div class="qty">
+                <button type="button" data-qty="-1" aria-label="Меньше" disabled><i class="material-icons" aria-hidden="true">remove</i></button>
+                <input type="text" inputmode="numeric" value="1" aria-label="Количество">
+                <button type="button" data-qty="1" aria-label="Больше"><i class="material-icons" aria-hidden="true">add</i></button>
+              </div>
+              <button type="button" class="btn btn-cart">В корзину</button>
+            </div>
+            <p class="stock-hint" hidden></p>
+            <button type="button" class="btn block btn-kp">Запросить КП</button>
+            <div class="share"><span>Поделиться</span>
+              <div class="share-btns"><a class="share-btn share-btn--vk" data-share="vk" href="#" target="_blank" rel="noopener" aria-label="Поделиться во ВКонтакте" title="Поделиться во ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.489.004.729-.003h3.564l.73.003.914.01.433.007.418.011.403.014.388.016.374.021.36.025.345.03.333.033c1.74.196 2.933.616 3.833 1.516.9.9 1.32 2.092 1.516 3.833l.034.333.029.346.025.36.02.373.025.588.012.41.013.644.009.915.004.98-.001 3.313-.003.73-.01.914-.007.433-.011.418-.014.403-.016.388-.021.374-.025.36-.03.345-.033.333c-.196 1.74-.616 2.933-1.516 3.833-.9.9-2.092 1.32-3.833 1.516l-.333.034-.346.029-.36.025-.373.02-.588.025-.41.012-.644.013-.915.009-.98.004-3.313-.001-.73-.003-.914-.01-.433-.007-.418-.011-.403-.014-.388-.016-.374-.021-.36-.025-.345-.03-.333-.033c-1.74-.196-2.933-.616-3.833-1.516-.9-.9-1.32-2.092-1.516-3.833l-.034-.333-.029-.346-.025-.36-.02-.373-.025-.588-.012-.41-.013-.644-.009-.915-.004-.98.001-3.313.003-.73.01-.914.007-.433.011-.418.014-.403.016-.388.021-.374.025-.36.03-.345.033-.333c.196-1.74.616-2.933 1.516-3.833.9-.9 2.092-1.32 3.833-1.516l.333-.034.346-.029.36-.025.373-.02.588-.025.41-.012.644-.013.915-.009ZM6.79 7.3H4.05c.13 6.24 3.25 9.99 8.72 9.99h.31v-3.57c2.01.2 3.53 1.67 4.14 3.57h2.84c-.78-2.84-2.83-4.41-4.11-5.01 1.28-.74 3.08-2.54 3.51-4.98h-2.58c-.56 1.98-2.22 3.78-3.8 3.95V7.3H10.5v6.92c-1.6-.4-3.62-2.34-3.71-6.92Z"/></svg></a><a class="share-btn share-btn--tg" data-share="tg" href="#" target="_blank" rel="noopener" aria-label="Поделиться в Telegram" title="Поделиться в Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a><a class="share-btn share-btn--wa" data-share="wa" href="#" target="_blank" rel="noopener" aria-label="Поделиться в WhatsApp" title="Поделиться в WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a><a class="share-btn share-btn--ok" data-share="ok" href="#" target="_blank" rel="noopener" aria-label="Поделиться в Одноклассниках" title="Поделиться в Одноклассниках"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0a6.2 6.2 0 0 0-6.194 6.195 6.2 6.2 0 0 0 6.195 6.192 6.2 6.2 0 0 0 6.193-6.192A6.2 6.2 0 0 0 12.001 0zm0 3.63a2.567 2.567 0 0 1 2.565 2.565 2.568 2.568 0 0 1-2.564 2.564 2.568 2.568 0 0 1-2.565-2.564 2.567 2.567 0 0 1 2.565-2.564zM6.807 12.6a1.814 1.814 0 0 0-.91 3.35 11.611 11.611 0 0 0 3.597 1.49l-3.462 3.463a1.815 1.815 0 0 0 2.567 2.566L12 20.066l3.405 3.403a1.813 1.813 0 0 0 2.564 0c.71-.709.71-1.858 0-2.566l-3.462-3.462a11.593 11.593 0 0 0 3.596-1.49 1.814 1.814 0 1 0-1.932-3.073 7.867 7.867 0 0 1-8.34 0c-.318-.2-.674-.29-1.024-.278z"/></svg></a><button type="button" class="share-btn share-btn--copy" data-share="copy" aria-label="Скопировать ссылку" title="Скопировать ссылку"><span class="material-icons" aria-hidden="true">link</span><span class="share-copied" role="status">Ссылка скопирована</span></button></div>
+            </div>
+            <div class="manager">
+              <div class="manager-head">
+                <img class="manager-photo" src="/wa-data/public/contacts/photos/78/12/1278/658750288.96x96@2x.jpg" alt="" width="56" height="56" loading="lazy" decoding="async">
+                <div class="manager-who">
+                  <span class="manager-role">Ваш менеджер по этому товару</span>
+                  <strong>Клевцова Евгения</strong>
+                  <span class="manager-hours">Отвечает с 09:00 до 18:00 по Москве</span>
+                </div>
+              </div>
+              <div class="manager-actions">
+                <a class="manager-act" href="tel:+74991124575">
+                  <i class="material-icons" aria-hidden="true">call</i>
+                  <span><small>Позвонить</small>+7 (499) 112-45-75</span>
+                </a>
+                <a class="manager-act" href="mailto:ek@almamed.su?subject=%D0%92%D0%B8%D0%B7%D1%83%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%82%D0%BE%D1%80%20%D0%B2%D0%B5%D0%BD%20Veinlite%20LEDX">
+                  <i class="material-icons" aria-hidden="true">mail</i>
+                  <span><small>Написать</small>ek@almamed.su</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="below" id="product-tabs">
+          <div class="below-main">
+          <div class="tabs" role="tablist" aria-label="Разделы товара">
+            <button type="button" role="tab" class="is-active" data-tab="description" aria-selected="true">Описание</button>
+            <button type="button" role="tab" data-tab="features" aria-selected="false">Характеристики</button>
+          </div>
+          <div class="tab-panel is-active" data-panel="description">
+            <div class="desc"><p><strong>Veinlite LEDX</strong> &mdash; это передовое медицинское устройство, предназначенное для профессиональной визуализации вен. Оно обеспечивает непревзойденную видимость и контраст, что значительно упрощает выполнение процедур, связанных с доступом к венозной системе, таких как венопункция, катетеризация, склеротерапия и диагностика сосудистых аномалий. Применение Veinlite LEDX позволяет медицинским специалистам повысить точность манипуляций и сократить время, необходимое для поиска вен, что особенно важно при работе с пациентами с труднодоступными венами.</p>
+
+<h2 style="color: #19A5CC;">Технические особенности</h2>
+
+<p><span class="Apple-tab-span">	</span>•<span class="Apple-tab-span">	</span><strong>Высокотехнологичное освещение</strong>: Визуализатор оснащен 32 светодиодами, включающими 24 оранжевых светодиода, которые наиболее эффективно подсвечивают поверхностные вены, и 8 красных светодиодов, которые оптимальны для исследования вен, расположенных глубже, а также для пациентов с более темной кожей.</p>
+
+<figure><img src="/wa-data/public/shop/img/84267-18634886-kopiya.jpg" style="float: right; border-radius: 50%; width: 250px; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 5px; height: 250px;" width="250" height="250"></figure>
+
+<p><span class="Apple-tab-span">	</span>•<span class="Apple-tab-span">	</span><strong>Диаметр кольцевого освещения</strong>: 31 мм, обеспечивающий расширенную зону просвечивания. Этот диаметр помогает проводить более точные исследования и упрощает доступ к необходимым участкам кожи.</p>
+
+<p><span class="Apple-tab-span">	</span>•<span class="Apple-tab-span">	</span><strong>Компактные размеры и легкость</strong>: Устройство имеет размеры 102 мм × 65 мм × 24 мм и весит всего 83 г (включая батарею). Эти характеристики делают Veinlite LEDX удобным для длительных процедур, минимизируя усталость специалиста и повышая комфорт во время работы.</p>
+
+<p><span class="Apple-tab-span">	</span>•<span class="Apple-tab-span">	</span><strong>Энергосбережение и автономность</strong>: Устройство работает на аккумуляторной батарее, что обеспечивает его полную мобильность и возможность использования в различных клинических и выездных условиях.</p>
+
+<p><span class="Apple-tab-span">	</span>•<span class="Apple-tab-span">	</span><strong>Адаптивная подсветка</strong>: Визуализатор поддерживает работу с разными типами кожи, обеспечивая отличную контрастность изображения как на светлой, так и на смуглой коже пациента.</p>
+
+<h2 style="color: #19A5CC;">Преимущества</h2>
+
+<p><span class="Apple-tab-span">	</span>1.<span class="Apple-tab-span">	</span><strong>Ускорение процедур</strong>: Расширенная зона подсветки и яркое освещение упрощают локализацию вен, что уменьшает время, необходимое для выполнения инвазивных манипуляций.</p>
+
+<p><span class="Apple-tab-span">	</span>2.<span class="Apple-tab-span">	</span><strong>Точность и безопасность</strong>: Устройство помогает минимизировать риск повреждения окружающих тканей, повышая безопасность выполнения венозных процедур.</p>
+
+<p><span class="Apple-tab-span">	</span>3.<span class="Apple-tab-span">	</span><strong>Удобство в использовании</strong>: Компактные размеры и легкий вес делают Veinlite LEDX идеальным для длительного использования в различных условиях. Эргономичный дизайн позволяет специалистам работать без лишнего напряжения.</p>
+
+<p><span class="Apple-tab-span">	</span>4.<span class="Apple-tab-span">	</span><strong>Высокая контрастность изображения</strong>: Запатентованная комбинация светодиодов, включая оранжевые и красные, гарантирует четкость изображения, облегчая визуализацию сосудистых «звездочек», внутрикожных и подкожных вен.</p>
+
+<p><span class="Apple-tab-span">	</span>5.<span class="Apple-tab-span">	</span><strong>Многофункциональность</strong>: Возможность использования на пациентах с разными типами кожи и в различных клинических ситуациях делает Veinlite LEDX универсальным инструментом для работы в различных медицинских учреждениях.</p>
+
+<h2 style="color: #19A5CC;">Применение</h2>
+
+<figure><img src="/wa-data/public/shop/img/84267-9995654-kopiya.jpg" style="float: right; border-radius: 50%; width: 250px; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 5px; height: 250px;" width="250" height="250"></figure>
+
+<p>Veinlite LEDX используется в широком спектре медицинских практик, включая флебологию, хирургию, дерматологию и педиатрию. Устройство идеально подходит для проведения венопункций, катетеризации, введения медикаментов, а также для лечения и диагностики сосудистых патологий, включая склеротерапию и лазерное лечение сосудистых звездочек. В медицинских учреждениях, где требуется точное и быстрое определение вен, Veinlite LEDX помогает значительно улучшить качество обслуживания пациентов и уменьшить количество попыток введения иглы.</p>
+
+<p>Визуализатор вен Veinlite LEDX способствует снижению тревожности пациента, обеспечивая быстрое и безболезненное проведение манипуляций. Его использование помогает уменьшить количество осложнений, связанных с повторными попытками, и сокращает риск инфицирования, делая его ценным инструментом в практике врачей и медсестер.</p>
+
+<h2 style="color: #19A5CC;">Видеопрезентация Veinlite LEDX</h2>
+
+<iframe width="100%" height="480" loading="lazy" title="Видеопрезентация Veinlite LEDX" allowfullscreen src="https://drive.google.com/file/d/1__LesUlwQMypiiD5lyrDql6e7sQYhsMl/preview"></iframe></div>
+          </div>
+          <div class="tab-panel" data-panel="features" hidden>
+            <table class="features"><tbody>
+<tr><td class="name">Бренд</td><td class="value"><a href="/brand/veinlite/">Veinlite</a></td></tr>
+<tr><td class="name">Страна</td><td class="value">США</td></tr>
+<tr><td class="name">Габариты</td><td class="value">102 × 65 × 24 мм</td></tr>
+<tr><td class="name">Масса с батареей</td><td class="value">83 г</td></tr>
+<tr><td class="name">Диаметр кольца</td><td class="value">31 мм</td></tr>
+<tr><td class="name">Кол-во светодиодов для визуализации глубинных вен и для пациентов с более смуглым цветом кожи</td><td class="value">8 светодиодов красного цвета</td></tr>
+<tr><td class="name">Кол-во светодиодов для визуализации вен, находящихся на поверхности</td><td class="value">24 светодиода оранжевого цвета</td></tr>
+            </tbody></table>
+          </div>
+          </div>
+          <aside class="below-aside" aria-label="Доставка и оплата">
+            <div class="terms">
+              <h3 class="terms-title">Доставка и оплата</h3>
+              <ul class="terms-list">
+                <li>
+                  <i class="material-icons" aria-hidden="true">local_shipping</i>
+                  <div><b>Доставка по всей России</b><span>Деловые Линии, ПЭК, ЖелДорЭкспедиция, СДЭК или другая ТК по вашему выбору. В крупные города — до двери.</span></div>
+                </li>
+                <li>
+                  <i class="material-icons" aria-hidden="true">verified_user</i>
+                  <div><b>Отправления застрахованы</b><span>Надёжная упаковка. При повреждении в пути — компенсация от перевозчика.</span></div>
+                </li>
+                <li>
+                  <i class="material-icons" aria-hidden="true">account_balance</i>
+                  <div><b>Безналичная оплата</b><span>Для юр- и физлиц, 100% предоплата по счёту. Минимальная сумма отгрузки — 10&nbsp;000&nbsp;руб.</span></div>
+                </li>
+              </ul>
+              <div class="terms-links">
+                <a href="/dostavka_i_oplata/">Подробнее об условиях<i class="material-icons" aria-hidden="true">arrow_forward</i></a>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="related">
+          <div class="rel-head">
+            <h2>Покупатели также купили</h2>
+          </div>
+          <div class="rel-grid">
+            <article class="rel-card"><a class="rel-img" href="/product/venovizor-portativnyy-veinsight-vs400/"><img src="/wa-data/public/shop/products/53/46/24653/images/94693/94693.400.jpg" alt="Веновизор портативный VeinSight VS400" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/venovizor-portativnyy-veinsight-vs400/">Веновизор портативный VeinSight VS400</a><div class="rel-price">448 000 руб.</div><a class="rel-buy" href="/product/venovizor-portativnyy-veinsight-vs400/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/pulsoksimetr-napalechnyy-topmed-fp-10/"><img src="/wa-data/public/shop/products/38/31/23138/images/84889/84889.400.jpg" alt="Пульсоксиметр напалечный TOPMED FP-10" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/pulsoksimetr-napalechnyy-topmed-fp-10/">Пульсоксиметр напалечный TOPMED FP-10</a><div class="rel-price">4 535 руб.</div><a class="rel-buy" href="/product/pulsoksimetr-napalechnyy-topmed-fp-10/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/stetofonendoskop-cs-421-goluboy-cs-medica-kitay/"><img src="/wa-data/public/shop/products/14/06/20614/images/58277/58277.400.jpg" alt="Стетофонендоскоп CS-421 голубой, CS Medica" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/stetofonendoskop-cs-421-goluboy-cs-medica-kitay/">Стетофонендоскоп CS-421 голубой, CS Medica</a><div class="rel-price">1 489 руб.</div><a class="rel-buy" href="/product/stetofonendoskop-cs-421-goluboy-cs-medica-kitay/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/stetofonendoskop-cs-421-fioletovyy-cs-medica-kitay/"><img src="/wa-data/public/shop/products/17/06/20617/images/58286/58286.400.jpg" alt="Стетофонендоскоп CS-421 фиолетовый, CS Medica" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/stetofonendoskop-cs-421-fioletovyy-cs-medica-kitay/">Стетофонендоскоп CS-421 фиолетовый, CS Medica</a><div class="rel-price">1 481 руб.</div><a class="rel-buy" href="/product/stetofonendoskop-cs-421-fioletovyy-cs-medica-kitay/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/pulsoksimetr-md300c5-choicemmed-pediatricheskiy-kitay/"><img src="/wa-data/public/shop/products/06/66/6606/images/69621/69621.400.jpg" alt="Пульсоксиметр MD300C5 CHOICEMMED педиатрический" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/pulsoksimetr-md300c5-choicemmed-pediatricheskiy-kitay/">Пульсоксиметр MD300C5 CHOICEMMED педиатрический</a><div class="rel-price">2 922 руб.</div><a class="rel-buy" href="/product/pulsoksimetr-md300c5-choicemmed-pediatricheskiy-kitay/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/kislorodnyy-kontsentrator-lfy-i-3a-11-atmung/"><img src="/wa-data/public/shop/products/20/10/1020/images/72162/72162.400.jpg" alt="Кислородный концентратор LFY-I-3A-11 Atmung" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/kislorodnyy-kontsentrator-lfy-i-3a-11-atmung/">Кислородный концентратор LFY-I-3A-11 Atmung</a><div class="rel-price">34 149 руб.</div><a class="rel-buy" href="/product/kislorodnyy-kontsentrator-lfy-i-3a-11-atmung/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-poliglikolid-pletenyy-fioletovyy-usp-30-m2-75sm-pto-medtekhnika-rossiya/"><img src="/wa-data/public/shop/products/64/73/17364/images/64833/64833.400.jpg" alt="Игла атравматическая с нитью хирургической ПОЛИГЛИКОЛИД плетеный фиолетовый USP 3/0 (M2), 75см, ПТО Медтехника, 20шт/уп" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-poliglikolid-pletenyy-fioletovyy-usp-30-m2-75sm-pto-medtekhnika-rossiya/">Игла атравматическая с нитью хирургической ПОЛИГЛИКОЛИД плетеный фиолетовый USP 3/0 (M2), 75см, ПТО Медтехника, 20шт/уп</a><div class="rel-price">135 руб.</div><a class="rel-buy" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-poliglikolid-pletenyy-fioletovyy-usp-30-m2-75sm-pto-medtekhnika-rossiya/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-polipropilyen-mononit-siniy-usp-50-mr1-75sm-pto-medtekhnika-rossiya/"><img src="/wa-data/public/shop/products/86/73/17386/images/64950/64950.400.jpg" alt="Игла атравматическая с нитью хирургической ПОЛИПРОПИЛЕН мононить синий USP 5/0 (MР1), 75см, ПТО Медтехника, 20 шт/уп" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-polipropilyen-mononit-siniy-usp-50-mr1-75sm-pto-medtekhnika-rossiya/">Игла атравматическая с нитью хирургической ПОЛИПРОПИЛЕН мононить синий USP 5/0 (MР1), 75см, ПТО Медтехника, 20 шт/уп</a><div class="rel-price">2 440 руб.</div><a class="rel-buy" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-polipropilyen-mononit-siniy-usp-50-mr1-75sm-pto-medtekhnika-rossiya/">Купить</a></article><article class="rel-card"><a class="rel-img" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-polidioksanon-mononit-fioletovyy-usp-40-mr15-75sm-pto-medtekhnika-rossiya/"><img src="/wa-data/public/shop/products/20/74/17420/images/65203/65203.400.jpg" alt="Игла атравматическая с нитью хирургической ПОЛИДИОКСАНОН мононить фиолетовый USP 4/0 (MР1,5), 75см, ПТО Медтехника, 20 шт/уп" loading="lazy" width="200" height="200"></a><a class="rel-name" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-polidioksanon-mononit-fioletovyy-usp-40-mr15-75sm-pto-medtekhnika-rossiya/">Игла атравматическая с нитью хирургической ПОЛИДИОКСАНОН мононить фиолетовый USP 4/0 (MР1,5), 75см, ПТО Медтехника, 20 шт/уп</a><div class="rel-price">2 740 руб.</div><a class="rel-buy" href="/product/igla-atravmaticheskaya-s-nityu-khirurgicheskoy-polidioksanon-mononit-fioletovyy-usp-40-mr15-75sm-pto-medtekhnika-rossiya/">Купить</a></article></div>
+          <button type="button" class="rel-more" hidden>Показать ещё</button>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-nav" aria-label="Информация о компании">
+    <div class="container footer-nav-inner">
+      <ul class="footer-nav-links">
+        <li><a href="/o-kompanii/">О компании</a></li>
+        <li><a href="/novosti/">Новости</a></li>
+        <li><a href="/category/rasprodazha/">Акции</a></li>
+        <li><a href="/o-kompanii/vakansii/">Вакансии</a></li>
+        <li><a href="/dostavka_i_oplata/">Доставка и оплата</a></li>
+        <li><a href="/kontakty/">Контакты</a></li>
+      </ul>
+      <div class="footer-social">
+          <a href="https://vk.com/almamedsu" rel="nofollow noopener" target="_blank" aria-label="AlmaMed во ВКонтакте" title="ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.79 7.3H4.05c.13 6.24 3.25 9.99 8.72 9.99h.31v-3.57c2.01.2 3.53 1.67 4.14 3.57h2.84c-.78-2.84-2.83-4.41-4.11-5.01 1.28-.74 3.08-2.54 3.51-4.98h-2.58c-.56 1.98-2.22 3.78-3.8 3.95V7.3H10.5v6.92c-1.6-.4-3.62-2.34-3.71-6.92Z"/></svg></a>
+          <a href="/company-news/rss/" rel="nofollow" aria-label="RSS новостей" title="RSS"><i class="material-icons" aria-hidden="true">rss_feed</i></a>
+        </div>
+    </div>
+  </nav>
+  <section class="geo">
+    <div class="container geo-inner">
+      <div class="geo-lead">
+        <p class="geo-eyebrow">Доставка</p>
+        <h2 class="geo-title">Отправляем медтехнику в&nbsp;любой город России</h2>
+        <p class="geo-text">Доставляем транспортными компаниями в любой населённый пункт — от Калининграда до Владивостока. Список городов ниже не ограничивает доставку.</p>
+        <a class="geo-more" href="/dostavka_i_oplata/">Условия доставки и оплаты<i class="material-icons" aria-hidden="true">arrow_forward</i></a>
+      </div>
+      <div class="geo-map" aria-hidden="true"></div>
+      <div class="geo-list">
+        <p class="geo-list-title">Доставляем в города</p>
+      <ul class="geo-cities">
+          <li><a href="#moskva">Москва</a></li>
+          <li><a href="#kazan">Казань</a></li>
+          <li><a href="#nizhniy-novgorod">Нижний Новгород</a></li>
+          <li><a href="#ufa">Уфа</a></li>
+          <li><a href="#sankt-peterburg">Санкт-Петербург</a></li>
+          <li><a href="#rostov-na-donu">Ростов-на-Дону</a></li>
+          <li><a href="#chelyabinsk">Челябинск</a></li>
+          <li><a href="#krasnoyarsk">Красноярск</a></li>
+          <li><a href="#novosibirsk">Новосибирск</a></li>
+          <li><a href="#volgograd">Волгоград</a></li>
+          <li><a href="#samara">Самара</a></li>
+          <li><a href="#voronezh">Воронеж</a></li>
+          <li><a href="#ekaterinburg">Екатеринбург</a></li>
+          <li><a href="#omsk">Омск</a></li>
+          <li><a href="#perm">Пермь</a></li>
+          <li><a href="#krasnodar">Краснодар</a></li>
+          <li><a href="#barnaul">Барнаул</a></li>
+          <li><a href="#vladivostok">Владивосток</a></li>
+          <li><a href="#novokuznetsk">Новокузнецк</a></li>
+          <li><a href="#kirov">Киров</a></li>
+          <li><a href="#tula">Тула</a></li>
+          <li><a href="#ulan-ude">Улан-Удэ</a></li>
+          <li><a href="#belgorod">Белгород</a></li>
+          <li><a href="#arkhangelsk">Архангельск</a></li>
+          <li><a href="#yakutsk">Якутск</a></li>
+          <li><a href="#orel">Орёл</a></li>
+          <li><a href="#murmansk">Мурманск</a></li>
+          <li><a href="#novorossiysk">Новороссийск</a></li>
+          <li><a href="#izhevsk">Ижевск</a></li>
+          <li><a href="#yaroslavl">Ярославль</a></li>
+          <li><a href="#kemerovo">Кемерово</a></li>
+          <li><a href="#saratov">Саратов</a></li>
+          <li><a href="#ulyanovsk">Ульяновск</a></li>
+          <li><a href="#makhachkala">Махачкала</a></li>
+          <li><a href="#ryazan">Рязань</a></li>
+          <li><a href="#lipetsk">Липецк</a></li>
+          <li><a href="#kursk">Курск</a></li>
+          <li><a href="#tver">Тверь</a></li>
+          <li><a href="#surgut">Сургут</a></li>
+          <li><a href="#simferopol">Симферополь</a></li>
+          <li><a href="#saransk">Саранск</a></li>
+          <li><a href="#podolsk">Подольск</a></li>
+          <li><a href="#petrozavodsk">Петрозаводск</a></li>
+          <li><a href="#yoshkar-ola">Йошкар-Ола</a></li>
+          <li><a href="#penza">Пенза</a></li>
+          <li><a href="#kaliningrad">Калининград</a></li>
+          <li><a href="#sochi">Сочи</a></li>
+          <li><a href="#tyumen">Тюмень</a></li>
+          <li><a href="#irkutsk">Иркутск</a></li>
+          <li><a href="#tomsk">Томск</a></li>
+          <li><a href="#naberezhnye-chelny">Набережные Челны</a></li>
+          <li><a href="#balashikha">Балашиха</a></li>
+          <li><a href="#stavropol">Ставрополь</a></li>
+          <li><a href="#magnitogorsk">Магнитогорск</a></li>
+          <li><a href="#vladimir">Владимир</a></li>
+          <li><a href="#kaluga">Калуга</a></li>
+          <li><a href="#cherepovets">Череповец</a></li>
+          <li><a href="#groznyy">Грозный</a></li>
+          <li><a href="#nizhnevartovsk">Нижневартовск</a></li>
+          <li><a href="#khimki">Химки</a></li>
+          <li><a href="#bryansk">Брянск</a></li>
+          <li><a href="#nizhniy-tagil">Нижний Тагил</a></li>
+          <li><a href="#volzhskiy">Волжский</a></li>
+          <li><a href="#tolyatti">Тольятти</a></li>
+          <li><a href="#khabarovsk">Хабаровск</a></li>
+          <li><a href="#orenburg">Оренбург</a></li>
+          <li><a href="#astrakhan">Астрахань</a></li>
+          <li><a href="#cheboksary">Чебоксары</a></li>
+          <li><a href="#sevastopol">Севастополь</a></li>
+          <li><a href="#ivanovo">Иваново</a></li>
+          <li><a href="#chita">Чита</a></li>
+          <li><a href="#smolensk">Смоленск</a></li>
+          <li><a href="#kurgan">Курган</a></li>
+          <li><a href="#vladikavkaz">Владикавказ</a></li>
+          <li><a href="#kostroma">Кострома</a></li>
+          <li><a href="#vologda">Вологда</a></li>
+          <li><a href="#tambov">Тамбов</a></li>
+          <li><a href="#sterlitamak">Стерлитамак</a></li>
+          <li class="geo-any">и в любой другой населённый пункт</li>
+      </ul>
+      </div>
+    </div>
+  </section>
+  <div class="footer-main">
+    <div class="container footer-bottom">
+      <div class="footer-legal">
+        <p>©2020-2026 <a href="/">Интернет-магазин медицинского оборудования и медтехники от компании Альмамед</a></p>
+        <p>Поставки по всей России.</p>
+        <p>Вся информация на сайте представлена для ознакомления и не является публичной офертой.</p>
+        <noindex><p class="footer-notice">Мы используем файлы <a target="_blank" rel="noopener nofollow" href="/pravovye-dokumenty-almamed/politika-cookie/">cookies</a> для персонализации рекламы и анализа трафика. Продолжая использовать сайт, вы даёте <a target="_blank" rel="noopener nofollow" href="/pravovye-dokumenty-almamed/soglasie-na-obrabotku-pd/">согласие на обработку персональных данных</a> и подтверждаете, что ознакомлены с <a target="_blank" rel="noopener nofollow" href="/pravovye-dokumenty-almamed/politika-personalnyh-dannyh/">политикой обработки персональных данных</a> и правилами использования <a target="_blank" rel="noopener nofollow" href="/pravovye-dokumenty-almamed/rekomendatelnye-tehnologii/">рекомендательных технологий</a>. Вы можете отключить cookies в настройках браузера.</p></noindex>
+      </div>
+      <div class="footer-dev">
+        <a href="https://prime-ltd.su/?from=almamed.su" target="_blank" rel="noopener" title="Продвижение сайтов"><img src="https://prime-ltd.su/logo/black.svg" alt="Продвижение сайтов" width="145" height="32" loading="lazy" decoding="async"></a>
+        <noindex><p class="site-version-footer">Версия сайта: 1.3.77.143</p></noindex>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<aside id="footer-pane" aria-label="Быстрые действия">
+  <div class="container">
+    <div class="footer-pane-inner">
+      <a class="pane-link" href="/search/?addition=bookmark" rel="nofollow">
+        <i class="material-icons">star_border</i>
+        <span class="pane-text">Товары в закладках (0)</span>
+      </a>
+      <a class="pane-link" href="/compare/" rel="nofollow">
+        <i class="material-icons">insert_chart</i>
+        <span class="pane-text">Товары для сравнения (0)</span>
+      </a>
+      <a class="pane-link" href="/search/?addition=viewed" rel="nofollow">
+        <i class="material-icons">visibility</i>
+        <span class="pane-text">Просмотренные товары (0)</span>
+      </a>
+      <a class="pane-cta pane-cta--app" href="/ostavit-zayavku/">
+        <i class="material-icons">assignment</i>
+        <span>Оставить заявку</span>
+      </a>
+      <a class="pane-cta pane-cta--chat" href="/kontakty/">
+        <i class="material-icons">chat</i>
+        <span>Напишите нам</span>
+      </a>
+    </div>
+  </div>
+</aside>
+
+<script>
+(function(){
+  var root = document.getElementById('product-tabs');
+  if (!root) return;
+  var tabs = root.querySelectorAll('[role="tab"]');
+  var panels = root.querySelectorAll('[data-panel]');
+  function activate(name){
+    tabs.forEach(function(btn){
+      var on = btn.getAttribute('data-tab') === name;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(panel){
+      var on = panel.getAttribute('data-panel') === name;
+      panel.classList.toggle('is-active', on);
+      if (on) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', '');
+    });
+  }
+  tabs.forEach(function(btn){
+    btn.addEventListener('click', function(){ activate(btn.getAttribute('data-tab')); });
+  });
+  var hash = (location.hash || '').replace(/^#/, '');
+  if (hash === 'features' || hash === 'komplektatsiya' || hash === 'description') activate(hash);
+})();
+</script>
+<script>
+(function(){
+  var drop=document.querySelector('.bc-drop');if(!drop)return;
+  var btn=drop.querySelector('.bc-toggle'),menu=drop.querySelector('.bc-menu'),input=menu.querySelector('input'),
+      items=[].slice.call(menu.querySelectorAll('.bc-list li')),empty=menu.querySelector('.bc-empty');
+  function set(open){
+    menu.hidden=!open;btn.setAttribute('aria-expanded',open);
+    if(open){var c=menu.querySelector('.is-current');if(c){var s=menu.querySelector('.bc-scroll');s.scrollTop=c.offsetTop-s.clientHeight/2+c.offsetHeight/2;}if(matchMedia('(hover:hover)').matches)input.focus();}
+  }
+  btn.addEventListener('click',function(){set(menu.hidden)});
+  document.addEventListener('click',function(e){if(!menu.hidden&&!drop.contains(e.target))set(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!menu.hidden){set(false);btn.focus();}});
+  input.addEventListener('input',function(){
+    var q=input.value.trim().toLowerCase(),n=0;
+    items.forEach(function(li){var ok=!q||li.textContent.toLowerCase().indexOf(q)>-1;li.hidden=!ok;if(ok)n++;});
+    empty.hidden=n>0;
+  });
+})();
+(function(){
+  var labels={compare:['Добавить к сравнению','Убрать из сравнения'],fav:['Добавить в закладки','Убрать из закладок']};
+  document.querySelectorAll('.actions .act').forEach(function(b){
+    b.addEventListener('click',function(){
+      var a=b.getAttribute('data-act');
+      if(a==='print'){window.print();return;}
+      var on=b.getAttribute('aria-pressed')!=='true';
+      b.setAttribute('aria-pressed',on);b.title=labels[a][on?1:0];b.setAttribute('aria-label',b.title);
+      if(a==='fav'){b.querySelector('i').textContent=on?'star':'star_border';}
+    });
+  });
+})();
+(function(){
+  var bar=document.querySelector('.m-bar'),drawer=document.getElementById('m-drawer');
+  var searchBtn=bar.querySelector('[data-m-toggle="search"]'),menuBtn=bar.querySelector('[data-m-toggle="menu"]');
+  var list=document.querySelector('.sidebar-list');
+  if(list){drawer.querySelector('.m-drawer-cats').appendChild(list.cloneNode(true));}
+  function setSearch(open){
+    bar.classList.toggle('is-search',open);searchBtn.setAttribute('aria-expanded',open);
+    if(open){bar.querySelector('.m-search input').focus();}
+  }
+  function setMenu(open){
+    document.body.classList.toggle('m-menu-open',open);menuBtn.setAttribute('aria-expanded',open);
+    drawer.setAttribute('aria-hidden',!open);drawer.inert=!open;
+    if(open){setSearch(false);drawer.querySelector('[data-m-close]').focus();}else{menuBtn.focus();}
+  }
+  searchBtn.addEventListener('click',function(){setSearch(!bar.classList.contains('is-search'))});
+  menuBtn.addEventListener('click',function(){setMenu(true)});
+  document.querySelectorAll('[data-m-close]').forEach(function(el){el.addEventListener('click',function(){setMenu(false)})});
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape')return;
+    if(document.body.classList.contains('m-menu-open'))setMenu(false);else if(bar.classList.contains('is-search'))setSearch(false);
+  });
+})();
+(function(){
+  var url=encodeURIComponent(location.href.split('?')[0]),title=encodeURIComponent(document.querySelector('h1')?document.querySelector('h1').textContent.trim():document.title);
+  var map={vk:'https://vk.com/share.php?url='+url+'&title='+title,tg:'https://t.me/share/url?url='+url+'&text='+title,wa:'https://wa.me/?text='+title+'%20'+url,ok:'https://connect.ok.ru/offer?url='+url+'&title='+title};
+  document.querySelectorAll('.share-btn[data-share]').forEach(function(b){
+    var n=b.getAttribute('data-share');
+    if(map[n]){b.href=map[n];return;}
+    b.addEventListener('click',function(){
+      var done=function(){b.classList.add('is-copied');setTimeout(function(){b.classList.remove('is-copied')},1600)};
+      if(navigator.clipboard){navigator.clipboard.writeText(decodeURIComponent(url)).then(done,done)}else{done()}
+    });
+  });
+})();
+</script>
+<dialog class="lb" id="lb" data-count="1" aria-label="Фото товара">
+  <div class="lb-top">
+    <span class="lb-count" aria-live="polite">1 / 1</span>
+    <span class="lb-title">Визуализатор вен Veinlite LEDX</span>
+    <button type="button" class="lb-close" aria-label="Закрыть"><i class="material-icons" aria-hidden="true">close</i></button>
+  </div>
+  <div class="lb-stage">
+    <button type="button" class="lb-nav" data-dir="-1" aria-label="Предыдущее фото"><i class="material-icons" aria-hidden="true">chevron_left</i></button>
+    <img class="lb-img" src="" alt="" width="700" height="700">
+    <button type="button" class="lb-nav" data-dir="1" aria-label="Следующее фото"><i class="material-icons" aria-hidden="true">chevron_right</i></button>
+  </div>
+  <div class="lb-thumbs"></div>
+</dialog>
+<script>
+(function(){
+  var frame=document.querySelector('.gallery-main'),main=frame&&frame.querySelector('img'),
+      thumbs=[].slice.call(document.querySelectorAll('.thumbs-track .thumb')),
+      navs=document.querySelectorAll('.thumbs .thumbs-nav'),cur=0,
+      lb=document.getElementById('lb'),lbImg=lb.querySelector('.lb-img'),stage=lb.querySelector('.lb-stage'),
+      lbCount=lb.querySelector('.lb-count'),lbNavs=lb.querySelectorAll('.lb-nav'),lbThumbs=[],
+      title=lb.querySelector('.lb-title').textContent;
+  if(!main||!thumbs.length)return;
+  var n=thumbs.length;
+
+  function go(i){
+    if(i<0||i>=n)return;
+    thumbs[cur].classList.remove('is-active');thumbs[cur].removeAttribute('aria-current');
+    if(lbThumbs[cur]){lbThumbs[cur].classList.remove('is-active');lbThumbs[cur].removeAttribute('aria-current')}
+    cur=i;
+    var src=thumbs[i].getAttribute('data-full'),alt=title+' — фото '+(i+1);
+    thumbs[i].classList.add('is-active');thumbs[i].setAttribute('aria-current','true');
+    main.src=src;main.alt=alt;
+    thumbs[i].scrollIntoView({block:'nearest',inline:'nearest'});
+    navs[0].disabled=i===0;navs[1].disabled=i===n-1;
+    lbImg.classList.remove('is-zoomed');lbImg.src=src;lbImg.alt=alt;
+    lbCount.textContent=(i+1)+' / '+n;
+    lbNavs[0].disabled=i===0;lbNavs[1].disabled=i===n-1;
+    lbThumbs[i].classList.add('is-active');lbThumbs[i].setAttribute('aria-current','true');
+    lbThumbs[i].scrollIntoView({block:'nearest',inline:'nearest'});
+  }
+
+  thumbs.forEach(function(t,i){
+    var c=t.cloneNode(true);c.classList.remove('is-active');c.removeAttribute('aria-current');
+    c.addEventListener('click',function(){go(i)});
+    lb.querySelector('.lb-thumbs').appendChild(c);lbThumbs.push(c);
+    t.addEventListener('click',function(){go(i)});
+  });
+  navs.forEach(function(b){b.addEventListener('click',function(){go(cur+(+b.getAttribute('data-dir')))})});
+  lbNavs.forEach(function(b){b.addEventListener('click',function(){go(cur+(+b.getAttribute('data-dir')))})});
+
+
+  var opener=null;
+  function open(){opener=document.activeElement;go(cur);lb.showModal();syncZoom();lb.querySelector('.lb-close').focus()}
+  function close(){lb.close()}
+  lb.addEventListener('close',function(){lbImg.classList.remove('is-zoomed');if(opener&&opener.focus)opener.focus()});
+  frame.addEventListener('click',function(e){if(e.target===main||e.target.closest('.gallery-zoom'))open()});
+  lb.querySelector('.lb-close').addEventListener('click',close);
+  lb.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1)}
+    else if(e.key==='ArrowRight'){e.preventDefault();go(cur+1)}
+  });
+  stage.addEventListener('click',function(e){if(e.target===stage)close()});
+
+  /* зум в просмотрщике: если фото показано заметно меньше оригинала */
+  function canZoom(){return lbImg.naturalWidth/lbImg.clientWidth>1.25}
+  function syncZoom(){stage.classList.toggle('can-zoom',lb.open&&canZoom())}
+  lbImg.addEventListener('load',syncZoom);addEventListener('resize',syncZoom);lb.addEventListener('toggle',syncZoom);
+  function pan(e){
+    var r=stage.getBoundingClientRect(),
+        x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;
+    lbImg.style.transformOrigin=x+'% '+y+'%';
+  }
+  lbImg.addEventListener('click',function(e){
+    if(!canZoom()&&!lbImg.classList.contains('is-zoomed'))return;
+    lbImg.style.setProperty('--z',Math.min(lbImg.naturalWidth/lbImg.clientWidth,3).toFixed(2));
+    pan(e);lbImg.classList.toggle('is-zoomed');
+  });
+  stage.addEventListener('mousemove',function(e){if(lbImg.classList.contains('is-zoomed'))pan(e)});
+
+  /* свайп */
+  var sx=null,sy=0;
+  stage.addEventListener('touchstart',function(e){if(lbImg.classList.contains('is-zoomed'))return;sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  stage.addEventListener('touchmove',function(e){if(lbImg.classList.contains('is-zoomed')&&e.touches.length===1)pan(e.touches[0])},{passive:true});
+  stage.addEventListener('touchend',function(e){
+    if(sx===null)return;var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;sx=null;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5)go(cur+(dx<0?1:-1));
+  });
+})();
+</script>
+<script>
+(function(){
+  var box=document.querySelector('.stock');if(!box)return;
+  var q=new URLSearchParams(location.search).get('stock');
+  var raw=q!==null?q:box.getAttribute('data-stock');
+  var stock=raw===''||raw==='null'?null:parseInt(raw,10);
+  var LOW=5,input=document.querySelector('.qty input'),minus=document.querySelector('[data-qty="-1"]'),
+      hint=document.querySelector('.stock-hint'),cartBtn=document.querySelector('.btn-cart');
+  function pcs(n){return n+'\u00a0шт.'}
+  var state,text;
+  var discontinued=box.getAttribute('data-discontinued')==='1';
+  var notSupplied=box.getAttribute('data-not-supplied')==='1';
+  if(stock===null||stock<=0){
+    if(notSupplied){state='none';text='<b>Не поставляется, предлагаем аналог</b>';}
+    else if(discontinued){state='none';text='<b>Снят с производства, аналог по запросу</b>';}
+    else{state='remote';text='<b>Доступен к заказу с удаленного склада</b>';}
+  }
+  else if(stock<=LOW){state='low';text='<b>Осталось '+pcs(stock)+'</b>';}
+  else{state='many';text='<b>В наличии: '+pcs(stock)+'</b>';}
+  box.className='stock stock--'+state;
+  box.querySelector('.stock-text').innerHTML=text;
+  if(state==='none')cartBtn.textContent='Заказать';
+  function sync(){
+    var n=Math.max(1,parseInt(input.value,10)||1);input.value=n;minus.disabled=n<=1;
+    if(stock!==null&&stock>0&&n>stock){hint.hidden=false;hint.textContent=pcs(stock)+' отгрузим со склада, '+pcs(n-stock)+' — под заказ, срок уточнит менеджер.';}
+    else hint.hidden=true;
+  }
+  document.querySelectorAll('[data-qty]').forEach(function(b){b.addEventListener('click',function(){input.value=(parseInt(input.value,10)||1)+(+b.getAttribute('data-qty'));sync();})});
+  input.addEventListener('change',sync);
+  sync();
+})();
+</script>
+<script>
+document.querySelectorAll('.meta-copy').forEach(function(b){
+  b.addEventListener('click',function(){
+    function done(){b.classList.add('is-done');clearTimeout(b._t);b._t=setTimeout(function(){b.classList.remove('is-done')},1400)}
+    var v=b.getAttribute('data-copy');
+    if(navigator.clipboard){navigator.clipboard.writeText(v).then(done,done)}else{done()}
+  });
+});
+</script>
+<script>
+(function(){
+  var s=document.querySelector('.related');if(!s)return;
+  var m=s.querySelector('.rel-more'),c=s.querySelectorAll('.rel-card');
+  function upd(){
+    var h=0;c.forEach(function(x){if(getComputedStyle(x).display==='none')h++});
+    m.hidden=!h;m.textContent='Показать ещё '+h;
+  }
+  m.addEventListener('click',function(){s.classList.add('is-open')});
+  addEventListener('resize',upd);upd();
+})();
+</script>
+</body>
+</html>

@@ -512,5 +512,11 @@ Disallow: /category/skalpeli/
 # от 13-02-2026
 Disallow: /category/zondy-ginekologicheskie-mnogorazovye/
 
+# mokapy kartochki tovara (dlya soglasovaniya)
+Disallow: /typography-product-ls02.html
+Disallow: /typography-product-veinlite.html
+Disallow: /typography-product-veinlite-flags.html
+Disallow: /typography-product-veinlite-discontinued.html
+
 Host: https://almamed.su/
 Sitemap: https://almamed.su/sitemap.xml
