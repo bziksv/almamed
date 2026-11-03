@@ -7,6 +7,7 @@
  * @property string $feature_id
  * @property-read int $sort
  */
+#[\AllowDynamicProperties]
 class shopBooleanValue implements ArrayAccess
 {
     private $value;

@@ -376,7 +376,7 @@ class shopCustom
     }
 
 
-    public static function getSeoField($data = [], $type, $field = 'h1'){
+    public static function getSeoField($data, $type, $field = 'h1'){
         if(!isset($data['id']))
             return false;
         else
@@ -612,7 +612,7 @@ class shopCustom
             $leftPos = $order[$leftItem];
             $rightPos = $order[$rightItem];
 
-            return $leftPos >= $rightPos;
+            return $leftPos <=> $rightPos;
         });
 
         foreach ($ids as $key => $val){

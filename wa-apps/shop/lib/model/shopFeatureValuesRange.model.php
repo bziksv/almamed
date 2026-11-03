@@ -118,6 +118,7 @@ class shopFeatureValuesRangeModel extends shopFeatureValuesModel
 }
 
 
+#[\AllowDynamicProperties]
 class shopRangeValue implements ArrayAccess
 {
     static private $format = '%s %s';
@@ -183,12 +184,14 @@ class shopRangeValue implements ArrayAccess
      * @param mixed $offset
      * @return boolean true on success or false on failure.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return in_array($offset, array('value', 'units', 'compare')) || isset($this->{$offset});
     }
 
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);
@@ -196,12 +199,14 @@ class shopRangeValue implements ArrayAccess
     }
 
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
 
     }
 
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
 

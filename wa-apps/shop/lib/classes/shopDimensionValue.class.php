@@ -67,21 +67,25 @@ class shopDimensionValue implements ArrayAccess
     }
 
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         return $this->__set($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
 
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return in_array($offset, array(

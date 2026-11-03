@@ -150,9 +150,10 @@ order by c.id
 		$categories = array();
 		foreach ($category_model->query($sql) as $row)
 		{
-			$row['children_ids'] = strlen($row['children_ids'])
-				? explode(',', $row['children_ids'])
-				: array();
+			$children_ids = $row['children_ids'];
+			$row['children_ids'] = ($children_ids === null || $children_ids === '')
+				? array()
+				: explode(',', $children_ids);
 
 			$categories[$row['id']] = $row;
 		}

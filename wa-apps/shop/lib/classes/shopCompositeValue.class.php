@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class shopCompositeValue implements ArrayAccess
 {
     /**
@@ -38,21 +39,25 @@ class shopCompositeValue implements ArrayAccess
         return isset($this->values[$field]) ? $this->values[$field] : new shopDimensionValue(array());
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->__get($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         return $this->__set($offset, $value);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
 
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return true;
