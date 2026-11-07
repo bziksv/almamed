@@ -34,11 +34,9 @@ class shopSearchGate
         if (self::cookieValid()) {
             return;
         }
-        if (self::sameSiteReferer()) {
-            self::setCookie();
-            return;
-        }
 
+        // The captcha form itself is a same-site POST. Check the code before
+        // the Referer bypass, otherwise any digits open the search.
         if ($method === 'POST' && (string)waRequest::post(self::POST_FLAG) === '1') {
             $word = (string)waRequest::post('captcha_word');
             if ($word !== '' && self::checkCaptcha($word)) {
@@ -46,6 +44,11 @@ class shopSearchGate
                 self::pass(ifset($_SERVER['REQUEST_URI'], '/search/'));
             }
             self::show('Неверный код. Введите новый.');
+        }
+
+        if (self::sameSiteReferer()) {
+            self::setCookie();
+            return;
         }
 
         if ($method === 'HEAD') {
