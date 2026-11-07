@@ -337,7 +337,7 @@ SQL;
      * @param shopProduct $product
      * @return array
      */
-    protected function updateSku($id = 0, $data, $correct = true, shopProduct $product = null)
+    protected function updateSku($id, $data, $correct = true, shopProduct $product = null)
     {
         /**
          * @var shopProductStocksModel $stocks_model

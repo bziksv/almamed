@@ -306,8 +306,8 @@ class waSystem
 
             $adapter = wa()->getSetting('map_adapter', 'google', 'webasyst');
 
-            // map is disabled
-            if ($adapter === 'disabled') {
+            // map is disabled, or the setting is stored as an empty string
+            if ($adapter === 'disabled' || $adapter === '' || $adapter === null) {
                 return new waDisabledMapAdapter();
             }
 

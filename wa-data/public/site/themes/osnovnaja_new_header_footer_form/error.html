@@ -13,7 +13,9 @@
     <p></p>
 
     <p></p>
-    {shopFormPlugin::getForm()}
+    {if class_exists('shopFormPlugin')}
+        {shopFormPlugin::getForm()}
+    {/if}
     <p></p>
 
     

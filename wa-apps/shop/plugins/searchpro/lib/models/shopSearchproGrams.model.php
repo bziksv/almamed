@@ -91,7 +91,7 @@ SQL;
 		));
 	}
 
-	public function addGrams($word, $grams, $type = 'general', $subtype)
+	public function addGrams($word, $grams, $type = 'general', $subtype = null)
 	{
 		return $this->insert(array(
 			'word' => $word,

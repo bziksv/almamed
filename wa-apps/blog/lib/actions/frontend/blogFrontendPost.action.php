@@ -28,6 +28,11 @@ class blogFrontendPostAction extends blogViewAction
     public function frontendExecute()
     {
         $post_slug = waRequest::param('post_url', false, waRequest::TYPE_STRING_TRIM);
+        // Crawlers append fragments like "/:m<b>…". A colon is a SQL placeholder
+        // and turns a missing post into a database exception.
+        if ($post_slug && !preg_match('/^[a-zA-Z0-9_-]+$/', $post_slug)) {
+            throw new waException(_w('Post not found'), 404);
+        }
 
         $storage = wa()->getStorage();
         $post_model = new blogPostModel();

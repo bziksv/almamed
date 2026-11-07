@@ -23,7 +23,7 @@ class shopFrontendProductPageAction extends shopFrontendProductAction
 
         $page_model = new shopProductPagesModel();
         $page = $page_model->getByField(array('product_id' => $product['id'], 'url' => waRequest::param('page_url')));
-        if (!$page['status']) {
+        if (!$page || empty($page['status'])) {
             $hash = $this->appSettings('preview_hash');
             if (!$hash || md5($hash) != waRequest::get('preview')) {
                 throw new waException('Page not found', 404);
@@ -37,20 +37,7 @@ class shopFrontendProductPageAction extends shopFrontendProductAction
             $page['title'] = $page['name'];
         }
 
-        // Interpret Smarty in page body. Word/Office paste often has bare "&" in attrs
-        // → SmartyCompilerException; fall back to raw HTML so the page stays up.
-        $raw = (string) $page['content'];
-        try {
-            $page['content'] = $this->view->fetch('string:'.$raw);
-        } catch (Exception $e) {
-            waLog::log(
-                'product page Smarty failed product_id='.$product['id']
-                .' page='.ifset($page, 'url', '')
-                .': '.$e->getMessage(),
-                'shop/product-page-smarty.log'
-            );
-            $page['content'] = $raw;
-        }
+        $page['content'] = $this->renderPageContent((string) $page['content'], $product['id'], $page['url']);
 
         $this->view->assign('page', $page);
         $this->view->assign('reviews_total_count', $this->getReviewsTotalCount($product['id']));
@@ -72,5 +59,39 @@ class shopFrontendProductPageAction extends shopFrontendProductAction
         $this->view->assign('frontend_product', wa()->event('frontend_product', $product, array('menu','cart','block_aux','block')));
 
         $this->setThemeTemplate('product.page.html');
+    }
+
+    /**
+     * Product subpages may contain Smarty ({$wa->…}, {if}).
+     * Word/Office paste also contains {…} in data-ccp attributes; those are not Smarty
+     * and make the compiler throw "Unexpected &".
+     */
+    protected function renderPageContent($raw, $product_id, $page_url)
+    {
+        $prepared = preg_replace_callback(
+            '/\{([^{}]*)\}/',
+            array($this, 'escapeNonSmartyBraces'),
+            $raw
+        );
+        try {
+            return $this->view->fetch('string:'.$prepared);
+        } catch (Exception $e) {
+            waLog::log(
+                'product page Smarty failed product_id='.$product_id
+                .' page='.$page_url
+                .': '.$e->getMessage(),
+                'shop/product-page-smarty.log'
+            );
+            return $raw;
+        }
+    }
+
+    protected function escapeNonSmartyBraces($matches)
+    {
+        $inner = $matches[1];
+        if (preg_match('/^\s*(?:\$|\/?\*|\/?(?:if|else|elseif|foreach|foreachelse|section|include|literal|assign|capture|strip|function|ldelim|rdelim)\b|\/?(?:shop|wa)[A-Za-z0-9_]*\s*::)/', $inner)) {
+            return $matches[0];
+        }
+        return '&#123;'.$inner.'&#125;';
     }
 }

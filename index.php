@@ -20,7 +20,7 @@ $arUrl = parse_url($_SERVER['REQUEST_URI']);
 $prefix_delite = substr($arUrl['path'], 0, -3);
 $prefix = substr($arUrl['path'], -3);
 if($prefix == '-r/'){
-    $query = ($arUrl['query']) ? '?' . $arUrl['query'] : "";
+    $query = !empty($arUrl['query']) ? '?' . $arUrl['query'] : '';
 	header( 'Location: https://' . $_SERVER['HTTP_HOST'] . $prefix_delite . '/' . $query, true, 301 );
 }else {
 	$path = dirname(__FILE__) . '/wa-config/SystemConfig.class.php';

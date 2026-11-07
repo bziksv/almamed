@@ -326,7 +326,7 @@ class shopSearchproEnv
 		if(!isset($this->storefront_id)) {
 			$route = $this->getRouting()->getRoute();
 
-			if($route['app'] === 'shop') {
+			if (is_array($route) && ifset($route, 'app', '') === 'shop') {
 				$domain = $this->getRouting()->getDomain();
 				$url = $domain . '/' . $route['url'];
 

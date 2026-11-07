@@ -70,27 +70,26 @@ curl -sS -o /dev/null -w "jquery HTTP %{http_code}\n" \
 
 ## Prod — деплой
 
+Прод с 2026-11-02: `ssh redbox-db` (`178.250.157.140`). Подробно: [GIT-WORKFLOW.md](GIT-WORKFLOW.md), [PRODUCTION.md](PRODUCTION.md).
+
 ```bash
-cd /var/www/almamed.su/data/www/almamed.su
-git pull origin main
-chown -R almamed.su:almamed.su .
+ssh redbox-db
+cd /var/www/almamed_su_usr/data/www/almamed.su
+git pull --ff-only origin main
+chown -R almamed_su_usr:almamed_su_usr .
 find wa-cache -mindepth 1 -delete
-sudo -u almamed.su php cli.php webasyst clearCache
-chown -R almamed.su:almamed.su wa-cache wa-log
 ```
 
-Проверка **на prod** (не 127.0.0.1 — nginx слушает IP сайта):
+Проверка:
 
 ```bash
-curl -sS -L -o /dev/null -w "HTTP %{http_code}\n" -H "Host: almamed.su" http://213.139.209.184/
-curl -sS -L -o /dev/null -w "HTTPS %{http_code}\n" -H "Host: almamed.su" -k https://213.139.209.184/
+curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w "HTTPS %{http_code}\n" https://almamed.su/
 ```
 
-- DNS `almamed.su` → **213.139.209.184**
-- Nginx vhost: `/etc/nginx/fastpanel2-available/almamed.su/almamed.su.conf`
-- Стек: nginx (frontend) + **httpd** (Apache, php-cgi **8.2** `/opt/php82` для almamed.su)
-- AI/скрейперы 403 + fcgid/504: см. [PRODUCTION.md](PRODUCTION.md) § «Блок AI / скрейперов» и «504»
-- **45.90.35.63** — другой vhost, не использовать для проверки almamed
+- Пользователь сайта: `almamed_su_usr`. PHP **8.2** (`/opt/php82/bin/php-cgi`).
+- GitHub с сервера: deploy-ключ `/root/.ssh/id_ed25519_almamed_deploy` (только чтение, имя в GitHub `almamed-spare-178`).
+- OPcache `validate_timestamps=On` — отдельный сброс после pull не нужен.
+- Старый Beget `213.139.209.184` / пользователь `almamed.su` — архив, с 2026-11-02 недоступен.
 
 ---
 
@@ -199,6 +198,7 @@ N+1 `$wa->shop->product($p.id)` в `list-thumbs.html` заменён на `shopC
 | [PRODUCTION.md](PRODUCTION.md) | Prod-сервер, FastPanel, IP |
 | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) | Доп. параметры категорий (plitka, rec, h1, …) |
 | [LEADS.md](LEADS.md) | Плагин «Заявки» — журнал форм КП / ostavit-zayavku |
+| [AB-DISPLAY.md](AB-DISPLAY.md) | Плагин abdisplay — A/B витрины (каркас под карточку) |
 | [OPTIMIZATION-CHECKLIST.md](OPTIMIZATION-CHECKLIST.md) | **Чеклист оптимизации** (живой, обновлять при находках) |
 | `.cursor/rules/category-params.mdc` | Защита params категорий (always apply) |
 | `.cursor/rules/external-scripts.mdc` | **Не трогать Метрику**; другие внешние скрипты — только после согласования |

@@ -4,13 +4,18 @@
 
 ## Сервер
 
+С **2026-11-02** прод — бывший запасной сервер. Старый Beget (`213.139.209.184`, пользователь `almamed.su`, PHP 7.2) недоступен.
+
 | | |
 |---|---|
 | Панель | **FastPanel 2** |
-| Путь сайта | `/var/www/almamed.su/data/www/almamed.su/` |
-| Unix user/group | `almamed.su` / `almamed.su` |
-| PHP | **7.2** (php-cgi через Apache suexec) |
+| SSH | `ssh redbox-db` → `root@178.250.157.140`, ключ `~/.ssh/id_ed25519_redbox_178` |
+| Путь сайта | `/var/www/almamed_su_usr/data/www/almamed.su/` |
+| Unix user/group | `almamed_su_usr` |
+| PHP | **8.2** (`/opt/php82/bin/php-cgi`, обёртка сайта `/var/www/almamed_su_usr/data/php-bin/almamed.su/php`) |
 | Git | `main` @ github.com/bziksv/almamed |
+| Deploy-ключ | `/root/.ssh/id_ed25519_almamed_deploy`, GitHub: **almamed-spare-178**, только чтение |
+| DNS A | `almamed.su` → **178.250.157.140** |
 
 ---
 
@@ -18,10 +23,9 @@
 
 | | |
 |---|---|
-| DNS A | **213.139.209.184** ← almamed.su |
-| Nginx listen | `213.139.209.184:80`, `:443 ssl http2` |
-| Nginx config | `/etc/nginx/fastpanel2-available/almamed.su/almamed.su.conf` |
-| MySQL host (db.php) | `45.90.35.63` (на том же или связанном сервере) |
+| DNS A | **178.250.157.140** ← almamed.su |
+| Nginx listen | `178.250.157.140:80`, `:443` |
+| MySQL | локально на этом же сервере, база `almamed_su` |
 
 ⚠️ **45.90.35.63** — IP на том же nginx, но **другой vhost**. Для проверки almamed использовать **213.139.209.184** + `Host: almamed.su`.
 
@@ -32,8 +36,8 @@
 ## Стек запроса
 
 ```
-Client → nginx (213.x:443, SSL, http2)
-       → Apache httpd (php-cgi /opt/php72/)
+Client → nginx (178.250.157.140:443)
+       → Apache httpd (php-cgi /opt/php82/)
        → index.php → Webasyst
 ```
 
@@ -42,50 +46,34 @@ Client → nginx (213.x:443, SSL, http2)
 ## Проверка с prod-сервера
 
 ```bash
-# HTTP
-curl -sS -L -o /dev/null -w "HTTP %{http_code}\n" \
-  -H "Host: almamed.su" http://213.139.209.184/
-
-# HTTPS
-curl -sS -L -o /dev/null -w "HTTPS %{http_code}\n" \
-  -H "Host: almamed.su" -k https://213.139.209.184/
+curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w "HTTPS %{http_code}\n" https://almamed.su/
 ```
 
-302 на HTTP → норма (редирект на HTTPS). С `-L` должно дойти до 200.
+Не проверять через `127.0.0.1` без `Host: almamed.su` и публичного IP: на 443 без нужного vhost отвечает другой сайт.
 
 ---
 
 ## Деплой
 
 ```bash
-cd /var/www/almamed.su/data/www/almamed.su
-git pull origin main
-chown -R almamed.su:almamed.su .
-php .local/bump-theme-edition.php   # новый ?v= для CSS/JS темы (обязательно!)
+ssh redbox-db
+cd /var/www/almamed_su_usr/data/www/almamed.su
+git pull --ff-only origin main
+chown -R almamed_su_usr:almamed_su_usr .
 find wa-cache -mindepth 1 -delete
-sudo -u almamed.su php cli.php webasyst clearCache
-chown -R almamed.su:almamed.su wa-cache wa-log
-
-# ⚠️ ОБЯЗАТЕЛЬНО при правках PHP — сброс OPcache (clearCache его НЕ чистит!)
-printf '%s' '<?php opcache_reset(); echo "ok";' > _opc.php \
-  && chown almamed.su:almamed.su _opc.php \
-  && curl -s -A Mozilla -k -H "Host: almamed.su" https://213.139.209.184/_opc.php \
-  && rm -f _opc.php
-# Альтернатива: systemctl restart php-fpm
 ```
 
-> 🔴 **OPcache — главная грабля деплоя.** `webasyst clearCache` и `find wa-cache`
-> чистят только app-кэш. PHP-байткод живёт в **OPcache** (validate_timestamps=0
-> на prod → файлы НЕ перечитываются по mtime). После `git pull` без сброса OPcache
-> **исполняется старый код** — правка «не применяется», сколько кэш ни три.
-> Сброс — `opcache_reset()` через web-запрос (zero-downtime, проверено) или
-> `systemctl restart php-fpm`. CLI `php -r 'opcache_reset()'` **не поможет** —
-> у CLI отдельный OPcache, не тот, что обслуживает сайт.
+OPcache здесь `validate_timestamps=On`, после pull новый PHP подхватывается без `opcache_reset`. На старом Beget было наоборот (`validate_timestamps=0`).
+
+Проверка: `curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w '%{http_code}\n' https://almamed.su/`.
+
+> На **старом Beget** OPcache был с `validate_timestamps=0`: после pull без
+> `opcache_reset()` через web исполнялся старый PHP. На новом сервере это не так.
 
 **Почему `bump-theme-edition.php`:** nginx кэширует `/wa-data/public/` на **1 год** (`immutable`). Браузер обновит JS/CSS только если в HTML новый `?v=`. Версия берётся из `edition` в `theme.xml` — при деплое через git/rsync она **сама не растёт** (только через редактор тем в админке). Консоль с «Disable cache» обходит кэш — отсюда иллюзия, что «помогает только F12».
 
-Pull делать **от root** допустимо, но после — **обязательно chown**.  
-`php cli.php webasyst clearCache` — **только от пользователя `almamed.su`**
+Pull делать **от root** допустимо, но после — **обязательно chown** на `almamed_su_usr`.  
+`php cli.php webasyst clearCache` — от пользователя сайта, бинарник `/opt/php82/bin/php`, не `/usr/bin/php` (это PHP 5.4).
 
 ### Приложение «Лог пользователей» (userlog)
 

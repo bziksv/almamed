@@ -180,7 +180,8 @@ class waImageGd extends waImage
         list($save, $type) = $this->_save_function($extension, $quality);
 
         // Check if this image is PNG or GIF, then set if Transparent
-        if ($extension == "jpg" && ($this->type == IMAGETYPE_PNG || $this->type == IMAGETYPE_GIF)) {
+        $extension = strtolower($extension);
+        if (($extension == "jpg" || $extension == "jpeg" || $extension == "jfif") && ($this->type == IMAGETYPE_PNG || $this->type == IMAGETYPE_GIF)) {
             $output = imagecreatetruecolor($this->width, $this->height);
             $white = imagecolorallocate($output, 255, 255, 255);
             imagefilledrectangle($output, 0, 0, $this->width, $this->height, $white);
@@ -203,6 +204,7 @@ class waImageGd extends waImage
         switch (strtolower($extension)) {
             case 'jpg':
             case 'jpeg':
+            case 'jfif':
                 $save = 'imagejpeg';
                 $type = IMAGETYPE_JPEG;
                 break;

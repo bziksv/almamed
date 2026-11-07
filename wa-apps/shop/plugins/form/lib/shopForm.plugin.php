@@ -323,7 +323,7 @@ class shopFormPlugin extends shopPlugin
                         <div class="wa-field <?=($val['required']) ? "wa-required" : ""?>">
                             <div class="wa-name"><?=$val['label']?></div>
                             <div class="wa-value">
-                                <input name="<?=$val['name']?>" type="<?=$val['type']?>" class="<?=(isset($val['error_msg'])) ? "error" : ""?>" value="<?=htmlspecialchars(waRequest::post($val['name']), ENT_QUOTES, 'UTF-8')?>" />
+                                <input name="<?=$val['name']?>" type="<?=$val['type']?>" class="<?=(isset($val['error_msg'])) ? "error" : ""?>" value="<?=htmlspecialchars((string) waRequest::post($val['name']), ENT_QUOTES, 'UTF-8')?>" />
                                 <? if(isset($val['error_msg'])): ?>
                                     <em class="wa-error-msg"><?=$val['error_msg']?></em>
                                 <? endif; ?>

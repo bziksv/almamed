@@ -236,7 +236,7 @@ class waRouting
         $url = $this->system->getConfig()->getRequestUrl();
         $url = preg_replace("!\?.*$!", '', $url);
         $url = urldecode($url);
-        return substr($url, strlen($this->root_url));
+        return substr($url, strlen((string) $this->root_url));
     }
 
 

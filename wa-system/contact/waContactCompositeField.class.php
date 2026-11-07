@@ -106,7 +106,7 @@ class waContactCompositeField extends waContactField
 
         $found = true;
 
-        if (strpos($format, ',')) {
+        if ($format !== null && strpos($format, ',') !== false) {
             // when formats are delimeted by comma, use the first one that exists
             $found = false;
             foreach(explode(',', $format) as $format) {
@@ -347,7 +347,7 @@ class waContactCompositeField extends waContactField
             $params_subfield['parent'] = $params['id'];
             $params_subfield['value'] = ifset($data, $field->getId(), null);
 
-            if (!strlen($params_subfield['value'])) {
+            if ($params_subfield['value'] === null || $params_subfield['value'] === '') {
                 $default_value = $field->getParameter('value');
                 if ($default_value) {
                     $params_subfield['value'] = $default_value;

@@ -35,24 +35,42 @@ SSH ключ: `~/.ssh/id_ed25519` → GitHub account keys.
 
 ## Prod ← GitHub
 
+Боевой сайт с **2026-11-02** — запасной сервер `178.250.157.140` (SSH-алиас `redbox-db`). Старый Beget `213.139.209.184` недоступен, его команды ниже — архив.
+
+```bash
+ssh redbox-db
+cd /var/www/almamed_su_usr/data/www/almamed.su
+
+git pull --ff-only origin main
+chown -R almamed_su_usr:almamed_su_usr .
+find wa-cache -mindepth 1 -delete
+```
+
+Проверка:
+
+```bash
+curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w '%{http_code}\n' https://almamed.su/
+```
+
+- Git на сервере ходит на GitHub **deploy-ключом только на чтение**: `/root/.ssh/id_ed25519_almamed_deploy`, в GitHub название **almamed-spare-178**. Личный ключ `~/.ssh/id_ed25519` и ключ входа на сервер `id_ed25519_redbox_178` к репозиторию не подходят.
+- OPcache на этом сервере с `validate_timestamps=On`: после `git pull` PHP подхватывает файлы сам. Отдельный `opcache_reset` не нужен.
+- В рабочей копии на сервере бывают локальные правки (тема, footer, отключённый clickfrog). Если `git pull` ругается, что файл изменён и он же в коммите — не делать `reset --hard`. Сначала разобрать эти файлы.
+- `wa-config/` в git нет, на сервере его не затирать.
+
+### Архив: старый Beget (до 2026-11-02)
+
 ```bash
 cd /var/www/almamed.su/data/www/almamed.su
-
 git pull origin main
 chown -R almamed.su:almamed.su .
 find wa-cache -mindepth 1 -delete
 
-# ⚠️ При правках PHP — ОБЯЗАТЕЛЬНО сброс OPcache (clearCache его не чистит!)
+# OPcache там validate_timestamps=0 — без сброса после pull исполняется старый PHP
 printf '%s' '<?php opcache_reset(); echo "ok";' > _opc.php \
   && chown almamed.su:almamed.su _opc.php \
   && curl -s -A Mozilla -k -H "Host: almamed.su" https://213.139.209.184/_opc.php \
   && rm -f _opc.php
 ```
-
-> 🔴 OPcache на prod не перечитывает файлы по mtime → без сброса исполняется
-> старый код после `git pull`. Подробности и альтернативы — `docs/PRODUCTION.md` → Деплой.
-
-SSH ключ на prod (root): отдельный, добавлен в GitHub.
 
 ### Первичная настройка prod (сделано 2026-06-10)
 
