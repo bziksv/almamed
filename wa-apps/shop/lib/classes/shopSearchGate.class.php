@@ -143,13 +143,26 @@ class shopSearchGate
 
     protected static function generateCode()
     {
-        $chars = 'abdefhknrqstxyz23456789';
         $code = '';
-        $max = strlen($chars) - 1;
         for ($i = 0; $i < 5; $i++) {
-            $code .= $chars[mt_rand(0, $max)];
+            $code .= (string) mt_rand(0, 9);
         }
         return $code;
+    }
+
+    protected static function captchaFont()
+    {
+        $candidates = array(
+            '/usr/share/fonts/dejavu/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+            '/System/Library/Fonts/Supplemental/Arial Bold.ttf',
+        );
+        foreach ($candidates as $path) {
+            if (is_readable($path)) {
+                return $path;
+            }
+        }
+        return '';
     }
 
     protected static function storeCaptcha($code)
@@ -173,27 +186,42 @@ class shopSearchGate
             return '';
         }
 
-        $w = 160;
-        $h = 48;
+        $w = 320;
+        $h = 96;
         $im = imagecreatetruecolor($w, $h);
-        $bg = imagecolorallocate($im, 241, 245, 249);
-        $fg = imagecolorallocate($im, 30, 41, 59);
-        $noise = imagecolorallocate($im, 148, 163, 184);
+        imagealphablending($im, true);
+        $bg = imagecolorallocate($im, 248, 250, 252);
+        $ink = imagecolorallocate($im, 14, 116, 144);
+        $inkAlt = imagecolorallocate($im, 15, 76, 92);
+        $line = imagecolorallocate($im, 186, 230, 240);
         imagefilledrectangle($im, 0, 0, $w, $h, $bg);
 
-        for ($i = 0; $i < 40; $i++) {
-            imagesetpixel($im, mt_rand(0, $w - 1), mt_rand(0, $h - 1), $noise);
+        for ($i = 0; $i < 16; $i++) {
+            imagefilledellipse($im, mt_rand(10, $w - 10), mt_rand(10, $h - 10), mt_rand(2, 5), mt_rand(2, 5), $line);
         }
-        for ($i = 0; $i < 4; $i++) {
-            imageline($im, mt_rand(0, $w), mt_rand(0, $h), mt_rand(0, $w), mt_rand(0, $h), $noise);
-        }
+        imageline($im, 16, (int)($h / 2 + mt_rand(-8, 8)), $w - 16, (int)($h / 2 + mt_rand(-8, 8)), $line);
 
-        $font = 5;
-        $tw = imagefontwidth($font) * strlen($code);
-        $th = imagefontheight($font);
-        $x = (int)(($w - $tw) / 2);
-        $y = (int)(($h - $th) / 2);
-        imagestring($im, $font, $x, $y, $code, $fg);
+        $font = self::captchaFont();
+        if ($font !== '' && function_exists('imagettftext')) {
+            $size = 42;
+            $gap = 56;
+            $start = (int)(($w - ($gap * 4 + 28)) / 2);
+            $length = strlen($code);
+            for ($i = 0; $i < $length; $i++) {
+                imagettftext(
+                    $im,
+                    $size,
+                    mt_rand(-8, 8),
+                    $start + $i * $gap,
+                    66 + mt_rand(-3, 3),
+                    ($i % 2 === 0) ? $ink : $inkAlt,
+                    $font,
+                    $code[$i]
+                );
+            }
+        } else {
+            imagestring($im, 5, 40, 40, $code, $ink);
+        }
 
         ob_start();
         imagepng($im);
@@ -240,7 +268,7 @@ class shopSearchGate
         }
 
         $img_html = $img !== ''
-            ? '<img src="' . $img . '" width="160" height="48" alt="Код">'
+            ? '<img src="' . $img . '" width="320" height="96" alt="Код">'
             : '<p><strong>' . htmlspecialchars($code, ENT_QUOTES, 'UTF-8') . '</strong></p>';
 
         echo '<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">'
@@ -266,8 +294,8 @@ class shopSearchGate
             . '<form method="post" action="' . $action . '">'
             . '<input type="hidden" name="' . self::POST_FLAG . '" value="1">'
             . $img_html
-            . '<label for="am-captcha-word">Код с картинки</label>'
-            . '<input id="am-captcha-word" type="text" name="captcha_word" autocomplete="off" required autofocus>'
+            . '<label for="am-captcha-word">Цифры с картинки</label>'
+            . '<input id="am-captcha-word" type="text" name="captcha_word" inputmode="numeric" autocomplete="off" required autofocus>'
             . '<button type="submit">Продолжить</button>'
             . '</form></div></body></html>';
         exit;
