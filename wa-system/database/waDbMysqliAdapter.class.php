@@ -30,6 +30,12 @@ class waDbMysqliAdapter extends waDbAdapter
 
     public function connect($settings)
     {
+        // PHP 8.1+ default MYSQLI_REPORT_ERROR|STRICT throws mysqli_sql_exception
+        // instead of returning false. Webasyst expects false + errno → waDbException.
+        if (function_exists('mysqli_report')) {
+            mysqli_report(MYSQLI_REPORT_OFF);
+        }
+
         $host = $settings['host'];
         $port = isset($settings['port']) ? $settings['port'] : ini_get("mysqli.default_port");
         $handler = @new mysqli($host, $settings['user'], $settings['password'], $settings['database'], $port);
@@ -71,7 +77,12 @@ class waDbMysqliAdapter extends waDbAdapter
      */
     public function query($query)
     {
-        $r = @$this->handler->query($query);
+        try {
+            $r = @$this->handler->query($query);
+        } catch (mysqli_sql_exception $e) {
+            // PHP 8.1+ may still throw despite MYSQLI_REPORT_OFF in some builds
+            $r = false;
+        }
         if (!$r) {
             switch ($this->handler->errno) {
                 case 2006:
@@ -83,12 +94,20 @@ class waDbMysqliAdapter extends waDbAdapter
                         $this->handler = $this->connect($this->settings);
                         $ping = $this->handler->ping();
                     }
-                    $r = $ping ? @$this->handler->query($query) : false;
+                    try {
+                        $r = $ping ? @$this->handler->query($query) : false;
+                    } catch (mysqli_sql_exception $e) {
+                        $r = false;
+                    }
                     break;
                 case 1104:
                     // try set sql_big_selects
-                    $this->handler->query('SET SQL_BIG_SELECTS=1');
-                    $r = @$this->handler->query($query);
+                    try {
+                        $this->handler->query('SET SQL_BIG_SELECTS=1');
+                        $r = @$this->handler->query($query);
+                    } catch (mysqli_sql_exception $e) {
+                        $r = false;
+                    }
                     break;
             }
         }
