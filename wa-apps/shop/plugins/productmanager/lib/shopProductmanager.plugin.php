@@ -9,6 +9,9 @@ Class shopProductmanagerPlugin extends shopPlugin {
         "photo"
     );
 
+    /** Contact field shown in the manager block. Not unique, unlike system Email. */
+    const SITE_EMAIL_FIELD = 'site_email';
+
 
     public function product_edit($data)
     {
@@ -101,18 +104,16 @@ Class shopProductmanagerPlugin extends shopPlugin {
 
             $plugin = wa('shop')->getPlugin('productmanager');
             $settings = $plugin->getSettings();
-            if(strlen($settings['default_email']) > 1){
+            $site_emails = self::contactSiteEmails($contact);
+            if ($site_emails) {
+                $arr_users['email'] = $site_emails;
+            } elseif (strlen($settings['default_email']) > 1) {
                 $arr_users['email'] = array(str_replace('info', (string) waRequest::cookie('roistat_visit'), (string) $settings['default_email']));
-            }
-
-            if($settings['mail_to']){
-                $arr_users['email'] = array_map(function ($email){
-                    return '<a href="mailto:'.$email.'" class="roistatVisit">'.$email.'</a>';
-                },$arr_users['email']);
             }
 
             $view = wa()->getView();
             $view->assign('user', $arr_users);
+            $view->assign('mail_to', !empty($settings['mail_to']));
 
             return $view->fetch($_SERVER['DOCUMENT_ROOT'].'/wa-apps/shop/plugins/productmanager/templates/frontendManager.html');
         }
@@ -176,7 +177,74 @@ Class shopProductmanagerPlugin extends shopPlugin {
             if($field == "photo")
                 $arr_users[$field] = $contact->getPhoto(120,160);
         }
+        $site_emails = self::contactSiteEmails($contact);
+        if ($site_emails) {
+            $arr_users['email'] = $site_emails;
+        }
         return $arr_users;
+    }
+
+    /**
+     * Emails from «Email на сайте». Empty when the field is not filled.
+     *
+     * @param waContact $contact
+     * @return string[]
+     */
+    public static function contactSiteEmails(waContact $contact)
+    {
+        self::ensureSiteEmailField();
+        return self::plainValues($contact->get(self::SITE_EMAIL_FIELD, 'value'));
+    }
+
+    /**
+     * String field without the system Email uniqueness check.
+     */
+    public static function ensureSiteEmailField()
+    {
+        if (waContactFields::get(self::SITE_EMAIL_FIELD, 'person')) {
+            return;
+        }
+
+        $field = waContactFields::get(self::SITE_EMAIL_FIELD, 'all');
+        if (!$field) {
+            $field = new waContactStringField(self::SITE_EMAIL_FIELD, array(
+                'ru_RU' => 'Email на сайте',
+                'en_US' => 'Email on site',
+            ), array(
+                'unique' => false,
+                'multi' => true,
+            ));
+            waContactFields::createField($field);
+            $field = waContactFields::get(self::SITE_EMAIL_FIELD, 'all');
+        }
+        if ($field) {
+            waContactFields::enableField($field, 'person');
+        }
+    }
+
+    /**
+     * @param mixed $raw
+     * @return string[]
+     */
+    protected static function plainValues($raw)
+    {
+        if ($raw === null || $raw === '') {
+            return array();
+        }
+        if (!is_array($raw)) {
+            $raw = array($raw);
+        }
+        $out = array();
+        foreach ($raw as $item) {
+            if (is_array($item)) {
+                $item = ifset($item, 'value', '');
+            }
+            $item = trim((string) $item);
+            if ($item !== '') {
+                $out[] = $item;
+            }
+        }
+        return $out;
     }
 
 

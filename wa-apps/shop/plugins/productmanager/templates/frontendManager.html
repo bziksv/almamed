@@ -20,7 +20,7 @@
         <div class="manager-text">
             {foreach from=$user.email item=email}
             {if $email}
-            <span class="manager-callback"><i class="material-icons">&#xE0BE;</i> <a href="mailto:{$email|escape}">{$email|escape}</a></span>
+            <span class="manager-callback"><i class="material-icons">&#xE0BE;</i> <a href="mailto:{$email|escape}"{if $mail_to} class="roistatVisit"{/if}>{$email|escape}</a></span>
             {/if}
             {/foreach}
 

@@ -4,7 +4,7 @@ return array(
     'name' => 'Менеджер продукта',
     'description' => 'Назначение менеджеров на товары, статистика по категориям',
     'img'  => 'img/brands.png',
-    'version' => '2.2.3',
+    'version' => '2.2.4',
     'custom_settings' => true,
     'handlers' => array(
         'backend_menu' => 'backendMenu',

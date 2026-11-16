@@ -7,7 +7,7 @@ return array(
     ),
     'default_email'  => array(
         'title' => "Стандартный майл",
-        'description'  => "Заменит email менеджера из его карточки пользователя.",
+        'description'  => "Заменит email, только если в карточке менеджера не заполнено поле «Email на сайте».",
         'value'        => "",
         'control_type'=> waHtmlControl::INPUT,
     ),
