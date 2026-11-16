@@ -20,9 +20,21 @@
         <div class="manager-text">
             {foreach from=$user.email item=email}
             {if $email}
-            <span class="manager-callback"><i class="material-icons">&#xE0BE;</i> <a href="mailto:{$email|escape}"{if $mail_to} class="roistatVisit"{/if}>{$email|escape}</a></span>
+            <span class="manager-callback"><i class="material-icons">&#xE0BE;</i> <a href="mailto:{$email|escape}"{if $roistat_mail} class="roistatVisit"{/if}>{$email|escape}</a></span>
             {/if}
             {/foreach}
+            {if $roistat_mail}
+            <script>
+            window.roistatVisitCallback = function (visitId) {ldelim}
+                var mail = visitId + '@almamed.su';
+                var nodes = document.querySelectorAll('a.roistatVisit');
+                for (var i = 0; i < nodes.length; i++) {ldelim}
+                    nodes[i].textContent = mail;
+                    nodes[i].setAttribute('href', 'mailto:' + mail);
+                {rdelim}
+            {rdelim};
+            </script>
+            {/if}
 
             {foreach from=$user.phone item=phone}
                 {$phones = explode('|', $phone, 2)}

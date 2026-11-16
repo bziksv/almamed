@@ -105,15 +105,20 @@ Class shopProductmanagerPlugin extends shopPlugin {
             $plugin = wa('shop')->getPlugin('productmanager');
             $settings = $plugin->getSettings();
             $site_emails = self::contactSiteEmails($contact);
+            $roistat_mail = false;
             if ($site_emails) {
-                $arr_users['email'] = $site_emails;
+                $public = array();
+                foreach ($site_emails as $email) {
+                    $public[] = self::roistatPublicEmail($email, $roistat_mail);
+                }
+                $arr_users['email'] = $public;
             } elseif (strlen($settings['default_email']) > 1) {
-                $arr_users['email'] = array(str_replace('info', (string) waRequest::cookie('roistat_visit'), (string) $settings['default_email']));
+                $arr_users['email'] = array(self::roistatPublicEmail($settings['default_email'], $roistat_mail));
             }
 
             $view = wa()->getView();
             $view->assign('user', $arr_users);
-            $view->assign('mail_to', !empty($settings['mail_to']));
+            $view->assign('roistat_mail', $roistat_mail);
 
             return $view->fetch($_SERVER['DOCUMENT_ROOT'].'/wa-apps/shop/plugins/productmanager/templates/frontendManager.html');
         }
@@ -220,6 +225,24 @@ Class shopProductmanagerPlugin extends shopPlugin {
         if ($field) {
             waContactFields::enableField($field, 'person');
         }
+    }
+
+    /**
+     * info@almamed.su и любой другой ящик @almamed.su показываем как номер визита Roistat.
+     * Без куки остаётся info@almamed.su — как на странице контактов до подстановки.
+     *
+     * @param string $email
+     * @param bool $tracking
+     * @return string
+     */
+    public static function roistatPublicEmail($email, &$tracking = false)
+    {
+        $email = trim((string) $email);
+        if (preg_match('/@almamed\.su$/i', $email)) {
+            $tracking = true;
+            return shopCustom::roistat_cookie().'@almamed.su';
+        }
+        return $email;
     }
 
     /**
