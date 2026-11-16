@@ -19,16 +19,16 @@
         </div>
         <div class="manager-text">
             {foreach from=$user.email item=email}
-            <span class="manager-callback"><i class="material-icons">&#xE0BE;</i> {$email}</span>
+            {if $email}
+            <span class="manager-callback"><i class="material-icons">&#xE0BE;</i> <a href="mailto:{$email|escape}">{$email|escape}</a></span>
+            {/if}
             {/foreach}
 
             {foreach from=$user.phone item=phone}
                 {$phones = explode('|', $phone, 2)}
-                {if count($phones) > 1}
-                    <span class="manager-callback"><i class="material-icons">&#xE325;</i> <a href="tel:{str_replace(['(', ')', '-', ' '], '', $phones[0])}">{$phones[0]}</a> {$phones[1]}</span>
-                {else}
-                    <span class="manager-callback"><i class="material-icons">&#xE325;</i>{$phone}</span>
-                {/if}
+                {$phone_main = $phones[0]|trim}
+                {$tel = $phone_main|regex_replace:'/[^0-9+]/':''}
+                <span class="manager-callback"><i class="material-icons">&#xE325;</i> <a href="tel:{$tel|escape}">{$phone_main|escape}</a>{if count($phones) > 1} {$phones[1]|escape}{/if}</span>
             {/foreach}
         </div>
 
