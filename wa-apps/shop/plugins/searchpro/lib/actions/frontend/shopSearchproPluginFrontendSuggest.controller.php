@@ -13,7 +13,9 @@ class shopSearchproPluginFrontendSuggestController extends waController
 		}
 
 		$this->getResponse()->addHeader('Content-Type', 'application/json; charset=utf-8');
-		$this->getResponse()->addHeader('Cache-Control', 'private, max-age=120');
+		$this->getResponse()->addHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+		$this->getResponse()->addHeader('Pragma', 'no-cache');
+		$this->getResponse()->addHeader('Expires', '0');
 
 		if ($this->isRateLimited()) {
 			$this->getResponse()->setStatus(429);

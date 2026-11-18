@@ -617,6 +617,7 @@
 			: new URL(base, window.location.origin);
 		url.searchParams.set('q', query);
 		url.searchParams.set('format', 'json');
+		url.searchParams.set('v', this.config.version || '1');
 		if (this.isEnabled('category')) {
 			var catInput = this.qs('.js-searchpro__field-category-input');
 			if (catInput && catInput.value && catInput.value !== '0') {
