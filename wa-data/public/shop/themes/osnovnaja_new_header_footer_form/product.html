@@ -82,7 +82,16 @@
 
             <div class="cart">
 
-                {include file="product.cart.html" inline}
+                {* abdisplay product_card: B = product.ab-b.html (off until redesign). See docs/AB-DISPLAY.md *}
+                {$ab_product_card = ''}
+                {if class_exists('shopAbdisplayPlugin')}
+                    {$ab_product_card = shopAbdisplayPlugin::variant('product_card')}
+                {/if}
+                {if $ab_product_card == 'B'}
+                    {include file="product.ab-b.html" inline}
+                {else}
+                    {include file="product.cart.html" inline}
+                {/if}
 
                 <!-- plugin hook: 'frontend_product.cart' -->
                 {* @event frontend_product.%plugin_id%.cart *}

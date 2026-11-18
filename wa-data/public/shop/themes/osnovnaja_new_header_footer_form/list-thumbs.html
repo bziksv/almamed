@@ -80,7 +80,8 @@
             {$product.related_view = $category.params.select_view}
         {/if}
 
-        {if empty($oftalm_layout) && !empty($select_view)}
+        {* v2 (по брендам) — фиксированный list, переключатель вида не нужен; v1/пусто — как на остальных категориях *}
+        {if $oftalm_layout != 'v2' && !empty($select_view)}
             <div class="col-grid s6{if empty($sorting) && $theme_settings.pagination == 'lazyloading'} offset-s6{/if} align-right">
                 <ul id="select-view">
                     <li class="thumbs{if $select_view == 'thumbs'} selected{/if}"><a href="{$wa->currentUrl(0, 1)}"><i class="material-icons">&#xE8F0;</i></a></li
@@ -126,7 +127,7 @@
         {$product.related_view = 'thumbs'}
     {/if}
 {/if}
-{if !empty($oftalm_layout)}
+{if $oftalm_layout == 'v2'}
     {$product.related_view = 'list'}
 {/if}
 

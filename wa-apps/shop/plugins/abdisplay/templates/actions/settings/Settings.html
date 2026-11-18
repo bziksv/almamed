@@ -1,0 +1,102 @@
+<link rel="stylesheet" href="{$plugin_url}css/abdisplay.css?v=0.1.0">
+<div class="s-abdisplay-wrap block double-padded">
+    <h1>A/B отображение</h1>
+    <p class="gray">
+        Каркас для витрины: одна тема, ветки A/B по cookie. Заказы учитываются нативно
+        (<a href="?action=reports#/sales/abtesting/" target="_blank">Отчёты → A/B-тесты</a>);
+        корзина / заявки / просмотры — в таблице ниже.
+    </p>
+    {if !empty($saved)}
+        <p class="highlighted green">Сохранено</p>
+    {/if}
+
+    <form method="post" action="?plugin=abdisplay&module=settings">
+        {$wa->csrf()}
+        {foreach $experiments as $key => $ex}
+            <div class="s-abdisplay-card">
+                <h3>{$ex.label|escape} <code class="gray">{$key|escape}</code></h3>
+                <div class="field">
+                    <div class="name">Включён</div>
+                    <div class="value">
+                        <label>
+                            <input type="checkbox" name="experiments[{$key|escape}][enabled]" value="1"{if $ex.enabled} checked{/if}>
+                            крутить варианты на витрине
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">Тест Shop A/B</div>
+                    <div class="value">
+                        <select name="experiments[{$key|escape}][abtest_id]">
+                            <option value="0">— не выбран —</option>
+                            {foreach $abtests as $t}
+                                <option value="{$t.id}"{if $ex.abtest_id == $t.id} selected{/if}>
+                                    #{$t.id} {$t.name|escape}
+                                </option>
+                            {/foreach}
+                        </select>
+                        <p class="hint">
+                            Сначала создайте тест в
+                            <a href="?action=reports#/sales/abtesting/new" target="_blank">Отчёты → A/B-тесты</a>
+                            (варианты A и B), затем выберите его здесь.
+                        </p>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="name">События (30 дн.)</div>
+                    <div class="value">
+                        {if empty($summaries[$key])}
+                            <span class="gray">Пока нет</span>
+                        {else}
+                            <table class="zebra s-abdisplay-summary">
+                                <tr>
+                                    <th>Вариант</th>
+                                    <th>view</th>
+                                    <th>cart</th>
+                                    <th>lead</th>
+                                    <th>order</th>
+                                </tr>
+                                {foreach $summaries[$key] as $code => $ev}
+                                    <tr>
+                                        <td><strong>{$code|escape}</strong></td>
+                                        <td>{$ev.view|default:0}</td>
+                                        <td>{$ev.cart|default:0}</td>
+                                        <td>{$ev.lead|default:0}</td>
+                                        <td>{$ev.order|default:0}</td>
+                                    </tr>
+                                {/foreach}
+                            </table>
+                        {/if}
+                    </div>
+                </div>
+                {if $can_force && $ex.abtest_id}
+                    <div class="field">
+                        <div class="name">Превью (staff)</div>
+                        <div class="value">
+                            <p class="hint">Для сотрудников: добавьте к URL товара
+                                <code>?abdisplay_force[{$key|escape}]=A</code> или
+                                <code>=B</code> — cookie на 30 дней.
+                            </p>
+                        </div>
+                    </div>
+                {/if}
+            </div>
+        {/foreach}
+
+        <div class="field">
+            <div class="value">
+                <input type="submit" class="button green" value="Сохранить">
+            </div>
+        </div>
+    </form>
+
+    <div class="s-abdisplay-card">
+        <h3>Карточка товара — статус скелета</h3>
+        <ul>
+            <li>Ключ <code>product_card</code> по умолчанию <strong>выключен</strong>.</li>
+            <li>В теме: ветка include в <code>product.html</code>; файл <code>product.ab-b.html</code> пока = текущая корзина.</li>
+            <li>Включать на витрине только после редизайна варианта B и создания теста в Отчётах.</li>
+            <li>Подробнее: <code>docs/AB-DISPLAY.md</code></li>
+        </ul>
+    </div>
+</div>

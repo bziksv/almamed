@@ -70,7 +70,18 @@ class shopLeadsPlugin extends shopPlugin
         try {
             $model = new shopLeadsPluginLeadModel();
             $dup_min = (int) $plugin->getSettings('duplicate_minutes');
-            return $model->addLead($data, $dup_min);
+            $lead_id = $model->addLead($data, $dup_min);
+            if ($lead_id && class_exists('shopAbdisplayHelper')) {
+                try {
+                    shopAbdisplayHelper::trackLead(array(
+                        'source'  => $source,
+                        'lead_id' => (int) $lead_id,
+                    ));
+                } catch (Exception $e) {
+                    // never break lead flow
+                }
+            }
+            return $lead_id;
         } catch (Exception $e) {
             waLog::log('leads plugin logLead: ' . $e->getMessage(), 'shop/leads.log');
             return null;

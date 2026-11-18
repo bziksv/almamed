@@ -1,0 +1,38 @@
+<script>
+window.__abdisplay = window.__abdisplay || {};
+window.__abdisplay.assignments = {$abdisplay_assignments_json};
+window.__abdisplay.canForce = {if $abdisplay_can_force}true{else}false{/if};
+(function () {
+    var asg = window.__abdisplay.assignments || {};
+    var params = {};
+    var k, i;
+    for (k in asg) {
+        if (Object.prototype.hasOwnProperty.call(asg, k) && asg[k] && asg[k].variant_code) {
+            params['ab_' + k] = asg[k].variant_code;
+        }
+    }
+    if (!Object.keys(params).length) { return; }
+
+    function pushParams() {
+        try {
+            if (typeof ym === 'function') {
+                var id = 34079080;
+                if (window.Ya && Ya._metrika && Ya._metrika.counters) {
+                    for (i in Ya._metrika.counters) {
+                        if (Object.prototype.hasOwnProperty.call(Ya._metrika.counters, i)) {
+                            id = parseInt(i, 10) || id;
+                            break;
+                        }
+                    }
+                }
+                ym(id, 'params', params);
+            }
+        } catch (e) {}
+    }
+    if (document.readyState === 'complete') {
+        setTimeout(pushParams, 500);
+    } else {
+        window.addEventListener('load', function () { setTimeout(pushParams, 500); });
+    }
+})();
+</script>

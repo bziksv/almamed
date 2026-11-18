@@ -403,29 +403,32 @@ $(function () {
         });
     }
     
-    $(".more-images-slider").owlCarousel({
-        loop: false,
-        dots: false,
-        items: 2,
-        nav: true,
-        navText: ["",""],
-        responsive: {
-            0: {
-                items: 2
-            },
-            481: {
-                items: 3
-            },
-            741: {
-                items: 4
-            },
-            993: {
-                items: $('.without-sidebar').length == 0 ? 5 : 4
-            },
-            1281: {
-                items: $('.without-sidebar').length == 0 ? 6 : 5
-            }
+    $(".more-images-wrap").each(function () {
+        var $wrap = $(this);
+        var $track = $wrap.find('.more-images-scroll');
+        var $prev = $wrap.find('.more-images-prev');
+        var $next = $wrap.find('.more-images-next');
+        if (!$track.length) {
+            return;
         }
+        var step = function () {
+            return Math.max(208, Math.floor($track.innerWidth() * 0.8));
+        };
+        var syncNav = function () {
+            var el = $track[0];
+            var max = el.scrollWidth - el.clientWidth - 1;
+            $prev.toggleClass('is-disabled', el.scrollLeft <= 1).prop('disabled', el.scrollLeft <= 1);
+            $next.toggleClass('is-disabled', el.scrollLeft >= max).prop('disabled', el.scrollLeft >= max);
+        };
+        $prev.on('click', function () {
+            $track[0].scrollBy({ left: -step(), behavior: 'smooth' });
+        });
+        $next.on('click', function () {
+            $track[0].scrollBy({ left: step(), behavior: 'smooth' });
+        });
+        $track.on('scroll', syncNav);
+        $(window).on('resize', syncNav);
+        syncNav();
     });
     
     // product image video

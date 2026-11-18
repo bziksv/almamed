@@ -619,7 +619,8 @@
         width: auto !important;
     }
 
-    .nav-wrapper .header-logo-col {
+    /* specificity > `.header-top-bar__inner > .header-top-bar__item` (иначе лого всегда flex и жрёт поиск) */
+    .nav-wrapper .header-top-bar__inner > .header-logo-col {
         flex: 0 0 auto;
         display: none !important;
         width: 0 !important;
@@ -630,7 +631,7 @@
         transition: opacity 0.2s ease, width 0.2s ease, padding 0.2s ease;
     }
 
-    .nav-wrapper .header-logo-col.is-visible {
+    .nav-wrapper .header-top-bar__inner > .header-logo-col.is-visible {
         display: flex !important;
         width: auto !important;
         opacity: 1;
@@ -1086,14 +1087,15 @@
 
     .nav-wrapper .header-links-col .base-menu > li > a,
     .nav-wrapper .header-links-col .header-pages-top > li > a {
-        padding: 0 7px;
+        padding: 0 4px;
         font-size: 13px;
     }
 
+    /* без max-width: иначе дыра справа от телефона; min-width — чтобы «…и товарам» не обрезалось */
     .nav-wrapper .header-top-bar__inner > .header-search-col {
-        flex: 1 1 100px;
-        min-width: 90px;
-        max-width: 160px;
+        flex: 1 1 280px;
+        min-width: 260px;
+        max-width: none;
         padding: 0 6px !important;
     }
 
@@ -1136,17 +1138,9 @@
     .nav-wrapper .header-phone-col .head-phone .text-h {
         font-size: 11px;
     }
-
-    .nav-wrapper .header-logo-col.is-visible ~ .header-search-col {
-        max-width: 130px;
-    }
 }
 
 @media only screen and (min-width: 1201px) and (max-width: 1240px) {
-    .nav-wrapper .header-top-bar__inner > .header-search-col {
-        max-width: 130px;
-    }
-
     .nav-wrapper .header-links-col .base-menu > li > a,
     .nav-wrapper .header-links-col .header-pages-top > li > a {
         padding: 0 5px;

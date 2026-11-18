@@ -1,0 +1,12 @@
+.s-abdisplay-wrap { max-width: 920px; }
+.s-abdisplay-card {
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 0 0 18px;
+    background: #fafafa;
+}
+.s-abdisplay-card h3 { margin-top: 0; }
+.s-abdisplay-summary { max-width: 420px; }
+.s-abdisplay-summary th,
+.s-abdisplay-summary td { padding: 4px 10px; text-align: left; }

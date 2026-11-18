@@ -1,0 +1,8 @@
+{strip}
+{$u = $wa->user()}
+{if $u->isAdmin('shop') || $u->getRights('shop', 'settings')}
+<li class="no-tab">
+    <a href="?action=plugins#/abdisplay/">A/B отображение</a>
+</li>
+{/if}
+{/strip}

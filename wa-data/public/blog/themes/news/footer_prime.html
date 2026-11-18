@@ -28,4 +28,65 @@
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/34079080" style="position:absolute; left:-9999px;" alt="Yandex-Metrika-Counter" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
+
+<script>
+window.roistatVisitCallback = function (visitId) {
+    var mail = visitId + '@almamed.su';
+    var nodes = document.querySelectorAll('a.roistatVisit');
+    for (var i = 0; i < nodes.length; i++) {
+        nodes[i].textContent = mail;
+        nodes[i].setAttribute('href', 'mailto:' + mail);
+    }
+};
+</script>
+<!-- Roistat: после load + idle / первое действие (не блокирует LCP) -->
+<script>
+;(function() {
+    'use strict';
+
+    var ROISTAT_HOST = 'cloud.roistat.com';
+    var ROISTAT_ID = '8615773304e6306d7dd2703cf1a28713';
+    var scheduled = false;
+
+    function loadRoistat() {
+        if (scheduled) {
+            return;
+        }
+        scheduled = true;
+
+        (function(w, d, s, h, id) {
+            w.roistatProjectId = id;
+            w.roistatHost = h;
+            var p = d.location.protocol === 'https:' ? 'https://' : 'http://';
+            var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie)
+                ? '/dist/module.js'
+                : '/api/site/1.0/' + id + '/init?referrer=' + encodeURIComponent(d.location.href);
+            var js = d.createElement(s);
+            js.charset = 'UTF-8';
+            js.async = 1;
+            js.src = p + h + u;
+            var js2 = d.getElementsByTagName(s)[0];
+            js2.parentNode.insertBefore(js, js2);
+        })(window, document, 'script', ROISTAT_HOST, ROISTAT_ID);
+    }
+
+    function scheduleRoistat() {
+        var hasVisit = /^.*roistat_visit=[^;]+/.test(document.cookie);
+        var idleTimeout = hasVisit ? 2500 : 6000;
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadRoistat, { timeout: idleTimeout });
+        } else {
+            setTimeout(loadRoistat, hasVisit ? 2000 : 5000);
+        }
+    }
+
+    window.addEventListener('load', scheduleRoistat, { once: true });
+
+    ['scroll', 'touchstart', 'keydown', 'click'].forEach(function(name) {
+        window.addEventListener(name, loadRoistat, { once: true, passive: name !== 'keydown' && name !== 'click' });
+    });
+})();
+</script>
+<!-- Roistat Counter End -->
 {/literal}
