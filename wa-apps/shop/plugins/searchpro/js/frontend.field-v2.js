@@ -1018,7 +1018,8 @@
 		var visible = 0;
 		products.forEach(function(product) {
 			var match = self.productMatchesFilters(product, self.activeCategoryFilters);
-			product.style.display = match ? '' : 'none';
+			var row = product.closest('.searchpro__dropdown-product-row') || product;
+			row.style.display = match ? '' : 'none';
 			if (match) {
 				visible++;
 			}
