@@ -40,6 +40,10 @@ class shopSearchproV2PageService
 		}
 
 		$initial = array_values($products->getInitial());
+		// Уже есть выдача — не гонять десятки повторных поисков «на опечатку».
+		if (!$products->isEmpty() && count($initial) >= 8) {
+			return array($query, $products);
+		}
 		$strong = !$products->isEmpty() && !shopSearchproV2TypoHelper::isWeakMatch($query, $initial);
 		if ($strong) {
 			return array($query, $products);

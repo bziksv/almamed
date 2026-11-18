@@ -27,9 +27,9 @@
 | Nginx listen | `178.250.157.140:80`, `:443` |
 | MySQL | локально на этом же сервере, база `almamed_su` |
 
-⚠️ **45.90.35.63** — IP на том же nginx, но **другой vhost**. Для проверки almamed использовать **213.139.209.184** + `Host: almamed.su`.
+⚠️ Основной IP прод: **`178.250.157.140`**. Старый Beget `213.139.209.184` и `45.90.35.63` — не использовать для curl/SSH almamed.
 
-⚠️ `curl http://127.0.0.1/` на prod → **connection refused** (nginx не слушает localhost).
+⚠️ `curl http://127.0.0.1/` на prod → **connection refused** (nginx не слушает localhost). Проверка только через `--resolve …:178.250.157.140` или публичный DNS.
 
 ---
 
@@ -152,10 +152,10 @@ curl -s -A "Mozilla/5.0" "https://almamed.su/category/veterinariya/" \
 
 ```bash
 # поисковики → 200
-curl -sk -o /dev/null -w "%{http_code}\n" -A "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)" -H "Host: almamed.su" https://213.139.209.184/
-curl -sk -o /dev/null -w "%{http_code}\n" -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" -H "Host: almamed.su" https://213.139.209.184/
+curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w "%{http_code}\n" -A "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)" https://almamed.su/
+curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w "%{http_code}\n" -A "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" https://almamed.su/
 # скрейпер → 403
-curl -sk -o /dev/null -w "%{http_code}\n" -A "GeedoShopProductFinder" -H "Host: almamed.su" https://213.139.209.184/
+curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w "%{http_code}\n" -A "GeedoShopProductFinder" https://almamed.su/
 ```
 
 **fail2ban** (`nginx-siteprobe` / `nginx-botsearch`) ловит только зонды (`/wp-login`, `/.env`) и 404-botsearch — **не** вежливый обход `/brand|/category` с 200. Для объёмных скрейперов нужен этот nginx-блок или отдельный rate-jail; fail2ban их сам не банит.
@@ -173,16 +173,12 @@ curl -sk -o /dev/null -w "%{http_code}\n" -A "GeedoShopProductFinder" -H "Host: 
 ### После деплоя — smoke + TTFB
 
 ```bash
-curl -sS -L -o /dev/null -w "home %{http_code} %{time_starttransfer}s\n" \
-  -H "Host: almamed.su" -k https://213.139.209.184/
-curl -sS -o /dev/null -w "category %{time_starttransfer}s\n" \
-  -H "Host: almamed.su" -k "https://213.139.209.184/category/ginekologiya/"
-curl -sS -o /dev/null -w "search %{time_starttransfer}s\n" \
-  -H "Host: almamed.su" -k "https://213.139.209.184/search/%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF/"
-curl -sS -o /dev/null -w "suggest %{time_total}s\n" \
-  -H "Host: almamed.su" -k "https://213.139.209.184/searchpro-plugin/suggest/?q=%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF"
-curl -sS -o /dev/null -w "static page %{time_starttransfer}s\n" \
-  -H "Host: almamed.su" -k "https://213.139.209.184/kontakty/"
+R='--resolve almamed.su:443:178.250.157.140'
+curl -sk $R -o /dev/null -w "home %{http_code} %{time_starttransfer}s\n" https://almamed.su/
+curl -sk $R -o /dev/null -w "category %{time_starttransfer}s\n" "https://almamed.su/category/ginekologiya/"
+curl -sk $R -o /dev/null -w "search %{time_starttransfer}s\n" "https://almamed.su/search/%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF/"
+curl -sk $R -o /dev/null -w "suggest %{time_total}s\n" "https://almamed.su/searchpro-plugin/suggest/?q=%D1%81%D1%82%D0%B5%D1%82%D0%BE%D1%81%D0%BA%D0%BE%D0%BF"
+curl -sk $R -o /dev/null -w "static page %{time_starttransfer}s\n" "https://almamed.su/kontakty/"
 ```
 
 SearchPro: в настройках витрины `use_v2=1`, `page_results_cache=86400`.
@@ -212,13 +208,13 @@ php .local/opcache-audit.php       # CLI skip на prod — см. php -i | grep 
 
 ## Диагностика «сайт не открывается»
 
-1. **Не 127.0.0.1** — проверять `213.139.209.184` + Host
+1. **Не 127.0.0.1** — `curl -sk --resolve almamed.su:443:178.250.157.140 …` (не старый `213.139.209.184`)
 2. `systemctl status nginx httpd`
-3. `tail -30 /var/log/nginx/error.log`
+3. `tail -30 /var/www/almamed_su_usr/data/logs/almamed.su-frontend.error.log`
 4. `tail -30 wa-log/error.log`
 5. HTTP/2 empty reply → убрать `http2` из `listen ...443` в vhost, `nginx -t && systemctl reload nginx`
 6. После полной очистки wa-cache — 1–2 мин медленная прогрузка (кеш пересобирается)
-7. `disable_symlinks if_not_owner` в nginx conf — после git от root нужен `chown -R almamed.su`
+7. `disable_symlinks if_not_owner` в nginx conf — после git от root нужен `chown -R almamed_su_usr:almamed_su_usr`
 
 ---
 

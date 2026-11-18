@@ -5,7 +5,9 @@ class shopSearchIndexCli extends waCliController
     public function execute()
     {
         $search = new shopIndexSearch();
-        if (waRequest::param(0)) {
+        if (waRequest::param(0) === 'missing') {
+            $this->indexMissing($search, new shopProductModel(), waRequest::param(1));
+        } elseif (waRequest::param(0)) {
             $search->indexProduct(waRequest::param(0));
         } else {
             $product_model = new shopProductModel();
@@ -71,5 +73,39 @@ class shopSearchIndexCli extends waCliController
                 $i += $limit;
             }
         }
+    }
+
+    /**
+     * Индексирует активные товары, которых нет в shop_search_index.
+     * Без TRUNCATE. Второй аргумент — подстрока названия (например kawe).
+     */
+    protected function indexMissing(shopIndexSearch $search, shopProductModel $product_model, $name_like = null)
+    {
+        $limit = 80;
+        $done = 0;
+        $name_like = $name_like ? trim($name_like) : '';
+
+        while (true) {
+            $sql = "SELECT p.id FROM shop_product p
+                LEFT JOIN shop_search_index si ON si.product_id = p.id
+                WHERE p.status = 1 AND si.product_id IS NULL";
+            if ($name_like !== '') {
+                $sql .= " AND p.name LIKE '%" . $product_model->escape($name_like, 'like') . "%'";
+            }
+            $sql .= " ORDER BY p.id LIMIT " . (int) $limit;
+            $ids = $product_model->query($sql)->fetchAll(null, true);
+            if (!$ids) {
+                break;
+            }
+            foreach ($ids as $id) {
+                $search->indexProduct((int) $id, true);
+                $done++;
+            }
+            echo $done . "\n";
+            if (count($ids) < $limit) {
+                break;
+            }
+        }
+        echo "indexed {$done}\n";
     }
 }

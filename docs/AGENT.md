@@ -9,7 +9,8 @@
 | | |
 |---|---|
 | Сайт | almamed.su — медоборудование |
-| Стек | Webasyst 1.14.4 + Shop-Script 7.5.1; local **PHP 8.2**, prod пока **PHP 7.2** |
+| Стек | Webasyst 1.14.4 + Shop-Script 7.5.1; local **PHP 8.2**, prod **PHP 8.2** |
+| Prod | **`178.250.157.140`** (`ssh redbox-db`), FastPanel |
 | Prod тема | `osnovnaja_new_header_footer_form` (shop child of site) |
 | Git | https://github.com/bziksv/almamed (private) |
 
@@ -20,8 +21,9 @@
 | Среда | Путь |
 |-------|------|
 | **Local** | `~/Documents/projects/almamed/` |
-| **Prod** | `/var/www/almamed.su/data/www/almamed.su/` |
-| **Prod owner** | `almamed.su:almamed.su` |
+| **Prod** | `/var/www/almamed_su_usr/data/www/almamed.su/` на **`178.250.157.140`** |
+| **Prod owner** | `almamed_su_usr:almamed_su_usr` |
+| **Архив** | старый Beget `213.139.209.184` / `45.90.35.63` — не использовать |
 
 ---
 
@@ -36,11 +38,11 @@ cd ~/Documents/projects/almamed
 - URL: **http://localhost:8080/** (только HTTP)
 - БД: `127.0.0.1`, `almamed` / `localdev`, `almamed_su_db` (MySQL **8.0**, не 9)
 - Переключение БД:
-  - `./.local/use-db-remote.sh` — боевая MySQL (45.90.35.63), видны правки из prod-админки; медленнее
+  - `./.local/use-db-remote.sh` — боевая MySQL на prod (`178.250.157.140` / `wa-config/db.php.remote`); медленнее
   - `./.local/use-db-local.sh` — local MySQL 127.0.0.1
   - вручную: `cp wa-config/db.php.local|db.php.remote wa-config/db.php` + `php cli.php webasyst clearCache`
 - **Файлы с prod** (картинки, webp — БД remote, файлы local):
-  - `cp .local/sync-prod.env.example .local/sync-prod.env` + SSH-ключ на `root@45.90.35.63`
+  - `cp .local/sync-prod.env.example .local/sync-prod.env` + SSH на `redbox-db` / `root@178.250.157.140`
   - `./.local/sync-from-prod.sh` — remote БД + папки товаров, которых нет local
   - `./.local/sync-wa-data-from-prod.sh missing|recent|webp|products` — см. `docs/GIT-WORKFLOW.md`
   - `./.local/setup-light-dev.sh` — удалить ~28 GB wa-data локально, картинки с prod через nginx proxy (подробно: [GIT-WORKFLOW.md](GIT-WORKFLOW.md) § «Облегчённый local dev»)
@@ -148,7 +150,7 @@ Shop-тема **без своего index.html** — layout из site parent.
 | БД | TTFB главной |
 |----|----------------|
 | Local MySQL | ~1.3 s |
-| Remote MySQL (45.90.35.63) | ~112 s (N+1 × RTT) |
+| Remote MySQL (prod `178.250.157.140`) | медленно (N+1 × RTT) |
 
 Причина (частично исправлено): SEO-плагины + тяжёлые коллекции.  
 N+1 `$wa->shop->product($p.id)` в `list-thumbs.html` заменён на `shopCustom::getProductParamsByIds()`.

@@ -235,6 +235,7 @@ find wa-cache -mindepth 1 -delete
 | [PRODUCTION.md](PRODUCTION.md) | ops | IP, FastPanel, nginx, диагностика |
 | [WEBASYST-CHEATSHEET.md](WEBASYST-CHEATSHEET.md) | разработка | Webasyst API, Smarty, routing |
 | [CATEGORY-PARAMS.md](CATEGORY-PARAMS.md) | **контент/SEO** | доп. параметры категорий (plitka, rec, h1, …) |
+| [AB-DISPLAY.md](AB-DISPLAY.md) | **A/B** | плагин abdisplay — каркас A/B карточки/витрины |
 | [OPTIMIZATION-CHECKLIST.md](OPTIMIZATION-CHECKLIST.md) | **оптимизация** | чеклист perf, находки, статус задач |
 | `.cursor/rules/category-params.mdc` | агент | защита params категорий (always apply) |
 
@@ -257,7 +258,7 @@ find wa-cache -mindepth 1 -delete
 ```bash
 /opt/homebrew/bin/rsync -avc --info=progress2 --stats \
   --exclude 'wa-cache/' --exclude 'wa-log/' --exclude 'nginx_cache/' \
-  root@45.90.35.63:/var/www/almamed.su/data/www/almamed.su/ \
+  root@178.250.157.140:/var/www/almamed_su_usr/data/www/almamed.su/ \
   ~/Documents/projects/almamed/
 ```
 
@@ -282,3 +283,4 @@ find wa-cache -mindepth 1 -delete
 | 2026-06-10 | Local: nginx+php-fpm+OPcache, MySQL 8.0 local, routing fix |
 | 2026-06-10 | Дока: AGENT.md, GIT-WORKFLOW.md, PRODUCTION.md |
 | 2026-06-10 | Первая версия README: версии, структура, routing, темы, плагины |
+| 2026-11-18 | Прод IP везде: **178.250.157.140** (`redbox-db`); старые 213/45 — архив |

@@ -77,6 +77,9 @@ class shopSearchproQueryStorage
 
 		$data = $this->getData($query, $category_id);
 		$user_storage[] = $data;
+		if (count($user_storage) > 30) {
+			$user_storage = array_slice($user_storage, -30);
+		}
 
 		$this->getUserStorageInstance()->write(self::QUERY_HISTORY_KEY, $user_storage);
 	}

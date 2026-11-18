@@ -11,7 +11,7 @@
 #
 # Перед первым запуском:
 #   cp .local/sync-prod.env.example .local/sync-prod.env
-#   ssh root@45.90.35.63   # проверить доступ
+#   ssh redbox-db   # проверить доступ (178.250.157.140)
 #
 # Рекомендуется вместе с remote БД:
 #   ./.local/use-db-remote.sh && ./.local/sync-wa-data-from-prod.sh missing
@@ -24,8 +24,8 @@ ENV_FILE="$ROOT/.local/sync-prod.env"
 [[ -f "$ENV_FILE" ]] && # shellcheck disable=SC1090
   source "$ENV_FILE"
 
-PROD_SSH="${PROD_SSH:-root@45.90.35.63}"
-PROD_PATH="${PROD_PATH:-/var/www/almamed.su/data/www/almamed.su/}"
+PROD_SSH="${PROD_SSH:-redbox-db}"
+PROD_PATH="${PROD_PATH:-/var/www/almamed_su_usr/data/www/almamed.su/}"
 RSYNC_BIN="${RSYNC_BIN:-$(command -v rsync || echo /opt/homebrew/bin/rsync)}"
 PHP_BIN="${PHP_BIN:-/opt/homebrew/opt/php@8.2/bin/php}"
 

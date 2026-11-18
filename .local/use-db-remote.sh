@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Подключить local dev к боевой MySQL (45.90.35.63).
+# Подключить local dev к боевой MySQL (prod 178.250.157.140 — см. wa-config/db.php.remote).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -7,7 +7,7 @@ cd "$ROOT"
 cp wa-config/db.php wa-config/db.php.local.bak 2>/dev/null || true
 cp wa-config/db.php.remote wa-config/db.php
 
-echo "→ wa-config/db.php = remote (45.90.35.63 / almamed_su_db)"
+echo "→ wa-config/db.php = remote (prod / db.php.remote)"
 echo "  Проверка подключения..."
 
 /opt/homebrew/opt/php@8.2/bin/php -r "

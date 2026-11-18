@@ -25,6 +25,10 @@ class shopSearchproV2SearchService
 
 	public function suggest($query, $category_id = 0)
 	{
+		if (class_exists('waSystem')) {
+			wa()->getStorage()->close();
+		}
+
 		$result = $this->suggestOnce($query, $category_id);
 
 		if ($query === '') {

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Свежий дамп prod MySQL → local almamed_su_db.
-# Требует: local MySQL 8.0, доступ к 45.90.35.63 (user cursor).
+# Прод: 178.250.157.140 (ssh redbox-db). MySQL локально на сервере, БД almamed_su.
+# Требует: local MySQL 8.0 + SSH на redbox-db (не старый 45.90.35.63).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -8,7 +9,8 @@ cd "$ROOT"
 MYSQL8=/opt/homebrew/opt/mysql@8.0/bin/mysql
 MYSQLDUMP8=/opt/homebrew/opt/mysql@8.0/bin/mysqldump
 DUMP="$ROOT/.db-dump/almamed_su_db.sql.gz"
-REMOTE=( -h 45.90.35.63 -u cursor -p'4n6Tb4YttIJqyDkl' )
+PROD_SSH="${PROD_SSH:-redbox-db}"
+PROD_DB="${PROD_DB:-almamed_su}"
 LOCAL=( -u almamed -plocaldev almamed_su_db )
 
 mkdir -p "$ROOT/.db-dump"
@@ -17,8 +19,9 @@ echo "→ 1/4 Переключение на local db.php"
 "$ROOT/.local/use-db-local.sh" | sed 's/^/  /'
 
 echo ""
-echo "→ 2/4 mysqldump prod (может занять 10–15 мин)…"
-"$MYSQLDUMP8" "${REMOTE[@]}" --single-transaction --quick --routines --triggers almamed_su_db \
+echo "→ 2/4 mysqldump prod через SSH ($PROD_SSH / $PROD_DB, может занять 10–15 мин)…"
+ssh -o BatchMode=yes "$PROD_SSH" \
+  "mysqldump --single-transaction --quick --routines --triggers $PROD_DB" \
   | gzip > "$DUMP"
 ls -lh "$DUMP"
 

@@ -169,7 +169,7 @@ CLI-компоненты (warm finder ~11 ms, `getCollectionCategories` ~2 ms): 
 ./.local/regression-perf.sh
 
 # prod (с сервера или с -k к IP):
-BASE_URL=https://213.139.209.184 HOST_HEADER=almamed.su ./.local/regression-perf.sh
+BASE_URL=https://178.250.157.140 HOST_HEADER=almamed.su ./.local/regression-perf.sh
 # или полный smoke (perf + HTML markers):
 BASE_URL=https://almamed.su ./.local/verify-deploy.sh
 ```

@@ -139,8 +139,8 @@ discover_proxy_test_path() {
       # shellcheck disable=SC1090
       source "$ENV_FILE"
     fi
-    PROD_SSH="${PROD_SSH:-root@45.90.35.63}"
-    PROD_PATH="${PROD_PATH:-/var/www/almamed.su/data/www/almamed.su/}"
+    PROD_SSH="${PROD_SSH:-redbox-db}"
+    PROD_PATH="${PROD_PATH:-/var/www/almamed_su_usr/data/www/almamed.su/}"
     path="$(ssh -o BatchMode=yes -o ConnectTimeout=15 "$PROD_SSH" \
       "find '${PROD_PATH}wa-data/public/shop/products' -type f \\( -name '*.jpg' -o -name '*.webp' -o -name '*.png' \\) 2>/dev/null | head -1 | sed 's|^${PROD_PATH}||'" \
       2>/dev/null || true)"

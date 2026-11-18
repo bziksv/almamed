@@ -123,7 +123,7 @@ cp .local/sync-prod.env.example .local/sync-prod.env   # один раз, нас
 
 ```bash
 rsync -avc --exclude 'wa-cache/' --exclude 'wa-log/' --exclude 'wa-config/' \
-  root@45.90.35.63:/var/www/almamed.su/data/www/almamed.su/ \
+  root@178.250.157.140:/var/www/almamed_su_usr/data/www/almamed.su/ \
   ~/Documents/projects/almamed/
 ```
 
@@ -198,7 +198,7 @@ curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
 |------|------------|
 | `wa-config/db.php` | active (local или remote) |
 | `wa-config/db.php.local` | 127.0.0.1, almamed/localdev |
-| `wa-config/db.php.remote` | prod MySQL 45.90.35.63 |
+| `wa-config/db.php.remote` | prod MySQL на `178.250.157.140` |
 | `.local/use-db-remote.sh` | переключить на prod БД + clearCache |
 | `.local/use-db-local.sh` | вернуть local MySQL |
 | `.local/sync-wa-data-from-prod.sh` | rsync картинок/webp с prod |
@@ -218,6 +218,6 @@ curl -sS -o /dev/null -w "HTTP %{http_code}\n" \
 **Prod после pull:**
 - [ ] `git log -1` — нужный commit
 - [ ] `ls wa-config/db.php` — на месте
-- [ ] `chown -R almamed.su:almamed.su .`
-- [ ] `curl -H "Host: almamed.su" http://213.139.209.184/` → 302/200
+- [ ] `chown -R almamed_su_usr:almamed_su_usr .`
+- [ ] `curl -sk --resolve almamed.su:443:178.250.157.140 -o /dev/null -w '%{http_code}\n' https://almamed.su/` → 200
 - [ ] https://almamed.su/ в браузере

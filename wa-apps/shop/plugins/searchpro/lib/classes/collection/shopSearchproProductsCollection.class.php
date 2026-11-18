@@ -202,6 +202,39 @@ class shopSearchproProductsCollection extends shopProductsCollection
 		}
 	}
 
+	/**
+	 * id слов индекса: как есть и после стеммера (KaWe → kaw).
+	 *
+	 * @param string $word
+	 * @return int[]
+	 */
+	private function searchIndexWordIds($word)
+	{
+		$word = trim(mb_strtolower($word, 'UTF-8'));
+		if($word === '' || mb_strlen($word, 'UTF-8') < 2) {
+			return array();
+		}
+
+		$names = array($word);
+		$stem = shopSearch::stem($word);
+		if($stem && $stem !== $word) {
+			$names[] = $stem;
+		}
+
+		$model = new shopSearchWordModel();
+		$quoted = array();
+		foreach(array_unique($names) as $name) {
+			$quoted[] = "'" . $model->escape($name) . "'";
+		}
+
+		$ids = $model->query(
+			'SELECT id FROM `' . $model->getTableName() . '` WHERE name IN (' . implode(',', $quoted) . ')'
+		)->fetchAll(null, true);
+
+		$ids = array_map('intval', (array) $ids);
+		return array_values(array_filter($ids));
+	}
+
 	private function addWhereWordsIncludes($words)
 	{
 		if(empty($words)) {
@@ -332,6 +365,11 @@ class shopSearchproProductsCollection extends shopProductsCollection
 
 	protected function shop_searchPrepare($query, $auto_title = true)
 	{
+		// LIKE по всему каталогу держит flock сессии до конца запроса и забивает php-cgi.
+		if (class_exists('waSystem')) {
+			wa()->getStorage()->close();
+		}
+
 		$query = urldecode($query);
 		$i = $offset = 0;
 		$query_parts = array();
@@ -370,14 +408,25 @@ class shopSearchproProductsCollection extends shopProductsCollection
 					$this->addSearchInCategoryId();
 
 					if(!wa('shop')->getConfig()->getOption('search_smart')) {
-						// simple search
-
-						$words = explode(' ', $parts[2]);
-						$alias = $this->addJoin('shop_product_skus');
+						// По словам из индекса. LIKE по shop_product + skus перебирает весь каталог.
+						$words = preg_split('/\s+/u', trim($parts[2]), -1, PREG_SPLIT_NO_EMPTY);
+						$joined = false;
 						foreach($words as $w) {
-							$w = trim($w);
-							$w = $model->escape($w, 'like');
-							$this->where[] = "(p.name LIKE '%" . $w . "%' OR " . $alias . ".sku LIKE '%" . $w . "%' OR " . $alias . ".name LIKE '%" . $w . "%')";
+							$ids = $this->searchIndexWordIds($w);
+							if($ids) {
+								$this->addJoin(
+									'shop_search_index',
+									':table.product_id = p.id',
+									':table.word_id IN (' . implode(',', $ids) . ')'
+								);
+								$joined = true;
+							} else {
+								$like = $model->escape($w, 'like');
+								$this->where[] = "p.name LIKE '%" . $like . "%'";
+							}
+						}
+						if($joined) {
+							$this->group_by = 'p.id';
 						}
 					} else {
 						//smart search

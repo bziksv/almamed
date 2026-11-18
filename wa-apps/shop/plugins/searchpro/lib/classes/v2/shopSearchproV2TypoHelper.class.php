@@ -54,6 +54,18 @@ class shopSearchproV2TypoHelper
 				continue;
 			}
 
+			$words = preg_split('/\s+/u', $needle, -1, PREG_SPLIT_NO_EMPTY);
+			$all_words = true;
+			foreach ($words as $word) {
+				if (mb_strpos($name, $word) === false) {
+					$all_words = false;
+					break;
+				}
+			}
+			if ($all_words) {
+				return false;
+			}
+
 			if (mb_strpos($name, $needle) === 0) {
 				return false;
 			}

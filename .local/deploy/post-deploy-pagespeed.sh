@@ -59,12 +59,12 @@ for path in "/" "/category/ginekologiya/" "/search/%D1%81%D1%82%D0%B5%D1%82%D0%B
 done
 
 if [[ -x .local/regression-perf.sh ]]; then
-  BASE_URL="${BASE_URL:-https://213.139.209.184}" HOST_HEADER="${HOST_HEADER:-almamed.su}" \
+  BASE_URL="${BASE_URL:-https://178.250.157.140}" HOST_HEADER="${HOST_HEADER:-almamed.su}" \
     ./.local/regression-perf.sh || true
 fi
 
 if [[ -x .local/check-sitemap.sh ]]; then
-  BASE_URL="${BASE_URL:-https://213.139.209.184}" HOST_HEADER="${HOST_HEADER:-almamed.su}" \
+  BASE_URL="${BASE_URL:-https://178.250.157.140}" HOST_HEADER="${HOST_HEADER:-almamed.su}" \
     ./.local/check-sitemap.sh || true
 fi
 

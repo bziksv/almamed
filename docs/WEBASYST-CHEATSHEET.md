@@ -79,5 +79,5 @@ URL: `http://localhost:8080/webasyst/` (или prod домен).
 3. **short_open_tag** — PHP 7.2: Off; файлы только `<?php`.
 4. **Удалённая БД** — N+1 + RTT ~1s → главная 112s. Local MySQL ~1.3s.
 5. **rsync** — затирает local-only конфиги (`db.php`, routing aliases).
-6. **Prod curl** — не `127.0.0.1`, а `213.139.209.184` + `Host: almamed.su`.
-7. **git pull от root** — после `chown -R almamed.su:almamed.su`.
+6. **Prod curl** — не `127.0.0.1`, а `--resolve almamed.su:443:178.250.157.140` (не старый Beget).
+7. **git pull от root** — после `chown -R almamed_su_usr:almamed_su_usr`.

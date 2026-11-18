@@ -1,5 +1,5 @@
 # PageSpeed P0–P2 — rsync --files-from (paths relative to project root)
-# Usage: .local/deploy/rsync-pagespeed.sh user@213.139.209.184:/var/www/almamed.su/data/www/almamed.su/
+# Usage: .local/deploy/rsync-pagespeed.sh root@178.250.157.140:/var/www/almamed_su_usr/data/www/almamed.su/
 
 # --- SearchPro (typo, category filter off, field fix) ---
 wa-apps/shop/plugins/searchpro/css/frontend.field.css

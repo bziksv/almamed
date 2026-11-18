@@ -161,7 +161,10 @@ class shopSearchproPluginFrontendPageSearchAction extends shopFrontendSearchActi
 			}
 		}
 
-		$this->setCollection($collection);
+		$count = (int) $collection->count();
+		// Запрос влезает на одну страницу — не обрезать выдачу до products_per_page (30–40).
+		$page_limit = ($count > 0 && $count <= 400) ? $count : null;
+		$this->setCollection($collection, $page_limit);
 		$filtered_products_count = $this->view->getVars('products_count');
 		$this->setCount($filtered_products_count);
 
