@@ -262,7 +262,8 @@ HAVING COUNT(fv.filter_id) = 1
 			$where[] = 'f_s.storefront IN (' . implode(',', $escaped) . ')';
 		}
 
-		if ($feature_values_count != 0)
+		// PHP 8: '' != 0 is true, so an empty "count" filter used to hide every row.
+		if ($feature_values_count !== '' && $feature_values_count !== null && $feature_values_count != 0)
 		{
 			$where[] = '(f.feature_values_count + f.feature_value_ranges_count) = :feature_values_count';
 			$params['feature_values_count'] = $feature_values_count;
